@@ -142,11 +142,6 @@ public:
 
   /**
    * \brief
-   */
-  virtual void Update();
-
-  /**
-   * \brief
    * \param parent
    */
   void setupUi(QWidget *parent);
@@ -365,7 +360,6 @@ public slots:
 
 protected:
   QGoImageView3D *                               m_ImageView;
-  vtkImageData *                                 m_Image;
 
   vtkProperty *m_HighlightedContoursProperty;
   vtkProperty *m_HighlightedMeshesProperty;

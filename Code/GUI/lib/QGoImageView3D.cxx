@@ -514,14 +514,16 @@ QGoImageView3D::SetImage(vtkImageData *input)
     }
   else
     {
+    /*
+      \todo Nicolas-unecessary checks
+      */
     int dim[3];
     input->GetDimensions(dim);
 
-    if ( dim[0] + dim[1] + dim[2] > 0 )
-      {
-      m_Initialized = true;
-      this->m_Image = input;
-      }
+    assert ( dim[0] + dim[1] + dim[2] > 0 );
+
+    m_Initialized = true;
+    this->m_Image->ShallowCopy(input);
     }
 }
 

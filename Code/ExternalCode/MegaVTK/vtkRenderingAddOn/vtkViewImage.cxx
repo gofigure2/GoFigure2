@@ -217,7 +217,7 @@ void vtkViewImage::SetOrientationMatrix(vtkMatrix4x4 *matrix)
 //----------------------------------------------------------------------------
 void vtkViewImage::SetLookupTable(vtkLookupTable *lookuptable)
 {
-  if ( !this->IsColor )
+  if ( lookuptable )
     {
     vtkSetObjectMacro2Body(LookupTable, vtkLookupTable, lookuptable);
     this->WindowLevel->SetLookupTable(this->LookupTable);

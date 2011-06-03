@@ -121,7 +121,7 @@
 //-------------------------------------------------------------------------
 QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
   QGoTabElementBase(iParent),
-  m_Image(0),
+  //m_Image(0),
   m_BackgroundColor(Qt::black),
   m_TraceSettingsToolBar(NULL),
   m_IntersectionLineWidth(2.),
@@ -137,7 +137,7 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
   m_Seeds( 3, NULL )
   //m_TraceWidgetRequiered(false)
 {
-  m_Image = vtkImageData::New();
+  //m_Image = vtkImageData::New();
 
   m_Seeds[0] = vtkPoints::New();
   m_Seeds[1] = vtkPoints::New();
@@ -290,7 +290,6 @@ QGoTabImageView3DwT::
   m_HighlightedContoursProperty->Delete();
   m_HighlightedMeshesProperty->Delete();
 
-  m_Image->Delete();
   m_Seeds[0]->Delete();
   m_Seeds[1]->Delete();
   m_Seeds[2]->Delete();
@@ -1161,9 +1160,6 @@ void QGoTabImageView3DwT::StartDopplerView()
     // set channel name
     this->m_NavigationDockWidget->setChannelName(
           QString("Channel %1").arg(m_ImageProcessor->getDopplerChannel()));
-
-    // copy image
-    m_Image->ShallowCopy(m_ImageProcessor->getAllImages());
     }
 }
 
@@ -1445,7 +1441,7 @@ QGoTabImageView3DwT::SetLSMReader(vtkLSMReader *iReader, const int & iTimePoint)
   // update widgets on image loading
   InitializeImageRelatedWidget();
   // render
-  Update();
+  m_ImageView->Update();
 
   // for the trace widget, navigation widget and table widget
   // should not be requiered since we just initialize it before
@@ -1490,7 +1486,7 @@ QGoTabImageView3DwT::SetMegaCaptureFile(
   // update widgets on image loading
   InitializeImageRelatedWidget();
   // render
-  Update();
+  m_ImageView->Update();
 
   // for the trace widget, navigation widget and table widget
   // should not be requiered since we just initialize it before
@@ -1568,20 +1564,17 @@ QGoTabImageView3DwT::UpdateImage()
 
   if ( NumberOfVisibleChannels>1 )
     {
-    m_Image->ShallowCopy(m_ImageProcessor->getAllImages());
+    m_ImageView->SetImage(m_ImageProcessor->getAllImages());
     }
   else
     {
-    //update LUT
-    m_Image->ShallowCopy(m_ImageProcessor->getImageBW());
-    m_ImageView->SetImage(m_Image);
-    m_ImageView->Update();
+    //update Image
+    m_ImageView->SetImage(m_ImageProcessor->getImageBW());
+    // update LUT
     vtkSmartPointer<vtkLookupTable> lut = vtkSmartPointer<vtkLookupTable>::New();
     lut->DeepCopy(m_ImageProcessor->getLookuptable());
     // WHEN WE MODIFY WE WANT TO KEEP THE MODIF (FROM ANDREA)
     m_ImageView->SetLookupTable(lut);
-
-    //lut->Print(cout);
 
     // CONFIGURE LUT
     this->findChild<QAction*>("LUT")->setEnabled(true);
@@ -1662,17 +1655,11 @@ QGoTabImageView3DwT::SetTimePoint(const int & iTimePoint)
   this->m_ContourContainer->ShowActorsWithGivenTimePoint(m_TCoord);
   this->m_MeshContainer->ShowActorsWithGivenTimePoint(m_TCoord);
 
-  Update();
+  m_ImageView->Update();
+
   QApplication::restoreOverrideCursor();
 }
-
 //-------------------------------------------------------------------------
-// TODO Nicolas- rename this method:
-void QGoTabImageView3DwT::Update()
-{
-  m_ImageView->SetImage(m_Image);
-  m_ImageView->Update();
-}
 
 //-------------------------------------------------------------------------
 /*void
@@ -1899,14 +1886,14 @@ QGoTabImageView3DwT::ModeChanged(int iChannel)
     m_ImageProcessor->setDopplerMode(false, 0);
     // update image processor
     m_ImageProcessor->initTimePoint(m_TCoord);
-    //update images
-    UpdateImage();
     // change visibility
     this->m_NavigationDockWidget->VisibilityListChannels(true);
     }
 
+  //update images
+  UpdateImage();
   // update visualization
-  Update();
+  m_ImageView->Update();
   //update the trace editing widget
   UpdateTracesEditingWidget();
 }
@@ -1927,7 +1914,7 @@ QGoTabImageView3DwT::StepChanged(int iStep)
   // build new image
   UpdateImage();
   //update
-  Update();
+  m_ImageView->Update();
   //update the trace editing widget
   UpdateTracesEditingWidget();
 }
@@ -1982,7 +1969,7 @@ QGoTabImageView3DwT::GetBoundingBox(vtkPolyData *iElement)
     int *max_idx = this->GetImageCoordinatesFromWorldCoordinates(Max);
 
     int extent[6];
-    this->m_Image->GetExtent(extent);
+    m_ImageProcessor->getImageBW()->GetExtent(extent);
 
     for ( i = 0; i < 3; i++ )
       {
@@ -3152,7 +3139,7 @@ visibilityChanged(QString iName, bool iVisibility)
   //if we are in volume rendering
   EnableVolumeRendering(this->m_ViewActions.at(12)->isChecked());
   // update visu
-  Update();
+  m_ImageView->Update();
 }
 //-------------------------------------------------------------------------
 
@@ -3199,7 +3186,7 @@ QGoTabImageView3DwT::updateSlot()
 {
   UpdateImage();
   EnableVolumeRendering(this->m_ViewActions.at(12)->isChecked());
-  Update();
+  m_ImageView->Update();
 }
 //-------------------------------------------------------------------------
 
