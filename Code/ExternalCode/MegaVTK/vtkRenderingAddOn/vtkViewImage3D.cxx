@@ -252,19 +252,7 @@ vtkViewImage3D::~vtkViewImage3D()
   this->Command->Delete();
   this->InteractorStyle3D->Delete();
 
-  //
-  for(int i=0; i<m_VolumeActors.size(); ++i)
-    {
-    m_VolumeActors[i]->Delete();
-    m_VolumeMappers[i]->Delete();
-    m_VolumeProperties[i]->Delete();
-    m_Images[i]->Delete();
-    }
-
-  m_VolumeActors.clear();
-  m_VolumeMappers.clear();
-  m_VolumeProperties.clear();
-  m_Images.clear();
+  CleanVolumeRenderingVectors();
 }
 
 //----------------------------------------------------------------------------
@@ -391,6 +379,14 @@ void vtkViewImage3D::Render()
  */
 void vtkViewImage3D::SetVolumeRenderingOff()
 {
+  CleanVolumeRenderingVectors();
+}
+//----------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------
+
+void vtkViewImage3D::CleanVolumeRenderingVectors()
+{
   //this->VolumeActor->SetVisibility (false);
   for(int i=0; i<m_VolumeActors.size(); ++i)
   {
@@ -410,9 +406,7 @@ void vtkViewImage3D::SetVolumeRenderingOff()
   m_VolumeMappers.clear();
   m_VolumeProperties.clear();
   m_Images.clear();
-
 }
-
 //----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
@@ -431,6 +425,8 @@ void vtkViewImage3D::SetVolumeRenderingOn(const std::vector<vtkImageData*>& iIma
     vtkWarningMacro (<< "Cannot do volume rendering for a single slice, skipping" << endl);
     return;
     }
+
+  CleanVolumeRenderingVectors();
 
   m_Images = iImages;
 

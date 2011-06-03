@@ -280,6 +280,8 @@ protected:
 
   virtual void SetupWidgets();
 
+  void CleanVolumeRenderingVectors();
+
   // texture mapper in 3D
   vtkSmartVolumeMapper *SmartVolumeMapper3D;
   // volume property

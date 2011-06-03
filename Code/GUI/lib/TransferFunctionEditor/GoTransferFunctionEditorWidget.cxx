@@ -248,8 +248,6 @@ AddHistogram(vtkImageAccumulate* iHistogram)
   m_green_shade->SetHistogram(histo);
   m_blue_shade->SetHistogram(histo);
   m_alpha_shade->SetHistogram(histo);
-
-  iHistogram->Delete();
 }
 //-------------------------------------------------------------------------
 

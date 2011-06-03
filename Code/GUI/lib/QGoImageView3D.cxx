@@ -1292,6 +1292,7 @@ QGoImageView3D::
 DisableVolumeRendering()
 {
   m_View3D->SetVolumeRenderingOff();
+  m_View3D->Render();
 }
 //---------------------------------------------------------------------------
 

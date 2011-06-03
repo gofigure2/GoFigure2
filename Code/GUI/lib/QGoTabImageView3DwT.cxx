@@ -3206,9 +3206,6 @@ EnableVolumeRendering(bool iEnable)
 {
   if(iEnable)
     {
-    //clean containers
-    m_ImageView->DisableVolumeRendering();
-    // volume rendering
     m_ImageView->EnableVolumeRendering(m_ImageProcessor->getColoredImages(),
                                        m_ImageProcessor->getOpacityTransferFunctions());
     }
