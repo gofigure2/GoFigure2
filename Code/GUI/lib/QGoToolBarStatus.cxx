@@ -38,8 +38,9 @@
 
 QGoToolBarStatus::QGoToolBarStatus(QWidget* iParent) :
   QObject(iParent),
-  m_Area(Qt::TopToolBarArea), m_DefaultArea(Qt::TopToolBarArea),
-  m_Visibility(true), m_Attached(true), m_ToolBar(NULL), m_Menu(NULL), m_Widget(NULL)
+  m_ToolBar(NULL), m_Menu(NULL), m_Area(Qt::TopToolBarArea),
+  m_DefaultArea(Qt::TopToolBarArea), m_Visibility(true), m_Attached(true),
+  m_Widget(NULL)
 {
 }
 //--------------------------------------------------------------------------
@@ -60,9 +61,9 @@ QGoToolBarStatus::QGoToolBarStatus(Qt::ToolBarArea iArea,
                                     const bool & iVisibility, const bool & iAttached,
                                     QWidget* iParent) :
   QObject(iParent),
-  m_Area(iArea),
+  m_ToolBar(NULL), m_Menu(NULL), m_Area(iArea),
   m_DefaultArea(iArea), m_Visibility(iVisibility),
-  m_Attached(iAttached), m_ToolBar(NULL), m_Menu(NULL), m_Widget(NULL)
+  m_Attached(iAttached), m_Widget(NULL)
 {
 }
 //--------------------------------------------------------------------------
@@ -71,9 +72,9 @@ QGoToolBarStatus::QGoToolBarStatus(Qt::ToolBarArea iArea,
 QGoToolBarStatus::QGoToolBarStatus(QToolBar* iToolBar, QMenu* iMenu,
   Qt::ToolBarArea iArea,
     const bool & iVisibility, const bool & iAttached, QWidget* iParent, QWidget* iWidget):
-  QObject(iParent),
+  QObject(iParent), m_ToolBar(iToolBar), m_Menu(iMenu),
   m_Area(iArea), m_Visibility(iVisibility), m_Attached(iAttached),
-  m_ToolBar(iToolBar), m_Menu(iMenu), m_Widget(iWidget)
+  m_Widget(iWidget)
 {
   if(m_Widget && m_ToolBar)
     {

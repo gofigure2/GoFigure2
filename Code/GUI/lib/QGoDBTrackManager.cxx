@@ -539,7 +539,7 @@ bool QGoDBTrackManager::CheckOverlappingTracks(
 //-------------------------------------------------------------------------
 void QGoDBTrackManager::CreateCorrespondingTrackFamily()
 {
-  unsigned int MotherID = 0;
+  int MotherID = 0;
   std::list<unsigned int> DaughtersIDs = std::list<unsigned int>();
   std::list<unsigned int> CheckedTracks = this->GetListHighlightedIDs();
   if (CheckedTracks.size() != 3)
@@ -597,7 +597,7 @@ void QGoDBTrackManager::CreateCorrespondingTrackFamily()
 //-------------------------------------------------------------------------
 bool QGoDBTrackManager::IdentifyMotherDaughtersToCreateTrackFamily(
   vtkMySQLDatabase* iDatabaseConnector,
-  std::list<unsigned int> iListTracksID, unsigned int &ioMotherID,
+  std::list<unsigned int> iListTracksID, int &ioMotherID,
   std::list<unsigned int> &ioDaughtersID)
 {
   //get the trackid with the lowest timepoint and check that there is only one:

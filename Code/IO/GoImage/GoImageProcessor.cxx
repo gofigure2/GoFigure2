@@ -671,7 +671,7 @@ void
 GoImageProcessor::
 setVisibilityVector(const std::vector<std::string>& iVisibility)
 {
-  for(int i =0; i<iVisibility.size(); ++i)
+  for(unsigned int i =0; i<iVisibility.size(); ++i)
     {
     GoMegaImageStructureMultiIndexContainer::index<Name>::type::iterator it =
         m_MegaImageContainer.get< Name >().find(iVisibility[i]);

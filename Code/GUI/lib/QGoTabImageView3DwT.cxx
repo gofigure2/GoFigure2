@@ -121,7 +121,7 @@
 //-------------------------------------------------------------------------
 QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
   QGoTabElementBase(iParent),
-  //m_Image(0),
+  m_ImageProcessor(NULL),
   m_BackgroundColor(Qt::black),
   m_TraceSettingsToolBar(NULL),
   m_IntersectionLineWidth(2.),
@@ -132,7 +132,6 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
   m_YTileCoord(0),
   m_ZTileCoord(0),
   m_TCoord(-1),
-  m_ImageProcessor(NULL),
   m_MeshEditingWidget(NULL),
   m_Seeds( 3, NULL )
   //m_TraceWidgetRequiered(false)
@@ -402,7 +401,7 @@ QGoTabImageView3DwT::CreateContourEditingDockWidget(
   unsigned int numberOfChannels = m_ImageProcessor->getNumberOfChannels();
   std::vector< QString > channelNames;
   channelNames.resize( numberOfChannels );
-  for(int i =0; i<numberOfChannels; ++i)
+  for(unsigned int i =0; i<numberOfChannels; ++i)
     {
     channelNames[i] = QString::fromStdString(
           m_ImageProcessor->getNameChannel(i));
@@ -493,7 +492,7 @@ QGoTabImageView3DwT::CreateMeshEditingDockWidget(int iTimeMin, int iTimeMax)
   unsigned int numberOfChannels = m_ImageProcessor->getNumberOfChannels();
   std::vector< QString > channelNames;
   channelNames.resize( numberOfChannels );
-  for(int i =0; i<numberOfChannels; ++i)
+  for(unsigned int i =0; i<numberOfChannels; ++i)
     {
     channelNames[i] = QString::fromStdString(
           m_ImageProcessor->getNameChannel(i));

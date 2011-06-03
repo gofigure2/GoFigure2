@@ -65,21 +65,6 @@ public:
 
   void InitializeToolBarAndMenu(QToolBar* iToolBar, QMenu* iMenu);
 
-  QToolBar * m_ToolBar;
-  QMenu *    m_Menu;
-
-  /** \brief Position */
-  Qt::ToolBarArea m_Area;
-  Qt::ToolBarArea m_DefaultArea;
-
-  /** \brief is Visible */
-  bool m_Visibility;
-
-  /** \brief Attached to QGoMainWindow*/
-  bool m_Attached;
-
-  std::vector< QAction* > m_VectorAction;
-
   /** \brief clear the toolbar and disconnect all the slots 
   inside this class connected to the toolbar*/
   void ClearToolBar();
@@ -87,6 +72,21 @@ public:
   /** \brief add all the actions coontained in the m_VectorAction
   into the toolbar and connect the slots*/
   void SetUpToolBar();
+
+  /*\\todo Nicolas why public??
+    */
+  // variables - why public....?
+  QToolBar * m_ToolBar;
+  QMenu *    m_Menu;
+  /** \brief Position */
+  Qt::ToolBarArea m_Area;
+  Qt::ToolBarArea m_DefaultArea;
+  /** \brief is Visible */
+  bool m_Visibility;
+  /** \brief Attached to QGoMainWindow*/
+  bool m_Attached;
+
+  std::vector< QAction* > m_VectorAction;
 
 public slots:
   /** \brief set the area of the m_ToolBar*/
