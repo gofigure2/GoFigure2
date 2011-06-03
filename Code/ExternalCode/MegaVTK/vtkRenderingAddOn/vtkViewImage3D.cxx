@@ -205,13 +205,7 @@ vtkViewImage3D::vtkViewImage3D()
   this->Callback = vtkImage3DCroppingBoxCallback::New();
   this->SmartVolumeMapper3D = vtkSmartVolumeMapper::New();
 
-  this->Phantom.push_back( vtkImageActor::New() );
-  this->Phantom.push_back( vtkImageActor::New() );
-  this->Phantom.push_back( vtkImageActor::New() );
-
-  this->PhantomCallback.push_back( ImageActorCallback::New() );
-  this->PhantomCallback.push_back( ImageActorCallback::New() );
-  this->PhantomCallback.push_back( ImageActorCallback::New() );
+  this->Phantom.resize(3);
 
   this->BoundsActor.push_back( vtkActor::New() );
   this->BoundsActor.push_back( vtkActor::New() );
@@ -239,12 +233,6 @@ vtkViewImage3D::~vtkViewImage3D()
   this->Callback->Delete();
   this->Cube->Delete();
   this->Marker->Delete();
-  this->Phantom[0]->Delete();
-  this->Phantom[1]->Delete();
-  this->Phantom[2]->Delete();
-  this->PhantomCallback[0]->Delete();
-  this->PhantomCallback[1]->Delete();
-  this->PhantomCallback[2]->Delete();
   this->BoundsActor[0]->Delete();
   this->BoundsActor[1]->Delete();
   this->BoundsActor[2]->Delete();
@@ -539,34 +527,16 @@ void vtkViewImage3D::Add2DPhantom(const unsigned int & i,
                                   vtkImageActor *input,
                                   vtkPolyData *in_bounds)
 {
-  if ( i >= 3 )
-    {
-    return;
-    }
+  assert ( i < 3 );
 
   vtkRenderer *ren = this->GetRenderer();
   if ( ren )
     {
-    ren->RemoveActor(this->Phantom[i]);
+    // UPDATE PHANTOM
+    this->Phantom[i] = input;
+    this->GetRenderer()->AddActor (input);
 
-    this->Phantom[i]->SetInput ( input->GetInput() );
-    this->Phantom[i]->SetDisplayExtent ( input->GetDisplayExtent() );
-    this->Phantom[i]->SetUserMatrix ( input->GetUserMatrix() );
-    this->PhantomCallback[i]->Actor = this->Phantom[i];
-    input->AddObserver (vtkCommand::ModifiedEvent, this->PhantomCallback[i]);
-    ren->AddActor (this->Phantom[i]);
-
-    /**
-       IMPORTANT NOTE
-
-       Adding a 2D actor in the 3D scene should be as simple as the next line
-       instead of the code above...
-
-       Unfortunately it does not seem to work properly. But this is something
-       we should investigate in because it would be much simpler
-    */
-    //     this->GetRenderer()->AddActor (input);
-
+    // update borders
     if ( in_bounds )
       {
       ren->RemoveActor(this->BoundsActor[i]);
@@ -677,11 +647,14 @@ vtkViewImage3D::AddDataSet(vtkDataSet *dataset,
   if ( property )
     {
     // Generates bug in visu
-    //actor3d->SetProperty( property );
-    actor3d->GetProperty()->SetColor( property->GetColor() );
-    actor3d->GetProperty()->SetOpacity( property->GetOpacity() );
-    actor3d->GetProperty()->SetLineWidth(this->IntersectionLineWidth);
+    actor3d->SetProperty( property );
+    //actor3d->GetProperty()->SetColor( property->GetColor() );
+    //std::cout << "3d opacity: " << property->GetOpacity() << std::endl;
+    //actor3d->GetProperty()->SetOpacity( property->GetOpacity() );
+    //actor3d->GetProperty()->SetLineWidth(this->IntersectionLineWidth);
     }
+
+  actor3d->GetProperty()->BackfaceCullingOn();
 
   return actor3d;
 }

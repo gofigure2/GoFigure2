@@ -208,9 +208,6 @@ vtkViewImage2DCommand::Windowing(vtkInteractorStyleImage2D *isi)
 
   int *  size = this->Viewer->GetRenderWindow()->GetSize();
 
-  std::cout <<"initial window: " << InitialWindow << std::endl;
-  std::cout <<"initial level: " << InitialLevel << std::endl;
-
   double window = this->InitialWindow;
   double level = this->InitialLevel;
 
@@ -241,9 +238,6 @@ vtkViewImage2DCommand::Windowing(vtkInteractorStyleImage2D *isi)
   // Compute new window level
   double newWindow = dx + window;
   double newLevel = level - dy;
-
-  std::cout <<"new window: " << newWindow << std::endl;
-  std::cout <<"new level: " << newLevel << std::endl;
 
   // Stay away from zero and really
   if ( fabs(newWindow) < 0.01 ) { newWindow = 0.01 * ( newWindow < 0 ? -1 : 1 ); }

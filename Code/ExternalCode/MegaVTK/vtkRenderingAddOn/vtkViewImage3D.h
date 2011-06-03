@@ -296,9 +296,7 @@ protected:
 
   // image 3D cropping box callback
   vtkImage3DCroppingBoxCallback *Callback;
-
   std::vector< vtkImageActor * >      Phantom;
-  std::vector< ImageActorCallback * > PhantomCallback;
   std::vector< vtkActor * >           BoundsActor;
 
   // box widget
