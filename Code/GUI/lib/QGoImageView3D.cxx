@@ -77,6 +77,8 @@
 #include "vtkImplicitPlaneWidget.h"
 #include "vtkPlane.h"
 
+#include "vtkPiecewiseFunction.h"
+
 #include <cstdlib>
 
 //-------------------------------------------------------------------------
@@ -512,14 +514,16 @@ QGoImageView3D::SetImage(vtkImageData *input)
     }
   else
     {
+    /*
+      \todo Nicolas-unecessary checks
+      */
     int dim[3];
     input->GetDimensions(dim);
 
-    if ( dim[0] + dim[1] + dim[2] > 0 )
-      {
-      m_Initialized = true;
-      this->m_Image = input;
-      }
+    assert ( dim[0] + dim[1] + dim[2] > 0 );
+
+    m_Initialized = true;
+    this->m_Image->ShallowCopy(input);
     }
 }
 
@@ -1273,20 +1277,23 @@ QGoImageView3D::InitializePlaneWidget()
 /// \todo Add button to enable/disable tri planar rendering
 //-------------------------------------------------------------------------
 void
-QGoImageView3D::EnableVolumeRendering(bool iValue)
+QGoImageView3D::
+EnableVolumeRendering(const std::vector<vtkImageData*>& iImages,
+                      const std::vector<vtkPiecewiseFunction*>& iOpacities)
 {
-  if ( iValue )
-    {
-    //m_View3D->SetTriPlanarRenderingOff();
-    m_View3D->SetVolumeRenderingOn();
-    }
-  else
-    {
-    //m_View3D->SetTriPlanarRenderingOn();
-    m_View3D->SetVolumeRenderingOff();
-    }
+  m_View3D->SetVolumeRenderingOn(iImages, iOpacities);
+  m_View3D->Render();
 }
+//---------------------------------------------------------------------------
 
+//---------------------------------------------------------------------------
+void
+QGoImageView3D::
+DisableVolumeRendering()
+{
+  m_View3D->SetVolumeRenderingOff();
+  m_View3D->Render();
+}
 //---------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------

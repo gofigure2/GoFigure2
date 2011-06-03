@@ -52,6 +52,7 @@
 // external include
 class vtkLookupTable;
 class vtkImageData;
+class vtkImageAccumulate;
 
 class QString;
 
@@ -114,6 +115,46 @@ struct set_name
 
 private:
   std::string name;
+};
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
+/**
+  \struct set_image
+  \brief change visibility of given structure
+  \sa GoMegaImageStructure
+  */
+struct set_image
+{
+  set_image(vtkImageData* iImage):image(iImage){}
+
+  void operator()(GoMegaImageStructure& iStructure)
+  {
+    iStructure.setImage(image);
+  }
+
+private:
+  vtkImageData* image;
+};
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
+/**
+  \struct set_image
+  \brief change visibility of given structure
+  \sa GoMegaImageStructure
+  */
+struct set_PointsRGBA
+{
+  set_PointsRGBA(std::vector< std::map< unsigned int, unsigned int> > iPoints):points(iPoints){}
+
+  void operator()(GoMegaImageStructure& iStructure)
+  {
+    iStructure.setPointsRGBA(points);
+  }
+
+private:
+  std::vector< std::map< unsigned int, unsigned int> > points;
 };
 //-----------------------------------------------------------------------------
 
@@ -207,15 +248,35 @@ public:
    */
   vtkSmartPointer<vtkLookupTable> getLookuptable(const unsigned int& iIndex) const;
 
+  vtkSmartPointer<vtkLookupTable> getLookuptable(const std::string& iIndex) const;
+
   vtkSmartPointer<vtkLookupTable> getLookuptable() const;
 
+  vtkSmartPointer<vtkPiecewiseFunction> getOpacityTransferFunction() const;
+
+  vtkSmartPointer<vtkPiecewiseFunction>
+  getOpacityTransferFunction(const std::string& iIndex) const;
+
+  void updateOpacityTransferFunction();
+
+  std::vector<vtkPiecewiseFunction*> getOpacityTransferFunctions();
+
   std::vector<double> getColor(const unsigned int& iIndex) const;
+
+  std::vector<double> getColor(const std::string& iIndex) const;
+
+  std::vector<std::map<unsigned int, unsigned int> > getRGBA(const std::string& iIndex) const;
+
+  vtkSmartPointer< vtkImageAccumulate>
+      getHistogram(const std::string& iIndex) const;
 
   /*
    * \brief load all the channels for the given time point into the
    * GoMegaImageStructure
    * \param[in] iTime requested time point
    */
+  virtual void initTimePoint(const unsigned int& iTime) = 0;
+
   virtual void setTimePoint(const unsigned int& iTime) = 0;
 
   /*
@@ -246,6 +307,8 @@ public:
   void setNameChannel(const unsigned int& iIndex, const std::string& iName);
 
   std::string getNameChannel(const unsigned int& iIndex);
+
+  std::vector<vtkImageData*> getColoredImages();
 
   template< class PixelType, const unsigned int VImageDimension >
   typename itk::Image< PixelType, VImageDimension >::Pointer
@@ -302,6 +365,8 @@ public:
 
   unsigned int getContainerSize();
 
+  void updatePoints(QString iChannel, std::vector< std::map< unsigned int, unsigned int> > iPointsRGBA);
+
 protected:
   /*
    * \brief Color an image given the original image and a lookuptable (LUT)
@@ -347,6 +412,8 @@ private:
       }
     return *this;
   }
+
+  vtkSmartPointer<vtkPiecewiseFunction> m_OpacityTF;
 
 };
 

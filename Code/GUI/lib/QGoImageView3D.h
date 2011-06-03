@@ -70,6 +70,9 @@ class vtkOrientedBoxWidget;
 // For the plane widget
 class vtkImplicitPlaneWidget;
 
+// volumre rendering
+class vtkPiecewiseFunction;
+
 /**
 \class QGoImageView3D
 \brief class for the visualization of 3D Image represented by one vtkImageData*.
@@ -213,7 +216,10 @@ public slots:
   /**
    * \brief Creates a box in 3d view to allow multiple meshes selection
    */
-  void EnableVolumeRendering(bool iValue);
+  void EnableVolumeRendering(const std::vector<vtkImageData*>& iImages,
+                             const std::vector<vtkPiecewiseFunction*>& iOpacities);
+
+  void DisableVolumeRendering();
 
   void UpdateCurrentActorSelection(vtkObject *caller);
 

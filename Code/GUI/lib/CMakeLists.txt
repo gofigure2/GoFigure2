@@ -110,6 +110,11 @@ SET( QGoGUILIB_SRC
   TraceEditing/QGoSemiAutoSegmentationAlgo.cxx
   TraceEditing/QGoFilterSemiAutoBase.cxx
 
+  # transfer function widget
+  TransferFunctionEditor/GoTransferFunctionEditorWidget.cxx
+  TransferFunctionEditor/GoTransferFunctionWidget.cxx
+  TransferFunctionEditor/hoverpoints.cpp
+
   ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoAboutWidget.cxx
   ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoNetworkUtilities.cxx
 
@@ -248,6 +253,11 @@ SET( QGoGUILIB_HDRS
   TraceEditing/QGoSemiAutoSegmentationAlgo.h
   TraceEditing/QGoTraceEditingWidgetManager.h
   TraceEditing/QGoFilterSemiAutoBase.h
+
+  # transfer function widget
+  TransferFunctionEditor/GoTransferFunctionEditorWidget.h
+  TransferFunctionEditor/GoTransferFunctionWidget.h
+  TransferFunctionEditor/hoverpoints.h
 )
 
 IF( BUILD_COMPARETOOL )

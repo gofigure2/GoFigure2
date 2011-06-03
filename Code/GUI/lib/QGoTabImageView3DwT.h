@@ -142,11 +142,6 @@ public:
 
   /**
    * \brief
-   */
-  virtual void Update();
-
-  /**
-   * \brief
    * \param parent
    */
   void setupUi(QWidget *parent);
@@ -275,6 +270,8 @@ public slots:
 
   void GoToDefaultMenu(bool iEnable = false);
 
+  void updatePoints(QString, std::vector< std::map< unsigned int, unsigned int> >);
+
 #if defined ( ENABLEFFMPEG ) || defined ( ENABLEAVI )
   void SetRendererWindow(int);
 #endif /* ENABLEVIDEORECORD */
@@ -309,7 +306,7 @@ public slots:
 
   void FullScreenViewXYZ();
 
-  void ChangeLookupTable();
+  //void ChangeLookupTable();
 
   void ChangeBackgroundColor();
 
@@ -357,9 +354,12 @@ public slots:
 
   void visibilityChanged(QString iName, bool iVisibility);
 
+  void openTransferFunctionEditor(QString iName);
+
+  void updateSlot();
+
 protected:
   QGoImageView3D *                               m_ImageView;
-  vtkImageData *                                 m_Image;
 
   vtkProperty *m_HighlightedContoursProperty;
   vtkProperty *m_HighlightedMeshesProperty;
@@ -691,6 +691,8 @@ protected slots:
   of the mesh and contour widget
   */
   void UpdateTracesEditingWidget();
+
+  void EnableVolumeRendering(bool iEnable);
 
 private:
   void InitializeImageRelatedWidget();

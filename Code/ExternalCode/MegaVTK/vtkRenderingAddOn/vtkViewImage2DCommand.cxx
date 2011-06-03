@@ -207,6 +207,7 @@ vtkViewImage2DCommand::Windowing(vtkInteractorStyleImage2D *isi)
     }
 
   int *  size = this->Viewer->GetRenderWindow()->GetSize();
+
   double window = this->InitialWindow;
   double level = this->InitialLevel;
 

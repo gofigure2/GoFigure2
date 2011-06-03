@@ -79,6 +79,7 @@ QGoImageView::QGoImageView(QWidget *iParent) : QWidget(iParent),
   m_ShowAnnotations(true),
   m_ShowSplinePlane(true)
 {
+  m_Image = vtkImageData::New();
   m_Pool = vtkViewImage2DCollection::New();
 }
 
@@ -86,6 +87,12 @@ QGoImageView::QGoImageView(QWidget *iParent) : QWidget(iParent),
 QGoImageView::
 ~QGoImageView()
 {
+  if(m_Image)
+    {
+    m_Image->Delete();
+    m_Image = 0;
+    }
+
   if ( m_Pool )
     {
     m_Pool->Delete();

@@ -113,8 +113,8 @@
 #include <vtkImageData.h>
 #include <vtkPiecewiseFunction.h>
 #include <vtkColorTransferFunction.h>
-#include <vtkVolumeTextureMapper3D.h>
-#include <vtkVolumeMapper.h>
+#include <vtkSmartVolumeMapper.h>
+#include <vtkSmartVolumeMapper.h>
 #include <vtkFiniteDifferenceGradientEstimator.h>
 #include <vtkVolumeTextureMapper2D.h>
 #include <vtkProperty.h>
@@ -203,15 +203,9 @@ vtkViewImage3D::vtkViewImage3D()
   this->VolumeProperty  = vtkVolumeProperty::New();
   this->VolumeActor     = vtkVolume::New();
   this->Callback = vtkImage3DCroppingBoxCallback::New();
-  this->VolumeMapper3D = vtkVolumeTextureMapper3D::New();
+  this->SmartVolumeMapper3D = vtkSmartVolumeMapper::New();
 
-  this->Phantom.push_back( vtkImageActor::New() );
-  this->Phantom.push_back( vtkImageActor::New() );
-  this->Phantom.push_back( vtkImageActor::New() );
-
-  this->PhantomCallback.push_back( ImageActorCallback::New() );
-  this->PhantomCallback.push_back( ImageActorCallback::New() );
-  this->PhantomCallback.push_back( ImageActorCallback::New() );
+  this->Phantom.resize(3);
 
   this->BoundsActor.push_back( vtkActor::New() );
   this->BoundsActor.push_back( vtkActor::New() );
@@ -233,65 +227,63 @@ vtkViewImage3D::vtkViewImage3D()
 vtkViewImage3D::~vtkViewImage3D()
 {
   // delete all vtk objetcts:
-  this->VolumeMapper3D->Delete();
+  this->SmartVolumeMapper3D->Delete();
   this->VolumeProperty->Delete();
   this->VolumeActor->Delete();
   this->Callback->Delete();
   this->Cube->Delete();
   this->Marker->Delete();
-  this->Phantom[0]->Delete();
-  this->Phantom[1]->Delete();
-  this->Phantom[2]->Delete();
-  this->PhantomCallback[0]->Delete();
-  this->PhantomCallback[1]->Delete();
-  this->PhantomCallback[2]->Delete();
   this->BoundsActor[0]->Delete();
   this->BoundsActor[1]->Delete();
   this->BoundsActor[2]->Delete();
 
   this->Command->Delete();
   this->InteractorStyle3D->Delete();
+
+  CleanVolumeRenderingVectors();
 }
 
 //----------------------------------------------------------------------------
 /**
  *
  */
-void vtkViewImage3D::SetupVolumeRendering()
+void vtkViewImage3D::SetupVolumeRendering(vtkPiecewiseFunction* iOpacity)
 {
   // MAPPER
   // crop volume into 27? small regions
   // for efficiency?
-  this->VolumeMapper3D->CroppingOn();
-  this->VolumeMapper3D->SetCroppingRegionFlagsToSubVolume();
-  this->VolumeMapper3D->SetCroppingRegionFlags (0x7ffdfff);
+  this->SmartVolumeMapper3D->CroppingOn();
+  this->SmartVolumeMapper3D->SetCroppingRegionFlagsToSubVolume();
+  this->SmartVolumeMapper3D->SetCroppingRegionFlags (0x7ffdfff);
 
   // PROPERTY
   // opacity TF
-  vtkPiecewiseFunction* opacityfunction = vtkPiecewiseFunction::New();
-  opacityfunction->AddPoint (0, 0.0);
-  opacityfunction->AddPoint (255, 1.0);
-  this->VolumeProperty->SetScalarOpacity(opacityfunction);
-  opacityfunction->Delete();
+  //vtkPiecewiseFunction* opacityfunction = vtkPiecewiseFunction::New();
+ // opacityfunction->AddPoint (0, 0.0);
+ // opacityfunction->AddPoint (255, 1.0);
+  this->VolumeProperty->SetScalarOpacity(0, iOpacity);
+  this->VolumeProperty->SetScalarOpacity(1, iOpacity);
+  this->VolumeProperty->SetScalarOpacity(2, iOpacity);
+  //opacityfunction->Delete();
 
   // one dataset-1 tf, not 1 tf for each component
   this->VolumeProperty->IndependentComponentsOff();
   this->VolumeProperty->SetInterpolationTypeToLinear();
   this->VolumeProperty->ShadeOff();
-  this->VolumeProperty->SetDiffuse (0.9);
+ /* this->VolumeProperty->SetDiffuse (0.9);
   this->VolumeProperty->SetAmbient (0.2);
   this->VolumeProperty->SetSpecular (0.3);
-  this->VolumeProperty->SetSpecularPower (15.0);
+  this->VolumeProperty->SetSpecularPower (15.0);*/
 
   // ACTOR
   this->VolumeActor->SetProperty (this->VolumeProperty);
-  this->VolumeActor->SetMapper (this->VolumeMapper3D);
+  this->VolumeActor->SetMapper (this->SmartVolumeMapper3D);
   this->VolumeActor->PickableOff();
   this->VolumeActor->DragableOff();
   this->VolumeActor->SetVisibility (0);
 
   // set up the boxwidget/ callback
-  this->Callback->SetVolumeMapper (this->VolumeMapper3D);
+  this->Callback->SetVolumeMapper (this->SmartVolumeMapper3D);
 
   this->Renderer->AddViewProp (this->VolumeActor);
 }
@@ -375,16 +367,42 @@ void vtkViewImage3D::Render()
  */
 void vtkViewImage3D::SetVolumeRenderingOff()
 {
-  this->VolumeActor->SetVisibility (false);
+  CleanVolumeRenderingVectors();
 }
+//----------------------------------------------------------------------------
 
+//----------------------------------------------------------------------------
+
+void vtkViewImage3D::CleanVolumeRenderingVectors()
+{
+  //this->VolumeActor->SetVisibility (false);
+  for(unsigned int i=0; i<m_VolumeActors.size(); ++i)
+  {
+    m_VolumeActors[i]->SetVisibility(false);
+  }
+
+  //delete everything...
+  for(unsigned int i=0; i<m_VolumeActors.size(); ++i)
+    {
+    m_VolumeActors[i]->Delete();
+    m_VolumeMappers[i]->Delete();
+    m_VolumeProperties[i]->Delete();
+    m_Images[i]->Delete();
+    }
+
+  m_VolumeActors.clear();
+  m_VolumeMappers.clear();
+  m_VolumeProperties.clear();
+  m_Images.clear();
+}
 //----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
 /**
  *
  */
-void vtkViewImage3D::SetVolumeRenderingOn()
+void vtkViewImage3D::SetVolumeRenderingOn(const std::vector<vtkImageData*>& iImages,
+                                          const std::vector<vtkPiecewiseFunction*>& iOpacities)
 {
   int *size = this->GetInput()->GetDimensions();
 
@@ -396,37 +414,47 @@ void vtkViewImage3D::SetVolumeRenderingOn()
     return;
     }
 
-  // check if RGB already
-  // or create RGB using LUT if single channel input
-  int NbOfComp = this->GetInput()->GetNumberOfScalarComponents();
+  CleanVolumeRenderingVectors();
 
-  vtkSmartPointer<vtkImageData> image;
+  m_Images = iImages;
 
-  if ( NbOfComp > 1 && NbOfComp != 4 && NbOfComp < 5 )
-    {
-    image = this->GetInput();
-    }
-  else
-    {
-    // color single channel image with current LUT
-    vtkImageData* temp = this->GetInput();
-    vtkSmartPointer<vtkImageMapToColors> map =
-        vtkSmartPointer<vtkImageMapToColors>::New();
-    map->SetLookupTable(this->LookupTable);
-    map->SetInput(temp);
-    map->SetOutputFormatToRGB();
-    map->Update();
-    image = map->GetOutput();
-    }
+  for(unsigned int  j=0; j<iImages.size();++j)
+  {
+    // MAPPER
+    // crop volume into 27? small regions
+    // for efficiency?
+    vtkSmartVolumeMapper* smartVolumeMapper3D = vtkSmartVolumeMapper::New();
+    smartVolumeMapper3D->CroppingOn();
+    smartVolumeMapper3D->SetCroppingRegionFlagsToSubVolume();
+    smartVolumeMapper3D->SetCroppingRegionFlags (0x7ffdfff);
+    m_VolumeMappers.push_back(smartVolumeMapper3D);
 
-  this->SetupVolumeRendering();
+    // PROPERTY
+    vtkVolumeProperty* volumeProperty = vtkVolumeProperty::New();
+    volumeProperty->SetScalarOpacity(0, iOpacities[j]);
+    volumeProperty->SetScalarOpacity(1, iOpacities[j]);
+    volumeProperty->SetScalarOpacity(2, iOpacities[j]);
+      // one dataset-1 tf, not 1 tf for each component
+    volumeProperty->IndependentComponentsOff();
+    volumeProperty->SetInterpolationTypeToLinear();
+    //volumeProperty->SetScalarOpacityUnitDistance(1.0);
+    volumeProperty->ShadeOff();
+    m_VolumeProperties.push_back(volumeProperty);
+
+    // ACTOR
+    vtkVolume* volumeActor = vtkVolume::New();
+    volumeActor->SetProperty (volumeProperty);
+    volumeActor->SetMapper (smartVolumeMapper3D);
+    volumeActor->PickableOff();
+    volumeActor->DragableOff();
+    m_VolumeActors.push_back(volumeActor);
 
   // get the index of the first non-NULL component
   int i(0);
   for(i=0; i<3;++i)
     {
     double range[2];
-    image->GetPointData()->GetScalars()->GetRange(range,i);
+    iImages[j]->GetPointData()->GetScalars()->GetRange(range,i);
     if(range[1]>0)
       {
       break;
@@ -438,23 +466,23 @@ void vtkViewImage3D::SetVolumeRenderingOn()
   // create a "FAKE" 4th alpha channel...??
   vtkSmartPointer< vtkImageExtractComponents > extComp =
     vtkSmartPointer< vtkImageExtractComponents >::New();
-  extComp->SetInput(image.GetPointer());
+  extComp->SetInput(iImages[j]);
   extComp->SetComponents(i);
   extComp->Update();
 
   vtkSmartPointer< vtkImageAppendComponents > addComp =
     vtkSmartPointer< vtkImageAppendComponents >::New();
-  addComp->AddInput(image);
+  addComp->AddInput(iImages[j]);
   addComp->AddInput( extComp->GetOutput() );
   addComp->Update();
 
   // add output to mapper
-  this->VolumeMapper3D->SetInput( addComp->GetOutput() );
+  smartVolumeMapper3D->SetInput( addComp->GetOutput() );
 
-  // check if 3d mapper is supported
-  this->SetupTextureMapper();
+  this->Renderer->AddViewProp (volumeActor);
 
-  this->VolumeActor->SetVisibility (true);
+  volumeActor->SetVisibility (true);
+  }
 }
 
 //----------------------------------------------------------------------------
@@ -499,34 +527,16 @@ void vtkViewImage3D::Add2DPhantom(const unsigned int & i,
                                   vtkImageActor *input,
                                   vtkPolyData *in_bounds)
 {
-  if ( i >= 3 )
-    {
-    return;
-    }
+  assert ( i < 3 );
 
   vtkRenderer *ren = this->GetRenderer();
   if ( ren )
     {
-    ren->RemoveActor(this->Phantom[i]);
+    // UPDATE PHANTOM
+    this->Phantom[i] = input;
+    this->GetRenderer()->AddActor (input);
 
-    this->Phantom[i]->SetInput ( input->GetInput() );
-    this->Phantom[i]->SetDisplayExtent ( input->GetDisplayExtent() );
-    this->Phantom[i]->SetUserMatrix ( input->GetUserMatrix() );
-    this->PhantomCallback[i]->Actor = this->Phantom[i];
-    input->AddObserver (vtkCommand::ModifiedEvent, this->PhantomCallback[i]);
-    ren->AddActor (this->Phantom[i]);
-
-    /**
-       IMPORTANT NOTE
-
-       Adding a 2D actor in the 3D scene should be as simple as the next line
-       instead of the code above...
-
-       Unfortunately it does not seem to work properly. But this is something
-       we should investigate in because it would be much simpler
-    */
-    //     this->GetRenderer()->AddActor (input);
-
+    // update borders
     if ( in_bounds )
       {
       ren->RemoveActor(this->BoundsActor[i]);
@@ -637,11 +647,14 @@ vtkViewImage3D::AddDataSet(vtkDataSet *dataset,
   if ( property )
     {
     // Generates bug in visu
-    //actor3d->SetProperty( property );
-    actor3d->GetProperty()->SetColor( property->GetColor() );
-    actor3d->GetProperty()->SetOpacity( property->GetOpacity() );
-    actor3d->GetProperty()->SetLineWidth(this->IntersectionLineWidth);
+    actor3d->SetProperty( property );
+    //actor3d->GetProperty()->SetColor( property->GetColor() );
+    //std::cout << "3d opacity: " << property->GetOpacity() << std::endl;
+    //actor3d->GetProperty()->SetOpacity( property->GetOpacity() );
+    //actor3d->GetProperty()->SetLineWidth(this->IntersectionLineWidth);
     }
+
+  actor3d->GetProperty()->BackfaceCullingOn();
 
   return actor3d;
 }
@@ -662,80 +675,6 @@ void vtkViewImage3D::SetOrientationMatrix(vtkMatrix4x4 *matrix)
 }
 
 //----------------------------------------------------------------------------
-/**
- *
- */
-void vtkViewImage3D::SetupTextureMapper()
-{
-  if ( !this->GetInput() )
-    {
-    return;
-    }
-
-  vtkVolumeTextureMapper3D *mapper3D =
-    vtkVolumeTextureMapper3D::SafeDownCast( this->VolumeActor->GetMapper() );
-
-  if ( mapper3D && !this->GetRenderWindow()->GetNeverRendered() )
-    {
-#if VTK_MAJOR_VERSION == 5 && VTK_MINOR_VERSION == 6 && VTK_BUILD_VERSION == 0
-    if ( !mapper3D->IsRenderSupported (this->VolumeProperty) )
-#else
-    if ( !mapper3D->IsRenderSupported( this->VolumeProperty,
-                                       this->GetRenderer() ) )
-#endif
-      {
-      //try the ATI fragment program implementation
-      // mapper3D->SetPreferredMethodToFragmentProgram();
-
-#if VTK_MAJOR_VERSION == 5 && VTK_MINOR_VERSION == 6 && VTK_BUILD_VERSION == 0
-      if ( !mapper3D->IsRenderSupported (this->VolumeProperty) )
-#else
-      if ( !mapper3D->IsRenderSupported( this->VolumeProperty,
-                                         this->GetRenderer() ) )
-#endif
-        {
-        vtkWarningMacro (
-          << "Warning: 3D Texture volume rendering is not supported by your"
-          << " hardware, I switch to 2D Texture rendering." << endl);
-
-        /// \todo FIX LEAK
-        vtkVolumeTextureMapper2D *newMapper =
-          vtkVolumeTextureMapper2D::New();
-        newMapper->CroppingOn();
-        newMapper->SetCroppingRegionFlags (0x7ffdfff);
-
-        double rangeR[2];
-        this->GetInput()->GetPointData()->GetScalars()->GetRange(rangeR, 0);
-        double rangeG[2];
-        this->GetInput()->GetPointData()->GetScalars()->GetRange(rangeG, 1);
-        double rangeB[2];
-        this->GetInput()->GetPointData()->GetScalars()->GetRange(rangeB, 2);
-
-        double rangeMax = std::max(rangeB[1], std::max(rangeR[1], rangeG[1]));
-        double rangeMin = std::min(rangeB[0], std::min(rangeR[0], rangeG[0]));
-
-
-        double  shift = 0 - rangeMin;
-        double  scale = 65535.0 / ( rangeMax - rangeMin );
-
-        vtkSmartPointer< vtkImageShiftScale > scaler =
-          vtkSmartPointer< vtkImageShiftScale >::New();
-        scaler->SetInput ( this->GetInput() );
-        scaler->SetShift (shift);
-        scaler->SetScale (scale);
-        scaler->SetOutputScalarTypeToUnsignedShort();
-        scaler->Update();
-        newMapper->SetInput ( scaler->GetOutput() );
-        scaler->Delete();
-        this->Callback->SetVolumeMapper (newMapper);
-
-        mapper3D->Delete();
-        this->VolumeMapper3D = newMapper;
-        this->VolumeActor->SetMapper (this->VolumeMapper3D);
-        }
-      }
-    }
-}
 
 //----------------------------------------------------------------------------
 /**

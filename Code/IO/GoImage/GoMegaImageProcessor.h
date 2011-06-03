@@ -60,6 +60,8 @@ public:
    */
   void setReader(itk::MegaCaptureReader::Pointer iReader);
 
+  virtual void initTimePoint(const unsigned int& iTime);
+
   virtual void setTimePoint(const unsigned int& iTime);
 
   virtual void setDoppler(const unsigned int& iTime,const unsigned int& iPrevious);

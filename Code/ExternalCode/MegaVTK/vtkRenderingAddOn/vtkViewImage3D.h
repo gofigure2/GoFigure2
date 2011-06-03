@@ -91,8 +91,8 @@
 #include "vtkProp3D.h"
 
 class vtkViewImage3DCommand;
-class vtkVolumeTextureMapper3D;
-class vtkVolumeMapper;
+class vtkSmartVolumeMapper;
+class vtkSmartVolumeMapper;
 class vtkVolume;
 class vtkImageActor;
 class vtkAxes;
@@ -173,7 +173,8 @@ public:
   /*
    * \brief Set volume rendering on
    */
-  void SetVolumeRenderingOn();
+  void SetVolumeRenderingOn(const std::vector<vtkImageData*>& iImages,
+                            const std::vector<vtkPiecewiseFunction*>& iOpacities);
 
   /*
    * \brief Set volume rendering off
@@ -189,15 +190,6 @@ public:
    * \brief Set TriPlanar rendering off
    */
   void SetTriPlanarRenderingOff();
-
-  /*
-   * \brief Set the volume mapper to texture (for volume rendering purpose)
-   */
-  void SetVolumeMapperToTexture(void)
-  {
-    this->VolumeActor->SetMapper (this->VolumeMapper3D);
-    this->Callback->SetVolumeMapper (this->VolumeMapper3D);
-  }
 
   /**
    * \brief Set the cube visibility
@@ -284,23 +276,27 @@ protected:
 
   virtual void UpdateOrientation(){}
 
-  virtual void SetupVolumeRendering();
+  void SetupVolumeRendering( vtkPiecewiseFunction* iOpacity );
 
   virtual void SetupWidgets();
 
-  virtual void SetupTextureMapper();
+  void CleanVolumeRenderingVectors();
 
   // texture mapper in 3D
-  vtkVolumeMapper *VolumeMapper3D;
+  vtkSmartVolumeMapper *SmartVolumeMapper3D;
   // volume property
   vtkVolumeProperty *VolumeProperty;
   // volume actor
   vtkVolume *VolumeActor;
+
+  std::vector<vtkVolume*> m_VolumeActors;
+  std::vector<vtkSmartVolumeMapper*> m_VolumeMappers;
+  std::vector<vtkVolumeProperty*> m_VolumeProperties;
+  std::vector<vtkImageData*> m_Images;
+
   // image 3D cropping box callback
   vtkImage3DCroppingBoxCallback *Callback;
-
   std::vector< vtkImageActor * >      Phantom;
-  std::vector< ImageActorCallback * > PhantomCallback;
   std::vector< vtkActor * >           BoundsActor;
 
   // box widget

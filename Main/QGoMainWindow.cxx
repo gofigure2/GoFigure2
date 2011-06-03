@@ -87,8 +87,8 @@
 
 //--------------------------------------------------------------------------
 QGoMainWindow::QGoMainWindow(QWidget *iParent, Qt::WindowFlags iFlags) :
-  QMainWindow(iParent, iFlags), m_TraceSettingsToolBar(NULL),
-  m_TracesToolBar(NULL), m_ViewToolBar(NULL), m_ModeToolBar(NULL)
+  QMainWindow(iParent, iFlags), m_ViewToolBar(NULL), m_ModeToolBar(NULL),
+  m_TracesToolBar(NULL), m_TraceSettingsToolBar(NULL)
 {
   QString title("<*)0|00|0>< ~~ <*)0|00|0><     GoFigure    ><0|00|0(*> ~~ ><0|00|0(*>");
 

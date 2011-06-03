@@ -238,7 +238,7 @@ protected:
   */
   bool IdentifyMotherDaughtersToCreateTrackFamily(
     vtkMySQLDatabase* iDatabaseConnector,
-    std::list<unsigned int> iListTracksID, unsigned int &ioMotherID,
+    std::list<unsigned int> iListTracksID, int &ioMotherID,
     std::list<unsigned int> &ioDaughtersID);
 
   /**

@@ -253,7 +253,7 @@ void QGoAlgorithmsManagerWidget::AddWidgetForOnlyOneMethod(
   QWidget* iWidget)
 {
   this->m_MethodWidgets->addWidget(iWidget);
-  int Index = this->m_MethodWidgets->indexOf(iWidget);
+  //int Index = this->m_MethodWidgets->indexOf(iWidget);
   this->m_MethodWidgets->setCurrentWidget(iWidget);
 }
 //-------------------------------------------------------------------------

@@ -181,6 +181,8 @@ void vtkViewImage::SetInput(vtkImageData *in)
       {
       this->ImageActor->SetInput(this->WindowLevel->GetOutput());
       this->WindowLevel->SetLookupTable(this->LookupTable);
+      this->WindowLevel->SetWindow(in->GetScalarRange()[1]-in->GetScalarRange()[0]);
+      this->WindowLevel->SetLevel(in->GetScalarRange()[0]+(in->GetScalarRange()[1]-in->GetScalarRange()[0])/2);
       }
     }
 }
@@ -215,7 +217,7 @@ void vtkViewImage::SetOrientationMatrix(vtkMatrix4x4 *matrix)
 //----------------------------------------------------------------------------
 void vtkViewImage::SetLookupTable(vtkLookupTable *lookuptable)
 {
-  if ( !this->IsColor )
+  if ( lookuptable )
     {
     vtkSetObjectMacro2Body(LookupTable, vtkLookupTable, lookuptable);
     this->WindowLevel->SetLookupTable(this->LookupTable);
