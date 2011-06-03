@@ -189,8 +189,8 @@ GoTransferFunctionWidget::
 Reset(const qreal& iValue)
 {
 QPolygonF points;
-points << QPointF(0, height()-1)
-       << QPointF(width()-1,(height()-1)*(1-iValue));
+points << QPointF(0, height())
+       << QPointF(width(),(height())*(1-iValue));
 m_hoverPoints->setPoints(points);
 m_hoverPoints->setPointLock(0, HoverPoints::LockToLeft);
 m_hoverPoints->setPointLock(1, HoverPoints::LockToRight);
