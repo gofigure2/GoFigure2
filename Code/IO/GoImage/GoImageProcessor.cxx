@@ -288,7 +288,7 @@ getRGBA(const std::string& iIndex) const
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-vtkImageAccumulate*
+vtkSmartPointer<vtkImageAccumulate>
 GoImageProcessor::
 getHistogram(const std::string& iIndex) const
 {
@@ -297,20 +297,7 @@ getHistogram(const std::string& iIndex) const
 
   assert(it!=m_MegaImageContainer.get< Name >().end());
 
-  double* range;
-  range =  it->Image->GetScalarRange();
-
-  vtkImageAccumulate* histogram = vtkImageAccumulate::New();
-  histogram->SetInput( it->Image );
-  histogram->SetComponentExtent(
-    0,
-    static_cast<int>(range[1])-static_cast<int>(range[0])-1,0,0,0,0 );
-  histogram->SetComponentOrigin( range[0],0,0 );
-  histogram->SetComponentSpacing( 1,0,0 );
-  histogram->SetIgnoreZero( false );
-  histogram->Update();
-
-  return histogram;
+  return it->Histogram;
 }
 //--------------------------------------------------------------------------
 

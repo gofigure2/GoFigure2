@@ -1654,7 +1654,7 @@ QGoTabImageView3DwT::SetTimePoint(const int & iTimePoint)
 
   UpdateImage();
 
-  EnableVolumeRendering(this->m_ViewActions.at(13)->isChecked());
+  EnableVolumeRendering(this->m_ViewActions.at(12)->isChecked());
 
   // for the trace widget, navigation widget and table widget
   emit TimePointChanged(m_TCoord);
@@ -3150,7 +3150,7 @@ visibilityChanged(QString iName, bool iVisibility)
   m_ImageProcessor->visibilityChanged(iName.toStdString(), iVisibility);
   UpdateImage();
   //if we are in volume rendering
-  EnableVolumeRendering(this->m_ViewActions.at(13)->isChecked());
+  EnableVolumeRendering(this->m_ViewActions.at(12)->isChecked());
   // update visu
   Update();
 }
@@ -3198,7 +3198,7 @@ void
 QGoTabImageView3DwT::updateSlot()
 {
   UpdateImage();
-  EnableVolumeRendering(this->m_ViewActions.at(13)->isChecked());
+  EnableVolumeRendering(this->m_ViewActions.at(12)->isChecked());
   Update();
 }
 //-------------------------------------------------------------------------

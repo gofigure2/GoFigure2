@@ -44,6 +44,7 @@
 #include "vtkLookupTable.h"
 #include "vtkImageData.h"
 #include "vtkPiecewiseFunction.h"
+#include "vtkImageAccumulate.h"
 
 // convert VTK to ITK
 #include "itkImage.h"
@@ -70,6 +71,7 @@ struct QGOIO_EXPORT GoMegaImageStructure
     std::string                                        Name;
     std::vector<std::map<unsigned int, unsigned int> > RGBA;
     vtkSmartPointer<vtkPiecewiseFunction>              OpacityTF;
+    vtkSmartPointer<vtkImageAccumulate>                Histogram;
 
     /** Constructor */
     GoMegaImageStructure(unsigned int iIndex,
@@ -96,6 +98,19 @@ struct QGOIO_EXPORT GoMegaImageStructure
     OpacityTF = vtkSmartPointer<vtkPiecewiseFunction>::New();
     OpacityTF->AddPoint(0, 0);
     OpacityTF->AddPoint(255, Color[3]/255);
+
+    //compute histogram
+    double* range;
+    range =  Image->GetScalarRange();
+    Histogram = vtkSmartPointer<vtkImageAccumulate>::New();
+    Histogram->SetInput( Image );
+    Histogram->SetComponentExtent(
+      0,
+      static_cast<int>(range[1])-static_cast<int>(range[0])-1,0,0,0,0 );
+    Histogram->SetComponentOrigin( range[0],0,0 );
+    Histogram->SetComponentSpacing( 1,0,0 );
+    Histogram->SetIgnoreZero( false );
+    Histogram->Update();
     }
 
     // functions to modify the structure through the boost::multiindexcontainer
@@ -117,6 +132,20 @@ struct QGOIO_EXPORT GoMegaImageStructure
    void  setImage(vtkImageData* iImage)
    {
      Image = iImage;
+
+     // compute new histogram
+     double* range;
+     range =  Image->GetScalarRange();
+
+     Histogram->RemoveAllInputs();
+     Histogram->SetInput( Image );
+     Histogram->SetComponentExtent(
+       0,
+       static_cast<int>(range[1])-static_cast<int>(range[0])-1,0,0,0,0 );
+     Histogram->SetComponentOrigin( range[0],0,0 );
+     Histogram->SetComponentSpacing( 1,0,0 );
+     Histogram->SetIgnoreZero( false );
+     Histogram->Update();
    }
 
    void setPointsRGBA(std::vector< std::map< unsigned int, unsigned int> > iRGBA)
