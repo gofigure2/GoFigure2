@@ -1567,6 +1567,7 @@ QGoTabImageView3DwT::UpdateImage()
     }
   else
     {
+    // BUG HERE - 2 update + hide actors if opacity <1
     //update Image
     m_ImageView->SetImage(m_ImageProcessor->getImageBW());
     // update LUT
