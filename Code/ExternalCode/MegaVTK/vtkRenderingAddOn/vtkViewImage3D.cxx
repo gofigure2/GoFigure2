@@ -379,6 +379,9 @@ void vtkViewImage3D::Render()
  */
 void vtkViewImage3D::SetVolumeRenderingOff()
 {
+  // triplanar rendering on
+  SetTriPlanarRenderingOn();
+
   CleanVolumeRenderingVectors();
 }
 //----------------------------------------------------------------------------
@@ -391,6 +394,7 @@ void vtkViewImage3D::CleanVolumeRenderingVectors()
   for(int i=0; i<m_VolumeActors.size(); ++i)
   {
     m_VolumeActors[i]->SetVisibility(false);
+    this->Renderer->RemoveViewProp(m_VolumeActors[i]);
   }
 
   //delete everything...
@@ -399,13 +403,11 @@ void vtkViewImage3D::CleanVolumeRenderingVectors()
     m_VolumeActors[i]->Delete();
     m_VolumeMappers[i]->Delete();
     m_VolumeProperties[i]->Delete();
-    m_Images[i]->Delete();
     }
 
   m_VolumeActors.clear();
   m_VolumeMappers.clear();
   m_VolumeProperties.clear();
-  m_Images.clear();
 }
 //----------------------------------------------------------------------------
 
@@ -416,6 +418,9 @@ void vtkViewImage3D::CleanVolumeRenderingVectors()
 void vtkViewImage3D::SetVolumeRenderingOn(const std::vector<vtkImageData*>& iImages,
                                           const std::vector<vtkPiecewiseFunction*>& iOpacities)
 {
+  // triplanar rendering off
+  SetTriPlanarRenderingOff();
+
   int *size = this->GetInput()->GetDimensions();
 
   if ( ( size[0] < 2 )
@@ -427,8 +432,6 @@ void vtkViewImage3D::SetVolumeRenderingOn(const std::vector<vtkImageData*>& iIma
     }
 
   CleanVolumeRenderingVectors();
-
-  m_Images = iImages;
 
   for(int  j=0; j<iImages.size();++j)
   {
@@ -459,6 +462,7 @@ void vtkViewImage3D::SetVolumeRenderingOn(const std::vector<vtkImageData*>& iIma
     volumeActor->SetMapper (smartVolumeMapper3D);
     volumeActor->PickableOff();
     volumeActor->DragableOff();
+    volumeActor->SetVisibility (true);
     m_VolumeActors.push_back(volumeActor);
 
   // get the index of the first non-NULL component
@@ -476,24 +480,25 @@ void vtkViewImage3D::SetVolumeRenderingOn(const std::vector<vtkImageData*>& iIma
   // mix components
   // dont't really get the point but has sth to do with the alpha component
   // create a "FAKE" 4th alpha channel...??
-  vtkSmartPointer< vtkImageExtractComponents > extComp =
-    vtkSmartPointer< vtkImageExtractComponents >::New();
+  vtkImageExtractComponents* extComp = vtkImageExtractComponents::New();
   extComp->SetInput(iImages[j]);
   extComp->SetComponents(i);
   extComp->Update();
 
-  vtkSmartPointer< vtkImageAppendComponents > addComp =
-    vtkSmartPointer< vtkImageAppendComponents >::New();
+  vtkImageAppendComponents* addComp = vtkImageAppendComponents::New();
   addComp->AddInput(iImages[j]);
   addComp->AddInput( extComp->GetOutput() );
   addComp->Update();
 
+  iImages[j]->Delete();
+  extComp->Delete();
+
   // add output to mapper
   smartVolumeMapper3D->SetInput( addComp->GetOutput() );
 
-  this->Renderer->AddViewProp (volumeActor);
+  addComp->Delete();
 
-  volumeActor->SetVisibility (true);
+  this->Renderer->AddViewProp (volumeActor);
   }
 }
 

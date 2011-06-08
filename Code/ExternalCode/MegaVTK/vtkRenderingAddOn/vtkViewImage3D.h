@@ -292,7 +292,6 @@ protected:
   std::vector<vtkVolume*> m_VolumeActors;
   std::vector<vtkSmartVolumeMapper*> m_VolumeMappers;
   std::vector<vtkVolumeProperty*> m_VolumeProperties;
-  std::vector<vtkImageData*> m_Images;
 
   // image 3D cropping box callback
   vtkImage3DCroppingBoxCallback *Callback;
