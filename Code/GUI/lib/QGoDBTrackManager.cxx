@@ -977,7 +977,8 @@ std::string QGoDBTrackManager::CheckMeshCanBeAddedToTrack(
     return Message;
     }
   
-  if (TrackIsAMother && !TrackIsADaughter)
+  //if (TrackIsAMother && !TrackIsADaughter)
+  if (TrackIsAMother)
     {
     if (iMeshTimePoint < TrackMinTimePoint )
       {
@@ -985,8 +986,20 @@ std::string QGoDBTrackManager::CheckMeshCanBeAddedToTrack(
       }
     //so the meshtimepoint > timepoint max of the track: 
       //check that the meshtimepoint < timepoint min daughter if not, message
+    unsigned int DivisionToUpdate = this->CheckBoundingBoxDivisionAsAMother(
+      iDatabaseConnector, iMeshTimePoint, iTrackID );
+    if (DivisionToUpdate != 0)
+      {
+      ioMotherTrackDivisionToUpdate.push_back(DivisionToUpdate);
+      }
+    else
+      {
+      Message = "Delete the division first before adding the mesh to this track as the tracks are overlapping now";
+      return Message;
+      }
     }
-  if (!TrackIsAMother && TrackIsADaughter)
+  //if (!TrackIsAMother && TrackIsADaughter)
+  if (TrackIsADaughter)
     {
     if (iMeshTimePoint > TrackMaxTimePoint)
       {
@@ -1006,14 +1019,15 @@ std::string QGoDBTrackManager::CheckMeshCanBeAddedToTrack(
       return Message;
       }
     }
-  if (TrackIsAMother && TrackIsADaughter)
-    {
+  //if (TrackIsAMother && TrackIsADaughter)
+    //{
+
     //check that the meshtimepoint < timepoint min of the track: 
       //check that the meshtimepoint > timepoint max mother if not, message
     //check that the meshtimepoint > timepoint max of the track: 
       //check that the meshtimepoint < timepoint min daughter if not, message
-      return Message;
-    }
+      //return Message;
+    //}
   return Message;
 }
 //-------------------------------------------------------------------------
@@ -1026,16 +1040,24 @@ unsigned int QGoDBTrackManager::CheckBoundingBoxDivisionAsAMother(
     iDatabaseConnector, iTrackID);
     if (!DivisionIDs.empty() )
       {
-      GoDBTrackFamilyRow Division(DivisionIDs.front(), iDatabaseConnector);
-      if ( (iTimePoint < this->m_CollectionOfTraces->GetBoundedBoxTimePoint(
-        iDatabaseConnector, Division.GetMapValue<unsigned int>("TrackIDDaughter1") )
-        && (iTimePoint < this->m_CollectionOfTraces->GetBoundedBoxTimePoint(
-        iDatabaseConnector, Division.GetMapValue<unsigned int>("TrackIDDaughter2") ) ) ) )
+      std::list<unsigned int>::iterator iter = DivisionIDs.begin();
+      while (iter != DivisionIDs.end() )
         {
-        return Division.GetMapValue<unsigned int>("TrackIDMother");
-        }
-      return 0;
-      }   
+        if (*iter != 0)
+          {
+          GoDBTrackFamilyRow Division(*iter, iDatabaseConnector);
+          if ( (iTimePoint < this->m_CollectionOfTraces->GetBoundedBoxTimePoint(
+            iDatabaseConnector, Division.GetMapValue<unsigned int>("TrackIDDaughter1") )
+            && (iTimePoint < this->m_CollectionOfTraces->GetBoundedBoxTimePoint(
+            iDatabaseConnector, Division.GetMapValue<unsigned int>("TrackIDDaughter2") ) ) ) )
+            {
+            return Division.GetMapValue<unsigned int>("TrackIDMother");
+            }
+          return 0;
+          }
+        ++iter;
+        }    
+       }   
     return 0;
 }
 //-------------------------------------------------------------------------
