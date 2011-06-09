@@ -319,14 +319,11 @@ QGoPrintDatabase::SaveMeshFromVisuInDB(unsigned int iXCoordMin,
     std::list<unsigned int> MotherTrackDivisionToUpdate;
     MessageToPrint = this->m_TracksManager->CheckMeshCanBeAddedToTrack(this->m_DatabaseConnector, TrackID, 
       *this->m_SelectedTimePoint, MotherTrackDivisionToUpdate).c_str();
+    unsigned int NewMeshID;
     if (!MessageToPrint.isEmpty() )
       {
-      this->CloseDBConnection();
       emit PrintMessage(MessageToPrint);
-      return;
-      }
-
-    unsigned int NewMeshID = this->m_MeshesManager->SaveNewMeshFromVisu(iXCoordMin,
+      NewMeshID = this->m_MeshesManager->SaveNewMeshWithNoTrackFromVisu(iXCoordMin,
                                                                         iYCoordMin,
                                                                         iZCoordMin,
                                                                         iXCoordMax,
@@ -336,6 +333,20 @@ QGoPrintDatabase::SaveMeshFromVisuInDB(unsigned int iXCoordMin,
                                                                         iMeshNodes,
                                                                         this->m_DatabaseConnector,
                                                                         iMeshAttributes);
+      this->CloseDBConnection();
+      return;
+      }
+
+    NewMeshID = this->m_MeshesManager->SaveNewMeshFromVisu(iXCoordMin,
+                                                           iYCoordMin,
+                                                           iZCoordMin,
+                                                           iXCoordMax,
+                                                           iYCoordMax,
+                                                           iZCoordMax,
+                                                           iTShift,
+                                                           iMeshNodes,
+                                                           this->m_DatabaseConnector,
+                                                           iMeshAttributes);
     std::list< unsigned int > ListNewMeshes;
     ListNewMeshes.push_back(NewMeshID);
     //here update the CurrentElement for trackContainer with the data from the
@@ -349,7 +360,7 @@ QGoPrintDatabase::SaveMeshFromVisuInDB(unsigned int iXCoordMin,
     if (!MotherTrackDivisionToUpdate.empty() )
       {
       //update the divisions
-      }
+      }  
     }
   else //for mesh generated from contours:
     {

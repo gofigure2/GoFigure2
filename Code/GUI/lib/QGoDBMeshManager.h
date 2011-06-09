@@ -104,6 +104,17 @@ public:
                                    vtkMySQLDatabase *iDatabaseConnector,
                                    GoFigureMeshAttributes *iMeshAttributes);
 
+  unsigned int SaveNewMeshWithNoTrackFromVisu(unsigned int iXCoordMin, 
+                                              unsigned int iYCoordMin, 
+                                              unsigned int iZCoordMin,
+                                              unsigned int iXCoordMax, 
+                                              unsigned int iYCoordMax,
+                                              unsigned int iZCoordMax, 
+                                              int iTShift, 
+                                              vtkPolyData *iTraceNodes,
+                                              vtkMySQLDatabase *iDatabaseConnector,
+                                              GoFigureMeshAttributes *iMeshAttributes);
+
   void SaveGeneratedMeshFromVisu(unsigned int iXCoordMin, unsigned int iYCoordMin,
                                  unsigned int iZCoordMin,
                                  unsigned int iXCoordMax, unsigned int iYCoordMax,
@@ -278,6 +289,14 @@ protected:
   */
   std::pair<unsigned int, unsigned int> GetInfoForTheOnlyOneCheckedMeshOfTheTrack(
     vtkMySQLDatabase* iDatabaseConnector, unsigned int iTrackID);
+
+  unsigned int SaveNewMeshFromVisu(
+    unsigned int iXCoordMin, unsigned int iYCoordMin, unsigned int iZCoordMin,
+    unsigned int iXCoordMax, unsigned int iYCoordMax,
+    unsigned int iZCoordMax, int iTShift, vtkPolyData *iTraceNodes,
+    vtkMySQLDatabase *iDatabaseConnector,
+    GoFigureMeshAttributes *iMeshAttributes,
+    unsigned int iTrackID);
 
 protected slots:
   //virtual pure method in QGoDBTraceManager
