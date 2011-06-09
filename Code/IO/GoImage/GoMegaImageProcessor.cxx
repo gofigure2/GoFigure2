@@ -35,8 +35,6 @@
 
 #include "GoMegaImageProcessor.h"
 
-#include <QString>
-
 //--------------------------------------------------------------------------
 void
 GoMegaImageProcessor::
@@ -115,6 +113,11 @@ initTimePoint(const unsigned int& iTime)
                                                     color[3],
                                                     image->GetScalarRange());
 
+    // create name...
+    std::stringstream channelName;
+    channelName << "Channel ";
+    channelName << numberOfChannels;
+
     // Update the MegaImageStructure
     // image, LUT, channel, time point
     m_MegaImageContainer.insert(GoMegaImageStructure(numberOfChannels,
@@ -122,7 +125,7 @@ initTimePoint(const unsigned int& iTime)
                                                      image,
                                                      color,
                                                      true,
-                                                     QString("Channel %1").arg(numberOfChannels).toStdString()));
+                                                     channelName.str()));
     }
 }
 //--------------------------------------------------------------------------
@@ -215,9 +218,9 @@ setDoppler(const unsigned int& iTime, const unsigned int& iPrevious)
                                                     image->GetScalarRange());
 
     // channel name
-    QString t_step;
-    t_step.append( QLatin1String("t: ") );
-    t_step.append( QString::number(dopplerTime[i], 10) );
+    std::stringstream channelName;
+    channelName << "t: ";
+    channelName << dopplerTime[i];
 
     // Update the MegaImageStructure
     // image, LUT, channel, time point
@@ -226,7 +229,7 @@ setDoppler(const unsigned int& iTime, const unsigned int& iPrevious)
                                                      image,
                                                      color,
                                                      true,
-                                                     t_step.toStdString()));
+                                                     channelName.str()));
 
       }
     }
