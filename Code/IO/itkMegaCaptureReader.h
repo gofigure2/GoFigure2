@@ -110,7 +110,7 @@ protected:
                            const std::string& iFileName,
                            vtkImageAppend * iBuilder );
 
-  std::map< unsigned int, vtkImageData * >     m_OutputImageMap;
+  std::map< unsigned int, vtkImageData * >  m_OutputImageMap;
   GoFigureFileInfoHelperMultiIndexContainer m_FileList;
   GoFigure::FileType m_FileType;
   MegaCaptureHeaderReader *m_HeaderReader;

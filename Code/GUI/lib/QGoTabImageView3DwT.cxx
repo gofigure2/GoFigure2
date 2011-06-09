@@ -2501,6 +2501,8 @@ QGoTabImageView3DwT::SaveAndVisuMesh(vtkPolyData *iView,
 
   SaveMesh(iView, iTCoord);
 
+  // should be done in the mesh manager, from goprintdatabase
+
   //ADD TRACE ID IN POLYDATA
   AddTraceIDIntoPolydata(iView, this->m_MeshContainer->m_CurrentElement.TraceID, "MESH");
 

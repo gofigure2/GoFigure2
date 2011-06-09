@@ -675,6 +675,7 @@ vtkViewImage3D::AddDataSet(vtkDataSet *dataset,
   mapper->SetInput( dynamic_cast< vtkPolyData * >( dataset ) );
   mapper->SetScalarVisibility(iDataVisibility);
   mapper->StaticOn();
+  mapper->ImmediateModeRenderingOn();
 
   vtkActor *actor3d = vtkActor::New();
   actor3d->SetMapper(mapper);

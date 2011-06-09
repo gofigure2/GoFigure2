@@ -912,6 +912,7 @@ vtkViewImage2D::AddDataSet(vtkPolyData *dataset,
   vtkSmartPointer< vtkPolyDataMapper > mapper =
     vtkSmartPointer< vtkPolyDataMapper >::New();
   mapper->SetScalarVisibility(iDataVisibility);
+  mapper->ImmediateModeRenderingOn();
 
   vtkActor *                                    actor = vtkActor::New();
   vtkSmartPointer< vtkCutter >                  cutter = vtkSmartPointer< vtkCutter >::New();
