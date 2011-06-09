@@ -465,12 +465,8 @@ public:
    * \brief Create Create a division from 3 track IDs.
    * Updates the node in the structure.
    * \param[in] iMother ID of the mother
-   * \param[in] iDaughter1 ID of the daughter1
-   * \param[in] iDaughter2 ID of the daughter2
    */
-  void CreateDivisionPolydata(const unsigned int& iMother,
-                              const unsigned int& iDaughter1,
-                              const unsigned int& iDaughter2);
+  void CreateDivisionPolydata(const unsigned int& iMother);
 
   /*
    * \brief get the tree below a given division
