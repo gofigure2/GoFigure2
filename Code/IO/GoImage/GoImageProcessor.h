@@ -45,6 +45,7 @@
 #include <boost/multi_index_container.hpp>
 #include <boost/multi_index/member.hpp>
 #include <boost/multi_index/ordered_index.hpp>
+#include <boost/multi_index/hashed_index.hpp>
 
 // include project
 #include "GoMegaImageStructure.h"
@@ -159,29 +160,27 @@ private:
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
-using boost::multi_index_container;
-using namespace boost::multi_index;
-
 /* tags for accessing the corresponding indices of GoMegaImageStructure */
 
 struct Index{};
 struct Visibility{};
 struct Name{};
 
-/* Define a multi_index_container of employees with following indices:
- *   - a unique index sorted by GoMegaImageStructure::Time,
+/* Define a multi_index_container of images with following indices:
+ *   - a non-unique index sorted by GoMegaImageStructure::Index,
+  *   - a non-unique index sorted by GoMegaImageStructure::Visibility,
  *   - a non-unique index sorted by GoMegaImageStructure::Channel,
  */
 
-typedef multi_index_container<
+typedef boost::multi_index_container<
   GoMegaImageStructure,
-  indexed_by<
-    ordered_non_unique<
-      tag<Index>,  BOOST_MULTI_INDEX_MEMBER(GoMegaImageStructure,unsigned int,Index)>,
-    ordered_non_unique<
-      tag<Visibility>,  BOOST_MULTI_INDEX_MEMBER(GoMegaImageStructure,bool,Visibility)>,
-    ordered_non_unique<
-      tag<Name>,  BOOST_MULTI_INDEX_MEMBER(GoMegaImageStructure,std::string,Name)> >
+  boost::multi_index::indexed_by<
+    boost::multi_index::ordered_non_unique<
+      boost::multi_index::tag<Index>,  BOOST_MULTI_INDEX_MEMBER(GoMegaImageStructure,unsigned int,Index)>,
+    boost::multi_index::ordered_non_unique<
+      boost::multi_index::tag<Visibility>,  BOOST_MULTI_INDEX_MEMBER(GoMegaImageStructure,bool,Visibility)>,
+    boost::multi_index::hashed_non_unique<
+      boost::multi_index::tag<Name>,  BOOST_MULTI_INDEX_MEMBER(GoMegaImageStructure,std::string,Name)> >
 > GoMegaImageStructureMultiIndexContainer;
 
 //-----------------------------------------------------------------------------
