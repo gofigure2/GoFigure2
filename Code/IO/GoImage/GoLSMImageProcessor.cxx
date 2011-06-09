@@ -47,16 +47,13 @@ setReader(vtkLSMReader* iReader)
   // update general parameters
   //--------------------
   int numberOfTimePoints = m_LSMReader->GetNumberOfTimePoints();
-  m_BoundsTime = new unsigned int[2];
   m_BoundsTime[0] = 0;
   m_BoundsTime[1] = numberOfTimePoints -1;
 
   int numberOfChannels = m_LSMReader->GetNumberOfChannels();
-  m_BoundsChannel = new unsigned int[2];
   m_BoundsChannel[0] = 0;
   m_BoundsChannel[1] = numberOfChannels -1;
 
-  m_Extent = new int[6];
   (m_LSMReader->GetTimePointOutput(m_BoundsChannel[0], m_BoundsTime[0]))->
       GetExtent(m_Extent);
 

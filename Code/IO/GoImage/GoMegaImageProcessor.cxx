@@ -47,13 +47,10 @@ setReader(itk::MegaCaptureReader::Pointer iReader)
   // update general parameters
   //--------------------
   // todo Nicolas- Create a method for that...
-  m_BoundsTime = new unsigned int[2];
   m_BoundsTime[0] = m_MegaImageReader->GetMinTimePoint();
   m_BoundsTime[1] = m_MegaImageReader->GetMaxTimePoint();
-  m_BoundsChannel = new unsigned int[2];
   m_BoundsChannel[0] = m_MegaImageReader->GetMinChannel();
   m_BoundsChannel[1] = m_MegaImageReader->GetMaxChannel();
-  m_Extent = new int[6];
   (m_MegaImageReader->GetImage(m_BoundsChannel[0], m_BoundsTime[0]))->
       GetExtent(m_Extent);
 

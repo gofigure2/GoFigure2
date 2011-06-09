@@ -55,22 +55,54 @@
 
 //--------------------------------------------------------------------------
 GoImageProcessor::GoImageProcessor():m_Output(NULL),
-  m_BoundsTime(NULL), m_BoundsChannel(NULL), m_Extent(NULL),
+  //m_BoundsTime(NULL), m_BoundsChannel(NULL), m_Extent(NULL),
   m_DopplerMode(false), m_DopplerStep(1), m_DopplerChannel(0)
 {
-  m_DopplerTime = new int[3];
   m_OpacityTF =vtkSmartPointer<vtkPiecewiseFunction>::New();
+
+  m_BoundsTime[0] = 0;
+  m_BoundsTime[1] = 0;
+
+  m_BoundsChannel[0] = 0;
+  m_BoundsChannel[1] = 0;
+
+  m_Extent[0] = 0;
+  m_Extent[1] = 0;
+  m_Extent[2] = 0;
+  m_Extent[3] = 0;
+  m_Extent[4] = 0;
+  m_Extent[5] = 0;
+
+  m_DopplerTime[0] = 0;
+  m_DopplerTime[1] = 0;
+  m_DopplerTime[2] = 0;
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 GoImageProcessor::GoImageProcessor(const GoImageProcessor & iE):
   m_MegaImageContainer(iE.m_MegaImageContainer), m_Output(iE.m_Output),
-  m_BoundsTime(iE.m_BoundsTime), m_BoundsChannel(iE.m_BoundsChannel),
-  m_Extent(iE.m_Extent),  m_DopplerMode(iE.m_DopplerMode),
-  m_DopplerStep(iE.m_DopplerStep), m_DopplerTime(iE.m_DopplerTime),
+  //m_BoundsTime(iE.m_BoundsTime), m_BoundsChannel(iE.m_BoundsChannel),
+ /* m_Extent(iE.m_Extent),*/  m_DopplerMode(iE.m_DopplerMode),
+  m_DopplerStep(iE.m_DopplerStep), /*m_DopplerTime(iE.m_DopplerTime),*/
   m_DopplerChannel(iE.m_DopplerChannel), m_OpacityTF(iE.m_OpacityTF)
 {
+  m_BoundsTime[0] = iE.m_BoundsTime[0];
+  m_BoundsTime[1] = iE.m_BoundsTime[1];
+
+  m_BoundsChannel[0] = iE.m_BoundsChannel[0];
+  m_BoundsChannel[1] = iE.m_BoundsChannel[1];
+
+  m_Extent[0] = iE.m_Extent[0];
+  m_Extent[1] = iE.m_Extent[1];
+  m_Extent[2] = iE.m_Extent[2];
+  m_Extent[3] = iE.m_Extent[3];
+  m_Extent[4] = iE.m_Extent[4];
+  m_Extent[5] = iE.m_Extent[5];
+
+  m_DopplerTime[0] = iE.m_DopplerTime[0];
+  m_DopplerTime[1] = iE.m_DopplerTime[1];
+  m_DopplerTime[2] = iE.m_DopplerTime[2];
 }
 //--------------------------------------------------------------------------
 
@@ -78,29 +110,6 @@ GoImageProcessor::GoImageProcessor(const GoImageProcessor & iE):
 GoImageProcessor::
 ~GoImageProcessor()
 {
-  if(m_BoundsTime)
-    {
-    delete[] m_BoundsTime;
-    m_BoundsTime = NULL;
-    }
-
-  if(m_BoundsChannel)
-    {
-    delete[] m_BoundsChannel;
-    m_BoundsChannel = NULL;
-    }
-
-  if(m_Extent)
-    {
-    delete[] m_Extent;
-    m_Extent = NULL;
-    }
-
-  if(m_DopplerTime)
-   {
-    delete[] m_DopplerTime;
-    m_DopplerTime = NULL;
-   }
 }
 //--------------------------------------------------------------------------
 

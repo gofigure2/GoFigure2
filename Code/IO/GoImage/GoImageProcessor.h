@@ -382,17 +382,17 @@ protected:
 
   // Image parameters
   //--------------------
-  unsigned int* m_BoundsTime;
-  unsigned int* m_BoundsChannel;
-  int*          m_Extent;
-  unsigned int  m_TimeInterval;
+  unsigned int m_BoundsTime[2];
+  unsigned int m_BoundsChannel[2];
+  int          m_Extent[6];
+  unsigned int m_TimeInterval;
   //--------------------
 
   // Doppler view parameters
   //--------------------
   bool         m_DopplerMode;
   unsigned int m_DopplerStep;
-  int*         m_DopplerTime;
+  int          m_DopplerTime[3];
   unsigned int m_DopplerChannel;
   //--------------------
 
@@ -404,11 +404,23 @@ private:
     if (this != &rhs)
       {
       this->m_MegaImageContainer = rhs.m_MegaImageContainer;
-      this->m_BoundsTime = rhs.m_BoundsTime;
-      this->m_BoundsChannel = rhs.m_BoundsChannel;
-      this->m_Extent = rhs.m_Extent;
+      this->m_BoundsTime[0] = rhs.m_BoundsTime[0];
+      this->m_BoundsTime[1] = rhs.m_BoundsTime[1];
+      this->m_BoundsChannel[0] = rhs.m_BoundsChannel[0];
+      this->m_BoundsChannel[1] = rhs.m_BoundsChannel[1];
+      this->m_Extent[0] = rhs.m_Extent[0];
+      this->m_Extent[1] = rhs.m_Extent[1];
+      this->m_Extent[2] = rhs.m_Extent[2];
+      this->m_Extent[3] = rhs.m_Extent[3];
+      this->m_Extent[4] = rhs.m_Extent[4];
+      this->m_Extent[5] = rhs.m_Extent[5];
       this->m_TimeInterval = rhs.m_TimeInterval;
+      this->m_DopplerMode = rhs.m_DopplerMode;
       this->m_DopplerStep = rhs.m_DopplerStep;
+      this->m_DopplerTime[0] = rhs.m_DopplerTime[0];
+      this->m_DopplerTime[1] = rhs.m_DopplerTime[1];
+      this->m_DopplerTime[2] = rhs.m_DopplerTime[2];
+      this->m_DopplerChannel = rhs.m_DopplerChannel;
       }
     return *this;
   }
