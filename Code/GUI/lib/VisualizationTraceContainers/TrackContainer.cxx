@@ -798,7 +798,7 @@ AddDivision( const unsigned int& iMotherID, const unsigned int& iDaughter1ID,
             const_cast<TrackStructure*>(&(*daughter2It)));
 
         // Create Polydata
-        CreateDivisionPolydata(iMotherID, iDaughter1ID, iDaughter2ID);
+        CreateDivisionPolydata(iMotherID);
 
         // Create Actor
         /*
@@ -833,9 +833,7 @@ AddDivision( const unsigned int& iMotherID, const unsigned int& iDaughter1ID,
 //-------------------------------------------------------------------------
 void
 TrackContainer::
-CreateDivisionPolydata(const unsigned int& iMother,
-                       const unsigned int& iDaughter1,
-                       const unsigned int& iDaughter2)
+CreateDivisionPolydata(const unsigned int& iMother)
 {
   MultiIndexContainerTraceIDIterator motherIt
       = m_Container.get< TraceID >().find(iMother);
@@ -851,8 +849,10 @@ CreateDivisionPolydata(const unsigned int& iMother,
   // Mother: last point
   // D1 & D2: first point
   double* mother    = this->GetBorderOfTheTrack(iMother, LAST);
-  double* daughter1 = this->GetBorderOfTheTrack(iDaughter1, FIRST);
-  double* daughter2 = this->GetBorderOfTheTrack(iDaughter2, FIRST);
+  double* daughter1 = this->GetBorderOfTheTrack(
+        motherIt->TreeNode.m_Child[0]->TraceID, FIRST);
+  double* daughter2 = this->GetBorderOfTheTrack(
+        motherIt->TreeNode.m_Child[1]->TraceID, FIRST);
 
   //setup points (geometry)
   vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
