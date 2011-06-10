@@ -69,7 +69,6 @@ void QGoDBMeshManager::SetMeshesInfoContainerForVisu(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-
 void QGoDBMeshManager::SetCollectionsTraceNames()
 {
   this->m_TraceName = "mesh";
@@ -181,9 +180,39 @@ unsigned int QGoDBMeshManager::SaveNewMeshFromVisu(
   unsigned int iXCoordMax, unsigned int iYCoordMax,
   unsigned int iZCoordMax, int iTShift, vtkPolyData *iTraceNodes,
   vtkMySQLDatabase *iDatabaseConnector,
-  GoFigureMeshAttributes *iMeshAttributes)
+  GoFigureMeshAttributes *iMeshAttributes,
+  unsigned int iTrackID)
 {
   GoDBMeshRow NewMesh(this->m_ImgSessionID);
+
+  NewMesh.SetCellType(iDatabaseConnector, *this->m_SelectedCellType);
+  NewMesh.SetSubCellType(iDatabaseConnector, *this->m_SelectedSubCellType);
+
+  this->SetMeshBoundingBoxAndPoints(iXCoordMin, iYCoordMin, iZCoordMin,
+                                    iXCoordMax, iYCoordMax, iZCoordMax, iTraceNodes, iDatabaseConnector, NewMesh,
+                                    iMeshAttributes, iTShift);
+  //save the intensities for each channel !!!
+  unsigned int NewMeshID = this->m_CollectionOfTraces->CreateNewTraceInDB< GoDBMeshRow >(
+      NewMesh, iDatabaseConnector, *this->m_SelectedColorData, iTrackID );
+  // pointer to double has to be deleted after usage...
+  double *rgba = this->GetVectorFromQColor(this->m_SelectedColorData->second);
+  this->m_MeshContainerInfoForVisu->UpdateCurrentElementFromDB(
+    NewMeshID, rgba);
+  delete[] rgba;
+  this->DisplayInfoForLastCreatedMesh(iDatabaseConnector, iMeshAttributes);
+  return NewMeshID;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+unsigned int QGoDBMeshManager::SaveNewMeshFromVisu(
+  unsigned int iXCoordMin, unsigned int iYCoordMin, unsigned int iZCoordMin,
+  unsigned int iXCoordMax, unsigned int iYCoordMax,
+  unsigned int iZCoordMax, int iTShift, vtkPolyData *iTraceNodes,
+  vtkMySQLDatabase *iDatabaseConnector,
+  GoFigureMeshAttributes *iMeshAttributes)
+{
+  /*GoDBMeshRow NewMesh(this->m_ImgSessionID);
 
   NewMesh.SetCellType(iDatabaseConnector, *this->m_SelectedCellType);
   NewMesh.SetSubCellType(iDatabaseConnector, *this->m_SelectedSubCellType);
@@ -207,12 +236,29 @@ unsigned int QGoDBMeshManager::SaveNewMeshFromVisu(
     NewMeshID, rgba);
   delete[] rgba;
   this->DisplayInfoForLastCreatedMesh(iDatabaseConnector, iMeshAttributes);
-  return NewMeshID;
+  return NewMeshID;*/
+  return SaveNewMeshFromVisu(iXCoordMin, iYCoordMin, iZCoordMin, iXCoordMax, iYCoordMax, 
+    iZCoordMax, iTShift, iTraceNodes, iDatabaseConnector, iMeshAttributes, 
+    ss_atoi<unsigned int>(this->m_SelectedCollectionData->first) );
 }
 
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+unsigned int QGoDBMeshManager::SaveNewMeshWithNoTrackFromVisu(
+  unsigned int iXCoordMin, unsigned int iYCoordMin, unsigned int iZCoordMin,
+  unsigned int iXCoordMax, unsigned int iYCoordMax,
+  unsigned int iZCoordMax, int iTShift, vtkPolyData *iTraceNodes,
+  vtkMySQLDatabase *iDatabaseConnector,
+  GoFigureMeshAttributes *iMeshAttributes)
+{
+  return SaveNewMeshFromVisu(iXCoordMin, iYCoordMin, iZCoordMin, iXCoordMax, iYCoordMax, 
+    iZCoordMax, iTShift, iTraceNodes, iDatabaseConnector, iMeshAttributes, 0 );
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+
 void QGoDBMeshManager::SaveGeneratedMeshFromVisu(unsigned int iXCoordMin,
                                                  unsigned int iYCoordMin,
                                                  unsigned int iZCoordMin,

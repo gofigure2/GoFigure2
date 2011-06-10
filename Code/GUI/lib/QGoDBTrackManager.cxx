@@ -905,25 +905,27 @@ void QGoDBTrackManager::PrintAMessageForTracksWithNoDivision(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-bool QGoDBTrackManager::IsTheTrackAMother(unsigned int iDaughterID, 
+unsigned int QGoDBTrackManager::IsTheTrackAMother(unsigned int iDaughterID, 
   vtkMySQLDatabase* iDatabaseConnector)
 {
+  unsigned int TrackFamilyID;
   GoDBTrackFamilyRow Family;
   Family.SetField<unsigned int>("TrackIDMother", iDaughterID);
-  return (Family.DoesThisTrackFamilyAlreadyExists(iDatabaseConnector) != -1);
+  TrackFamilyID = Family.DoesThisTrackFamilyAlreadyExists(iDatabaseConnector);
+  if (TrackFamilyID != -1)
+    {
+    return TrackFamilyID;
+    }
+  return 0;
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-bool QGoDBTrackManager::IsTheTrackADaughter(unsigned int iTrackID, 
+unsigned int QGoDBTrackManager::IsTheTrackADaughter(unsigned int iTrackID, 
   vtkMySQLDatabase* iDatabaseConnector)
 {
   GoDBTrackRow Track(iTrackID, iDatabaseConnector);
-  if (Track.GetMapValue("TrackFamilyID") == "0")
-    {
-    return false;
-    }
-  return true;
+  return ss_atoi<unsigned int> (Track.GetMapValue("TrackFamilyID") );
 }
 //-------------------------------------------------------------------------
 
@@ -951,3 +953,132 @@ void QGoDBTrackManager::CreateALineageWithFormerDaughterOfADeletedDivision(
     }
 }
 //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::string QGoDBTrackManager::CheckMeshCanBeAddedToTrack(
+  vtkMySQLDatabase* iDatabaseConnector, unsigned int iTrackID, 
+  unsigned int iMeshTimePoint,
+  std::list<unsigned int> &ioMotherTrackDivisionToUpdate)
+{
+  std::string Message = "";
+  unsigned int TrackMinTimePoint = 
+    this->m_CollectionOfTraces->GetBoundedBoxTimePoint(iDatabaseConnector, iTrackID, true);
+  unsigned int TrackMaxTimePoint = 
+    this->m_CollectionOfTraces->GetBoundedBoxTimePoint(iDatabaseConnector, iTrackID, false);
+  //if the mesh inside the bounding box of the track, no pb:
+  if (iMeshTimePoint > TrackMinTimePoint && iMeshTimePoint < TrackMaxTimePoint)
+    {
+    return Message;
+    }
+
+  unsigned int DivisionIDTrackIsAMother = this->IsTheTrackAMother(iTrackID, iDatabaseConnector);
+  unsigned int DivisionIDTrackIsADaughter = this->IsTheTrackADaughter(iTrackID, iDatabaseConnector);
+  //if the track doesn't belong to any division, no pb:
+  if (!DivisionIDTrackIsAMother && !DivisionIDTrackIsADaughter)
+    {
+    return Message;
+    }
+  
+  if (DivisionIDTrackIsAMother)
+    {
+    if (iMeshTimePoint >= TrackMinTimePoint)
+      {     
+      //check that the meshtimepoint < timepoint min daughter if not, message
+      unsigned int DivisionToUpdate = this->CheckBoundingBoxDivisionAsAMother(
+        iDatabaseConnector, iMeshTimePoint, DivisionIDTrackIsAMother );
+      if (DivisionToUpdate != 0)
+        {
+        ioMotherTrackDivisionToUpdate.push_back(DivisionToUpdate);
+        }
+      else
+        {
+        Message = "The mesh will not belong to any track as there is a problem with the division";
+        return Message;
+        }
+      }
+    }
+
+  if (DivisionIDTrackIsADaughter)
+    {
+    if (iMeshTimePoint > TrackMaxTimePoint)
+      {
+      return Message;
+      }
+      //check that the meshtimepoint > timepoint max mother if not, message
+    unsigned int DivisionToUpdate = 
+      this->CheckBoundingBoxDivisionAsADaughter(iDatabaseConnector, iMeshTimePoint,
+      DivisionIDTrackIsADaughter);
+    if (DivisionToUpdate != 0)
+      {
+      ioMotherTrackDivisionToUpdate.push_back(DivisionToUpdate);
+      }
+    else
+      {
+      Message = "The mesh will not belong to any track as there is a problem with the division";
+      return Message;
+      }
+    }
+  return Message;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+unsigned int QGoDBTrackManager::CheckBoundingBoxDivisionAsAMother(
+  vtkMySQLDatabase* iDatabaseConnector, unsigned int iTimePoint, unsigned int iTrackFamilyID )
+{
+  if(iTrackFamilyID != 0)
+    {
+    GoDBTrackFamilyRow Division(iTrackFamilyID, iDatabaseConnector);
+    if ( (iTimePoint < this->m_CollectionOfTraces->GetBoundedBoxTimePoint(
+         iDatabaseConnector, Division.GetMapValue<unsigned int>("TrackIDDaughter1") )
+         && (iTimePoint < this->m_CollectionOfTraces->GetBoundedBoxTimePoint(
+         iDatabaseConnector, Division.GetMapValue<unsigned int>("TrackIDDaughter2") ) ) ) )
+      {
+      return Division.GetMapValue<unsigned int>("TrackIDMother");
+      }
+    return 0;
+    }
+  return 0;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+unsigned int QGoDBTrackManager::CheckBoundingBoxDivisionAsADaughter(
+  vtkMySQLDatabase* iDatabaseConnector, unsigned int iTimePoint, unsigned int iTrackFamilyID )
+{
+  if (iTrackFamilyID != 0)
+      {
+      GoDBTrackFamilyRow Division(iTrackFamilyID, iDatabaseConnector);
+      if ( iTimePoint > this->m_CollectionOfTraces->GetBoundedBoxTimePoint(
+        iDatabaseConnector, Division.GetMapValue<unsigned int>("TrackIDMother") ) )
+        {
+        return Division.GetMapValue<unsigned int>("TrackIDMother");
+        }
+      return 0;
+      }   
+    return 0;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::list<unsigned int> QGoDBTrackManager::GetDivisionIDsTheTrackBelongsTo(
+  vtkMySQLDatabase* iDatabaseConnector, unsigned int iTrackID )
+{
+  std::list<unsigned int> Tracks;
+    Tracks.push_back(iTrackID);
+    std::list<unsigned int> oDivisionIDs = this->m_CollectionOfTraces->GetTrackFamilyID(
+      iDatabaseConnector, Tracks );
+  return oDivisionIDs;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoDBTrackManager::UpdateDivisions(std::list<unsigned int> iListMotherTrackIDs)
+{
+  std::list<unsigned int>::iterator iter = iListMotherTrackIDs.begin();
+  while (iter != iListMotherTrackIDs.end() )
+    {
+    this->m_TrackContainerInfoForVisu->CreateDivisionPolydata(*iter);
+    ++iter;
+    }
+}
