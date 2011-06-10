@@ -1086,3 +1086,6 @@ int GoDBCollectionOfTraces::GetTraceIDWithLowestTimePoint(
      "trackfamily.trackfamilyID", this->m_TracesIDName, VectTrackIDs, true);
    return oList;
  }
+ //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------

@@ -292,15 +292,17 @@ protected:
     unsigned int iDaughterID, vtkMySQLDatabase* iDatabaseConnector, bool &ioPartOfHigherLineage);
 
   /**
-  \brief return true if the track is a mother
+  \brief return the trackfamilyID of the division the track is a mother of or 0 if the
+  track is not a mother
   */
-  bool IsTheTrackAMother(unsigned int iDaughterID, 
+  unsigned int IsTheTrackAMother(unsigned int iDaughterID, 
     vtkMySQLDatabase* iDatabaseConnector);
 
   /**
-  \brief return true if the track is a daughter
+  \brief return the trackfamilyID of the division the track is a daughter of or 0 if the
+  track is not a daughter
   */
-  bool IsTheTrackADaughter(unsigned int iTrackID, 
+  unsigned int IsTheTrackADaughter(unsigned int iTrackID, 
   vtkMySQLDatabase* iDatabaseConnector);
 
   /**
@@ -325,14 +327,14 @@ protected:
   division where trackID is a mother
   */
   unsigned int CheckBoundingBoxDivisionAsAMother(vtkMySQLDatabase* iDatabaseConnector, 
-    unsigned int iTimePoint, unsigned int iTrackID );
+    unsigned int iTimePoint, unsigned int iTrackFamilyID );
 
    /**
   \brief check that the iTimePoint is > to the maxtimepoint of the mother from the 
   division where trackID is a daughter
   */
   unsigned int CheckBoundingBoxDivisionAsADaughter(vtkMySQLDatabase* iDatabaseConnector, 
-    unsigned int iTimePoint, unsigned int iTrackID );
+    unsigned int iTimePoint, unsigned int iTrackFamilyID );
 
 protected slots:
 
