@@ -930,7 +930,6 @@ vtkViewImage2D::AddDataSet(vtkPolyData *dataset,
        || ( ( bounds[2] == bounds[3] ) && ( normal[2] == 0 ) && ( normal[0] == 0 ) )
        || ( ( bounds[4] == bounds[5] ) && ( normal[0] == 0 ) && ( normal[1] == 0 ) ) )
     {
-    //std::cout << "extract 2d" << std::endl;
     extracter->SetInput(dataset);
     extracter->SetImplicitFunction(this->SliceImplicitPlane);
     extracter->Update();
@@ -965,8 +964,128 @@ vtkViewImage2D::AddDataSet(vtkPolyData *dataset,
 
   this->Renderer->AddViewProp(actor);
 
+  if(     ( bounds[0] != bounds[1] )
+      &&  ( bounds[2] != bounds[3] )
+      &&  ( bounds[4] != bounds[5] ))
+  {
+    std::cout << "extract actors..." << std::endl;
+  ExtractActors(dataset, XY);
+  }
+
+
   return actor;
 }
+//----------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------
+std::map<unsigned int, vtkActor *>
+vtkViewImage2D::
+ExtractActors(vtkPolyData *iDataSet, ORIENTATION iOrientation)
+{
+  std::map<unsigned int, vtkActor*> contours;
+
+  // create plane to extract contours (based on orientation)
+ /* vtkPlane* plane = vtkPlane::New();
+
+  //Create a plane to cut???
+  // (xz normal=(1,0,0);XY =(0,0,1),YZ =(0,1,0)
+  switch (iOrientation)
+    {
+    case 0:
+      {
+      plane->SetNormal(0, 0, 1);
+      }
+    case 1:
+      {
+      plane->SetNormal(0, 1, 0);
+      }
+    case 2:
+      {
+      plane->SetNormal(1, 0, 0);
+      }
+    default:
+      {
+      break;
+      }
+    }
+
+*/
+  double origin[3] = {0., 0., 0.};
+  origin[0] = iDataSet->GetCenter()[0];
+  origin[1] = iDataSet->GetCenter()[1];
+  origin[2] = iDataSet->GetCenter()[2];
+
+  double position = iDataSet->GetBounds()[4 - 2*iOrientation];
+  double maxPosition = iDataSet->GetBounds()[5 - 2*iOrientation];
+
+  std::cout << "position: "
+            << position << "-"
+            << maxPosition << std::endl;
+
+  // get information about image (spacing)
+  double spacing = this->GetInput()->GetSpacing()[2-iOrientation];
+
+  while( position < maxPosition)
+    {
+    origin[2-iOrientation] = position;
+
+
+    std::cout << "origin: "
+              << origin[0] << "-"
+              << origin[1] << "-"
+              << origin[2] << std::endl;
+
+    vtkPlane* plane = vtkPlane::New();
+    plane->SetNormal(0, 0, 1);
+    plane->SetOrigin(origin);
+
+    // cut
+    vtkCutter* cutter = vtkCutter::New();
+    cutter->SetInput(iDataSet);
+    cutter->SetCutFunction(plane);
+    cutter->Update();
+
+    cutter->GetOutput()->Print(cout);
+
+    vtkPolyDataMapper* mapper = vtkPolyDataMapper::New();
+    mapper->SetInput( cutter->GetOutput() );
+    //mapper->ImmediateModeRenderingOn();
+    cutter->Delete();
+
+    vtkActor* actor = vtkActor::New();
+    actor->SetMapper(mapper);
+    actor->VisibilityOn();
+    mapper->Delete();
+
+
+    ///////////////////////// TEMP /////////////////////////////
+    // save actor in map
+    vtkSmartPointer<vtkRenderer> renderer =
+      vtkSmartPointer<vtkRenderer>::New();
+    vtkSmartPointer<vtkRenderWindow> renderWindow =
+      vtkSmartPointer<vtkRenderWindow>::New();
+    renderWindow->AddRenderer(renderer);
+    vtkSmartPointer<vtkRenderWindowInteractor> renderWindowInteractor =
+      vtkSmartPointer<vtkRenderWindowInteractor>::New();
+    renderWindowInteractor->SetRenderWindow(renderWindow);
+    renderer->AddActor(actor);
+    renderer->SetBackground(.3, .6, .3); // Background color green
+    renderWindow->Render();
+    renderWindowInteractor->Start();
+
+    actor->Delete();
+    ////////////////////////////////////////////////////////////
+
+    // increase position
+    position += spacing;
+    }
+
+  //plane->Delete();
+
+  return contours;
+}
+//----------------------------------------------------------------------------
+
 //----------------------------------------------------------------------------
 void
 vtkViewImage2D::UpdateCenter(void)
