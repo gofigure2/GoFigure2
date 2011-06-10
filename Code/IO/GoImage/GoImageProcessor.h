@@ -128,7 +128,7 @@ struct Name{};
 
 /* Define a multi_index_container of images with following indices:
  *   - a non-unique index sorted by GoMegaImageStructure::Index,
-  *   - a non-unique index sorted by GoMegaImageStructure::Visibility,
+ *   - a non-unique index sorted by GoMegaImageStructure::Visibility,
  *   - a non-unique index sorted by GoMegaImageStructure::Channel,
  */
 
@@ -146,13 +146,13 @@ typedef boost::multi_index_container<
 //-----------------------------------------------------------------------------
 
 /**
-\defgroup Mega Mega
+\defgroup GoImage GoImage
 */
 
 /**
  * \struct GoImageProcessor
- * \brief  Interface between MegaReader and vtkImageData
- * \ingroup Mega
+ * \brief  Interface between image reader and vtkImageData
+ * \ingroup GoImage
  */
 class QGOIO_EXPORT GoImageProcessor
 {
@@ -178,91 +178,151 @@ public:
   // LUT
   //---------------------------------------------------------------------------
 
-  /*
-   * \brief create a lookuptable (LUT) given r, g, b and a.
+  /**
+   * \brief create a lookuptable (LUT) given r, g, b, a and range
    * LUT will go from black to the color.
    * \param[in] iRed red value
    * \param[in] iGreen green value
    * \param[in] iBlue blue value
    * \param[in] iAlpha alpha value
+   * \param[in] iRange scalar range
    * \return new LUT
-   */
+   **/
   vtkSmartPointer<vtkLookupTable> createLUT(const double& iRed,
                                             const double& iGreen,
                                             const double& iBlue,
                                             const double& iAlpha,
                                             const double* iRange);
 
-  vtkSmartPointer<vtkLookupTable> getLookuptable(const std::string& iIndex) const;
+  /**
+   * \brief get LUT from channel name. Useful for the Transfer function editor.
+   * \param[in] iName channel of interest.
+   * (See getChannelName(index) to get channel name from index.)
+   * \return pointer to LUT
+   **/
+  vtkSmartPointer<vtkLookupTable> getLookuptable(const std::string& iName) const;
 
+  /**
+   * \brief get LUT of the first visible channel. Useful is we are in single channel visualization mode.
+   * \param[in] iName channel of interest.
+   * (See getChannelName(index) to get channel name from index.)
+   * \return pointer to LUT
+   **/
   vtkSmartPointer<vtkLookupTable> getLookuptable() const;
 
   // opacity transfer functions
   //---------------------------------------------------------------------------
+  /**
+   * \brief get opacity from channel name.
+   Useful for the transfer function editor while volume rendering.
+   * \param[in] iName channel of interest.
+   * (See getChannelName(index) to get channel name from index.)
+   * \return pointer to opacity Transfer Function
+   **/
   vtkSmartPointer<vtkPiecewiseFunction>
-  getOpacityTransferFunction(const std::string& iIndex) const;
+  getOpacityTransferFunction(const std::string& iName) const;
 
-  // volume rendering
+  /**
+   * \brief get vector of visible opacity transfer functions.
+   Useful for the transfer function editor while volume rendering.
+   * \return vector of pointer to opacity TF
+   **/
   std::vector<vtkPiecewiseFunction*> getOpacityTransferFunctions();
-
-  void updatePoints(QString iChannel,
-                    std::vector< std::map< unsigned int, unsigned int> > iPointsRGBA);
 
   // colors
   //---------------------------------------------------------------------------
-  std::vector<double> getColor(const std::string& iIndex) const;
+  /**
+   * \brief get color from channel name.
+   * \param[in] iName channel of interest.
+   * (See getChannelName(index) to get channel name from index.)
+   * \return vector of double: rgba [0-255]
+   **/
+  std::vector<double> getColor(const std::string& iName) const;
 
-  std::vector<std::map<unsigned int, unsigned int> > getRGBA(const std::string& iIndex) const;
+  /**
+   * \brief get points to update r, g, b and a TFs in TF editor.
+   * \param[in] iName channel of interest.
+   * (See getChannelName(index) to get channel name from index.)
+   * \return vector of map.1 vector: rgba, map: position/value
+   **/
+  std::vector<std::map<unsigned int, unsigned int> > getRGBA(
+    const std::string& iName) const;
 
+  /**
+   * \brief store points from TF editor
+   * \param[in] iChannel channel of interest.
+   * \param[in] iPointsRGBA new points
+   **/
+  void updatePoints(std::string iChannel,
+                    std::vector< std::map< unsigned int, unsigned int> > iPointsRGBA);
+
+  /**
+   * \brief get histogram from 1 channel image
+   * \param[in] iChannel channel of interest.
+   * \return pointer to histogram
+   **/
   vtkSmartPointer< vtkImageAccumulate>
-      getHistogram(const std::string& iIndex) const;
+      getHistogram(const std::string& iName) const;
 
-  /*
+  /**
    * \brief load all the channels for the given time point into the
    * GoMegaImageStructure
    * \param[in] iTime requested time point
-   */
+   **/
   virtual void initTimePoint(const unsigned int& iTime) = 0;
 
+  /**
+   * \brief update images from the current GoMegaImageStructure
+   * \param[in] iTime requested time point
+   **/
   virtual void setTimePoint(const unsigned int& iTime) = 0;
 
-  /*
+  /**
    * \brief load all time points of the given channel into the
    * GoMegaImageStructure. Called Doppler View.
-   * \param[in] iChannel requested channel
-   * \param[in] iFirstTime first time point
-   * \param[in] iNumberOfImages number of images to be loaded
-   * \param[in] iStepBetweenImages step between each image
+   * \param[in] iTime requested central time point
+   * \param[in] iPrevious -to be used for optimization?
    * \note need to store parameters if we want to go through volume
-  * efficiently (not reload everything all the time)
-   */
+   * efficiently (not reload everything all the time)
+   **/
   virtual void setDoppler(const unsigned int& iTime,
                           const unsigned int& iPrevious) = 0;
 
   // images
   //---------------------------------------------------------------------------
 
-  /*
-   * \brief get single channel image given time point and channel from the
-   * structure. Will create the new image from the structure.
-   * \param[in] iTime requested time point
-   * \param[in] iChannel requested channel
+  /**
+   * \brief get raw (not colored) image given index
+   * \param[in] iIndex requested index
+   * \note Used to compute the mesh attributes at load time
    * \return raw image.
-   */
-  // to compute mesh attributes
+   **/
   vtkSmartPointer<vtkImageData> getImageBW(const unsigned int& iIndex);
-  // for visu
+
+  /**
+   * \brief get first raw (not colored) visible image
+   * \param[in] iIndex requested index
+   * \return raw image.
+   **/
   vtkSmartPointer<vtkImageData> getImageBW();
 
-  void setVisibilityChannel(const unsigned int& iIndex, const bool& iVisibility);
-
-  void setNameChannel(const unsigned int& iIndex, const std::string& iName);
-
+  /**
+   * \brief get name of a channel given its index.
+   * \param[in] iIndex requested index
+   * \return channel name
+   **/
   std::string getChannelName(const unsigned int& iIndex);
 
-  // for volume rendering
+  /**
+   * \brief get all the visible images colored separately (N images).
+   * \return vector containing all the visible colored images
+   **/
   std::vector<vtkImageData*> getColoredImages();
 
+  /**
+   * \brief get an ITK image (vs vtkImageData) given its index
+   * \return ITK image pointer
+   **/
   template< class PixelType, const unsigned int VImageDimension >
   typename itk::Image< PixelType, VImageDimension >::Pointer
   getImageITK(int& iIndex)
@@ -278,13 +338,11 @@ public:
     return NULL;
   }
 
-  // find constant paramter and the other one return 4 point?
-
-  /*
-   * \brief get all the images present in the containerl. Will create the new
-   * image from the structure.
-   * \return colored image.
-   */
+  /**
+   * \brief get all the -visible- images present in the containerl.
+   * Colors the image and combuine them into 1 image.
+   * \return 1 colored image.
+   **/
   vtkSmartPointer<vtkImageData> getVisibleImages();
 
   // Image parameters
@@ -308,8 +366,17 @@ public:
   bool getDopplerMode();
   unsigned int getDopplerChannel();
 
-  void visibilityChanged(std::string, bool);
+  /**
+   * \brief change visibility of one channel given its name.
+   * \param[in] iName channel of interest
+   * \param[in] iVisibility new visibility
+   **/
+  void visibilityChanged(std::string iName, bool iVisibility);
 
+  /**
+   * \brief get number of visible channels
+   * \return number of visible channels
+   **/
   unsigned int getNumberOfVisibleChannels();
 
 protected:

@@ -53,13 +53,9 @@
 #include "vtkitkAdaptor.h"
 
 /**
-\defgroup Mega Mega
-*/
-
-/**
  * \struct GoMegaImageStructure
  * \brief  Convenience structure to store visible image
- * \ingroup Mega
+ * \ingroup GoImage
  */
 struct QGOIO_EXPORT GoMegaImageStructure
 {

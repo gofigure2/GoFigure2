@@ -43,21 +43,17 @@
 #include "itkMegaCaptureReader.h"
 
 /**
-\defgroup Mega Mega
-*/
-
-/**
  * \struct GoMegaImageProcessor
  * \brief  Specialization of GoImageProcessor to handle mega capture files
- * \ingroup Mega
+ * \ingroup GoImage
  */
 class QGOIO_EXPORT GoMegaImageProcessor:public GoImageProcessor
 {
 public:
-  /*
+  /**
    * \brief Set the reader.
    * \param[in] iReader Pointer to the reader
-   */
+   **/
   void setReader(itk::MegaCaptureReader::Pointer iReader);
 
   virtual void initTimePoint(const unsigned int& iTime);

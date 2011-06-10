@@ -140,11 +140,7 @@ GoLSMImageProcessor::
 setTimePoint(const unsigned int& iTime)
 {
   //check if time point exists
-  if(iTime >= m_BoundsTime[0] && iTime <= m_BoundsTime[1])
-    {
-    m_MegaImageContainer.clear();
-    }
-  else
+  if(iTime < m_BoundsTime[0] && iTime <= m_BoundsTime[1])
     {
     return;
     }

@@ -130,10 +130,10 @@ createLUT(const double& iRed, const double& iGreen, const double& iBlue,
 //--------------------------------------------------------------------------
 vtkSmartPointer<vtkLookupTable>
 GoImageProcessor::
-getLookuptable(const std::string& iIndex) const
+getLookuptable(const std::string& iName) const
 {
   GoMegaImageStructureMultiIndexContainer::index<Name>::type::iterator it =
-      m_MegaImageContainer.get< Name >().find(iIndex);
+      m_MegaImageContainer.get< Name >().find(iName);
 
   if(it!=m_MegaImageContainer.get< Name >().end())
     {
@@ -161,10 +161,10 @@ getLookuptable() const
 //--------------------------------------------------------------------------
 vtkSmartPointer<vtkPiecewiseFunction>
 GoImageProcessor::
-getOpacityTransferFunction(const std::string& iIndex) const
+getOpacityTransferFunction(const std::string& iName) const
 {
   GoMegaImageStructureMultiIndexContainer::index<Name>::type::iterator it =
-      m_MegaImageContainer.get< Name >().find(iIndex);
+      m_MegaImageContainer.get< Name >().find(iName);
 
   if(it!=m_MegaImageContainer.get< Name >().end())
     {
@@ -198,10 +198,10 @@ getOpacityTransferFunctions()
 //--------------------------------------------------------------------------
 std::vector<double>
 GoImageProcessor::
-getColor(const std::string& iIndex) const
+getColor(const std::string& iName) const
 {
   GoMegaImageStructureMultiIndexContainer::index<Name>::type::iterator it =
-      m_MegaImageContainer.get< Name >().find(iIndex);
+      m_MegaImageContainer.get< Name >().find(iName);
 
   assert(it!=m_MegaImageContainer.get< Name >().end());
 
@@ -212,10 +212,10 @@ getColor(const std::string& iIndex) const
 //--------------------------------------------------------------------------
 std::vector<std::map<unsigned int, unsigned int> >
 GoImageProcessor::
-getRGBA(const std::string& iIndex) const
+getRGBA(const std::string& iName) const
 {
   GoMegaImageStructureMultiIndexContainer::index<Name>::type::iterator it =
-      m_MegaImageContainer.get< Name >().find(iIndex);
+      m_MegaImageContainer.get< Name >().find(iName);
 
   assert(it!=m_MegaImageContainer.get< Name >().end());
 
@@ -226,10 +226,10 @@ getRGBA(const std::string& iIndex) const
 //--------------------------------------------------------------------------
 vtkSmartPointer<vtkImageAccumulate>
 GoImageProcessor::
-getHistogram(const std::string& iIndex) const
+getHistogram(const std::string& iName) const
 {
   GoMegaImageStructureMultiIndexContainer::index<Name>::type::iterator it =
-      m_MegaImageContainer.get< Name >().find(iIndex);
+      m_MegaImageContainer.get< Name >().find(iName);
 
   assert(it!=m_MegaImageContainer.get< Name >().end());
 
@@ -536,10 +536,10 @@ getNumberOfVisibleChannels()
 //--------------------------------------------------------------------------
 void
 GoImageProcessor::
-updatePoints(QString iName, std::vector< std::map< unsigned int, unsigned int> > iVector)
+updatePoints(std::string iName, std::vector< std::map< unsigned int, unsigned int> > iVector)
 {
   GoMegaImageStructureMultiIndexContainer::index<Name>::type::iterator it =
-      m_MegaImageContainer.get< Name >().find(iName.toStdString());
+      m_MegaImageContainer.get< Name >().find(iName);
 
   if(it!=m_MegaImageContainer.get< Name >().end())
     {

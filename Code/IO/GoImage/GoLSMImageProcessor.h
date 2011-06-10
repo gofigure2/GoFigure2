@@ -45,21 +45,17 @@
 #include "vtkLSMReader.h"
 
 /**
-\defgroup Mega Mega
-*/
-
-/**
  * \struct GoLSMImageProcessor
  * \brief  Specialization of GoImageProcessor to handle LSM files
- * \ingroup Mega
+ * \ingroup GoImage
  */
 class QGOIO_EXPORT GoLSMImageProcessor:public GoImageProcessor
 {
 public:
-  /*
+  /**
    * \brief Set the reader.
    * \param[in] iReader Pointer to the reader
-   */
+   **/
   void setReader(vtkLSMReader* iReader);
 
   virtual void initTimePoint(const unsigned int& iTime);

@@ -3186,7 +3186,7 @@ void
 QGoTabImageView3DwT::
 updatePoints(QString iName, std::vector< std::map< unsigned int, unsigned int> > iPoints)
 {
-  m_ImageProcessor->updatePoints(iName, iPoints);
+  m_ImageProcessor->updatePoints(iName.toStdString(), iPoints);
 }
 //-------------------------------------------------------------------------
 
