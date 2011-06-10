@@ -115,9 +115,6 @@
 // transfer function editor
 #include "GoTransferFunctionEditorWidget.h"
 
-// TESTS
-#include "vtkImageAccumulate.h"
-
 //-------------------------------------------------------------------------
 QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
   QGoTabElementBase(iParent),
@@ -404,7 +401,7 @@ QGoTabImageView3DwT::CreateContourEditingDockWidget(
   for(unsigned int i =0; i<numberOfChannels; ++i)
     {
     channelNames[i] = QString::fromStdString(
-          m_ImageProcessor->getNameChannel(i));
+          m_ImageProcessor->getChannelName(i));
     }
 
   this->m_ContourEditingWidget = new QGoContourEditingWidgetManager(
@@ -495,7 +492,7 @@ QGoTabImageView3DwT::CreateMeshEditingDockWidget(int iTimeMin, int iTimeMax)
   for(unsigned int i =0; i<numberOfChannels; ++i)
     {
     channelNames[i] = QString::fromStdString(
-          m_ImageProcessor->getNameChannel(i));
+          m_ImageProcessor->getChannelName(i));
     }
 
   this->m_MeshEditingWidget = new QGoMeshEditingWidgetManager(
@@ -1143,11 +1140,12 @@ void QGoTabImageView3DwT::StartDopplerView()
       {
       if(time[i]>=0)
         {
+        std::string name = m_ImageProcessor->getChannelName(time[i]);
         // channel color
-        std::vector<double> color = m_ImageProcessor->getColor(time[i]);
+        std::vector<double> color = m_ImageProcessor->getColor(name);
         // update navigation dockwidget
         m_NavigationDockWidget->AddDoppler(
-              QString::fromStdString(m_ImageProcessor->getNameChannel(time[i])),
+              QString::fromStdString(name),
               QColor(color[0],
                      color[1],
                      color[2],
@@ -1430,8 +1428,6 @@ QGoTabImageView3DwT::SetLSMReader(vtkLSMReader *iReader, const int & iTimePoint)
   m_TCoord = iTimePoint;
   // update image processor
   m_ImageProcessor->initTimePoint(m_TCoord);
-  // update opacity TF
-  m_ImageProcessor->updateOpacityTransferFunction();
   //update images
   UpdateImage();
   // update actors
@@ -1475,8 +1471,6 @@ QGoTabImageView3DwT::SetMegaCaptureFile(
   m_TCoord = iTimePoint;
   // update image processor
   m_ImageProcessor->initTimePoint(m_TCoord);
-  // update opacity TF
-  m_ImageProcessor->updateOpacityTransferFunction();
   //update images
   UpdateImage();
   // update actors
@@ -1508,11 +1502,12 @@ InitializeImageRelatedWidget()
 
   for ( unsigned int i = 0; i < NumberOfChannels; i++ )
     {
+    std::string name = m_ImageProcessor->getChannelName(i);
     // channel color
-    std::vector<double> color = m_ImageProcessor->getColor(i);
+    std::vector<double> color = m_ImageProcessor->getColor(name);
     // update navigation dockwidget
     m_NavigationDockWidget->AddChannel(
-          QString::fromStdString(m_ImageProcessor->getNameChannel(i)),
+          QString::fromStdString(name),
           QColor(color[0],
                  color[1],
                  color[2],
@@ -1563,7 +1558,7 @@ QGoTabImageView3DwT::UpdateImage()
 
   if ( NumberOfVisibleChannels>1 )
     {
-    m_ImageView->SetImage(m_ImageProcessor->getAllImages());
+    m_ImageView->SetImage(m_ImageProcessor->getVisibleImages());
     }
   else
     {
@@ -1597,11 +1592,12 @@ QGoTabImageView3DwT::BuildDopplerWidget()
     {
     if(time[i]>=0)
       {
+      std::string name = m_ImageProcessor->getChannelName(time[i]);
       // channel color
-      std::vector<double> color = m_ImageProcessor->getColor(time[i]);
+      std::vector<double> color = m_ImageProcessor->getColor(name);
       // update navigation dockwidget
       m_NavigationDockWidget->AddDoppler(
-            QString::fromStdString(m_ImageProcessor->getNameChannel(time[i])),
+            QString::fromStdString(name),
             QColor(color[0],
                    color[1],
                    color[2],
@@ -2623,7 +2619,7 @@ ComputeMeshAttributes(vtkPolyData *iMesh,
 
       if ( iIntensity )
         {
-        std::string channelname = m_ImageProcessor->getNameChannel(i);
+        std::string channelname = m_ImageProcessor->getChannelName(i);
 
         oAttributes.m_TotalIntensityMap[channelname] =
           static_cast< int >( calculator->GetSumIntensity() );
@@ -2668,7 +2664,7 @@ ComputeMeshAttributes(vtkPolyData *iMesh,
 
       if ( iIntensity )
         {
-        std::string channelname = m_ImageProcessor->getNameChannel(i);
+        std::string channelname = m_ImageProcessor->getChannelName(i);
 
         oAttributes.m_TotalIntensityMap[channelname] =
           static_cast< int >( calculator->GetSumIntensity() );

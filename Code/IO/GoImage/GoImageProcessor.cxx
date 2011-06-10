@@ -55,11 +55,8 @@
 
 //--------------------------------------------------------------------------
 GoImageProcessor::GoImageProcessor():m_Output(NULL),
-  //m_BoundsTime(NULL), m_BoundsChannel(NULL), m_Extent(NULL),
   m_DopplerMode(false), m_DopplerStep(1), m_DopplerChannel(0)
 {
-  m_OpacityTF =vtkSmartPointer<vtkPiecewiseFunction>::New();
-
   m_BoundsTime[0] = 0;
   m_BoundsTime[1] = 0;
 
@@ -82,10 +79,8 @@ GoImageProcessor::GoImageProcessor():m_Output(NULL),
 //--------------------------------------------------------------------------
 GoImageProcessor::GoImageProcessor(const GoImageProcessor & iE):
   m_MegaImageContainer(iE.m_MegaImageContainer), m_Output(iE.m_Output),
-  //m_BoundsTime(iE.m_BoundsTime), m_BoundsChannel(iE.m_BoundsChannel),
- /* m_Extent(iE.m_Extent),*/  m_DopplerMode(iE.m_DopplerMode),
-  m_DopplerStep(iE.m_DopplerStep), /*m_DopplerTime(iE.m_DopplerTime),*/
-  m_DopplerChannel(iE.m_DopplerChannel), m_OpacityTF(iE.m_OpacityTF)
+  m_DopplerMode(iE.m_DopplerMode), m_DopplerStep(iE.m_DopplerStep),
+  m_DopplerChannel(iE.m_DopplerChannel)
 {
   m_BoundsTime[0] = iE.m_BoundsTime[0];
   m_BoundsTime[1] = iE.m_BoundsTime[1];
@@ -131,38 +126,6 @@ createLUT(const double& iRed, const double& iGreen, const double& iBlue,
 }
 //--------------------------------------------------------------------------
 
-//--------------------------------------------------------------------------
-void
-GoImageProcessor::
-setLookupTable(vtkSmartPointer<vtkLookupTable> iLUT,
-                    const unsigned int& iIndex)
-{
-  GoMegaImageStructureMultiIndexContainer::index<Index>::type::iterator it =
-      m_MegaImageContainer.get< Index >().find(iIndex);
-
-  if(it!=m_MegaImageContainer.get< Index >().end())
-    {
-    m_MegaImageContainer.get< Index >().modify( it , set_lut(iLUT) );
-    }
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-vtkSmartPointer<vtkLookupTable>
-GoImageProcessor::
-getLookuptable(const unsigned int& iIndex) const
-{
-  GoMegaImageStructureMultiIndexContainer::index<Index>::type::iterator it =
-      m_MegaImageContainer.get< Index >().find(iIndex);
-
-  if(it!=m_MegaImageContainer.get< Index >().end())
-    {
-    return it->LUT;
-    }
-
-  return NULL;
-}
-//--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 vtkSmartPointer<vtkLookupTable>
@@ -213,58 +176,22 @@ getOpacityTransferFunction(const std::string& iIndex) const
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-vtkSmartPointer<vtkPiecewiseFunction>
+std::vector<vtkPiecewiseFunction*>
 GoImageProcessor::
-getOpacityTransferFunction() const
+getOpacityTransferFunctions()
 {
-  return m_OpacityTF;
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-void
-GoImageProcessor::
-updateOpacityTransferFunction()
-{
-  m_OpacityTF->Initialize();
+  std::vector<vtkPiecewiseFunction*> opacityTFs;
 
   GoMegaImageStructureMultiIndexContainer::index<Visibility>::type::iterator it =
       m_MegaImageContainer.get< Visibility >().find(true);
-  GoMegaImageStructureMultiIndexContainer::index<Visibility>::type::iterator init_it;
-  init_it = it;
 
-  for(int i = 0; i<256; ++i)
+  while(it!=m_MegaImageContainer.get< Visibility >().end())
     {
-    double y(0);
-
-   // for(int j = 0; j<allFunctions.size(); ++j)
-    while(it!=m_MegaImageContainer.get< Visibility >().end())
-      {
-        y += it->OpacityTF->GetValue(i);
-        ++it;
-      }
-    //reinit iterator
-    it = init_it;
-    m_OpacityTF->AddPoint(i, y);
+    opacityTFs.push_back(it->OpacityTF);
+    ++it;
     }
 
-  m_OpacityTF->SetClamping(1);
-  m_OpacityTF->ClampingOn();
-  m_OpacityTF->Update();
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-std::vector<double>
-GoImageProcessor::
-getColor(const unsigned int& iIndex) const
-{
-  GoMegaImageStructureMultiIndexContainer::index<Index>::type::iterator it =
-      m_MegaImageContainer.get< Index >().find(iIndex);
-
-  assert(it!=m_MegaImageContainer.get< Index >().end());
-
-  return it->Color;
+  return opacityTFs;
 }
 //--------------------------------------------------------------------------
 
@@ -383,29 +310,9 @@ getColoredImages()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-std::vector<vtkPiecewiseFunction*>
-GoImageProcessor::
-getOpacityTransferFunctions()
-{
-  std::vector<vtkPiecewiseFunction*> opacityTFs;
-
-  GoMegaImageStructureMultiIndexContainer::index<Visibility>::type::iterator it =
-      m_MegaImageContainer.get< Visibility >().find(true);
-
-  while(it!=m_MegaImageContainer.get< Visibility >().end())
-    {
-    opacityTFs.push_back(it->OpacityTF);
-    ++it;
-    }
-
-  return opacityTFs;
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
 vtkSmartPointer<vtkImageData>
 GoImageProcessor::
-getAllImages()
+getVisibleImages()
 {
   vtkSmartPointer<vtkImageBlend> blendedImage =
       vtkSmartPointer<vtkImageBlend>::New();
@@ -573,41 +480,12 @@ getDopplerChannel()
 {
   return m_DopplerChannel;
 }
-
-//--------------------------------------------------------------------------
-void
-GoImageProcessor::
-setVisibilityChannel(const unsigned int& iIndex, const bool& iVisibility)
-{
-  GoMegaImageStructureMultiIndexContainer::index<Index>::type::iterator it =
-      m_MegaImageContainer.get< Index >().find(iIndex);
-
-  if(it!=m_MegaImageContainer.get< Index >().end())
-    {
-    m_MegaImageContainer.get< Index >().modify( it , set_visibility(iVisibility) );
-    }
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-void
-GoImageProcessor::
-setNameChannel(const unsigned int& iIndex, const std::string& iName)
-{
-  GoMegaImageStructureMultiIndexContainer::index<Index>::type::iterator it =
-      m_MegaImageContainer.get< Index >().find(iIndex);
-
-  if(it!=m_MegaImageContainer.get< Index >().end())
-    {
-    m_MegaImageContainer.get< Index >().modify( it , set_name(iName) );
-    }
-}
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 std::string
 GoImageProcessor::
-getNameChannel(const unsigned int& iIndex)
+getChannelName(const unsigned int& iIndex)
 {
   GoMegaImageStructureMultiIndexContainer::index<Index>::type::iterator it =
       m_MegaImageContainer.get< Index >().find(iIndex);
@@ -652,52 +530,6 @@ getNumberOfVisibleChannels()
     }
 
   return numberOfVisibleChannels;
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-std::vector<std::string>
-GoImageProcessor::
-getVisibilityVector()
-{
-std::vector<std::string> visibility;
-GoMegaImageStructureMultiIndexContainer::iterator it =
-        m_MegaImageContainer.begin();
-while(it!=m_MegaImageContainer.end())
-  {
-  if(!it->Visibility)
-    {
-    visibility.push_back(it->Name);
-    }
-  ++it;
-  }
-return visibility;
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-void
-GoImageProcessor::
-setVisibilityVector(const std::vector<std::string>& iVisibility)
-{
-  for(unsigned int i =0; i<iVisibility.size(); ++i)
-    {
-    GoMegaImageStructureMultiIndexContainer::index<Name>::type::iterator it =
-        m_MegaImageContainer.get< Name >().find(iVisibility[i]);
-    if(it!=m_MegaImageContainer.get< Name >().end())
-      {
-      setVisibilityChannel(it->Index, false);
-      }
-    }
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-unsigned int
-GoImageProcessor::
-getContainerSize()
-{
-  return m_MegaImageContainer.size();
 }
 //--------------------------------------------------------------------------
 

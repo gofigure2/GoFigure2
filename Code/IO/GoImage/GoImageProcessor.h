@@ -61,26 +61,6 @@ class QString;
 
 //-----------------------------------------------------------------------------
 /**
-  \struct set_lut
-  \brief change lut of given structure
-  \sa GoMegaImageStructure
-  */
-struct set_lut
-{
-  set_lut(vtkSmartPointer<vtkLookupTable> iLUT):lut(iLUT){}
-
-  void operator()(GoMegaImageStructure& iStructure)
-  {
-    iStructure.setLUT(lut);
-  }
-
-private:
-  vtkSmartPointer<vtkLookupTable> lut;
-};
-//-----------------------------------------------------------------------------
-
-//-----------------------------------------------------------------------------
-/**
   \struct set_visibility
   \brief change visibility of given structure
   \sa GoMegaImageStructure
@@ -96,26 +76,6 @@ struct set_visibility
 
 private:
   bool visibility;
-};
-//-----------------------------------------------------------------------------
-
-//-----------------------------------------------------------------------------
-/**
-  \struct set_name
-  \brief change visibility of given structure
-  \sa GoMegaImageStructure
-  */
-struct set_name
-{
-  set_name(std::string iName):name(iName){}
-
-  void operator()(GoMegaImageStructure& iStructure)
-  {
-    iStructure.setName(name);
-  }
-
-private:
-  std::string name;
 };
 //-----------------------------------------------------------------------------
 
@@ -215,6 +175,9 @@ public:
     return os;
   }
 
+  // LUT
+  //---------------------------------------------------------------------------
+
   /*
    * \brief create a lookuptable (LUT) given r, g, b and a.
    * LUT will go from black to the color.
@@ -229,39 +192,24 @@ public:
                                             const double& iBlue,
                                             const double& iAlpha,
                                             const double* iRange);
-  /*
-   * \brief modify a lookuptable (LUT) given a channel, a time point and a LUT
-   * Will remplace the existing one.
-   * \param[in] iLUT new LUT
-   * \param[in] iChannel channel to be modified
-   * \param[in] iTime time point to be modified
-   */
-  void setLookupTable(vtkSmartPointer<vtkLookupTable> iLUT,
-                      const unsigned int& iIndex);
-
-  /*
-   * \brief get a lookuptable (LUT) given a channel and a time point
-   * \param[in] iChannel requested channel
-   * \param[in] iTime requested time point
-   * \return current LUT
-   */
-  vtkSmartPointer<vtkLookupTable> getLookuptable(const unsigned int& iIndex) const;
 
   vtkSmartPointer<vtkLookupTable> getLookuptable(const std::string& iIndex) const;
 
   vtkSmartPointer<vtkLookupTable> getLookuptable() const;
 
-  vtkSmartPointer<vtkPiecewiseFunction> getOpacityTransferFunction() const;
-
+  // opacity transfer functions
+  //---------------------------------------------------------------------------
   vtkSmartPointer<vtkPiecewiseFunction>
   getOpacityTransferFunction(const std::string& iIndex) const;
 
-  void updateOpacityTransferFunction();
-
+  // volume rendering
   std::vector<vtkPiecewiseFunction*> getOpacityTransferFunctions();
 
-  std::vector<double> getColor(const unsigned int& iIndex) const;
+  void updatePoints(QString iChannel,
+                    std::vector< std::map< unsigned int, unsigned int> > iPointsRGBA);
 
+  // colors
+  //---------------------------------------------------------------------------
   std::vector<double> getColor(const std::string& iIndex) const;
 
   std::vector<std::map<unsigned int, unsigned int> > getRGBA(const std::string& iIndex) const;
@@ -291,6 +239,9 @@ public:
   virtual void setDoppler(const unsigned int& iTime,
                           const unsigned int& iPrevious) = 0;
 
+  // images
+  //---------------------------------------------------------------------------
+
   /*
    * \brief get single channel image given time point and channel from the
    * structure. Will create the new image from the structure.
@@ -298,15 +249,18 @@ public:
    * \param[in] iChannel requested channel
    * \return raw image.
    */
+  // to compute mesh attributes
   vtkSmartPointer<vtkImageData> getImageBW(const unsigned int& iIndex);
+  // for visu
   vtkSmartPointer<vtkImageData> getImageBW();
 
   void setVisibilityChannel(const unsigned int& iIndex, const bool& iVisibility);
 
   void setNameChannel(const unsigned int& iIndex, const std::string& iName);
 
-  std::string getNameChannel(const unsigned int& iIndex);
+  std::string getChannelName(const unsigned int& iIndex);
 
+  // for volume rendering
   std::vector<vtkImageData*> getColoredImages();
 
   template< class PixelType, const unsigned int VImageDimension >
@@ -329,13 +283,12 @@ public:
   /*
    * \brief get all the images present in the containerl. Will create the new
    * image from the structure.
-   * \param[in] iChannel requested channel
    * \return colored image.
    */
-  vtkSmartPointer<vtkImageData> getAllImages();
+  vtkSmartPointer<vtkImageData> getVisibleImages();
 
   // Image parameters
-  //--------------------
+  //---------------------------------------------------------------------------
   unsigned int* getBoundsTime();
   unsigned int* getBoundsChannel();
 
@@ -347,7 +300,7 @@ public:
   unsigned int getTimeInterval() const;
 
   // Doppler parameters
-  //--------------------
+  //---------------------------------------------------------------------------
   unsigned int getDopplerStep();
   void setDopplerStep(unsigned int iStep);
   int* getDopplerTime(unsigned int iTime);
@@ -358,13 +311,6 @@ public:
   void visibilityChanged(std::string, bool);
 
   unsigned int getNumberOfVisibleChannels();
-
-  std::vector<std::string> getVisibilityVector();
-  void setVisibilityVector(const std::vector<std::string>& iVisibility);
-
-  unsigned int getContainerSize();
-
-  void updatePoints(QString iChannel, std::vector< std::map< unsigned int, unsigned int> > iPointsRGBA);
 
 protected:
   /*
@@ -423,8 +369,6 @@ private:
       }
     return *this;
   }
-
-  vtkSmartPointer<vtkPiecewiseFunction> m_OpacityTF;
 
 };
 
