@@ -359,7 +359,7 @@ QGoPrintDatabase::SaveMeshFromVisuInDB(unsigned int iXCoordMin,
                                                trackIDs);
     if (!MotherTrackDivisionToUpdate.empty() )
       {
-      //update the divisions
+      this->m_TracksManager->UpdateDivisions(MotherTrackDivisionToUpdate);
       }  
     }
   else //for mesh generated from contours:

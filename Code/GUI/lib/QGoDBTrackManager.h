@@ -152,6 +152,11 @@ public:
   std::string CheckMeshCanBeAddedToTrack(vtkMySQLDatabase* iDatabaseConnector,
     unsigned int iTrackID, unsigned int iMeshTimePoint, std::list<unsigned int> &ioMotherTrackDivisionToUpdate);
 
+  /**
+  \brief update the track container for visu and consequently the divisions in the visu
+  */
+  void UpdateDivisions(std::list<unsigned int> iListMotherTrackIDs);
+
 signals:
   void NeedMeshesInfoForImportedTrack(unsigned int iTrackID);
   void TrackToSplit(unsigned int iTrackID, std::list<unsigned int> iListMeshIDs);

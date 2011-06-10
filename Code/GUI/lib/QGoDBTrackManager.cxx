@@ -1092,3 +1092,15 @@ std::list<unsigned int> QGoDBTrackManager::GetDivisionIDsTheTrackBelongsTo(
       iDatabaseConnector, Tracks );
   return oDivisionIDs;
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoDBTrackManager::UpdateDivisions(std::list<unsigned int> iListMotherTrackIDs)
+{
+  std::list<unsigned int>::iterator iter = iListMotherTrackIDs.begin();
+  while (iter != iListMotherTrackIDs.end() )
+    {
+    this->m_TrackContainerInfoForVisu->CreateDivisionPolydata(*iter);
+    ++iter;
+    }
+}
