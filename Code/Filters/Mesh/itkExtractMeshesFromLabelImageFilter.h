@@ -38,6 +38,8 @@
 #pragma warning ( disable : 4786 )
 #endif
 
+#include "GoFiltersConfigure.h"
+
 #include "itkImageToImageFilter.h"
 #include "itkImage.h"
 
@@ -70,7 +72,7 @@ namespace itk
   \author Kishore Mosaliganti
   */
 template< class TImage, class TFeatureImage = TImage >
-class ITK_EXPORT ExtractMeshesFromLabelImageFilter : public Object
+class GOFILTERS_EXPORT ExtractMeshesFromLabelImageFilter : public Object
 {
 public:
   typedef ExtractMeshesFromLabelImageFilter Self;

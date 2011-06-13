@@ -35,6 +35,8 @@
 #ifndef __itkvtkMeshMergeConvexHullFilter_h
 #define __itkvtkMeshMergeConvexHullFilter_h
 
+#include "GoFiltersConfigure.h"
+
 #include "itkvtkMeshMergeFilterBase.h"
 
 #include "itkObjectFactory.h"
@@ -42,7 +44,7 @@
 namespace itk
 {
 template< class TFeatureImage >
-class vtkMeshMergeConvexHullFilter :
+class GOFILTERS_EXPORT vtkMeshMergeConvexHullFilter :
     public vtkMeshMergeFilterBase< TFeatureImage >
 {
 public:

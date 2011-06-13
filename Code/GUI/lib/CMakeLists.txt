@@ -117,8 +117,6 @@ SET( QGoGUILIB_SRC
 
   ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoAboutWidget.cxx
   ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoNetworkUtilities.cxx
-
-  ${GOFIGURE2_FILTER_SOURCES}
 )
 
 SET_SOURCE_FILES_PROPERTIES(
@@ -369,6 +367,7 @@ ADD_LIBRARY( QGoGui
 SET( QGoGUI_LIBS
   QVTK
   QGoIO
+  GoFilters
   vtkRenderingAddOn2
   PoissonReconstruction
   ctk
