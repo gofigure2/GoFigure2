@@ -347,14 +347,14 @@ void vtkViewImage3D::SetVolumeRenderingOff()
 void vtkViewImage3D::CleanVolumeRenderingVectors()
 {
   //this->VolumeActor->SetVisibility (false);
-  for(int i=0; i<m_VolumeActors.size(); ++i)
+  for(unsigned int i=0; i<m_VolumeActors.size(); ++i)
   {
     m_VolumeActors[i]->SetVisibility(false);
     this->Renderer->RemoveViewProp(m_VolumeActors[i]);
   }
 
   //delete everything...
-  for(int i=0; i<m_VolumeActors.size(); ++i)
+  for(unsigned int i=0; i<m_VolumeActors.size(); ++i)
     {
     m_VolumeActors[i]->Delete();
     m_VolumeMappers[i]->Delete();
@@ -389,7 +389,7 @@ void vtkViewImage3D::SetVolumeRenderingOn(const std::vector<vtkImageData*>& iIma
 
   CleanVolumeRenderingVectors();
 
-  for(int  j=0; j<iImages.size();++j)
+  for(unsigned int  j=0; j<iImages.size();++j)
   {
     // MAPPER
     // crop volume into 27? small regions
