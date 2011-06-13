@@ -34,12 +34,14 @@
 #ifndef __MeshToContourFilter_h
 #define __MeshToContourFilter_h
 
+#include "map"
+
 /**
  * \class MeshToContourFilter
  * \brief
  **/
 template< class TContainer >
-class MeshToContourFilter:public vtkObject
+class MeshToContourFilter
 {
 public:
 

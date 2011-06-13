@@ -58,6 +58,20 @@ ADD_TEST( ContourToMeshFilterTest
  1
  )
 
+ADD_EXECUTABLE( MeshToContourFilterTest
+  MeshToContourFilterTest.cxx
+  )
+TARGET_LINK_LIBRARIES( MeshToContourFilterTest
+  vtkHybrid
+  vtkRenderingAddOn2
+  ${ITK_LIBRARIES}
+  )
+
+ADD_TEST( MeshToContourFilterTest
+ ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/MeshToContourFilterTest
+ 1
+ )
+
 #ADD_EXECUTABLE( singleCellSplitImageFilter
 #  SingleCellSplitImageFilter.cxx
 #  )

@@ -140,10 +140,14 @@ ExtractPolyData(ORIENTATION iOrientation)
     cutter->SetInput(m_Input);
     cutter->SetCutFunction(plane);
     cutter->Update();
-    plane->Delete();
 
-    contours[position] = cutter->GetOutput();
+    vtkPolyData* polydata = vtkPolyData::New();
+    polydata->DeepCopy( cutter->GetOutput() );
+
+    plane->Delete();
     cutter->Delete();
+
+    contours[position] = polydata;
 
     // increase position
     position += spacing;
