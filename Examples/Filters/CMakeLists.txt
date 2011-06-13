@@ -60,10 +60,10 @@ ADD_TEST( ContourToMeshFilterTest
 
 ADD_EXECUTABLE( MeshToContourFilterTest
   MeshToContourFilterTest.cxx
+  ${GOFIGURE2_SOURCE_DIR}/Code/Filters/Mesh/MeshToContourFilter.cxx
   )
 TARGET_LINK_LIBRARIES( MeshToContourFilterTest
   vtkHybrid
-  vtkRenderingAddOn2
   )
 
 ADD_TEST( MeshToContourFilterTest
