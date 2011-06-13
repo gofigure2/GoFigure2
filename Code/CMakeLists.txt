@@ -58,6 +58,9 @@ SET( GOFIGURE2_FILTER_SOURCES
   ${GOFIGURE2_FILTER_MESH_DIR}/itkvtkMeshFilterBase.txx
   ${GOFIGURE2_FILTER_MESH_DIR}/itkvtkMeshFilterBase.h
 
+  ${GOFIGURE2_FILTER_MESH_DIR}/MeshToContourFilter.h
+  ${GOFIGURE2_FILTER_MESH_DIR}/MeshToContourFilter.txx
+
   # Attributes
   ${GOFIGURE2_FILTER_MESH_DIR}/Attributes/itkBinaryMaskImageToGoFigureMeshAttributes.h
   ${GOFIGURE2_FILTER_MESH_DIR}/Attributes/itkBinaryMaskImageToGoFigureMeshAttributes.txx
