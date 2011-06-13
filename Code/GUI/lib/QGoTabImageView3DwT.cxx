@@ -181,9 +181,9 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
   this->m_TrackViewDockWidget->setObjectName("TrackViewDockWidget");
 
   QObject::connect( m_TrackViewDockWidget,
-                    SIGNAL( ChangeColorCode(const char *) ),
+                    SIGNAL( ChangeColorCode(const QString&) ),
                     m_TrackContainer,
-                    SLOT( ChangeColorCode(const char *) ) );
+                    SLOT( ChangeColorCode(const QString&) ) );
 
   QObject::connect( m_TrackViewDockWidget,
                     SIGNAL( UpdateTracksRepresentation(const double&, const double&) ),
@@ -195,9 +195,9 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
   this->m_LineageViewDockWidget->setObjectName("LineageViewDockWidget");
 
   QObject::connect( m_LineageViewDockWidget,
-                    SIGNAL( ChangeDivisionsColorCode(const char *) ),
+                    SIGNAL( ChangeDivisionsColorCode(const QString&) ),
                     m_TrackContainer,
-                    SLOT( ChangeDivisionsColorCode(const char *) ) );
+                    SLOT( ChangeDivisionsColorCode(const QString&) ) );
 
   CreateDataBaseTablesConnection();
 

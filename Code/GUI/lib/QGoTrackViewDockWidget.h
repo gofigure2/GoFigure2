@@ -59,7 +59,7 @@ public slots:
   void ColorCodeTracksByOriginalColor(bool);
 signals:
   void UpdateTracksRepresentation(const double&, const double&);
-  void ChangeColorCode( const char* );
+  void ChangeColorCode( const QString& );
 
 protected:
   

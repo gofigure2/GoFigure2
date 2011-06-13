@@ -189,9 +189,8 @@ unsigned int QGoDBContourManager::SaveNewContourFromVisu(
       iXCoordMax, iYCoordMax, iZCoordMax, iTraceNodes,
       *this->m_SelectedColorData,
       iDatabaseConnector, NewContour, iMeshID);
-
+  // pointer to double has to be deleted after usage...
   double *rgba = this->GetVectorFromQColor(this->m_SelectedColorData->second);
-
   this->m_ContourContainerInfoForVisu->UpdateCurrentElementFromDB(
     NewContourID, rgba);
   delete[] rgba;

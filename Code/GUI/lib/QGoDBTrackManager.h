@@ -122,6 +122,7 @@ public:
   //virtual pure method in QGoDBTraceManager
   virtual void DeleteCheckedTraces( vtkMySQLDatabase *iDatabaseConnector);
 
+
    //virtual pure method in QGoDBTraceManager
   virtual std::list< unsigned int > GetListHighlightedIDs();
 
@@ -141,6 +142,20 @@ public:
   //method in QGoDBTraceManager
   void UpdateBoundingBoxes(
   vtkMySQLDatabase *iDatabaseConnector,std::list< unsigned int > iListTracesIDs);
+
+  /**
+  \brief check if the track belongs to a division and if it is possible to add the mesh
+  without making the track overlapping the other tracks of the divisions, if so return
+  a message to the user, if not, return the trackID of the divisions to be updated in the 
+  visu, if return empty message and empty list, the track doesn't belong to any division
+  */
+  std::string CheckMeshCanBeAddedToTrack(vtkMySQLDatabase* iDatabaseConnector,
+    unsigned int iTrackID, unsigned int iMeshTimePoint, std::list<unsigned int> &ioMotherTrackDivisionToUpdate);
+
+  /**
+  \brief update the track container for visu and consequently the divisions in the visu
+  */
+  void UpdateDivisions(std::list<unsigned int> iListMotherTrackIDs);
 
 signals:
   void NeedMeshesInfoForImportedTrack(unsigned int iTrackID);
@@ -277,15 +292,17 @@ protected:
     unsigned int iDaughterID, vtkMySQLDatabase* iDatabaseConnector, bool &ioPartOfHigherLineage);
 
   /**
-  \brief return true if the track is a mother
+  \brief return the trackfamilyID of the division the track is a mother of or 0 if the
+  track is not a mother
   */
-  bool IsTheTrackAMother(unsigned int iDaughterID, 
+  unsigned int IsTheTrackAMother(unsigned int iDaughterID, 
     vtkMySQLDatabase* iDatabaseConnector);
 
   /**
-  \brief return true if the track is a daughter
+  \brief return the trackfamilyID of the division the track is a daughter of or 0 if the
+  track is not a daughter
   */
-  bool IsTheTrackADaughter(unsigned int iTrackID, 
+  unsigned int IsTheTrackADaughter(unsigned int iTrackID, 
   vtkMySQLDatabase* iDatabaseConnector);
 
   /**
@@ -299,6 +316,25 @@ protected:
     std::list<unsigned int> iDaughtersID,
     std::list<unsigned int> &ioTrackIDsNoLineage,
     bool &ioPartOfHigherLineage);
+
+  /**
+  \brief get the division IDs the track belongs to as a mother or as a daughter
+  */
+  std::list<unsigned int> GetDivisionIDsTheTrackBelongsTo(
+    vtkMySQLDatabase* iDatabaseConnector, unsigned int iTrackID );
+  /**
+  \brief check that the iTimePoint is < to the mintimepoint of the daughter from the 
+  division where trackID is a mother
+  */
+  unsigned int CheckBoundingBoxDivisionAsAMother(vtkMySQLDatabase* iDatabaseConnector, 
+    unsigned int iTimePoint, unsigned int iTrackFamilyID );
+
+   /**
+  \brief check that the iTimePoint is > to the maxtimepoint of the mother from the 
+  division where trackID is a daughter
+  */
+  unsigned int CheckBoundingBoxDivisionAsADaughter(vtkMySQLDatabase* iDatabaseConnector, 
+    unsigned int iTimePoint, unsigned int iTrackFamilyID );
 
 protected slots:
 

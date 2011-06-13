@@ -315,7 +315,7 @@ public:
    * \brief Update the current element map then polydata
    * \param[in] iMeshes meshes to be added in the map
    */
-  void ImportTrackInCurrentElement(std::map< unsigned int, double* > iMeshes);
+  void ImportTrackInCurrentElement(std::map< unsigned int, double*>& iMeshes);
 
   /**
    * \brief Create new actors for the current polydata and update and visualize
@@ -340,7 +340,7 @@ public:
   \param[in] iListCenterBoundingBoxes list of the center of the bounding boxes
   for the meshes belonging to this track */
   TrackStructure* UpdatePointsForATrack(const unsigned int& iTrackID,
-                             std::list< double*> iListCenterBoundingBoxes);
+                             std::list< double*>& iListCenterBoundingBoxes);
 
   /**
   \brief Update highlighting property of one element given one actor.
@@ -435,7 +435,7 @@ public:
    * motherID daughter1ID daughter2ID motherID daughter1ID ...
    * \param[in] iListOfDivisions list of the track ids to create the divisions
    */
-  void SetListOfDivisions(std::list<unsigned int> iListOfDivisions);
+  void SetListOfDivisions(std::list<unsigned int>& iListOfDivisions);
 
   /*
    * \brief Create a division between 3 tracks.
@@ -465,12 +465,8 @@ public:
    * \brief Create Create a division from 3 track IDs.
    * Updates the node in the structure.
    * \param[in] iMother ID of the mother
-   * \param[in] iDaughter1 ID of the daughter1
-   * \param[in] iDaughter2 ID of the daughter2
    */
-  void CreateDivisionPolydata(const unsigned int& iMother,
-                              const unsigned int& iDaughter1,
-                              const unsigned int& iDaughter2);
+  void CreateDivisionPolydata(const unsigned int& iMother);
 
   /*
    * \brief get the tree below a given division
@@ -719,12 +715,12 @@ public slots:
   /**
   \brief Color code the track by an array
   \param[in] iColorCode  name of the active array*/
-  void ChangeColorCode(const char* iColorCode);
+  void ChangeColorCode(const QString& iColorCode);
 
   /**
   \brief Color code the lineage by an array
   \param[in] iColorCode name of the active array */
-  void ChangeDivisionsColorCode(const char* iColorCode);
+  void ChangeDivisionsColorCode(const QString& iColorCode);
 
   /*
    * \brief Change the representation of a track, adding glyphs and tubes
@@ -804,19 +800,19 @@ protected:
   current element. If the current element is a new track, then the polydata,
   actors are allocated and added in consequence.
   \param[in] iPoints list of points to generate the new polydata */
-  void RecomputeMap( TrackStructure* iStructure, std::list< double* > iPoints);
+  void RecomputeMap( TrackStructure* iStructure, std::list< double* >& iPoints);
 
   /** \brief Changes the scalars to be displayed and return the new range
    * \param[in] iArrayName Array to be displayed
    * \return Pointer to double[2] where [0] is the min scalar value and [1] is
    * the max scalar value. Pointer has to be deleted (delete[] pointer) */
-  double* setTrackNodeScalars(const char *iArrayName);
+  double* setTrackNodeScalars(const QString& iArrayName);
 
   /** \brief Changes the divisions scalars to be displayed and return the new range
    * \param[in] iArrayName Array to be displayed
    * \return Pointer to double[2] where [0] is the min scalar value and [1] is
    * the max scalar value. Pointer has to be deleted (delete[] pointer) */
-  double* setDivisionNodeScalars(const char *iArrayName);
+  double* setDivisionNodeScalars(const QString& iArrayName);
 
   void ComputeSpeed();
 
