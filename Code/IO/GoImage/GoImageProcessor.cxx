@@ -55,7 +55,7 @@
 
 //--------------------------------------------------------------------------
 GoImageProcessor::GoImageProcessor():m_Output(NULL),
-  m_DopplerMode(false), m_DopplerStep(1), m_DopplerChannel(0)
+  m_DopplerMode(false), m_DopplerStep(1), m_DopplerChannel(0), m_DopplerSize(3)
 {
   m_BoundsTime[0] = 0;
   m_BoundsTime[1] = 0;
@@ -70,9 +70,7 @@ GoImageProcessor::GoImageProcessor():m_Output(NULL),
   m_Extent[4] = 0;
   m_Extent[5] = 0;
 
-  m_DopplerTime[0] = 0;
-  m_DopplerTime[1] = 0;
-  m_DopplerTime[2] = 0;
+  m_DopplerTime.resize(m_DopplerSize);
 }
 //--------------------------------------------------------------------------
 
@@ -80,7 +78,7 @@ GoImageProcessor::GoImageProcessor():m_Output(NULL),
 GoImageProcessor::GoImageProcessor(const GoImageProcessor & iE):
   m_MegaImageContainer(iE.m_MegaImageContainer), m_Output(iE.m_Output),
   m_DopplerMode(iE.m_DopplerMode), m_DopplerStep(iE.m_DopplerStep),
-  m_DopplerChannel(iE.m_DopplerChannel)
+  m_DopplerChannel(iE.m_DopplerChannel), m_DopplerSize(iE.m_DopplerSize)
 {
   m_BoundsTime[0] = iE.m_BoundsTime[0];
   m_BoundsTime[1] = iE.m_BoundsTime[1];
@@ -95,9 +93,7 @@ GoImageProcessor::GoImageProcessor(const GoImageProcessor & iE):
   m_Extent[4] = iE.m_Extent[4];
   m_Extent[5] = iE.m_Extent[5];
 
-  m_DopplerTime[0] = iE.m_DopplerTime[0];
-  m_DopplerTime[1] = iE.m_DopplerTime[1];
-  m_DopplerTime[2] = iE.m_DopplerTime[2];
+  m_DopplerTime = iE.m_DopplerTime;
 }
 //--------------------------------------------------------------------------
 
@@ -433,24 +429,35 @@ setDopplerStep(unsigned int iStep)
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-int*
+std::vector<int>
 GoImageProcessor::
 getDopplerTime(unsigned int iTime)
 {
+  // get min t point
+  int time = iTime - (m_DopplerSize/2)*m_DopplerStep;
+
+  for(unsigned int i=0; i<m_DopplerSize; ++i)
+    {
+    m_DopplerTime[i] = time +i*m_DopplerStep;
+    std::cout << "doppler time: " << i << " is "<< time +i*m_DopplerStep << std::endl;
+
+    // special case if we are at the borders
+    // value will be -1
+    if (m_DopplerTime[i] < static_cast<int>(m_BoundsTime[0]))
+      {
+      m_DopplerTime[i] = -1;
+      }
+    if (m_DopplerTime[i] > static_cast<int>(m_BoundsTime[1]))
+      {
+      m_DopplerTime[i] = -1;
+      }
+    }
+/*
   m_DopplerTime[0] = iTime - m_DopplerStep;
   m_DopplerTime[1] = iTime;
   m_DopplerTime[2]= iTime + m_DopplerStep;
 
-  // special case if we are at the borders
-  // value will be -1
-  if (m_DopplerTime[0] < static_cast<int>(m_BoundsTime[0]))
-    {
-    m_DopplerTime[0] = -1;
-    }
-  if (m_DopplerTime[2] > static_cast<int>(m_BoundsTime[1]))
-    {
-    m_DopplerTime[2] = -1;
-    }
+*/
 
   return m_DopplerTime;
 }
@@ -479,6 +486,27 @@ GoImageProcessor::
 getDopplerChannel()
 {
   return m_DopplerChannel;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+unsigned int
+GoImageProcessor::
+getDopplerSize()
+{
+  return m_DopplerSize;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+GoImageProcessor::
+setDopplerSize(int iSize)
+{
+  m_DopplerSize = iSize;
+  m_DopplerTime.resize(iSize);
 }
 //--------------------------------------------------------------------------
 

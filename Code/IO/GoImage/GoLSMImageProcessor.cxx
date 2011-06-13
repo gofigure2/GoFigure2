@@ -35,6 +35,8 @@
 
 #include "GoLSMImageProcessor.h"
 
+#include "vtkMath.h"
+
 //--------------------------------------------------------------------------
 void
 GoLSMImageProcessor::
@@ -192,9 +194,9 @@ setDoppler(const unsigned int& iTime, const unsigned int& iPrevious)
     return;
     }
 
-  int* dopplerTime = getDopplerTime(iTime);
+  std::vector<int> dopplerTime = getDopplerTime(iTime);
 
-  for(unsigned int i=0; i<3; ++i)
+  for(unsigned int i=0; i<getDopplerSize(); ++i)
     {
     if(dopplerTime[i] >= 0)
       {
@@ -208,14 +210,15 @@ setDoppler(const unsigned int& iTime, const unsigned int& iPrevious)
       // get image
       vtkSmartPointer<vtkImageData> image = reader->GetOutput();
 
+      // hue: 0 to 0.7
+      double* rgb = vtkMath::HSVToRGB(i*0.66/getDopplerSize(),1,1);
+
       // color from red to blue
       std::vector<double> color;
-      color.push_back(0.0);
-      color.push_back(0.0);
-      color.push_back(0.0);
-      color.push_back(255.0);
-
-      color[i] = 255.0;
+      color.push_back(rgb[0]*255);
+      color.push_back(rgb[1]*255);
+      color.push_back(rgb[2]*255);
+      color.push_back(255);
 
       // Create LUT
       vtkSmartPointer<vtkLookupTable> lut = createLUT(color[0],
