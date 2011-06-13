@@ -989,8 +989,6 @@ ExtractActors(vtkPolyData *iDataSet, ORIENTATION iOrientation)
   // create plane to extract contours (based on orientation)
   double normal[3] = {0., 0., 0.};
 
-  //Create a plane to cut???
-  // (xz normal=(1,0,0);XY =(0,0,1),YZ =(0,1,0)
   switch (iOrientation)
     {
     case XY:

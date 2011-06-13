@@ -37,7 +37,7 @@
 /**
  * \class MeshToContourFilter
  * \brief
- */
+ **/
 template< class TContainer >
 class MeshToContourFilter:public vtkObject
 {
@@ -52,11 +52,31 @@ public:
     YZ = 2
     };
 
+  /**
+    * \brief Set polydata to be splitted
+    * \param[in] iInput polydata to be splitted
+    */
   void SetInput(vtkPolyData* iInput);
+
+  /**
+    * \brief Set spacing of the original image to know how many slices to extract
+    * \param[in] iX X spacing
+    * \param[in] iY Y spacing
+    * \param[in] iZ Z spacing
+    */
+  void SetSpacing(const double& iX, const double & iY, const double& iZ);
+
+  /**
+    * \brief Extract contours from polydata given an orientation
+    * \param[in] iOrientation Desired Orientation (XY, XZ, YZ)
+    * \return Map of polydatas indexed by slice position.
+    * \note polydatas has to be deleted
+    */
   std::map<double, vtkPolyData*> ExtractPolyData(ORIENTATION iOrientation);
 
 private:
   vtkPolyData*                   m_Input;
+  double                         m_Spacing[3];
 };
 
 #include "MeshToContourFilter.txx"

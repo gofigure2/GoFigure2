@@ -51,6 +51,7 @@ MeshToContourFilter< TContainer >::
 MeshToContourFilter() :
   m_Input(NULL)
 {
+  SetSpacing(0., 0., 0.);
 }
 //-----------------------------------------------------------------------------
 
@@ -73,6 +74,18 @@ SetInput(vtkPolyData* iInput)
 
 //-----------------------------------------------------------------------------
 template< class TContainer >
+void
+MeshToContourFilter< TContainer >::
+SetSpacing(const double& iX, const double & iY, const double& iZ)
+{
+  m_Spacing[0] = iX;
+  m_Spacing[1] = iY;
+  m_Spacing[2] = iZ;
+}
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
+template< class TContainer >
 std::map<double, vtkPolyData *>
 MeshToContourFilter< TContainer >::
 ExtractPolyData(ORIENTATION iOrientation)
@@ -82,8 +95,6 @@ ExtractPolyData(ORIENTATION iOrientation)
   // create plane to extract contours (based on orientation)
   double normal[3] = {0., 0., 0.};
 
-  //Create a plane to cut???
-  // (xz normal=(1,0,0);XY =(0,0,1),YZ =(0,1,0)
   switch (iOrientation)
     {
     case XY:
@@ -114,7 +125,7 @@ ExtractPolyData(ORIENTATION iOrientation)
 
   double position = m_Input->GetBounds()[4 - 2*iOrientation];
   double maxPosition = m_Input->GetBounds()[5 - 2*iOrientation];
-  double spacing = this->GetInput()->GetSpacing()[2-iOrientation];
+  double spacing = this->m_Spacing[2-iOrientation];
 
   while( position < maxPosition)
     {
