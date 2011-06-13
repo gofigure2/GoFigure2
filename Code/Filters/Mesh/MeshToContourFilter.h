@@ -36,11 +36,12 @@
 
 #include "map"
 
+class vtkPolyData;
+
 /**
  * \class MeshToContourFilter
  * \brief
  **/
-template< class TContainer >
 class MeshToContourFilter
 {
 public:
@@ -81,5 +82,4 @@ private:
   double                         m_Spacing[3];
 };
 
-#include "MeshToContourFilter.txx"
 #endif

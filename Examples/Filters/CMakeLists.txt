@@ -64,7 +64,6 @@ ADD_EXECUTABLE( MeshToContourFilterTest
 TARGET_LINK_LIBRARIES( MeshToContourFilterTest
   vtkHybrid
   vtkRenderingAddOn2
-  ${ITK_LIBRARIES}
   )
 
 ADD_TEST( MeshToContourFilterTest

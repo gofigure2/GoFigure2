@@ -62,14 +62,13 @@ int main(int argc, char *argv[])
 
 
   // split sphere
-  MeshToContourFilter< std::vector< vtkSmartPointer< vtkPolyData > > > filter;
+  MeshToContourFilter filter;
 
   filter.SetInput(sphereSource2->GetOutput());
   filter.SetSpacing(1, 1, 1);
 
   std::map<double, vtkPolyData* > output =
-      filter.ExtractPolyData(
-        MeshToContourFilter<std::vector< vtkSmartPointer< vtkPolyData > > >::XY);
+      filter.ExtractPolyData( MeshToContourFilter::XY );
 
   vtkSmartPointer< vtkRenderer > renderer =
     vtkSmartPointer< vtkRenderer >::New();
