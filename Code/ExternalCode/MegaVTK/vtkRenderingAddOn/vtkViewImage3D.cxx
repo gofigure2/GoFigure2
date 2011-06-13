@@ -222,7 +222,6 @@ vtkViewImage3D::vtkViewImage3D()
   // the new interactor style
   this->InteractorStyle3D = vtkInteractorStyleImage3D::New();
 
-//   this->SetupVolumeRendering();
   this->SetupWidgets();
 }
 
@@ -256,49 +255,6 @@ vtkViewImage3D::~vtkViewImage3D()
 }
 
 //----------------------------------------------------------------------------
-/**
- *
- */
-void vtkViewImage3D::SetupVolumeRendering(vtkPiecewiseFunction* iOpacity)
-{
-  // MAPPER
-  // crop volume into 27? small regions
-  // for efficiency?
-  this->SmartVolumeMapper3D->CroppingOn();
-  this->SmartVolumeMapper3D->SetCroppingRegionFlagsToSubVolume();
-  this->SmartVolumeMapper3D->SetCroppingRegionFlags (0x7ffdfff);
-
-  // PROPERTY
-  // opacity TF
-  //vtkPiecewiseFunction* opacityfunction = vtkPiecewiseFunction::New();
- // opacityfunction->AddPoint (0, 0.0);
- // opacityfunction->AddPoint (255, 1.0);
-  this->VolumeProperty->SetScalarOpacity(0, iOpacity);
-  this->VolumeProperty->SetScalarOpacity(1, iOpacity);
-  this->VolumeProperty->SetScalarOpacity(2, iOpacity);
-  //opacityfunction->Delete();
-
-  // one dataset-1 tf, not 1 tf for each component
-  this->VolumeProperty->IndependentComponentsOff();
-  this->VolumeProperty->SetInterpolationTypeToLinear();
-  this->VolumeProperty->ShadeOff();
- /* this->VolumeProperty->SetDiffuse (0.9);
-  this->VolumeProperty->SetAmbient (0.2);
-  this->VolumeProperty->SetSpecular (0.3);
-  this->VolumeProperty->SetSpecularPower (15.0);*/
-
-  // ACTOR
-  this->VolumeActor->SetProperty (this->VolumeProperty);
-  this->VolumeActor->SetMapper (this->SmartVolumeMapper3D);
-  this->VolumeActor->PickableOff();
-  this->VolumeActor->DragableOff();
-  this->VolumeActor->SetVisibility (0);
-
-  // set up the boxwidget/ callback
-  this->Callback->SetVolumeMapper (this->SmartVolumeMapper3D);
-
-  this->Renderer->AddViewProp (this->VolumeActor);
-}
 
 //----------------------------------------------------------------------------
 /**

@@ -496,8 +496,8 @@ public:
       }
   }
 */
-  std::map<unsigned int, vtkActor *>
-  ExtractActors(vtkPolyData *iDataSet, ORIENTATION iOrientation);
+  std::map<double, vtkActor *> ExtractActors(
+    vtkPolyData *iDataSet, ORIENTATION iOrientation);
 
 protected:
 

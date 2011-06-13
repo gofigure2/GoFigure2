@@ -276,8 +276,6 @@ protected:
 
   virtual void UpdateOrientation(){}
 
-  void SetupVolumeRendering( vtkPiecewiseFunction* iOpacity );
-
   virtual void SetupWidgets();
 
   void CleanVolumeRenderingVectors();
