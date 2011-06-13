@@ -2235,6 +2235,9 @@ inline int Octree<Degree>::GetRoot(const RootInfo& ri,const Real& isoValue,Point
 	if(rCount && nonLinearFit)	{averageRoot/=rCount;}
 	else						{averageRoot=Real((x0-isoValue)/(x0-x1));}
 
+  if( averageRoot > 1 ) { averageRoot = 1;}
+  if( averageRoot < -1 ) { averageRoot = -1;}
+
 	position.coords[o]=Real(center-twidth/2+twidth*averageRoot);
 	return 1;
 }
