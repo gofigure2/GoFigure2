@@ -211,7 +211,8 @@ setDoppler(const unsigned int& iTime, const unsigned int& iPrevious)
       vtkSmartPointer<vtkImageData> image = reader->GetOutput();
 
       // hue: 0 to 0.7
-      double* rgb = vtkMath::HSVToRGB(i*0.66/getDopplerSize(),1,1);
+      double* rgb = vtkMath::HSVToRGB(
+            static_cast<double>(i)/static_cast<double>(getDopplerSize()),1,1);
 
       // color from red to blue
       std::vector<double> color;

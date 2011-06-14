@@ -2985,7 +2985,9 @@ QGoTabImageView3DwT::UpdateTracesEditingWidget()
         if (dopplerT[i] >= 0 )
           {
           double* rgb = vtkMath::HSVToRGB(
-                i*0.66/this->m_ImageProcessor->getDopplerSize(),1,1);
+                static_cast<double>(i) /
+                static_cast<double>(
+                  this->m_ImageProcessor->getDopplerSize()),1,1);
           QColor color(rgb[0]*255, rgb[1]*255, rgb[2]*255);
           ListTimePoints[tr("%1").arg(dopplerT[i])] = color;
           }
