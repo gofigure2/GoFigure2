@@ -58,7 +58,7 @@ public:
 
   std::vector<vtkPolyData*> ApplyAlgo(
     GoImageProcessor* iImages,
-    int iChannel);
+    std::string iChannel);
 
 protected:
 

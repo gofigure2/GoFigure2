@@ -58,10 +58,10 @@ public:
 
   std::vector<vtkPolyData*> ApplyAlgo(
     GoImageProcessor* iImages,
-    int iChannel);
+    std::string iChannel);
 
   std::vector<std::vector<vtkPolyData*> > ApplyAlgoSeveralSeeds(
-    GoImageProcessor* iImages, int iChannel);
+    GoImageProcessor* iImages, std::string iChannel);
 
 protected:
 

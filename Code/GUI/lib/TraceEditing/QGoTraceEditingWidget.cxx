@@ -142,7 +142,7 @@ void QGoTraceEditingWidget::AddWidgetForManualMode(QWidget* iWidget,
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-int QGoTraceEditingWidget::GetChannelNumber()
+std::string QGoTraceEditingWidget::GetChannelNumber()
 {
   return this->m_ModeEditingWidget->GetChannelNumber();
 }

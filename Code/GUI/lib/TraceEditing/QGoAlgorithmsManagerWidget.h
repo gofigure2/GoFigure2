@@ -111,7 +111,7 @@ public:
   /**
   \brief return the number of the selected channel
   */
-  int GetChannelNumber();
+  std::string GetChannelNumber();
 
   int GetSelectedTimePoint();
 

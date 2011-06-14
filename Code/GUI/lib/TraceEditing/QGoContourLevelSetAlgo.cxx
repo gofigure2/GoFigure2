@@ -52,7 +52,7 @@ QGoContourLevelSetAlgo::~QGoContourLevelSetAlgo()
 
 //-------------------------------------------------------------------------
 std::vector<vtkPolyData*> QGoContourLevelSetAlgo::ApplyAlgo(
-  GoImageProcessor* iImages, int iChannel)
+  GoImageProcessor* iImages, std::string iChannel)
 {
   std::vector<vtkPolyData*> oNewContours = std::vector<vtkPolyData*>();
 

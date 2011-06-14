@@ -136,6 +136,11 @@ protected:
   void GetPolydatasFromAlgo(T* iAlgo)
     {
     emit UpdateSeeds();
+    /**
+      * get channel number to be renamed into get image name
+      * to handle doppler and classic views
+      * returns std::string
+      */
     std::vector<vtkPolyData*> NewTraces = iAlgo->ApplyAlgo(
       this->m_Images, this->m_TraceEditingWidget->GetChannelNumber() );
     emit TracesCreatedFromAlgo(NewTraces, this->GetSelectedTimePoint() );

@@ -53,7 +53,7 @@ QGoMeshWaterShedAlgo::
 //-------------------------------------------------------------------------
 std::vector<vtkPolyData*>
 QGoMeshWaterShedAlgo::
-ApplyAlgo(GoImageProcessor* iImages, int iChannel)
+ApplyAlgo(GoImageProcessor* iImages, std::string iChannel)
 {
   std::vector<vtkPolyData*> oNewMeshes = std::vector<vtkPolyData*>();
 

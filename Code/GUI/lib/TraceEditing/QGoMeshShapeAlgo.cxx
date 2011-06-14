@@ -53,13 +53,14 @@ QGoMeshShapeAlgo::~QGoMeshShapeAlgo()
 //-------------------------------------------------------------------------
 std::vector<vtkPolyData*> QGoMeshShapeAlgo::ApplyAlgo(
   GoImageProcessor* iImages,
-    int iChannel)
+    std::string iChannel)
 {
   QGoFilterShape ShapeFilter;
 
+  std::cout << __FILE__ << " NOT WORKING" << std::endl;
   std::vector<vtkPolyData*> NewMeshes =
     ShapeFilter.ApplyFilter3D(m_Radius->GetValue(),
-    this->m_Seeds, this->m_Shape->Getvalue(), iImages, iChannel);
+    this->m_Seeds, this->m_Shape->Getvalue(), iImages, 0);
 
   return NewMeshes;
 }

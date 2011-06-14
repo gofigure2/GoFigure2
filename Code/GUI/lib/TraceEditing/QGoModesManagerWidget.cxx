@@ -173,7 +173,7 @@ void QGoModesManagerWidget::AddWidgetForManualMode(QWidget* iWidget,
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-int QGoModesManagerWidget::GetChannelNumber()
+std::string QGoModesManagerWidget::GetChannelNumber()
 {
   QGoAlgorithmsManagerWidget* CurrentWidget =  
     dynamic_cast<QGoAlgorithmsManagerWidget*>
