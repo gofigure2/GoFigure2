@@ -84,7 +84,7 @@ struct QGOIO_EXPORT GoMegaImageStructure
     // init RGBA vectors
     // vector might not be the best....
     RGBA.resize(4);
-    for(int i; i<4; ++i)
+    for(int i = 0; i<4; ++i)
       {
       RGBA[i][0] = 0;
       RGBA[i][255] = Color[i];

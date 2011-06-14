@@ -118,6 +118,7 @@ public:
 signals:
 
   void ResetClicked();
+  void InvertChecked(bool);
 
 protected:
   QVBoxLayout*                 m_VBoxLayout;

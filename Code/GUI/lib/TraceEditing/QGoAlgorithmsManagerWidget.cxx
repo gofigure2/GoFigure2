@@ -38,6 +38,7 @@
 #include <QGroupBox>
 #include <QPushButton>
 #include <QPainter>
+#include <QCheckbox>
 
 
 QGoAlgorithmsManagerWidget::
@@ -65,15 +66,21 @@ void QGoAlgorithmsManagerWidget::Initialize(std::vector<QString> iVectChannels,
   QStringList iListTime, bool iOnlyOneMethod, bool NeedApplyResetButton)
 {
   this->m_VBoxLayout = new QVBoxLayout;
+  QHBoxLayout* HBox = new QHBoxLayout;
   QFormLayout* FormLayout = new QFormLayout;
   if (!iListTime.empty() )
     {
     this->m_ListTimePoints = iListTime;
     this->m_TimeComboBox = new QComboBox(this);
     this->m_TimeComboBox->addItems(iListTime);
-    FormLayout->addRow(tr("TSlice:"), this->m_TimeComboBox);
+    QLabel* Label= new QLabel("TSlice",this);
+    HBox->addWidget(Label);
+    HBox->addWidget(this->m_TimeComboBox);
+    //FormLayout->addRow(tr("TSlice:"), this->m_TimeComboBox);
     }
-
+  QCheckBox* InvertBox = new QCheckBox("Invert", this);
+  HBox->addWidget(InvertBox);
+  this->m_VBoxLayout->addLayout(HBox);
   if (!iVectChannels.empty() )
     {
     this->m_ChannelComboBox = new QComboBox(this);
