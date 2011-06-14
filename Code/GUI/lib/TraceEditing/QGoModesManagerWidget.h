@@ -103,8 +103,9 @@ public:
   /**
   \brief return the number of the selected channel
   */
-  int GetChannelNumber();
-  int GetSelectedTimePoint();
+  int  GetChannelNumber();
+  int  GetSelectedTimePoint();
+  bool GetIsInvertedOn();
 
   void SetTSliceForClassicViewInAllAlgoModes(int iTimePoint);
   void SetTSliceForDopplerViewInAllAlgoModes(

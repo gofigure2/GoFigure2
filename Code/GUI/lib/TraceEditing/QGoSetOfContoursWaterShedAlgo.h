@@ -76,7 +76,7 @@ public:
   // should not be virutal pure since we dont implement it....
   std::vector<vtkPolyData*> ApplyAlgo(
     GoImageProcessor* iImages,
-    int iChannel);
+    int iChannel, bool iIsInvertedOn = false);
 
   std::vector<std::vector<vtkPolyData*> > ApplyAlgoSeveralSeeds(
     GoImageProcessor* iImages, int iChannel);

@@ -76,10 +76,11 @@ void QGoAlgorithmsManagerWidget::Initialize(std::vector<QString> iVectChannels,
     QLabel* Label= new QLabel("TSlice",this);
     HBox->addWidget(Label);
     HBox->addWidget(this->m_TimeComboBox);
+    this->m_InvertBox = new QCheckBox("Invert", this);
+    HBox->addWidget(this->m_InvertBox);
     //FormLayout->addRow(tr("TSlice:"), this->m_TimeComboBox);
     }
-  QCheckBox* InvertBox = new QCheckBox("Invert", this);
-  HBox->addWidget(InvertBox);
+
   this->m_VBoxLayout->addLayout(HBox);
   if (!iVectChannels.empty() )
     {
@@ -266,6 +267,17 @@ void QGoAlgorithmsManagerWidget::AddWidgetForOnlyOneMethod(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+bool QGoAlgorithmsManagerWidget::IsInvertChecked()
+{
+  if (this->m_InvertBox->checkState() == Qt::Checked)
+    {
+    return true;
+    }
+  else
+    {
+    return false;
+    }
+}
 /*void QGoAlgorithmsManagerWidget::AddMethod(std::string iNameMethod,
   QWidget* iParametersWidget, QWidget* iAdvParamWidget)
 {
