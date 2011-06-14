@@ -83,7 +83,7 @@ public:
   */
   virtual std::vector<vtkPolyData*> ApplyAlgo(
     GoImageProcessor* iImages,
-    int iChannel) = 0;
+    std::string iChannel) = 0;
 
   /*
    * \note Nicolas-shouldnt be public-move to protected

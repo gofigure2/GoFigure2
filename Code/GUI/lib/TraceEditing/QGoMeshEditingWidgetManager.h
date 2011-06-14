@@ -124,7 +124,7 @@ protected:
     emit UpdateSeeds();
     std::vector< std::vector<vtkPolyData*> > NewSetsOfContours =
       iAlgo->ApplyAlgoSeveralSeeds(this->m_Images,
-        this->m_TraceEditingWidget->GetChannelNumber() );
+        this->m_TraceEditingWidget->GetCurrentImageName() );
     emit SetOfContoursFromAlgo(NewSetsOfContours ,
       this->GetSelectedTimePoint() );
     emit ClearAllSeeds();

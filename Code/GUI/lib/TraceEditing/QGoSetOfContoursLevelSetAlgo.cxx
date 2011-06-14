@@ -56,7 +56,7 @@ QGoSetOfContoursLevelSetAlgo::~QGoSetOfContoursLevelSetAlgo()
 //-------------------------------------------------------------------------
 std::vector<vtkPolyData*> QGoSetOfContoursLevelSetAlgo::ApplyAlgo(
   GoImageProcessor* iImages,
-    int iChannel)
+    std::string iChannel)
 {
   std::vector<vtkPolyData*> NewContours = std::vector<vtkPolyData*>();
   return NewContours;
@@ -66,17 +66,17 @@ std::vector<vtkPolyData*> QGoSetOfContoursLevelSetAlgo::ApplyAlgo(
 //-------------------------------------------------------------------------
 std::vector<std::vector<vtkPolyData*> > QGoSetOfContoursLevelSetAlgo::
   ApplyAlgoSeveralSeeds(
-    GoImageProcessor* iImages, int iChannel)
+    GoImageProcessor* iImages, std::string iChannel)
 {
   std::vector<std::vector<vtkPolyData*> > NewContours;
   QGoFilterChanAndVese LevelSetFilter;
   //double *center = new double[3];
 
-    NewContours =
+   /* NewContours =
       LevelSetFilter.ApplyFilterSetOf2D(this->m_Radius->GetValue(),
       this->m_Seeds, this->m_Iterations->GetValue(),
       this->m_Curvature->GetValue(),this->m_Sampling->GetValue(),
-      iImages, iChannel );
+      iImages, iChannel );*/
 
    return NewContours;
 }

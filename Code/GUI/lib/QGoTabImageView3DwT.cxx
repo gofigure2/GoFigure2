@@ -1563,7 +1563,7 @@ QGoTabImageView3DwT::UpdateImage()
     {
     m_ImageView->SetImage(m_ImageProcessor->getVisibleImages());
     }
-  else
+  else if( NumberOfVisibleChannels == 1)
     {
     // BUG HERE - 2 update + hide actors if opacity <1
     //update Image
@@ -1577,6 +1577,11 @@ QGoTabImageView3DwT::UpdateImage()
     // CONFIGURE LUT
     this->findChild<QAction*>("LUT")->setEnabled(true);
     this->findChild<QAction*>("ScalarBar")->setEnabled(true);
+    }
+  else
+    {
+    m_ImageView->SetImage(NULL);
+    m_ImageView->SetLookupTable(NULL);
     }
 }
 
@@ -2411,6 +2416,7 @@ void
 QGoTabImageView3DwT::SaveInDBAndRenderMeshForVisu(
   std::vector<vtkPolyData *> iVectPolydata, int iTCoord)
 {
+  std::cout<< "reveived..." << std::endl;
   std::vector<vtkPolyData *>::iterator iter = iVectPolydata.begin();
   while(iter != iVectPolydata.end())
     {
@@ -2498,7 +2504,11 @@ QGoTabImageView3DwT::SaveAndVisuMesh(vtkPolyData *iView,
     return;
     }
 
+  std::cout << "save mesh..." << std::endl;
+
   SaveMesh(iView, iTCoord);
+
+    std::cout << "add mesh to visu..." << std::endl;
 
   // should be done in the mesh manager, from goprintdatabase
 
@@ -2589,7 +2599,7 @@ ComputeMeshAttributes(vtkPolyData *iMesh,
                       const bool & iIntensity,
                       const unsigned int& iTCoord )
 {
-
+  std::cout << "start compute attributes..." << m_ImageProcessor->getDopplerMode() << std::endl;
   typedef unsigned char PixelType;
   const unsigned int Dimension = 3;
   typedef itk::Image< PixelType, Dimension > ImageType;
@@ -2642,7 +2652,8 @@ ComputeMeshAttributes(vtkPolyData *iMesh,
 
     std::vector< vtkSmartPointer< vtkImageData > > temp_image( NumberOfChannels );
 
-    m_ImageProcessor->setTimePoint( iTCoord );
+    // load real image
+    m_ImageProcessor->initTimePoint(iTCoord);
 
     for ( unsigned int i = boundChannel[0]; i <= boundChannel[1]; i++ )
       {
@@ -2679,8 +2690,11 @@ ComputeMeshAttributes(vtkPolyData *iMesh,
         break;
         }
       }
+    // load doppler image
+    // visibility should be updated...
+    m_ImageProcessor->setDoppler(m_TCoord, 0);
     }
-
+  std::cout << "finish compute attributes..." << std::endl;
   return oAttributes;
 }
 

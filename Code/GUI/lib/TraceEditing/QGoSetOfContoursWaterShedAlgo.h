@@ -76,10 +76,10 @@ public:
   // should not be virutal pure since we dont implement it....
   std::vector<vtkPolyData*> ApplyAlgo(
     GoImageProcessor* iImages,
-    int iChannel);
+    std::string iChannel);
 
   std::vector<std::vector<vtkPolyData*> > ApplyAlgoSeveralSeeds(
-    GoImageProcessor* iImages, int iChannel);
+    GoImageProcessor* iImages, std::string iChannel);
 
 protected:
 

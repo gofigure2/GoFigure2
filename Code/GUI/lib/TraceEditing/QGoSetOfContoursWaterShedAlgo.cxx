@@ -56,7 +56,7 @@ QGoSetOfContoursWaterShedAlgo::
 //-------------------------------------------------------------------------
 std::vector<vtkPolyData*>
 QGoSetOfContoursWaterShedAlgo::
-ApplyAlgo(GoImageProcessor* iImages,int iChannel)
+ApplyAlgo(GoImageProcessor* iImages,std::string iChannel)
 {
   std::vector<vtkPolyData*> NewContours = std::vector<vtkPolyData*>();
   return NewContours;
@@ -66,7 +66,7 @@ ApplyAlgo(GoImageProcessor* iImages,int iChannel)
 //-------------------------------------------------------------------------
 std::vector<std::vector<vtkPolyData*> >
 QGoSetOfContoursWaterShedAlgo::
-ApplyAlgoSeveralSeeds( GoImageProcessor* iImages, int iChannel)
+ApplyAlgoSeveralSeeds( GoImageProcessor* iImages, std::string iChannel)
 {
   std::vector<std::vector<vtkPolyData*> > NewContours;
 

@@ -55,7 +55,7 @@ QGoSetOfContoursShapeAlgo::~QGoSetOfContoursShapeAlgo()
 //-------------------------------------------------------------------------
 std::vector<vtkPolyData*> QGoSetOfContoursShapeAlgo::ApplyAlgo(
   GoImageProcessor* iImages,
-    int iChannel)
+    std::string iChannel)
 {
   std::vector<vtkPolyData*> NewContours = std::vector<vtkPolyData*>();
   return NewContours;
@@ -65,16 +65,16 @@ std::vector<vtkPolyData*> QGoSetOfContoursShapeAlgo::ApplyAlgo(
 //-------------------------------------------------------------------------
 std::vector<std::vector<vtkPolyData*> > QGoSetOfContoursShapeAlgo::
   ApplyAlgoSeveralSeeds(
-    GoImageProcessor* iImages, int iChannel)
+    GoImageProcessor* iImages, std::string iChannel)
 {
   std::vector<std::vector<vtkPolyData*> > NewContours;
   QGoFilterShape ShapeFilter;
   //double *center = new double[3];
 
-    NewContours =
+    /*NewContours =
       ShapeFilter.ApplyFilterSetOf2D(this->m_Radius->GetValue(),
       this->m_Shape->Getvalue(), this->m_Sampling->GetValue(), this->m_Seeds,
-      iImages, iChannel );
+      iImages, iChannel );*/
 
    return NewContours;
 }

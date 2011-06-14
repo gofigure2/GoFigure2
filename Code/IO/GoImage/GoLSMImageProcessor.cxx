@@ -229,7 +229,7 @@ setDoppler(const unsigned int& iTime, const unsigned int& iPrevious)
 
       // channel name
       std::stringstream channelName;
-      channelName << "t: ";
+      //channelName << "t: ";
       channelName << dopplerTime[i];
 
       // Update the MegaImageStructure

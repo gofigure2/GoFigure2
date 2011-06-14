@@ -325,12 +325,12 @@ public:
    **/
   template< class PixelType, const unsigned int VImageDimension >
   typename itk::Image< PixelType, VImageDimension >::Pointer
-  getImageITK(int& iIndex)
+  getImageITK(std::string iIndex)
   {
-  GoMegaImageStructureMultiIndexContainer::index<Index>::type::iterator it =
-      m_MegaImageContainer.get< Index >().find(iIndex);
+  GoMegaImageStructureMultiIndexContainer::index<Name>::type::iterator it =
+      m_MegaImageContainer.get< Name >().find(iIndex);
 
-  if(it!=m_MegaImageContainer.get< Index >().end())
+  if(it!=m_MegaImageContainer.get< Name >().end())
     {
     return it->Convert2ITK<PixelType, VImageDimension>();
     }
