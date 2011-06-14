@@ -78,7 +78,7 @@ public:
   void AddWidgetForManualMode(QWidget* iWidget,
     QStringList iListTimePoint, bool ModeNeedSeeds);
 
-  std::string GetChannelNumber();
+  std::string GetCurrentImageName();
   int GetSelectedTimePoint();
  
   /**

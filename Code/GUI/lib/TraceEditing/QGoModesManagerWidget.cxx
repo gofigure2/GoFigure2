@@ -173,12 +173,12 @@ void QGoModesManagerWidget::AddWidgetForManualMode(QWidget* iWidget,
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-std::string QGoModesManagerWidget::GetChannelNumber()
+std::string QGoModesManagerWidget::GetCurrentImageName()
 {
   QGoAlgorithmsManagerWidget* CurrentWidget =  
     dynamic_cast<QGoAlgorithmsManagerWidget*>
       (this->m_ModeWidgets->currentWidget());
-  return CurrentWidget->GetChannelNumber();
+  return CurrentWidget->GetCurrentImageName();
 }
 //-------------------------------------------------------------------------
 

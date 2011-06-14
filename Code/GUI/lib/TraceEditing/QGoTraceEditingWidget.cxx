@@ -142,9 +142,9 @@ void QGoTraceEditingWidget::AddWidgetForManualMode(QWidget* iWidget,
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-std::string QGoTraceEditingWidget::GetChannelNumber()
+std::string QGoTraceEditingWidget::GetCurrentImageName()
 {
-  return this->m_ModeEditingWidget->GetChannelNumber();
+  return this->m_ModeEditingWidget->GetCurrentImageName();
 }
 //-------------------------------------------------------------------------
 

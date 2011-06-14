@@ -234,7 +234,7 @@ void QGoAlgorithmsManagerWidget::EmitApplyAlgo()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-std::string QGoAlgorithmsManagerWidget::GetChannelNumber()
+std::string QGoAlgorithmsManagerWidget::GetCurrentImageName()
 {
   std::string imageName;
   if(this->m_ChannelComboBox->isEnabled())
@@ -245,7 +245,7 @@ std::string QGoAlgorithmsManagerWidget::GetChannelNumber()
   {
     imageName = this->m_TimeComboBox->currentText().toStdString();
   }
-  return imageName;//this->m_ChannelComboBox->currentIndex();
+  return imageName;
 }
 
 //-------------------------------------------------------------------------
