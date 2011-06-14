@@ -102,7 +102,7 @@ ENDIF( SUPER_ITK )
 
 #-------------------------
 
-OPTION( SUPER_BOOST "SuperBuild BOOST" ON )
+OPTION( SUPER_BOOST "SuperBuild BOOST" OFF )
 
 IF( SUPER_BOOST )
   include("${CMAKE_CURRENT_SOURCE_DIR}/CMake/SuperBuild/External-Boost.cmake")
