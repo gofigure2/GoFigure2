@@ -1560,7 +1560,7 @@ QGoTabImageView3DwT::UpdateImage()
     {
     m_ImageView->SetImage(m_ImageProcessor->getVisibleImages());
     }
-  else
+  else if( NumberOfVisibleChannels == 1)
     {
     // BUG HERE - 2 update + hide actors if opacity <1
     //update Image
@@ -1574,6 +1574,11 @@ QGoTabImageView3DwT::UpdateImage()
     // CONFIGURE LUT
     this->findChild<QAction*>("LUT")->setEnabled(true);
     this->findChild<QAction*>("ScalarBar")->setEnabled(true);
+    }
+  else
+    {
+    m_ImageView->SetImage(NULL);
+    m_ImageView->SetLookupTable(NULL);
     }
 }
 

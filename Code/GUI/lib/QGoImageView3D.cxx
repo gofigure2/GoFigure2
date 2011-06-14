@@ -508,15 +508,17 @@ QGoImageView3D::SetupVTKtoQtConnections()
 void
 QGoImageView3D::SetImage(vtkImageData *input)
 {
+  /**
+    \todo Nicolas-unecessary checks-temp solution
+    */
   if ( !input )
     {
+    vtkSmartPointer<vtkImageData> test = vtkSmartPointer<vtkImageData>::New();
+    this->m_Image->ShallowCopy(test);
     return;
     }
   else
     {
-    /*
-      \todo Nicolas-unecessary checks
-      */
     int dim[3];
     input->GetDimensions(dim);
 
