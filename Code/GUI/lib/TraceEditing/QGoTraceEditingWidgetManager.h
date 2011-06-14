@@ -141,8 +141,11 @@ protected:
       * to handle doppler and classic views
       * returns std::string
       */
+    std::cout << "image of interest: " <<
+                 this->m_TraceEditingWidget->GetChannelNumber() << std::endl;
     std::vector<vtkPolyData*> NewTraces = iAlgo->ApplyAlgo(
       this->m_Images, this->m_TraceEditingWidget->GetChannelNumber() );
+    std::cout << "emit TracesCreatedFromAlgo: " << std::endl;
     emit TracesCreatedFromAlgo(NewTraces, this->GetSelectedTimePoint() );
     emit ClearAllSeeds();
     }
