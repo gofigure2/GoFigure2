@@ -2596,7 +2596,6 @@ ComputeMeshAttributes(vtkPolyData *iMesh,
                       const bool & iIntensity,
                       const unsigned int& iTCoord )
 {
-  std::cout << "start compute attributes..." << m_ImageProcessor->getDopplerMode() << std::endl;
   typedef unsigned char PixelType;
   const unsigned int Dimension = 3;
   typedef itk::Image< PixelType, Dimension > ImageType;
@@ -2691,7 +2690,6 @@ ComputeMeshAttributes(vtkPolyData *iMesh,
     // visibility should be updated...
     m_ImageProcessor->setDoppler(m_TCoord, 0);
     }
-  std::cout << "finish compute attributes..." << std::endl;
   return oAttributes;
 }
 
