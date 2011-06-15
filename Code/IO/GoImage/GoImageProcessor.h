@@ -41,6 +41,8 @@
 // external library include
 // VTK
 #include "vtkSmartPointer.h"
+// ITK
+#include "itkInvertIntensityImageFilter.h"
 // BOOST
 #include <boost/multi_index_container.hpp>
 #include <boost/multi_index/member.hpp>
@@ -325,16 +327,31 @@ public:
    **/
   template< class PixelType, const unsigned int VImageDimension >
   typename itk::Image< PixelType, VImageDimension >::Pointer
-  getImageITK(std::string iIndex)
+  getImageITK(std::string iIndex, bool iIsInverted = false)
   {
   GoMegaImageStructureMultiIndexContainer::index<Name>::type::iterator it =
       m_MegaImageContainer.get< Name >().find(iIndex);
 
-  if(it!=m_MegaImageContainer.get< Name >().end())
+  assert(it!=m_MegaImageContainer.get< Name >().end());
+
+  if(iIsInverted)
+    {
+    //get image and invert it
+    typedef itk::Image<PixelType, VImageDimension> ImageType;
+    typedef itk::InvertIntensityImageFilter <ImageType> InvertFilterType;
+    typename InvertFilterType::Pointer invertFilter = InvertFilterType::New();
+    invertFilter->SetInput( it->Convert2ITK<PixelType, VImageDimension>() );
+    invertFilter->Update();
+
+    typename ImageType::Pointer itkImage = invertFilter->GetOutput();
+    itkImage->DisconnectPipeline();
+
+    return itkImage;
+    }
+  else
     {
     return it->Convert2ITK<PixelType, VImageDimension>();
     }
-
     return NULL;
   }
 

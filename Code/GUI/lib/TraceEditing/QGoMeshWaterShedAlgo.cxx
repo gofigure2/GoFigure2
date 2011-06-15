@@ -80,7 +80,7 @@ ApplyAlgo(GoImageProcessor* iImages, std::string iChannel, bool iIsInvertedOn)
       vtkPolyData* temp_output =
           this->ApplyWaterShedFilter< unsigned char >(
             CenterVect, //cente
-            iImages->getImageITK< unsigned char, 3>(iChannel)); //input raw image
+            iImages->getImageITK< unsigned char, 3>(iChannel, iIsInvertedOn)); //input raw image
 
       std::cout << "ApplyWaterShedFilter called" << std::endl;
 
