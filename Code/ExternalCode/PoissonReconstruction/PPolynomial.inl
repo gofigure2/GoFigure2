@@ -475,7 +475,7 @@ inline PPolynomial<Degree> PPolynomial<Degree>::GaussianApproximation(const doub
 template<int Degree>
 inline PPolynomial<Degree+1> PPolynomial<Degree>::MovingAverage(const double& radius)
 {
-  const int UDegree = Degree+1;
+    const int UDegree = Degree+1;
 	PPolynomial<UDegree> A;
 	Polynomial<UDegree> p;
 	StartingPolynomial<UDegree>* sps;

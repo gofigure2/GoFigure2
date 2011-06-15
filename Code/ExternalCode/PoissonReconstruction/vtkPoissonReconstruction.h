@@ -45,7 +45,7 @@
 class PoissonReconstruction_EXPORT vtkPoissonReconstruction:public vtkPolyDataAlgorithm
 {
 public:
-  vtkTypeRevisionMacro(vtkPoissonReconstruction, vtkPolyDataAlgorithm);
+  vtkTypeMacro(vtkPoissonReconstruction, vtkPolyDataAlgorithm);
   void PrintSelf(ostream & os, vtkIndent indent);
 
   static vtkPoissonReconstruction * New();
