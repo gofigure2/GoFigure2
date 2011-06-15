@@ -1,0 +1,19 @@
+#ifndef __GoFiltersConfigure_h
+#define __GoFiltersConfigure_h
+
+/* Whether we are building shared libraries.  */
+#if defined ( WIN32 ) && defined ( GOFIGURE2_BUILD_SHARED_LIBS )
+
+#if defined ( Filters_EXPORTS )
+#define GOFILTERS_EXPORT __declspec(dllexport)
+#else
+#define GOFILTERS_EXPORT __declspec(dllimport)
+#endif
+
+#else
+
+#define GOFILTERS_EXPORT
+
+#endif
+
+#endif

@@ -31,52 +31,57 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#ifndef __ContourToMeshFilter_h
-#define __ContourToMeshFilter_h
+#ifndef __MeshToContourFilter_h
+#define __MeshToContourFilter_h
 
 #include "GoFiltersConfigure.h"
 
-#include "itkLightObject.h"
-#include "itkObjectFactory.h"
+#include "map"
 
-namespace itk
-{
+class vtkPolyData;
+
 /**
- * \class ContourToMeshFilter
+ * \class MeshToContourFilter
  * \brief
- */
-template< class TContainer >
-class GOFILTERS_EXPORT ContourToMeshFilter:public LightObject
+ **/
+class GOFILTERS_EXPORT MeshToContourFilter
 {
 public:
-  typedef ContourToMeshFilter        Self;
-  typedef LightObject                Superclass;
-  typedef SmartPointer< Self >       Pointer;
-  typedef SmartPointer< const Self > ConstPointer;
 
-  /** Method for creation through object factory */
-  itkNewMacro(Self);
+  MeshToContourFilter();
+  ~MeshToContourFilter();
 
-  /** Run-time type information */
-  itkTypeMacro(ContourToMeshFilter, LightObject);
+  enum ORIENTATION {
+    XY = 0,
+    XZ = 1,
+    YZ = 2
+    };
 
-  typedef TContainer                             ContainerType;
-  typedef typename ContainerType::const_iterator ContainerConstIterator;
+  /**
+    * \brief Set polydata to be splitted
+    * \param[in] iInput polydata to be splitted
+    */
+  void SetInput(vtkPolyData* iInput);
 
-  void ProcessContours(const ContainerType & iContainer);
+  /**
+    * \brief Set spacing of the original image to know how many slices to extract
+    * \param[in] iX X spacing
+    * \param[in] iY Y spacing
+    * \param[in] iZ Z spacing
+    */
+  void SetSpacing(const double& iX, const double & iY, const double& iZ);
 
-  vtkPolyData * GetOutput();
+  /**
+    * \brief Extract contours from polydata given an orientation
+    * \param[in] iOrientation Desired Orientation (XY, XZ, YZ)
+    * \return Map of polydatas indexed by slice position.
+    * \note polydatas has to be deleted
+    */
+  std::map<double, vtkPolyData*> ExtractPolyData(ORIENTATION iOrientation);
 
-protected:
-  ContourToMeshFilter();
-  ~ContourToMeshFilter();
-
-  vtkPolyData *m_Output;
-
-  vtkIdType m_ThresholdNumberOfPoints;
-  int m_TargetNumberOfPoints;
-
+private:
+  vtkPolyData*                   m_Input;
+  double                         m_Spacing[3];
 };
-}
-#include "ContourToMeshFilter.txx"
+
 #endif

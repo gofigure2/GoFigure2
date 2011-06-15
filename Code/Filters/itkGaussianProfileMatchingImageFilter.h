@@ -43,6 +43,8 @@
 #define ITK_LEAN_AND_MEAN
 #endif
 
+#include "GoFiltersConfigure.h"
+
 #include "itkImageToImageFilter.h"
 #include "itkCastImageFilter.h"
 #include "itkMedianImageFilter.h"
@@ -60,7 +62,7 @@
 namespace itk
 {
 template< class TFeatureImage, class TInputImage, class TSegmentImage >
-class ITK_EXPORT GaussianProfileMatchingImageFilter:public ImageToImageFilter<
+class GOFILTERS_EXPORT GaussianProfileMatchingImageFilter:public ImageToImageFilter<
     TFeatureImage, TInputImage >
 {
 public:

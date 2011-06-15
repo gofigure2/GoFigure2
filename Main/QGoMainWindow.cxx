@@ -514,7 +514,7 @@ QGoMainWindow::LoadMeshesFromDatabase(const int & iT)
         {
         // note here it only makes sense when the trace is a mesh (for now)
         //std::cout << "IN WHILE" << std::endl;
-
+/*
         if ( mesh_list_it->Nodes )
           {
           GoFigureMeshAttributes attributes =
@@ -526,6 +526,7 @@ QGoMainWindow::LoadMeshesFromDatabase(const int & iT)
           w3t->m_DataBaseTables->PrintVolumeAreaForMesh(
             &attributes, mesh_list_it->TraceID);
           }
+        */
         w3t->AddMeshFromNodes< TraceID >(mesh_list_it);
 
         progress.setValue( i );
