@@ -127,7 +127,12 @@ protected:
   };
 
   size_t        m_NumberOfMeshes;
-  unsigned int  m_NumberOfThreads;
+#ifdef ITKv4
+  ThreadIdType  m_NumberOfThreads;
+#else
+  int           m_NumberOfThreads;
+#endif
+
   ImageType*    m_Input;
 
   MeshVectorType m_Meshes;

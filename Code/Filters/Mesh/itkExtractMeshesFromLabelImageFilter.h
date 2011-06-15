@@ -244,7 +244,12 @@ protected:
   MeshVectorType m_Meshes;
   FeatureImageVectorType m_FeatureImages;
 
-  unsigned int m_NumberOfThreads;
+#ifdef ITKv4
+  ThreadIdType m_NumberOfThreads;
+#else
+  int          m_NumberOfThreads;
+#endif
+
   unsigned int m_NumberOfMeshes;
   unsigned int m_NumberOfTrianglesPerMesh;
   unsigned int m_NumberOfSmoothingIterations;

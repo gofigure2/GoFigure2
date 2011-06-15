@@ -142,8 +142,11 @@ protected:
   virtual void AfterThreadedGenerateData();
 
   virtual void ThreadedGenerateData(const ImageRegionType & windowRegion,
+#ifdef ITKv4
+                                    ThreadIdType threadId );
+#else
                                     int threadId);
-
+#endif
   void GenerateInputRequestedRegion();
 
   void EnlargeOutputRequestedRegion( DataObject *itkNotUsed(output) );
