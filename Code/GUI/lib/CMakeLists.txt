@@ -341,27 +341,8 @@ SET( QGoGUI_LIBS
   vtkRenderingAddOn2
   PoissonReconstruction
   ctk
-  ITKIO
-  ITKCommon
-  ITKBasicFilters
-  ITKStatistics
+  ${ITK_LIBRARIES}
   )
-
-IF( ( ITK_VERSION_MAJOR EQUAL 4 ) AND
-    ( ITK_VERSION_MINOR EQUAL 0 ) AND
-    ( ITK_VERSION_PATCH EQUAL 0 )
-    )
-
-  SET( QGoGUI_LIBS
-    ${QGoGUI_LIBS}
-    ITKReview
-    )
-
-ENDIF( ( ITK_VERSION_MAJOR EQUAL 4 ) AND
-    ( ITK_VERSION_MINOR EQUAL 0 ) AND
-    ( ITK_VERSION_PATCH EQUAL 0 )
-  )
-
 
 TARGET_LINK_LIBRARIES( QGoGui
   ${QGoGUI_LIBS}
