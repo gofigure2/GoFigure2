@@ -1139,7 +1139,7 @@ void QGoTabImageView3DwT::StartDopplerView()
     std::vector<int> time = m_ImageProcessor->getDopplerTime(m_TCoord);
     // get number of items in container
     // requiereds to call this method since the number of items varies
-    for(int i=0; i<m_ImageProcessor->getDopplerSize(); ++i)
+    for(unsigned int i=0; i<m_ImageProcessor->getDopplerSize(); ++i)
       {
       if(time[i]>=0)
         {
@@ -1596,7 +1596,7 @@ QGoTabImageView3DwT::BuildDopplerWidget()
   std::vector<int> time = m_ImageProcessor->getDopplerTime(m_TCoord);
   // get number of items in container
   // requiereds to call this method since the number of items varies
-  for(int i=0; i<m_ImageProcessor->getDopplerSize(); ++i)
+  for(unsigned int i=0; i<m_ImageProcessor->getDopplerSize(); ++i)
     {
     if(time[i]>=0)
       {
@@ -2978,7 +2978,7 @@ QGoTabImageView3DwT::UpdateTracesEditingWidget()
       std::vector<int> dopplerT =
           this->m_ImageProcessor->getDopplerTime(this->m_TCoord);
 
-      for(int i=0; i<this->m_ImageProcessor->getDopplerSize(); ++i)
+      for(unsigned int i=0; i<this->m_ImageProcessor->getDopplerSize(); ++i)
       {
         if (dopplerT[i] >= 0 )
           {
