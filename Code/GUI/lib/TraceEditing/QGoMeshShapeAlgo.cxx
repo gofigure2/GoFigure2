@@ -53,7 +53,7 @@ QGoMeshShapeAlgo::~QGoMeshShapeAlgo()
 //-------------------------------------------------------------------------
 std::vector<vtkPolyData*> QGoMeshShapeAlgo::ApplyAlgo(
   GoImageProcessor* iImages,
-    int iChannel)
+    int iChannel, bool iIsInvertedOn)
 {
   QGoFilterShape ShapeFilter;
 

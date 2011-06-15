@@ -76,7 +76,7 @@ public:
   // should not be virutal pure since we dont implement it....
   std::vector<vtkPolyData*> ApplyAlgo(
     GoImageProcessor* iImages,
-    int iChannel);
+    int iChannel, bool iIsInvertedOn = false);
 
   std::vector<std::vector<vtkPolyData*> > ApplyAlgoSeveralSeeds(
     GoImageProcessor* iImages, int iChannel);
@@ -129,9 +129,9 @@ protected:
         }
 
       bounds[2*iOrientation]    =
-          iCenter[iOrientation] + (pair*(pow(-1, i))*spacing[iOrientation]);
+          iCenter[iOrientation] + (pair*(pow(-1., static_cast<int>(i) ) )*spacing[iOrientation]);
       bounds[2*iOrientation +1] =
-          iCenter[iOrientation] + (pair*(pow(-1, i))*spacing[iOrientation]);
+          iCenter[iOrientation] + (pair*(pow(-1., static_cast<int>(i) ) )*spacing[iOrientation]);
 
       // then let's extract the Slice of Interest
       ImageType2DPointer ITK_Slice_Image =

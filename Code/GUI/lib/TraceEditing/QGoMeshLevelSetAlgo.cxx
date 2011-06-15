@@ -51,7 +51,7 @@ QGoMeshLevelSetAlgo::~QGoMeshLevelSetAlgo()
 //-------------------------------------------------------------------------
 std::vector<vtkPolyData*> QGoMeshLevelSetAlgo::ApplyAlgo(
   GoImageProcessor* iImages,
-    int iChannel)
+    int iChannel, bool iIsInvertedOn)
 {
   std::vector<vtkPolyData*> oNewMeshes = std::vector<vtkPolyData*>();
 

@@ -193,6 +193,16 @@ int QGoModesManagerWidget::GetSelectedTimePoint()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+bool QGoModesManagerWidget::GetIsInvertedOn()
+{
+  QGoAlgorithmsManagerWidget* CurrentWidget =  
+    dynamic_cast<QGoAlgorithmsManagerWidget*>
+      (this->m_ModeWidgets->currentWidget());
+  return CurrentWidget->IsInvertChecked();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 void QGoModesManagerWidget::SetTheRightMode(int iIndex)
 {
   if(! m_ModeAlreadyCleaned)

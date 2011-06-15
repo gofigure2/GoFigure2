@@ -42,6 +42,7 @@
 #include <QFormLayout>
 #include <QLabel>
 #include <QComboBox>
+#include <QCheckbox>
 #include "QGoAlgorithmWidget.h"
 
 /**
@@ -115,9 +116,12 @@ public:
 
   int GetSelectedTimePoint();
 
+  bool IsInvertChecked();
+
 signals:
 
   void ResetClicked();
+  void InvertChecked(Qt::CheckState);
 
 protected:
   QVBoxLayout*                 m_VBoxLayout;
@@ -128,6 +132,7 @@ protected:
   QComboBox*                   m_TimeComboBox;
   QStringList                  m_ListTimePoints;
   QLabel*                      m_MethodLabel;
+  QCheckBox*                   m_InvertBox;
 
   /**
   \brief add the different widgets, buttons and fill the comboboxes

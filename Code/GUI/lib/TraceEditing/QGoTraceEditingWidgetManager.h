@@ -137,7 +137,8 @@ protected:
     {
     emit UpdateSeeds();
     std::vector<vtkPolyData*> NewTraces = iAlgo->ApplyAlgo(
-      this->m_Images, this->m_TraceEditingWidget->GetChannelNumber() );
+      this->m_Images, this->m_TraceEditingWidget->GetChannelNumber(),
+      this->m_TraceEditingWidget->GetIsInvertedOn());
     emit TracesCreatedFromAlgo(NewTraces, this->GetSelectedTimePoint() );
     emit ClearAllSeeds();
     }

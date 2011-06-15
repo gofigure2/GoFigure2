@@ -58,7 +58,7 @@ public:
 
   std::vector<vtkPolyData*> ApplyAlgo(
     GoImageProcessor* iImages,
-    int iChannel);
+    int iChannel, bool iIsInvertedOn = false);
 
   std::vector<std::vector<vtkPolyData*> > ApplyAlgoSeveralSeeds(
     GoImageProcessor* iImages, int iChannel);
