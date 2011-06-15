@@ -254,6 +254,9 @@ void QGoNavigationDockWidget::SetTMinimumAndMaximum(const int & iMin, const int 
     QObject::connect( this->step, SIGNAL( valueChanged(int) ),
                       this, SIGNAL( StepChanged(int) ) );
 
+    QObject::connect( this->t, SIGNAL( valueChanged(int) ),
+                      this, SIGNAL( DopplerSizeChanged(int) ) );
+
 
     // shortcuts to move through time
     (void)new QShortcut( QKeySequence( tr("Ctrl+Z", "Move to previous") ),

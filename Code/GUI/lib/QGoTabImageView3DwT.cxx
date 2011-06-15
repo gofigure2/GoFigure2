@@ -725,6 +725,9 @@ QGoTabImageView3DwT::CreateVisuDockWidget()
   QObject::connect( m_NavigationDockWidget, SIGNAL( StepChanged(int) ),
                     this, SLOT( StepChanged(int) ) );
 
+  QObject::connect( m_NavigationDockWidget, SIGNAL( DopplerSizeChanged(int) ),
+                    this, SLOT( DopplerSizeChanged(int) ) );
+
   QObject::connect( m_NavigationDockWidget, SIGNAL( visibilityChanged(QString, bool) ),
                     this, SLOT( visibilityChanged(QString, bool) ) );
 
@@ -1133,10 +1136,10 @@ void QGoTabImageView3DwT::StartDopplerView()
     // hide channels
     this->m_NavigationDockWidget->VisibilityListChannels(false);
     //update values - show requiered widgets
-    int* time = m_ImageProcessor->getDopplerTime(m_TCoord);
+    std::vector<int> time = m_ImageProcessor->getDopplerTime(m_TCoord);
     // get number of items in container
     // requiereds to call this method since the number of items varies
-    for(int i=0; i<3; ++i)
+    for(int i=0; i<m_ImageProcessor->getDopplerSize(); ++i)
       {
       if(time[i]>=0)
         {
@@ -1590,10 +1593,10 @@ QGoTabImageView3DwT::BuildDopplerWidget()
 {
   // update widget
   //update values - show requiered widgets
-  int* time = m_ImageProcessor->getDopplerTime(m_TCoord);
+  std::vector<int> time = m_ImageProcessor->getDopplerTime(m_TCoord);
   // get number of items in container
   // requiereds to call this method since the number of items varies
-  for(int i=0; i<3; ++i)
+  for(int i=0; i<m_ImageProcessor->getDopplerSize(); ++i)
     {
     if(time[i]>=0)
       {
@@ -2972,31 +2975,21 @@ QGoTabImageView3DwT::UpdateTracesEditingWidget()
     else
       {
       std::map<QString, QColor> ListTimePoints;
-      QColor Red   (255, 0, 0, 255);
-      QColor Green (0, 255, 0, 255);
-      QColor Blue  (0, 0, 255, 255);
-      int* dopplerT = this->m_ImageProcessor->getDopplerTime(this->m_TCoord);
-      //unsigned int* realT = this->m_ImageProcessor->getBoundsTime();
+      std::vector<int> dopplerT =
+          this->m_ImageProcessor->getDopplerTime(this->m_TCoord);
 
-      if ( dopplerT[0] >= 0 )
-        {
-        ListTimePoints[tr("%1").arg(dopplerT[0])] = Red;
-        }
-      /*else
-        {
-        ListTimePoints[tr("%1").arg(realT[0])] = Red;
-        }*/
-
-      ListTimePoints[tr("%1").arg(this->m_TCoord)] = Green;
-
-      if (dopplerT[2] >= 0 )
-        {
-        ListTimePoints[tr("%1").arg(dopplerT[2])] = Blue;
-        }
-      /*else
-        {
-        ListTimePoints[tr("%1").arg(realT[1])] = Blue;
-        }*/
+      for(int i=0; i<this->m_ImageProcessor->getDopplerSize(); ++i)
+      {
+        if (dopplerT[i] >= 0 )
+          {
+          double* rgb = vtkMath::HSVToRGB(
+                static_cast<double>(i) /
+                static_cast<double>(
+                  this->m_ImageProcessor->getDopplerSize()),1,1);
+          QColor color(rgb[0]*255, rgb[1]*255, rgb[2]*255);
+          ListTimePoints[tr("%1").arg(dopplerT[i])] = color;
+          }
+      }
 
       this->m_MeshEditingWidget->SetTSliceForDopplerView(ListTimePoints,
         m_ImageProcessor->getDopplerChannel());
@@ -3143,6 +3136,28 @@ visibilityChanged(QString iName, bool iVisibility)
   EnableVolumeRendering(this->m_ViewActions.at(12)->isChecked());
   // update visu
   m_ImageView->Update();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+DopplerSizeChanged(int iDopplerSize)
+{
+  // delete previous doppler widget
+  this->m_NavigationDockWidget->DeleteDopplerWidgets();
+  // set the new doppler step
+  m_ImageProcessor->setDopplerSize(iDopplerSize);
+  // update the image processor
+  m_ImageProcessor->setDoppler(m_TCoord, 0); // 0 is for optimization later on...
+  //rebuild navigation widget
+  BuildDopplerWidget();
+  // build new image
+  UpdateImage();
+  //update
+  m_ImageView->Update();
+  //update the trace editing widget
+  UpdateTracesEditingWidget();
 }
 //-------------------------------------------------------------------------
 

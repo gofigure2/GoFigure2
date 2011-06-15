@@ -361,10 +361,12 @@ public:
   //---------------------------------------------------------------------------
   unsigned int getDopplerStep();
   void setDopplerStep(unsigned int iStep);
-  int* getDopplerTime(unsigned int iTime);
+  std::vector<int> getDopplerTime(unsigned int iTime);
   void setDopplerMode(const bool& iEnable, const unsigned int& iChannel);
   bool getDopplerMode();
   unsigned int getDopplerChannel();
+  void setDopplerSize(int iSize);
+  unsigned int getDopplerSize();
 
   /**
    * \brief change visibility of one channel given its name.
@@ -402,10 +404,11 @@ protected:
 
   // Doppler view parameters
   //--------------------
-  bool         m_DopplerMode;
-  unsigned int m_DopplerStep;
-  int          m_DopplerTime[3];
-  unsigned int m_DopplerChannel;
+  bool             m_DopplerMode;
+  unsigned int     m_DopplerStep;
+  std::vector<int> m_DopplerTime;
+  unsigned int     m_DopplerChannel;
+  unsigned int     m_DopplerSize;
   //--------------------
 
 private:
@@ -429,9 +432,7 @@ private:
       this->m_TimeInterval = rhs.m_TimeInterval;
       this->m_DopplerMode = rhs.m_DopplerMode;
       this->m_DopplerStep = rhs.m_DopplerStep;
-      this->m_DopplerTime[0] = rhs.m_DopplerTime[0];
-      this->m_DopplerTime[1] = rhs.m_DopplerTime[1];
-      this->m_DopplerTime[2] = rhs.m_DopplerTime[2];
+      this->m_DopplerTime = rhs.m_DopplerTime;
       this->m_DopplerChannel = rhs.m_DopplerChannel;
       }
     return *this;

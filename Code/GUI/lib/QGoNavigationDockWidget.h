@@ -147,6 +147,8 @@ signals:
 
   void openTransferFunctionEditor(QString);
 
+  void DopplerSizeChanged(int iSize);
+
 protected:
   GoFigure::TabDimensionType m_Dimension;
 

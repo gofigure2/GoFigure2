@@ -35,6 +35,8 @@
 
 #include "GoMegaImageProcessor.h"
 
+#include "vtkMath.h"
+
 //--------------------------------------------------------------------------
 void
 GoMegaImageProcessor::
@@ -190,9 +192,9 @@ setDoppler(const unsigned int& iTime, const unsigned int& iPrevious)
     return;
     }
 
-  int* dopplerTime = getDopplerTime(iTime);
+  std::vector<int> dopplerTime = getDopplerTime(iTime);
 
-  for(unsigned int i=0; i<3; ++i)
+  for(unsigned int i=0; i<getDopplerSize(); ++i)
     {
     if(dopplerTime[i] >= 0)
     {
@@ -201,14 +203,20 @@ setDoppler(const unsigned int& iTime, const unsigned int& iPrevious)
     vtkSmartPointer<vtkImageData> image =
         m_MegaImageReader->GetImage(m_DopplerChannel,dopplerTime[i]);
 
+    // hue: 0 to 0.7
+    double* rgb = vtkMath::HSVToRGB(
+          static_cast<double>(i)/static_cast<double>(getDopplerSize()),1,1);
+
     // color from red to blue
     std::vector<double> color;
-    color.push_back(0.0);
-    color.push_back(0.0);
-    color.push_back(0.0);
+    color.push_back(rgb[0]*255);
+    color.push_back(rgb[1]*255);
+    color.push_back(rgb[2]*255);
     color.push_back(255);
 
-    color[i] = 255;
+    std::cout << " R: " << color[0]
+              << " G: " << color[1]
+              << " G: " << color[2] << std::endl;
 
     // Create LUT
     vtkSmartPointer<vtkLookupTable> lut = createLUT(color[0],

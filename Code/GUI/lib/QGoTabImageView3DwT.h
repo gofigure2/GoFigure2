@@ -314,6 +314,8 @@ public slots:
 
   void StepChanged(int iStep);
 
+  void DopplerSizeChanged( int iSize);
+
   void ValidateContour(int iTCoord);
 
   int SaveAndVisuContour(int iTCoord, vtkPolyData *iView = NULL);
