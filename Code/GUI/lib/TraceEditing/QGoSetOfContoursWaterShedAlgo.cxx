@@ -56,7 +56,7 @@ QGoSetOfContoursWaterShedAlgo::
 //-------------------------------------------------------------------------
 std::vector<vtkPolyData*>
 QGoSetOfContoursWaterShedAlgo::
-ApplyAlgo(GoImageProcessor* iImages,std::string iChannel)
+ApplyAlgo(GoImageProcessor* iImages,std::string iChannel, bool iIsInvertedOn)
 {
   std::vector<vtkPolyData*> NewContours = std::vector<vtkPolyData*>();
   return NewContours;

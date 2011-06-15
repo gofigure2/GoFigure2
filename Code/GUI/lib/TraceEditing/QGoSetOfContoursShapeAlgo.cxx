@@ -55,7 +55,8 @@ QGoSetOfContoursShapeAlgo::~QGoSetOfContoursShapeAlgo()
 //-------------------------------------------------------------------------
 std::vector<vtkPolyData*> QGoSetOfContoursShapeAlgo::ApplyAlgo(
   GoImageProcessor* iImages,
-    std::string iChannel)
+    std::string iChannel,
+    bool iIsInvertedOn)
 {
   std::vector<vtkPolyData*> NewContours = std::vector<vtkPolyData*>();
   return NewContours;

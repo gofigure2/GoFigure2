@@ -83,7 +83,8 @@ public:
   */
   virtual std::vector<vtkPolyData*> ApplyAlgo(
     GoImageProcessor* iImages,
-    std::string iChannel) = 0;
+    std::string iChannel,
+    bool iIsInvertedOn = false) = 0;
 
   /*
    * \note Nicolas-shouldnt be public-move to protected
@@ -290,7 +291,7 @@ public:
     typedef typename InputImageType::SpacingType           ImageSpacingType;
 
     typedef typename OutputImageType::PointType            oImagePointType;
-        typedef typename OutputImageType::OffsetType         oImageOffsetType;
+    typedef typename OutputImageType::OffsetType           oImageOffsetType;
 
     ImagePointType t_min, t_max;
     oImagePointType new_origin;
@@ -311,8 +312,12 @@ public:
         iInput->GetLargestPossibleRegion().GetSize();
 
     ImageSizeType  size;
-        size.Fill( 0 );
+    size.Fill( 0 );
+#ifdef ITKv4
     oImageOffsetType  new_offset;
+#else
+    long int* new_offset;
+#endif
 
 
     int l = 0;
@@ -363,7 +368,10 @@ public:
     FilterTypePointer filter = FilterType::New();
     filter->SetExtractionRegion( region );
     filter->SetInput( iInput );
+#ifdef ITKv4
     filter->SetDirectionCollapseToIdentity();
+#endif
+
     try
       {
       filter->Update();

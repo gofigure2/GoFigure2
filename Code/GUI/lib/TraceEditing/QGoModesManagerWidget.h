@@ -105,6 +105,7 @@ public:
   */
   std::string GetCurrentImageName();
   int GetSelectedTimePoint();
+  bool GetIsInvertedOn();
 
   void SetTSliceForClassicViewInAllAlgoModes(int iTimePoint);
   void SetTSliceForDopplerViewInAllAlgoModes(

@@ -156,6 +156,13 @@ int QGoTraceEditingWidget::GetSelectedTimePoint()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+bool QGoTraceEditingWidget::GetIsInvertedOn()
+{
+  return this->m_ModeEditingWidget->GetIsInvertedOn();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
  void QGoTraceEditingWidget::CheckTheCurrentMode(bool IsVisible)
  {
   if (IsVisible)

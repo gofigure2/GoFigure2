@@ -80,6 +80,7 @@ public:
 
   std::string GetCurrentImageName();
   int GetSelectedTimePoint();
+  bool GetIsInvertedOn();
  
   /**
   \brief check which mode is selected and if the seeds are needed or not and

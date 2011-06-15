@@ -2,10 +2,10 @@
 # Get and build boost
 
 set( proj Boost )
-set( version 1.45.0 )
+set( version 1.46.1 )
 
 ExternalProject_Add(${proj}
-  GIT_REPOSITORY "${git_protocol}://github.com/boost-lib/boost-cmake.git"
+  GIT_REPOSITORY "${git_protocol}://github.com/pocb/boost.git"
   GIT_TAG "origin/cmake-${version}"
   SOURCE_DIR ${proj}
   BINARY_DIR ${proj}-build

@@ -56,7 +56,8 @@ QGoSetOfContoursLevelSetAlgo::~QGoSetOfContoursLevelSetAlgo()
 //-------------------------------------------------------------------------
 std::vector<vtkPolyData*> QGoSetOfContoursLevelSetAlgo::ApplyAlgo(
   GoImageProcessor* iImages,
-    std::string iChannel)
+    std::string iChannel,
+    bool iIsInvertedOn)
 {
   std::vector<vtkPolyData*> NewContours = std::vector<vtkPolyData*>();
   return NewContours;

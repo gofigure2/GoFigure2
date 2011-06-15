@@ -42,6 +42,7 @@
 #include <QFormLayout>
 #include <QLabel>
 #include <QComboBox>
+#include <QCheckBox>
 #include "QGoAlgorithmWidget.h"
 
 /**
@@ -58,7 +59,7 @@ class QGoAlgorithmsManagerWidget:
 public:
   explicit QGoAlgorithmsManagerWidget(std::string iModeName,
     QWidget *iParent = 0,
-    std::vector<QString> iVectChannels = std::vector<QString>(), 
+    std::vector<QString> iVectChannels = std::vector<QString>(),
     QStringList iListTime = QStringList(),
     bool iOnlyOneMethod = false,
     bool NeedApplyResetButton = true);
@@ -115,9 +116,12 @@ public:
 
   int GetSelectedTimePoint();
 
+  bool IsInvertChecked();
+
 signals:
 
   void ResetClicked();
+  void InvertChecked(Qt::CheckState);
 
 protected:
   QVBoxLayout*                 m_VBoxLayout;
@@ -128,6 +132,7 @@ protected:
   QComboBox*                   m_TimeComboBox;
   QStringList                  m_ListTimePoints;
   QLabel*                      m_MethodLabel;
+  QCheckBox*                   m_InvertBox;
 
   /**
   \brief add the different widgets, buttons and fill the comboboxes
@@ -135,7 +140,7 @@ protected:
   \param[in] iListChannels list of the names of the channels
   \param[in] iListTime list of the timepoints
   */
-  void Initialize(std::vector<QString> iVectChannels = std::vector<QString>(), 
+  void Initialize(std::vector<QString> iVectChannels = std::vector<QString>(),
     QStringList iListTime = QStringList(), bool iOnlyOneMethod = false,
     bool NeedApplyResetButton = true);
 

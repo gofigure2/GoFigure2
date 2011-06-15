@@ -65,7 +65,8 @@ void QGoMeshSplitDanielssonDistanceAlgo::SetAlgoWidget(QWidget* iParent)
 //-------------------------------------------------------------------------
 std::vector<vtkPolyData*> QGoMeshSplitDanielssonDistanceAlgo::ApplyAlgo(
   GoImageProcessor* iImages,
-    std::string iChannel)
+    std::string iChannel, 
+    bool iIsInvertedOn)
 {
   std::vector<vtkPolyData*> NewMeshes = std::vector<vtkPolyData*> ();
   /*QGoFilterChanAndVese LevelSetFilter;

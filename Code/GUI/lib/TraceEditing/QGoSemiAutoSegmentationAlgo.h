@@ -62,7 +62,8 @@ public:
   */
   virtual std::vector<vtkPolyData*> ApplyAlgo(
     GoImageProcessor* iImages,
-    std::string iChannel) = 0;
+    std::string iChannel,
+    bool iIsInvertedOn = false) = 0;
 
 protected:
   std::vector< vtkPoints* >*      m_Seeds;
