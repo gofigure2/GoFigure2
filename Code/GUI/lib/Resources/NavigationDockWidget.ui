@@ -260,7 +260,7 @@
       <item row="3" column="0">
        <widget class="QLabel" name="tLabel">
         <property name="text">
-         <string>Nb of T</string>
+         <string># of T</string>
         </property>
        </widget>
       </item>
