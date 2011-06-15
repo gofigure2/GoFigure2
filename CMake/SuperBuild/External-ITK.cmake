@@ -6,7 +6,7 @@ set(proj ITK)
 if( WIN32 )
   set( ITK_TAG "release" )
 else()
-  set( ITK_TAG "ce6cacdb19b889506bf0f97b994c0ddcf21ca5bf" )
+  set( ITK_TAG "2260c095f5809045a10d76cca0acee326502ac53" )
 endif()
 
 ExternalProject_Add(${proj}
