@@ -213,31 +213,6 @@ unsigned int QGoDBMeshManager::SaveNewMeshFromVisu(
   vtkMySQLDatabase *iDatabaseConnector,
   GoFigureMeshAttributes *iMeshAttributes)
 {
-  /*GoDBMeshRow NewMesh(this->m_ImgSessionID);
-
-  NewMesh.SetCellType(iDatabaseConnector, *this->m_SelectedCellType);
-  NewMesh.SetSubCellType(iDatabaseConnector, *this->m_SelectedSubCellType);
-
-  this->SetMeshBoundingBoxAndPoints(iXCoordMin, iYCoordMin, iZCoordMin,
-                                    iXCoordMax, iYCoordMax, iZCoordMax, iTraceNodes, iDatabaseConnector, NewMesh,
-                                    iMeshAttributes, iTShift);
-  //unsigned int TrackID = 0;
-  std::string test = this->m_SelectedCollectionData->first; //for test
-  //if (this->m_SelectedCollectionData->first != "Add a new track ...") no need
-  // as it will be directly 0
-  // TrackID = ss_atoi<unsigned int>(this->m_SelectedCollectionData->first);
-
-  //save the intensities for each channel !!!
-  unsigned int NewMeshID = this->m_CollectionOfTraces->CreateNewTraceInDB< GoDBMeshRow >(
-      NewMesh, iDatabaseConnector, *this->m_SelectedColorData,
-      ss_atoi< unsigned int >(this->m_SelectedCollectionData->first) );
-  // pointer to double has to be deleted after usage...
-  double *rgba = this->GetVectorFromQColor(this->m_SelectedColorData->second);
-  this->m_MeshContainerInfoForVisu->UpdateCurrentElementFromDB(
-    NewMeshID, rgba);
-  delete[] rgba;
-  this->DisplayInfoForLastCreatedMesh(iDatabaseConnector, iMeshAttributes);
-  return NewMeshID;*/
   return SaveNewMeshFromVisu(iXCoordMin, iYCoordMin, iZCoordMin, iXCoordMax, iYCoordMax, 
     iZCoordMax, iTCoord, iTraceNodes, iDatabaseConnector, iMeshAttributes, 
     ss_atoi<unsigned int>(this->m_SelectedCollectionData->first) );
