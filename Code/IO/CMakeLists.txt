@@ -47,13 +47,20 @@ SET( QGOIO_SRC
   GoDBTWContainerForLineage.cxx
   GoDBExport.cxx
   GoDBImport.cxx
+
+  # Mega related files
+  GoImage/GoImageProcessor.cxx
+  GoImage/GoMegaImageProcessor.cxx
+  GoImage/GoLSMImageProcessor.cxx
+  itkMegaCaptureImport.cxx
+  itkMegaCaptureReader.cxx
   MegaCaptureHeaderReader.cxx
+
   QueryDataBaseHelper.cxx
   SelectQueryDatabaseHelper.cxx
   QueryBuilderHelper.cxx
   # itkLsm3DSerieImport.cxx
-  itkMegaCaptureImport.cxx
-  itkMegaCaptureReader.cxx
+
   GoFigureFileInfoMultiIndexContainerHelper.cxx
   vtkPolyDataMySQLContourReader.cxx
   vtkPolyDataMySQLMeshReader.cxx
@@ -87,8 +94,7 @@ TARGET_LINK_LIBRARIES( QGoIO
   vtkIO
   vtkImaging
   vtkLSMReader
-  ITKCommon
-  ITKIO
+  ${ITK_LIBRARIES}
 )
 
 SET_TARGET_PROPERTIES( QGoIO PROPERTIES VERSION ${GOFIGURE2_LIB_VERSION} SOVERSION ${GOFIGURE2_LIB_VERSION} )

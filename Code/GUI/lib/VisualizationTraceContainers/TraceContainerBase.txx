@@ -276,10 +276,9 @@ TraceContainerBase< TContainer >::UpdateElementHighlightingWithGivenTraceID(cons
   MultiIndexContainerTraceIDIterator
     it = m_Container.get< TraceID >().find(iId);
 
-  vtkProperty *temp_property = vtkProperty::New();
-
   if ( it != m_Container.get< TraceID >().end() )
     {
+    vtkProperty *temp_property = vtkProperty::New();
     if ( it->Highlighted )
       {
       temp_property->SetColor(it->rgba[0],

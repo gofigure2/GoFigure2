@@ -259,7 +259,8 @@ QGoPrintDatabase::SaveContoursFromVisuInDB(unsigned int iXCoordMin,
   unsigned int ContourID;
   if ( !this->m_ReeditMode )
     {
-    ContourID = this->m_ContoursManager->SaveNewContourFromVisu(iXCoordMin,
+    ContourID = this->m_ContoursManager->SaveNewContourFromVisu(iTCoord,
+                                                                iXCoordMin,
                                                                 iYCoordMin,
                                                                 iZCoordMin,
                                                                 iXCoordMax,
@@ -298,7 +299,7 @@ QGoPrintDatabase::SaveMeshFromVisuInDB(unsigned int iXCoordMin,
                                        unsigned int iXCoordMax,
                                        unsigned int iYCoordMax,
                                        unsigned int iZCoordMax,
-                                       int iTShift,
+                                       int iTCoord,
                                        vtkPolyData *iMeshNodes,
                                        GoFigureMeshAttributes *iMeshAttributes)
 {
@@ -311,7 +312,8 @@ QGoPrintDatabase::SaveMeshFromVisuInDB(unsigned int iXCoordMin,
     /** \todo print a different message if several meshes are created at the
       same timepoint*/
     QString MessageToPrint = this->m_MeshesManager->CheckExistingMeshesForTheTrack(TrackID,
-                                                                                   this->m_DatabaseConnector, iTShift);
+                                                                                   this->m_DatabaseConnector,
+                                                                                   iTCoord);
     if ( MessageToPrint != "" )
       {
       emit PrintMessage(MessageToPrint);
@@ -329,7 +331,7 @@ QGoPrintDatabase::SaveMeshFromVisuInDB(unsigned int iXCoordMin,
                                                                         iXCoordMax,
                                                                         iYCoordMax,
                                                                         iZCoordMax,
-                                                                        iTShift,
+                                                                        iTCoord,
                                                                         iMeshNodes,
                                                                         this->m_DatabaseConnector,
                                                                         iMeshAttributes);
@@ -343,7 +345,7 @@ QGoPrintDatabase::SaveMeshFromVisuInDB(unsigned int iXCoordMin,
                                                            iXCoordMax,
                                                            iYCoordMax,
                                                            iZCoordMax,
-                                                           iTShift,
+                                                           iTCoord,
                                                            iMeshNodes,
                                                            this->m_DatabaseConnector,
                                                            iMeshAttributes);
@@ -384,8 +386,8 @@ QGoPrintDatabase::SaveMeshFromVisuInDB(unsigned int iXCoordMin,
 //-------------------------------------------------------------------------
 void QGoPrintDatabase::SaveNewMeshForMeshToContours(int iNumberOfContours)
 {
-  this->OpenDBConnection();
-  unsigned int TrackID = this->m_TraceSettingsWidget->GetCurrentSelectedCollectionID();
+  /*this->OpenDBConnection();
+  unsigned int TrackID = this->m_TraceWidget->GetCurrentSelectedCollectionID();
   QString      MessageToPrint =  this->m_MeshesManager->CheckExistingMeshesForTheTrack(TrackID,
                                                                                        this->m_DatabaseConnector);
   if ( MessageToPrint != "" )
@@ -414,7 +416,7 @@ void QGoPrintDatabase::SaveNewMeshForMeshToContours(int iNumberOfContours)
                                  // normally, the new added mesh from create
                                  // mesh with no
   //contour will add the new meshid in the TSList...
-  this->CloseDBConnection();
+  this->CloseDBConnection();*/
 }
 
 //-------------------------------------------------------------------------
@@ -429,13 +431,14 @@ unsigned int QGoPrintDatabase::SaveNewContourForMeshToContours(
   unsigned int iZCoordMax,
   vtkPolyData *iTraceNodes)
 {
-  this->OpenDBConnection();
+  /*this->OpenDBConnection();
   unsigned int ContourID = this->m_ContoursManager->SaveNewContourFromVisu(
       iXCoordMin, iYCoordMin, iZCoordMin,
       iXCoordMax, iYCoordMax, iZCoordMax, iTraceNodes,
       this->m_DatabaseConnector, 0);
   this->CloseDBConnection();
-  return ContourID;
+  return ContourID;*/
+  return 0;
 }
 
 //-------------------------------------------------------------------------

@@ -178,7 +178,8 @@ void QGoDBMeshManager::AddActionsContextMenu(QMenu *iMenu)
 unsigned int QGoDBMeshManager::SaveNewMeshFromVisu(
   unsigned int iXCoordMin, unsigned int iYCoordMin, unsigned int iZCoordMin,
   unsigned int iXCoordMax, unsigned int iYCoordMax,
-  unsigned int iZCoordMax, int iTShift, vtkPolyData *iTraceNodes,
+  unsigned int iZCoordMax, int iTCoord,//int iTShift, 
+  vtkPolyData *iTraceNodes,
   vtkMySQLDatabase *iDatabaseConnector,
   GoFigureMeshAttributes *iMeshAttributes,
   unsigned int iTrackID)
@@ -190,7 +191,7 @@ unsigned int QGoDBMeshManager::SaveNewMeshFromVisu(
 
   this->SetMeshBoundingBoxAndPoints(iXCoordMin, iYCoordMin, iZCoordMin,
                                     iXCoordMax, iYCoordMax, iZCoordMax, iTraceNodes, iDatabaseConnector, NewMesh,
-                                    iMeshAttributes, iTShift);
+                                    iMeshAttributes, iTCoord);
   //save the intensities for each channel !!!
   unsigned int NewMeshID = this->m_CollectionOfTraces->CreateNewTraceInDB< GoDBMeshRow >(
       NewMesh, iDatabaseConnector, *this->m_SelectedColorData, iTrackID );
@@ -208,7 +209,7 @@ unsigned int QGoDBMeshManager::SaveNewMeshFromVisu(
 unsigned int QGoDBMeshManager::SaveNewMeshFromVisu(
   unsigned int iXCoordMin, unsigned int iYCoordMin, unsigned int iZCoordMin,
   unsigned int iXCoordMax, unsigned int iYCoordMax,
-  unsigned int iZCoordMax, int iTShift, vtkPolyData *iTraceNodes,
+  unsigned int iZCoordMax, int iTCoord, vtkPolyData *iTraceNodes,
   vtkMySQLDatabase *iDatabaseConnector,
   GoFigureMeshAttributes *iMeshAttributes)
 {
@@ -238,7 +239,7 @@ unsigned int QGoDBMeshManager::SaveNewMeshFromVisu(
   this->DisplayInfoForLastCreatedMesh(iDatabaseConnector, iMeshAttributes);
   return NewMeshID;*/
   return SaveNewMeshFromVisu(iXCoordMin, iYCoordMin, iZCoordMin, iXCoordMax, iYCoordMax, 
-    iZCoordMax, iTShift, iTraceNodes, iDatabaseConnector, iMeshAttributes, 
+    iZCoordMax, iTCoord, iTraceNodes, iDatabaseConnector, iMeshAttributes, 
     ss_atoi<unsigned int>(this->m_SelectedCollectionData->first) );
 }
 
@@ -370,12 +371,13 @@ void QGoDBMeshManager::SetMeshBoundingBoxAndPoints(unsigned int iXCoordMin,
                                                    vtkMySQLDatabase *iDatabaseConnector,
                                                    GoDBMeshRow & iMesh,
                                                    GoFigureMeshAttributes *iMeshAttributes,
-                                                   int iShift)
+                                                   int iTCoord)
+                                                   //int iShift)
 {
   GoDBCoordinateRow coord_min = this->GetCoordinateFromInt(iXCoordMin,
-                                                           iYCoordMin, iZCoordMin, *this->m_CurrentTimePoint + iShift);
+                                                           iYCoordMin, iZCoordMin, iTCoord);//*this->m_CurrentTimePoint + iShift);
   GoDBCoordinateRow coord_max = this->GetCoordinateFromInt(iXCoordMax,
-                                                           iYCoordMax, iZCoordMax, *this->m_CurrentTimePoint + +iShift);
+                                                           iYCoordMax, iZCoordMax, iTCoord);//*this->m_CurrentTimePoint + +iShift);
 
   iMesh.SetTheDataFromTheVisu(iDatabaseConnector, iTraceNodes,
                               coord_min, coord_max, iMeshAttributes);
@@ -573,7 +575,8 @@ unsigned int QGoDBMeshManager::ReassignTrackIDForPreviousMeshWithSameTimePoint(v
 
 //-------------------------------------------------------------------------
 QString QGoDBMeshManager::CheckExistingMeshesForTheTrack(
-  unsigned int iTrackID, vtkMySQLDatabase *iDatabaseConnector, int iShift)
+  unsigned int iTrackID, vtkMySQLDatabase *iDatabaseConnector, 
+  int iTCoord)
 {
   QString MessageToPrint("");
 
@@ -581,7 +584,7 @@ QString QGoDBMeshManager::CheckExistingMeshesForTheTrack(
     {
     unsigned int MeshIDKickedOut =
       this->ReassignTrackIDForPreviousMeshWithSameTimePoint(
-        iDatabaseConnector, iTrackID, *this->m_CurrentTimePoint + iShift);
+        iDatabaseConnector, iTrackID, iTCoord);
     if ( MeshIDKickedOut != 0 )
       {
       MessageToPrint =

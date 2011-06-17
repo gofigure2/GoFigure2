@@ -77,6 +77,8 @@
 #include "vtkImplicitPlaneWidget.h"
 #include "vtkPlane.h"
 
+#include "vtkPiecewiseFunction.h"
+
 #include <cstdlib>
 
 //-------------------------------------------------------------------------
@@ -506,8 +508,13 @@ QGoImageView3D::SetupVTKtoQtConnections()
 void
 QGoImageView3D::SetImage(vtkImageData *input)
 {
+  /**
+    \todo Nicolas-unecessary checks-temp solution
+    */
   if ( !input )
     {
+    vtkSmartPointer<vtkImageData> test = vtkSmartPointer<vtkImageData>::New();
+    this->m_Image->ShallowCopy(test);
     return;
     }
   else
@@ -515,11 +522,10 @@ QGoImageView3D::SetImage(vtkImageData *input)
     int dim[3];
     input->GetDimensions(dim);
 
-    if ( dim[0] + dim[1] + dim[2] > 0 )
-      {
-      m_Initialized = true;
-      this->m_Image = input;
-      }
+    assert ( dim[0] + dim[1] + dim[2] > 0 );
+
+    m_Initialized = true;
+    this->m_Image->ShallowCopy(input);
     }
 }
 
@@ -956,8 +962,9 @@ QGoImageView3D::RemoveActor(const int & iId, vtkActor *iActor)
 {
   if ( iId == 3 )
     {
-    // remove from renderer and Prop3DCollection
-    m_View3D->RemoveProp(iActor);
+    // remove from renderer
+    // should be add/remove view property
+    m_View3D->GetRenderer()->RemoveActor(iActor);
     }
   else
     {
@@ -974,9 +981,8 @@ QGoImageView3D::AddActor(const int & iId, vtkActor *iActor)
 {
   if ( iId == 3 )
     {
-    // add to renderer and Prop3DCollection
-    m_View3D->GetRenderer()->AddViewProp(iActor);
-    m_View3D->AddActorToProp3DCollection(iActor);
+    // add to renderer
+    m_View3D->GetRenderer()->AddActor(iActor);
     }
   else
     {
@@ -991,11 +997,7 @@ QGoImageView3D::AddActor(const int & iId, vtkActor *iActor)
 void
 QGoImageView3D::SetLookupTable(vtkLookupTable *iLut)
 {
-  if ( this->m_Image->GetNumberOfScalarComponents() == 1 )
-    {
-    m_View3D->SetLookupTable(iLut);
-    }
-
+  m_View3D->SetLookupTable(iLut);
   QGoImageView::SetLookupTable(iLut);
 }
 
@@ -1277,20 +1279,23 @@ QGoImageView3D::InitializePlaneWidget()
 /// \todo Add button to enable/disable tri planar rendering
 //-------------------------------------------------------------------------
 void
-QGoImageView3D::EnableVolumeRendering(bool iValue)
+QGoImageView3D::
+EnableVolumeRendering(const std::vector<vtkImageData*>& iImages,
+                      const std::vector<vtkPiecewiseFunction*>& iOpacities)
 {
-  if ( iValue )
-    {
-    //m_View3D->SetTriPlanarRenderingOff();
-    m_View3D->SetVolumeRenderingOn();
-    }
-  else
-    {
-    //m_View3D->SetTriPlanarRenderingOn();
-    m_View3D->SetVolumeRenderingOff();
-    }
+  m_View3D->SetVolumeRenderingOn(iImages, iOpacities);
+  m_View3D->Render();
 }
+//---------------------------------------------------------------------------
 
+//---------------------------------------------------------------------------
+void
+QGoImageView3D::
+DisableVolumeRendering()
+{
+  m_View3D->SetVolumeRenderingOff();
+  m_View3D->Render();
+}
 //---------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------

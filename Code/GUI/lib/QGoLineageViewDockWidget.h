@@ -35,13 +35,13 @@
 #ifndef __QGoLineageViewDockWidget_h
 #define __QGoLineageViewDockWidget_h
 
-
+#include <QObject>
 #include <QRadioButton>
 #include "QGoDockWidget.h"
+#include "QGoGUILibConfigure.h"
 //#include "ui_LineageViewDockWidget.h"
 
-class QGoLineageViewDockWidget:
-  public QGoDockWidget//,
+class QGOGUILIB_EXPORT QGoLineageViewDockWidget: public QGoDockWidget//,
   //protected Ui::LineageViewDockWidget
 {
   Q_OBJECT
@@ -60,5 +60,6 @@ protected:
   void SetUpUi();
   QRadioButton*  m_depthLineage;
   QRadioButton*  m_real;
+
 };
 #endif

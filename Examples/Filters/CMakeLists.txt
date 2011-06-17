@@ -2,8 +2,7 @@ ADD_EXECUTABLE( itkvtkPolyDatatoBinaryMaskImageFilterTest
   itkvtkPolyDatatoBinaryMaskImageFilterTest.cxx )
 
 TARGET_LINK_LIBRARIES( itkvtkPolyDatatoBinaryMaskImageFilterTest
-  ITKIO
-  ITKCommon
+  ${ITK_LIBRARIES}
   vtkGraphics
   vtkHybrid
 )
@@ -51,7 +50,7 @@ TARGET_LINK_LIBRARIES( ContourToMeshFilterTest
   PoissonReconstruction
   vtkHybrid
   vtkRenderingAddOn2
-  ITKCommon
+  ${ITK_LIBRARIES}
   )
 
 ADD_TEST( ContourToMeshFilterTest
@@ -59,3 +58,96 @@ ADD_TEST( ContourToMeshFilterTest
  1
  )
 
+ADD_EXECUTABLE( MeshToContourFilterTest
+  MeshToContourFilterTest.cxx
+  ${GOFIGURE2_SOURCE_DIR}/Code/Filters/Mesh/MeshToContourFilter.cxx
+  )
+TARGET_LINK_LIBRARIES( MeshToContourFilterTest
+  vtkHybrid
+  )
+
+ADD_TEST( MeshToContourFilterTest
+ ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/MeshToContourFilterTest
+ 1
+ )
+
+#ADD_EXECUTABLE( singleCellSplitImageFilter
+#  SingleCellSplitImageFilter.cxx
+#  )
+#TARGET_LINK_LIBRARIES(
+#  singleCellSplitImageFilter
+#  ITKReview
+#  ITKIO
+#  )
+
+ADD_EXECUTABLE( cellMergeImageFilter
+  CellMergeImageFilter.cxx
+  )
+
+TARGET_LINK_LIBRARIES( cellMergeImageFilter
+  vtkHybrid
+  )
+
+#ADD_TEST( singleCellSplitImageFilterTest
+#  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/singleCellSplitImageFilter
+#  ${TESTING_DATA_PATH}/MultiphaseCells2D.png
+#  split.mhd
+#)
+
+
+ADD_EXECUTABLE( itkvtkMeshSplitterDanielssonImageFilterTest
+  itkvtkMeshSplitterDanielssonImageFilterTest.cxx
+)
+TARGET_LINK_LIBRARIES( itkvtkMeshSplitterDanielssonImageFilterTest
+  QGoGui
+)
+
+ADD_TEST( itkvtkMeshSplitterDanielssonImageFilterTest
+  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/itkvtkMeshSplitterDanielssonImageFilterTest
+  ${TESTING_DATA_PATH}/Circle3D.mhd
+)
+
+ADD_EXECUTABLE( ExtractMeshesFromLabelImageFilter
+  ExtractMeshesFromLabelImageFilter.cxx
+)
+TARGET_LINK_LIBRARIES( ExtractMeshesFromLabelImageFilter
+  #ITKCommon
+  #ITKIO
+  #ITKReview
+  ${ITK_LIBRARIES}
+)
+
+ADD_EXECUTABLE(ConvertMeshesToLabelImageFilter ConvertMeshesToLabelImageFilter.cxx )
+TARGET_LINK_LIBRARIES( ConvertMeshesToLabelImageFilter
+  # ITKIO ITKReview
+  ${ITK_LIBRARIES}
+)
+
+ADD_EXECUTABLE( itkQuadEdgeMeshTovtkPolyDataTest itkQuadEdgeMeshTovtkPolyDataTest.cxx )
+TARGET_LINK_LIBRARIES( itkQuadEdgeMeshTovtkPolyDataTest
+  #ITKCommon
+  ${ITK_LIBRARIES}
+  vtkHybrid
+)
+
+ADD_EXECUTABLE( itkvtkPolyDataToitkQuadEdgeMeshTest
+  itkvtkPolyDataToitkQuadEdgeMeshTest.cxx )
+TARGET_LINK_LIBRARIES( itkvtkPolyDataToitkQuadEdgeMeshTest
+  #ITKCommon
+  ${ITK_LIBRARIES}
+  vtkHybrid
+)
+
+ADD_TEST( itkvtkPolyDataToitkQuadEdgeMeshTest
+  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/itkvtkPolyDataToitkQuadEdgeMeshTest
+)
+
+ADD_EXECUTABLE( itkvtkMeshMergeConvexHullFilterTest
+  itkvtkMeshMergeConvexHullFilterTest.cxx )
+TARGET_LINK_LIBRARIES( itkvtkMeshMergeConvexHullFilterTest
+  QGoGui
+)
+ADD_TEST( itkvtkMeshMergeConvexHullFilterTest
+  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/itkvtkMeshMergeConvexHullFilterTest
+  ${TESTING_DATA_PATH}/Circle3D.mhd
+)

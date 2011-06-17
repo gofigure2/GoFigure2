@@ -36,10 +36,8 @@
 #include "QDebug"
 
 #include "QGoImageView3D.h"
-#include "QGoLUTDialog.h"
+//#include "QGoLUTDialog.h"
 #include "QGoNavigationDockWidget.h"
-#include "GoDBCoordinateRow.h"
-#include "GoDBMeshRow.h"
 
 #if defined ( ENABLEFFMPEG ) || defined ( ENABLEAVI )
 
@@ -98,8 +96,8 @@
 #include <set>
 
 // base segmentation dock widgets
-#include "QGoContourSegmentationBaseDockWidget.h"
-#include "QGoMeshSegmentationBaseDockWidget.h"
+#include "QGoMeshEditingWidgetManager.h"
+#include "QGoContourEditingWidgetManager.h"
 
 // track dockwidget
 #include "QGoTrackViewDockWidget.h"
@@ -110,16 +108,19 @@
 //trackediting dw
 #include "QGoTrackEditingWidget.h"
 
-// TESTS
-#include "vtkPolyDataWriter.h"
-#include "vtkViewImage3D.h"
+// image processors
+#include "GoMegaImageProcessor.h"
+#include "GoLSMImageProcessor.h"
+
+// transfer function editor
+#include "GoTransferFunctionEditorWidget.h"
 
 //-------------------------------------------------------------------------
 QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
   QGoTabElementBase(iParent),
-  m_LSMReader(0),
-  m_Image(0),
+  m_ImageProcessor(NULL),
   m_BackgroundColor(Qt::black),
+  m_TraceSettingsToolBar(NULL),
   m_IntersectionLineWidth(2.),
   m_PCoord(0),
   m_RCoord(0),
@@ -127,16 +128,24 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
   m_XTileCoord(0),
   m_YTileCoord(0),
   m_ZTileCoord(0),
-  m_TraceSettingsToolBar(NULL),
-  m_TCoord(-1)
+  m_TCoord(-1),
+  m_MeshEditingWidget(NULL),
+  m_Seeds( 3, NULL )
   //m_TraceWidgetRequiered(false)
 {
-  m_Image = vtkImageData::New();
-  m_Seeds = vtkPoints::New();
+  //m_Image = vtkImageData::New();
 
-  m_ChannelClassicMode = true;
-  m_ChannelOfInterest = 0;
-  m_DopplerStep = 1;
+  m_Seeds[0] = vtkPoints::New();
+  m_Seeds[1] = vtkPoints::New();
+  m_Seeds[2] = vtkPoints::New();
+  // new
+
+//  vtkPoints* xy = vtkPoints::New();
+//  vtkPoints* xz = vtkPoints::New();
+//  vtkPoints* yz = vtkPoints::New();
+//  m_OrderedSeeds.push_back(xy);
+//  m_OrderedSeeds.push_back(xz);
+//  m_OrderedSeeds.push_back(yz);
 
   m_HighlightedContoursProperty = vtkProperty::New();
   m_HighlightedContoursProperty->SetColor(1., 0., 0.);
@@ -173,8 +182,8 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
   CreateVisuDockWidget();
 
   // segmentation dockwidgets
-  CreateContourSegmentationDockWidget();
-  CreateMeshSegmentationDockWidget();
+  //CreateContourSegmentationDockWidget();
+  //CreateMeshSegmentationDockWiget();in setmegacapture/LSM files now
 
   // track dock widget
   m_TrackViewDockWidget = new QGoTrackViewDockWidget(this);
@@ -211,11 +220,10 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
 
   CreateBookmarkActions();
 
-  //CreateModeActions();
+	//CreateModeActions(); in setmegacapture/LSM files now
+	//CreateTracesActions();
 
-  CreateTracesActions();
-
-  ReadSettings();
+	ReadSettings();
 
   m_DockWidgetList.push_back(
     std::pair< QGoDockWidgetStatus *, QDockWidget * >(
@@ -223,23 +231,30 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
         m_NavigationDockWidget, Qt::RightDockWidgetArea, false, true),
       m_NavigationDockWidget) );
 
-  m_DockWidgetList.push_back(
+  /*m_DockWidgetList.push_back(
     std::pair< QGoDockWidgetStatus *, QDockWidget * >(
       new QGoDockWidgetStatus(
         m_ContourSegmentationDockWidget, Qt::LeftDockWidgetArea, false, true),
-      m_ContourSegmentationDockWidget) );
+      m_ContourSegmentationDockWidget) );*/
 
-  m_DockWidgetList.push_back(
+  /*m_DockWidgetList.push_back(
     std::pair< QGoDockWidgetStatus *, QDockWidget * >(
       new QGoDockWidgetStatus(
-        m_MeshSegmentationDockWidget, Qt::LeftDockWidgetArea, false, true),
-      m_MeshSegmentationDockWidget) );
+        this->m_MeshEditingWidget->GetDockWidget(), Qt::LeftDockWidgetArea, true, true),
+        this->m_MeshEditingWidget->GetDockWidget()) ); in setmegacapture/LSM files now */
+
+  /*m_DockWidgetList.push_back(
+    std::pair< QGoDockWidgetStatus *, QDockWidget * >(
+      new QGoDockWidgetStatus(this->m_DataBaseTables->GetTraceSettingsDockWidget(),
+                              Qt::LeftDockWidgetArea, false, true),
+      this->m_DataBaseTables->GetTraceSettingsDockWidget() ) );*/
 
   m_DockWidgetList.push_back(
     std::pair< QGoDockWidgetStatus *, QDockWidget * >(
       new QGoDockWidgetStatus(this->m_TrackViewDockWidget,
                               Qt::LeftDockWidgetArea, false, true),
       this->m_TrackViewDockWidget) );
+
 
   m_DockWidgetList.push_back(
     std::pair< QGoDockWidgetStatus *, QDockWidget * >(
@@ -271,24 +286,20 @@ QGoTabImageView3DwT::
   m_HighlightedContoursProperty->Delete();
   m_HighlightedMeshesProperty->Delete();
 
-  m_Image->Delete();
-  m_Seeds->Delete();
+  m_Seeds[0]->Delete();
+  m_Seeds[1]->Delete();
+  m_Seeds[2]->Delete();
+  // new
+  /*
+  std::vector<vtkPoints*>::iterator it = m_OrderedSeeds.begin();
+  while(it != m_OrderedSeeds.end())
+  {
+    (*it)->Delete();
+    (*it) = NULL;
+    ++it;
+  }
 
-  if ( !m_LSMReader.empty() )
-    {
-    if ( m_LSMReader[0] )
-      {
-      m_LSMReader[0]->Delete();
-      }
-    }
-
-  // clean the LSMReader vector
-  /*while(!m_LSMReader.empty())
-    {
-    m_LSMReader.back()->Delete();
-    m_LSMReader.pop_back();
-    }
-*/
+  */
   unsigned int minch = m_MegaCaptureReader->GetMinChannel();
   unsigned int maxch = m_MegaCaptureReader->GetMaxChannel();
 
@@ -318,6 +329,11 @@ QGoTabImageView3DwT::
     {
     delete m_LineageContainer;
     }
+
+  if(m_ImageProcessor)
+  {
+    delete m_ImageProcessor;
+  }
 }
 
 //-------------------------------------------------------------------------
@@ -326,35 +342,80 @@ QGoTabImageView3DwT::
 void
 QGoTabImageView3DwT::UpdateSeeds()
 {
-  vtkPoints *temp = m_ImageView->GetAllSeeds();
+  // should be used now
+  // clean the ordered seeds
+  /*
+  std::vector<vtkPoints*>::iterator it = m_OrderedSeeds.begin();
+  while(it != m_OrderedSeeds.end())
+  {
+    (*it)->Initialize();
+    ++it;
+  }
+  m_ImageView->GetSeeds(m_OrderedSeeds);*/
 
-  m_Seeds->DeepCopy(temp);
-  temp->Delete();
+  for( size_t id = 0; id < m_Seeds.size(); id++ )
+    {
+    m_Seeds[id]->Initialize();
+    }
+
+  m_ImageView->GetSeeds( m_Seeds );
+
+//    vtkPoints *temp = m_ImageView->GetAllSeeds();
+
+//  // deep copy vtkPoints not properly working (warning)
+//  for(int l = 0; l< temp->GetNumberOfPoints(); l++)
+//    {
+//    double p[3];
+//    temp->GetPoint(l,p);
+//    m_Seeds->InsertNextPoint(p);
+//    }
+//  m_Seeds->GetData()->DeepCopy( temp->GetData() );
+
+//  /*
+//  for(int l = 0; l<m_Seeds->GetData()->GetNumberOfTuples(); l++)
+//    {
+//    double* value = m_Seeds->GetData()->GetTuple(l);
+//    std::cout << "m_Seeds: " << l << " orientation: " << value[0] << std::endl;
+//    }
+//    */
+
+//  temp->Delete();
 }
 
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
-QGoTabImageView3DwT::CreateContourSegmentationDockWidget()
+QGoTabImageView3DwT::CreateContourEditingDockWidget(
+  int iTimeMin, int iTimeMax)
 {
   //----------------------------------------------------------------
   // Create base  contour segmentation dock widget:
   // basic interactor connections
   //----------------------------------------------------------------
 
-  m_ContourSegmentationDockWidget =
-    new QGoContourSegmentationBaseDockWidget(this, m_Seeds, &m_InternalImages);
+  // build channel vector
+  unsigned int numberOfChannels = m_ImageProcessor->getNumberOfChannels();
+  std::vector< QString > channelNames;
+  channelNames.resize( numberOfChannels );
+  for(unsigned int i =0; i<numberOfChannels; ++i)
+    {
+    channelNames[i] = QString::fromStdString(
+          m_ImageProcessor->getChannelName(i));
+    }
 
-  QObject::connect( m_ContourSegmentationDockWidget,
+  this->m_ContourEditingWidget = new QGoContourEditingWidgetManager(
+    channelNames, iTimeMin, iTimeMax, &m_Seeds,
+    m_ImageProcessor, &m_TCoord, this);
+
+  this->CreateConnectionsTraceEditingWidget<QGoContourEditingWidgetManager>(
+    iTimeMin, iTimeMax, this->m_ContourEditingWidget);
+
+  /*QObject::connect( m_ContourSegmentationDockWidget,
                     SIGNAL( ReinitializeInteractorActivated(bool) ),
                     this,
                     SLOT( DefaultInteractorBehavior(bool) ) );
 
-  QObject::connect( m_ContourSegmentationDockWidget,
-                    SIGNAL( ManualSegmentationActivated(bool) ),
-                    this,
-                    SLOT( ManualInteractorBehavior(bool) ) );
 
   QObject::connect( m_ContourSegmentationDockWidget,
                     SIGNAL( SemiAutoSegmentationActivated(bool) ),
@@ -364,31 +425,38 @@ QGoTabImageView3DwT::CreateContourSegmentationDockWidget()
   QObject::connect( m_ContourSegmentationDockWidget,
                     SIGNAL( AutoSegmentationActivated(bool) ),
                     this,
-                    SLOT( DefaultInteractorBehavior(bool) ) );
+                    SLOT( DefaultInteractorBehavior(bool) ) );*/
 
   // signals from the manual segmentation
-  QObject::connect( m_ContourSegmentationDockWidget,
-                    SIGNAL( ValidateContour() ),
-                    this, SLOT( ValidateContour() ) );
+  QObject::connect( m_ContourEditingWidget,
+                    SIGNAL( ManualSegmentationActivated(bool) ),
+                    this,
+                    SLOT( ManualInteractorBehavior(bool) ) );
 
-  QObject::connect( m_ContourSegmentationDockWidget,
-                    SIGNAL( ReinitializeContourWidget() ),
+  QObject::connect( this->m_ContourEditingWidget,
+                    SIGNAL( ContourValidated(int) ),
+                    this, SLOT( ValidateContour(int) ) );
+
+  QObject::connect( this->m_ContourEditingWidget,
+                    SIGNAL( reinitializeContour() ),
                     m_ImageView,
                     SLOT( ReinitializeContourWidget() ) );
 
-  QObject::connect( m_ContourSegmentationDockWidget,
-                    SIGNAL( UpdateContourRepresentationProperties(float, QColor,
+  QObject::connect( this->m_ContourEditingWidget,
+                    SIGNAL( changeContourRepresentationProperty(float, QColor,
                                                                   QColor, QColor) ),
                     m_ImageView,
                     SLOT( UpdateContourRepresentationProperties(float, QColor,
                                                                 QColor, QColor) ) );
 
-  // signals for the semi automated segmentation
-  QObject::connect( m_ContourSegmentationDockWidget,
-                    SIGNAL( UpdateSeeds() ),
+  QObject::connect( this->m_ContourEditingWidget,
+                    SIGNAL(TracesCreatedFromAlgo(std::vector<vtkPolyData *>, int) ),
                     this,
-                    SLOT( UpdateSeeds() ) );
+                    SLOT( SaveInDBAndRenderContourForVisu(std::vector<vtkPolyData *>, int) ) );
 
+
+  this->m_ContourEditingWidget->InitializeSettingsForManualMode();
+  /*
   QObject::connect( m_ContourSegmentationDockWidget,
                     SIGNAL( SaveAndVisuContour(vtkPolyData *) ),
                     this,
@@ -403,27 +471,76 @@ QGoTabImageView3DwT::CreateContourSegmentationDockWidget()
   // ...
 
   // intialize the widget
-  m_ContourSegmentationDockWidget->Initialize();
+  m_ContourSegmentationDockWidget->Initialize();*/
 }
 
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
-QGoTabImageView3DwT::CreateMeshSegmentationDockWidget()
+QGoTabImageView3DwT::CreateMeshEditingDockWidget(int iTimeMin, int iTimeMax)
 {
   //----------------------------------------------------------------
   // Create base  contour segmentation dock widget:
   // basic interactor connections
   //----------------------------------------------------------------
 
-  m_MeshSegmentationDockWidget =
-    new QGoMeshSegmentationBaseDockWidget(this, m_Seeds, &m_InternalImages);
+  // build channel vector
+  unsigned int numberOfChannels = m_ImageProcessor->getNumberOfChannels();
+  std::vector< QString > channelNames;
+  channelNames.resize( numberOfChannels );
+  for(unsigned int i =0; i<numberOfChannels; ++i)
+    {
+    channelNames[i] = QString::fromStdString(
+          m_ImageProcessor->getChannelName(i));
+    }
 
-  QObject::connect( m_MeshSegmentationDockWidget,
+  this->m_MeshEditingWidget = new QGoMeshEditingWidgetManager(
+    channelNames, iTimeMin, iTimeMax, &m_Seeds,
+    m_ImageProcessor, &m_TCoord, this);
+
+  this->CreateConnectionsTraceEditingWidget<QGoMeshEditingWidgetManager>(
+    iTimeMin, iTimeMax, this->m_MeshEditingWidget);
+  /*
+  QObject::connect(this->m_MeshEditingWidget,
+                   SIGNAL(ClearAllSeeds() ),
+                   this->m_ImageView,
+                   SLOT(ClearAllSeeds() ) ); now on the template method
+
+  m_DockWidgetList.push_back(
+    std::pair< QGoDockWidgetStatus *, QDockWidget * >(
+      new QGoDockWidgetStatus(
+        this->m_MeshEditingWidget->GetDockWidget(), Qt::LeftDockWidgetArea, false, true),
+        this->m_MeshEditingWidget->GetDockWidget()) );
+
+  QObject::connect( this->m_MeshEditingWidget,
+                    SIGNAL( SetSeedInteractorBehaviour(bool) ),
+                    this,
+                    SLOT( SeedInteractorBehavior(bool) ) );*/
+
+  QObject::connect( this->m_MeshEditingWidget,
+                    SIGNAL(TracesCreatedFromAlgo(std::vector<vtkPolyData *>, int) ),
+                    this,
+                    SLOT( SaveInDBAndRenderMeshForVisu(std::vector<vtkPolyData *>, int) ) );
+
+  /** \todo connect the signal, reimplement the slot*/
+  QObject::connect( this->m_MeshEditingWidget,
+                    SIGNAL(SetOfContoursFromAlgo(std::vector<std::vector<vtkPolyData*> >, int) ),
+                    this,
+                    SLOT(SaveInDBAndRenderSetOfContoursForVisu(std::vector<std::vector<vtkPolyData*> >, int)));
+
+  QObject::connect( this,
+                    SIGNAL( TimePointChanged(int) ),
+                    this,
+                    SLOT(UpdateTracesEditingWidget() ) );
+
+
+  /*QObject::connect( m_MeshSegmentationDockWidget,
                     SIGNAL( ReinitializeInteractorActivated(bool) ),
                     this,
-                    SLOT( DefaultInteractorBehavior(bool) ) );
+                    SLOT( DefaultInteractorBehavior(bool) ) ); seems useless for now
+    as we are in defaultmode as soon as the seedinteractorbehaviour is called
+
 
   // we need seeds for the manual mesh segmentation
   QObject::connect( m_MeshSegmentationDockWidget,
@@ -452,12 +569,6 @@ QGoTabImageView3DwT::CreateMeshSegmentationDockWidget()
                     this,
                     SLOT( AddContourForMeshToContours(vtkPolyData *) ) );
 
-  // signals for the semi automatic segmentation
-  QObject::connect( m_MeshSegmentationDockWidget,
-                    SIGNAL( UpdateSeeds() ),
-                    this,
-                    SLOT( UpdateSeeds() ) );
-
   QObject::connect( m_MeshSegmentationDockWidget,
                     SIGNAL( SaveAndVisuMesh(vtkPolyData *, int) ),
                     this,
@@ -466,7 +577,7 @@ QGoTabImageView3DwT::CreateMeshSegmentationDockWidget()
   QObject::connect( m_MeshSegmentationDockWidget,
                     SIGNAL( ClearAllSeeds() ),
                     m_ImageView,
-                    SLOT( ClearAllSeeds() ) );
+                    SLOT( ClearAllSeeds() ) );*/
 }
 
 //-------------------------------------------------------------------------
@@ -608,17 +719,20 @@ QGoTabImageView3DwT::CreateVisuDockWidget()
   QObject::connect( this, SIGNAL( TimePointChanged(int) ),
                     m_NavigationDockWidget, SLOT( SetTSlice(int) ) );
 
-  QObject::connect( m_NavigationDockWidget, SIGNAL( ShowAllChannelsChanged(bool) ),
-                    this, SLOT( ShowAllChannels(bool) ) );
-
-  QObject::connect( m_NavigationDockWidget, SIGNAL( ShowOneChannelChanged(int) ),
-                    this, SLOT( ShowOneChannel(int) ) );
-
   QObject::connect( m_NavigationDockWidget, SIGNAL( ModeChanged(int) ),
                     this, SLOT( ModeChanged(int) ) );
 
   QObject::connect( m_NavigationDockWidget, SIGNAL( StepChanged(int) ),
                     this, SLOT( StepChanged(int) ) );
+
+  QObject::connect( m_NavigationDockWidget, SIGNAL( DopplerSizeChanged(int) ),
+                    this, SLOT( DopplerSizeChanged(int) ) );
+
+  QObject::connect( m_NavigationDockWidget, SIGNAL( visibilityChanged(QString, bool) ),
+                    this, SLOT( visibilityChanged(QString, bool) ) );
+
+  QObject::connect( m_NavigationDockWidget, SIGNAL( openTransferFunctionEditor(QString) ),
+                    this, SLOT( openTransferFunctionEditor(QString) ) );
 }
 
 //-------------------------------------------------------------------------
@@ -631,7 +745,8 @@ QGoTabImageView3DwT::CreateDataBaseTablesConnection()
                      SIGNAL( DBVariablesSet() ),
                      this,
                      SLOT( SetDatabaseContainersAndDelayedConnections() ) );
-
+  //in order also, to update the list of meshes in the collectionIDs when
+  //the trace is contour and to update the show/hide contours and meshes
   QObject::connect( this,
                     SIGNAL( TimePointChanged(int) ),
                     this->m_DataBaseTables,
@@ -865,7 +980,7 @@ QGoTabImageView3DwT::CreateAllViewActions()
   LookupTableAction->setStatusTip( tr(" Change the associated lookup table") );
 
   //take
-  QIcon luticon;
+  /*QIcon luticon;
   luticon.addPixmap(QPixmap( QString::fromUtf8(":/fig/LookupTable.png") ),
                     QIcon::Normal, QIcon::Off);
   LookupTableAction->setIcon(luticon);
@@ -874,7 +989,7 @@ QGoTabImageView3DwT::CreateAllViewActions()
   QObject::connect( LookupTableAction, SIGNAL( triggered() ),
                     this, SLOT( ChangeLookupTable() ) );
 
-  this->m_ViewActions.push_back(LookupTableAction);
+  this->m_ViewActions.push_back(LookupTableAction);*/
 
   QAction *ScalarBarAction = new QAction(tr("Display Scalar Bar"), this);
   ScalarBarAction->setEnabled(false);
@@ -915,7 +1030,7 @@ QGoTabImageView3DwT::CreateAllViewActions()
                       QIcon::Normal, QIcon::Off);
   Change3DPerspectiveToAxialAction->setIcon(axialicon);
   this->m_ViewNoToolBarActions.push_back(Change3DPerspectiveToAxialAction);
- 
+
   QObject::connect( Change3DPerspectiveToAxialAction, SIGNAL( triggered() ),
                     this, SLOT( Change3DPerspectiveToAxial() ) );
 
@@ -925,7 +1040,7 @@ QGoTabImageView3DwT::CreateAllViewActions()
   coronalicon.addPixmap(QPixmap( QString::fromUtf8(":/fig/DorsalView.png") ),
                         QIcon::Normal, QIcon::Off);
   Change3DPerspectiveToCoronalAction->setIcon(coronalicon);
- 
+
   this->m_ViewNoToolBarActions.push_back(Change3DPerspectiveToCoronalAction);
 
   QObject::connect( Change3DPerspectiveToCoronalAction, SIGNAL( triggered() ),
@@ -937,7 +1052,7 @@ QGoTabImageView3DwT::CreateAllViewActions()
   sagittalicon.addPixmap(QPixmap( QString::fromUtf8(":/fig/LeftView.png") ),
                          QIcon::Normal, QIcon::Off);
   Change3DPerspectiveToSagittalAction->setIcon(sagittalicon);
-  
+
   this->m_ViewNoToolBarActions.push_back(Change3DPerspectiveToSagittalAction);
 
   QObject::connect( Change3DPerspectiveToSagittalAction, SIGNAL( triggered() ),
@@ -960,7 +1075,7 @@ QGoTabImageView3DwT::CreateAllViewActions()
   VolumeRenderingAction->setIcon(volumerenderingicon);
 
   QObject::connect( VolumeRenderingAction, SIGNAL( toggled(bool) ),
-                    this->m_ImageView, SLOT( EnableVolumeRendering(bool) ) );
+                    this, SLOT( EnableVolumeRendering(bool) ) );
 
   // Enable synchronization
   QAction *SynchronizeViewsAction =
@@ -993,60 +1108,13 @@ QGoTabImageView3DwT::CreateTracesActions()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void
-QGoTabImageView3DwT::ChannelTimeMode(bool iEnable)
-{
-  m_ChannelClassicMode = !iEnable;
-
-  // if we leave the time mode, go back to the classic mode automatically
-  if ( m_ChannelClassicMode )
-    {
-    unsigned int min_ch = m_MegaCaptureReader->GetMinChannel();
-    unsigned int max_ch = m_MegaCaptureReader->GetMaxChannel();
-    unsigned int NumberOfChannels = max_ch - min_ch + 1;
-    // resize internal and update the internal image
-    m_InternalImages.resize(NumberOfChannels, NULL);
-    SetTimePointWithMegaCapture();
-
-    // Update navigation widget
-    // Initialize the widgets with the good number of channels
-    // it will update the size of the related combobox
-    m_NavigationDockWidget->blockSignals(true);
-    m_NavigationDockWidget->SetNumberOfChannels(NumberOfChannels);
-    m_ContourSegmentationDockWidget->SetNumberOfChannels(NumberOfChannels);
-    m_MeshSegmentationDockWidget->SetNumberOfChannels(NumberOfChannels);
-
-    if ( NumberOfChannels > 1 )
-      {
-      m_NavigationDockWidget->SetChannel( 0, m_ChannelNames[0] );
-      m_ContourSegmentationDockWidget->SetChannel( 0, m_ChannelNames[0] );
-      m_MeshSegmentationDockWidget->SetChannel( 0, m_ChannelNames[0] );
-      for ( unsigned int i = 1; i < NumberOfChannels; i++ )
-        {
-        m_NavigationDockWidget->SetChannel( i, m_ChannelNames[i] );
-
-        m_ContourSegmentationDockWidget->SetChannel( i, m_ChannelNames[i] );
-        m_MeshSegmentationDockWidget->SetChannel( i, m_ChannelNames[i] );
-        }
-      }
-    m_NavigationDockWidget->blockSignals(false);
-    // update visualization
-    Update();
-    }
-}
-
-//-------------------------------------------------------------------------
-
-void QGoTabImageView3DwT::LoadChannelTime()
+void QGoTabImageView3DwT::StartDopplerView()
 {
   bool         ok;
   QStringList  channel;
-  unsigned int minch = m_MegaCaptureReader->GetMinChannel();
-  unsigned int maxch = m_MegaCaptureReader->GetMaxChannel();
+  unsigned int* boundChannel = m_ImageProcessor->getBoundsChannel();
 
-  maxch += maxch;
-
-  for ( unsigned int i = minch; i < maxch; ++i )
+  for ( unsigned int i = boundChannel[0]; i < boundChannel[1]+1; ++i )
     {
     channel << QString::number(i, 10);
     }
@@ -1059,19 +1127,39 @@ void QGoTabImageView3DwT::LoadChannelTime()
 
   if ( ok )
     {
-    //qDebug() << "user selected an item and pressed OK";
-    // use the item
-    int value = item.toInt(&ok, 10);
-    //qDebug() << "value:" << value;
-    // emit with channel...
-    // keep track of channel of interest when we move through time
-    m_ChannelOfInterest = value;
-    SetTimePointWithMegaCaptureTimeChannels(m_ChannelOfInterest);
-    Update();
-    }
-  else
-    {
-    //qDebug() << "user selected an item and pressed CANCEL";
+    m_ImageProcessor->setDopplerMode(ok, // bool: true/false
+                                     item.toInt(&ok, 10)); // selected channel ID
+    // update image
+    m_ImageProcessor->setDoppler(m_TCoord, 0); // 0 is for optimization later on...
+
+    // update widget
+    // hide channels
+    this->m_NavigationDockWidget->VisibilityListChannels(false);
+    //update values - show requiered widgets
+    std::vector<int> time = m_ImageProcessor->getDopplerTime(m_TCoord);
+    // get number of items in container
+    // requiereds to call this method since the number of items varies
+    for(unsigned int i=0; i<m_ImageProcessor->getDopplerSize(); ++i)
+      {
+      if(time[i]>=0)
+        {
+        std::string name = m_ImageProcessor->getChannelName(time[i]);
+        // channel color
+        std::vector<double> color = m_ImageProcessor->getColor(name);
+        // update navigation dockwidget
+        m_NavigationDockWidget->AddDoppler(
+              QString::fromStdString(name),
+              QColor(color[0],
+                     color[1],
+                     color[2],
+                     color[3]),
+              time[i],
+              true); // all checkboxes are check edwhen we start
+        }
+      }
+    // set channel name
+    this->m_NavigationDockWidget->setChannelName(
+          QString("Channel %1").arg(m_ImageProcessor->getDopplerChannel()));
     }
 }
 
@@ -1454,7 +1542,7 @@ QGoTabImageView3DwT::setupUi(QWidget *iParent)
   this->addDockWidget(Qt::TopDockWidgetArea, m_DataBaseTables);
   m_DataBaseTables->hide();
 
-  
+
   m_ImageView->SetIntersectionLineWidth(this->m_IntersectionLineWidth);
   m_ImageView->SetBackgroundColor(m_BackgroundColor);
 
@@ -1480,8 +1568,7 @@ QGoTabImageView3DwT::setupUi(QWidget *iParent)
   retranslateUi(iParent);
 
   QMetaObject::connectSlotsByName(iParent);
-} // setupUi
-
+}
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -1491,7 +1578,6 @@ QGoTabImageView3DwT::retranslateUi(QWidget *iParent)
   iParent->setWindowTitle( tr("QGoTabImageView3DwT") );
   Q_UNUSED(iParent);
 }
-
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -1503,89 +1589,30 @@ QGoTabImageView3DwT::GetTabDimensionType() const
 
 //-------------------------------------------------------------------------
 
-//#########################################################################
-//#########################################################################
-// Set Inputs
-
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::SetLSMReader(vtkLSMReader *iReader, const int & iTimePoint)
 {
-  if ( iReader )
-    {
-    if ( m_LSMReader.empty() )
-      {
-      m_LSMReader.push_back(iReader);
-      }
-    else
-      {
-      if ( iReader != m_LSMReader[0] )
-        {
-        m_LSMReader[0] = iReader;
-        }
-      }
+  GoLSMImageProcessor* processor = new GoLSMImageProcessor;
+  processor->setReader(iReader);
+  m_ImageProcessor = processor;
 
-    m_LSMReader[0]->Update();
+  m_TCoord = iTimePoint;
+  // update image processor
+  m_ImageProcessor->initTimePoint(m_TCoord);
+  //update images
+  UpdateImage();
+  // update actors
+  this->m_ContourContainer->ShowActorsWithGivenTimePoint(iTimePoint);
+  this->m_MeshContainer->ShowActorsWithGivenTimePoint(iTimePoint);
+  // update widgets on image loading
+  InitializeImageRelatedWidget();
+  // render
+  m_ImageView->Update();
 
-    int dim[5];
-    m_LSMReader[0]->GetDimensions(dim);
-
-    int NumberOfChannels = m_LSMReader[0]->GetNumberOfChannels();
-
-    // Initialize the widgets with the good number of channels
-    // it will update the size of the related combobox
-    m_NavigationDockWidget->SetNumberOfChannels(NumberOfChannels);
-    m_ContourSegmentationDockWidget->SetNumberOfChannels(NumberOfChannels);
-    m_MeshSegmentationDockWidget->SetNumberOfChannels(NumberOfChannels);
-
-    m_ChannelNames.resize( NumberOfChannels );
-
-    if ( NumberOfChannels > 1 )
-      {
-      m_NavigationDockWidget->SetChannel(0);
-      m_ChannelNames[0] = m_NavigationDockWidget->GetChannelName( 0 );
-
-      m_ContourSegmentationDockWidget->SetChannel( 0, m_ChannelNames[0] );
-      m_MeshSegmentationDockWidget->SetChannel( 0 , m_ChannelNames[0] );
-      m_InternalImages.resize(NumberOfChannels);
-
-      for ( int i = 1; i < NumberOfChannels; i++ )
-        {
-        m_NavigationDockWidget->SetChannel(i);
-        m_ChannelNames[i] = m_NavigationDockWidget->GetChannelName( i );
-
-        m_ContourSegmentationDockWidget->SetChannel( i, m_ChannelNames[i] );
-        m_MeshSegmentationDockWidget->SetChannel( i, m_ChannelNames[i] );
-
-        m_LSMReader.push_back( vtkSmartPointer< vtkLSMReader >::New() );
-        m_LSMReader.back()->SetFileName( m_LSMReader[0]->GetFileName() );
-        m_LSMReader.back()->SetUpdateChannel(i);
-        }
-      }
-
-    m_NavigationDockWidget->SetXMinimumAndMaximum(0, dim[0] - 1);
-    m_NavigationDockWidget->SetXSlice( ( dim[0] - 1 ) / 2 );
-
-    m_NavigationDockWidget->SetYMinimumAndMaximum(0, dim[1] - 1);
-    m_NavigationDockWidget->SetYSlice( ( dim[1] - 1 ) / 2 );
-
-    m_NavigationDockWidget->SetZMinimumAndMaximum(0, dim[2] - 1);
-    m_NavigationDockWidget->SetZSlice( ( dim[2] - 1 ) / 2 );
-
-    m_NavigationDockWidget->SetTMinimumAndMaximum(0, dim[3] - 1);
-    m_NavigationDockWidget->SetTSlice(iTimePoint);
-    if ( m_TCoord != iTimePoint )
-      {
-      SetTimePoint(iTimePoint);
-      }
-
-#if defined( ENABLEFFMPEG ) || defined( ENABLEAVI )
-    m_VideoRecorderWidget->SetXMinAndMax(0, dim[0] - 1);
-    m_VideoRecorderWidget->SetYMinAndMax(0, dim[1] - 1);
-    m_VideoRecorderWidget->SetZMinAndMax(0, dim[2] - 1);
-    m_VideoRecorderWidget->SetTMinAndMax(0, dim[3] - 1);
-#endif /* ENABLEVIDEORECORD */
-    }
+  // for the trace widget, navigation widget and table widget
+  // should not be requiered since we just initialize it before
+  emit TimePointChanged(m_TCoord);
 }
 
 //-------------------------------------------------------------------------
@@ -1601,6 +1628,7 @@ QGoTabImageView3DwT::SetMegaCaptureFile(
   m_FileList = iContainer;
   m_FileType = iFileType;
 
+  // setup megacapture reader
   m_MegaCaptureReader->SetInput(m_FileList);
   m_MegaCaptureReader->SetMegaCaptureHeader(iHeader);
   m_MegaCaptureReader->SetFileType(m_FileType);
@@ -1608,46 +1636,58 @@ QGoTabImageView3DwT::SetMegaCaptureFile(
   m_MegaCaptureReader->SetTimePoint(iTimePoint);
   m_MegaCaptureReader->Update();
 
-  unsigned int min_t = m_MegaCaptureReader->GetMinTimePoint();
-  unsigned int max_t = m_MegaCaptureReader->GetMaxTimePoint();
+  GoMegaImageProcessor* processor = new GoMegaImageProcessor;
+  processor->setReader(m_MegaCaptureReader);
+  m_ImageProcessor = processor;
 
-  unsigned int min_ch = m_MegaCaptureReader->GetMinChannel();
-  unsigned int max_ch = m_MegaCaptureReader->GetMaxChannel();
+  m_TCoord = iTimePoint;
+  // update image processor
+  m_ImageProcessor->initTimePoint(m_TCoord);
+  //update images
+  UpdateImage();
+  // update actors
+  this->m_ContourContainer->ShowActorsWithGivenTimePoint(iTimePoint);
+  this->m_MeshContainer->ShowActorsWithGivenTimePoint(iTimePoint);
+  // update widgets on image loading
+  InitializeImageRelatedWidget();
+  // render
+  m_ImageView->Update();
 
-  unsigned int NumberOfChannels = max_ch - min_ch + 1;
+  // for the trace widget, navigation widget and table widget
+  // should not be requiered since we just initialize it before
+  emit TimePointChanged(m_TCoord);
+}
+//-------------------------------------------------------------------------
 
-  m_ChannelNames.resize( NumberOfChannels );
-
-  vtkImageData *temp = m_MegaCaptureReader->GetOutput(min_ch);
-
-  int extent[6];
-  temp->GetExtent(extent);
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+InitializeImageRelatedWidget()
+{
+  unsigned int*  boundTime    = m_ImageProcessor->getBoundsTime();
+  unsigned int NumberOfChannels = m_ImageProcessor->getNumberOfChannels();
+  int* extent = m_ImageProcessor->getExtent();
 
   // Initialize the widgets with the good number of channels
   // it will update the size of the related combobox
-  m_NavigationDockWidget->SetNumberOfChannels(NumberOfChannels);
-  m_ContourSegmentationDockWidget->SetNumberOfChannels(NumberOfChannels);
-  m_MeshSegmentationDockWidget->SetNumberOfChannels(NumberOfChannels);
+  m_NavigationDockWidget->blockSignals(true);
 
-  // Set up QSpinBox in m_VideoRecorderWidget
-  if ( NumberOfChannels > 1 )
+  for ( unsigned int i = 0; i < NumberOfChannels; i++ )
     {
-    m_NavigationDockWidget->SetChannel(0);
-    m_ChannelNames[0] = m_NavigationDockWidget->GetChannelName(0);
-
-    m_ContourSegmentationDockWidget->SetChannel( 0, m_ChannelNames[0] );
-    m_MeshSegmentationDockWidget->SetChannel( 0, m_ChannelNames[0] );
-    m_InternalImages.resize(NumberOfChannels, NULL);
-
-    for ( unsigned int i = 1; i < NumberOfChannels; i++ )
-      {
-      m_NavigationDockWidget->SetChannel(i);
-      m_ChannelNames[i] = m_NavigationDockWidget->GetChannelName(i);
-
-      m_ContourSegmentationDockWidget->SetChannel( i, m_ChannelNames[i] );
-      m_MeshSegmentationDockWidget->SetChannel( i, m_ChannelNames[i] );
-      }
+    std::string name = m_ImageProcessor->getChannelName(i);
+    // channel color
+    std::vector<double> color = m_ImageProcessor->getColor(name);
+    // update navigation dockwidget
+    m_NavigationDockWidget->AddChannel(
+          QString::fromStdString(name),
+          QColor(color[0],
+                 color[1],
+                 color[2],
+                 color[3]),
+          i,
+          true); // all checkboxes are check edwhen we start
     }
+
 
   m_NavigationDockWidget->SetXMinimumAndMaximum(extent[0], extent[1]);
   m_NavigationDockWidget->SetXSlice( ( extent[0] + extent[1] ) / 2 );
@@ -1658,23 +1698,24 @@ QGoTabImageView3DwT::SetMegaCaptureFile(
   m_NavigationDockWidget->SetZMinimumAndMaximum(extent[4], extent[5]);
   m_NavigationDockWidget->SetZSlice( ( extent[4] + extent[5] ) / 2 );
 
-  m_NavigationDockWidget->SetTMinimumAndMaximum(min_t, max_t);
-  m_NavigationDockWidget->SetTSlice(iTimePoint);
+  m_NavigationDockWidget->SetTMinimumAndMaximum(boundTime[0], boundTime[1]);
+  m_NavigationDockWidget->SetTSlice(boundTime[0]);
+  m_NavigationDockWidget->blockSignals(false);
 
-  if ( static_cast< unsigned int >( m_TCoord ) != iTimePoint )
-    {
-    SetTimePoint(iTimePoint);
-    }
+  /**\ todo Lydie: the dock widget needs to have the channels and the timepoints,
+  do a separated method ??*/
+  CreateMeshEditingDockWidget(boundTime[0], boundTime[1]);
+  CreateContourEditingDockWidget(boundTime[0], boundTime[1]);
+  //CreateModeActions();
 
   // Set up QSpinBox in m_VideoRecorderWidget
 #if defined( ENABLEFFMPEG ) || defined( ENABLEAVI )
   m_VideoRecorderWidget->SetXMinAndMax(extent[0], extent[1]);
   m_VideoRecorderWidget->SetYMinAndMax(extent[2], extent[3]);
   m_VideoRecorderWidget->SetZMinAndMax(extent[4], extent[5]);
-  m_VideoRecorderWidget->SetTMinAndMax(min_t, max_t);
+  m_VideoRecorderWidget->SetTMinAndMax(boundTime[0], boundTime[1]);
 #endif /* ENABLEVIDEORECORD */
 }
-
 //-------------------------------------------------------------------------
 
 //#########################################################################
@@ -1682,76 +1723,34 @@ QGoTabImageView3DwT::SetMegaCaptureFile(
 
 //-------------------------------------------------------------------------
 void
-QGoTabImageView3DwT::SetTimePointWithMegaCapture()
+QGoTabImageView3DwT::UpdateImage()
 {
-  m_MegaCaptureReader->SetTimePoint(m_TCoord);
+  // get number of visible channels instead
+  unsigned int NumberOfVisibleChannels = m_ImageProcessor->getNumberOfVisibleChannels();
 
-  unsigned int min_ch = m_MegaCaptureReader->GetMinChannel();
-  unsigned int max_ch = m_MegaCaptureReader->GetMaxChannel();
-
-  unsigned int NumberOfChannels = max_ch - min_ch + 1;
-  // delete the preivous pointers
-  // and reassign it
-  m_InternalImages.resize(NumberOfChannels, NULL);
-
-  m_MegaCaptureReader->Update();
-
-  if ( max_ch != min_ch )
+  if ( NumberOfVisibleChannels>1 )
     {
-    vtkSmartPointer< vtkImageAppendComponents > append_filter =
-      vtkSmartPointer< vtkImageAppendComponents >::New();
+    m_ImageView->SetImage(m_ImageProcessor->getVisibleImages());
+    }
+  else if( NumberOfVisibleChannels == 1)
+    {
+    // BUG HERE - 2 update + hide actors if opacity <1
+    //update Image
+    m_ImageView->SetImage(m_ImageProcessor->getImageBW());
+    // update LUT
+    vtkSmartPointer<vtkLookupTable> lut = vtkSmartPointer<vtkLookupTable>::New();
+    lut->DeepCopy(m_ImageProcessor->getLookuptable());
+    // WHEN WE MODIFY WE WANT TO KEEP THE MODIF (FROM ANDREA)
+    m_ImageView->SetLookupTable(lut);
 
-    for ( unsigned int i = min_ch; i <= max_ch; i++ )
-      {
-      vtkSmartPointer< vtkImageData > input = vtkSmartPointer< vtkImageData >::New();
-      input->ShallowCopy( m_MegaCaptureReader->GetOutput(i) );
-      m_InternalImages[i] = input;
-      append_filter->AddInput(m_InternalImages[i]);
-      }
-    // This is really stupid!!!
-    if ( max_ch < 2 )
-      {
-      for ( unsigned int i = max_ch + 1; i < 3; i++ )
-        {
-        append_filter->AddInput(m_InternalImages[0]);
-        }
-      }
-    append_filter->Update();
-
-    if ( this->m_NavigationDockWidget->ShowAllChannels() )
-      {
-      m_Image->ShallowCopy( append_filter->GetOutput() );
-
-      // LUT DISABLED
-      this->findChild<QAction*>("LUT")->setEnabled(false);
-      this->findChild<QAction*>("ScalarBar")->setEnabled(false);
-      }
-    else
-      {
-      int ch = this->m_NavigationDockWidget->GetCurrentChannel();
-      if ( ch != -1 )
-        {
-        m_Image->ShallowCopy(m_InternalImages[ch]);
-        }
-      // LUT ENABLED
-      this->findChild<QAction*>("LUT")->setEnabled(true);
-      this->findChild<QAction*>("ScalarBar")->setEnabled(true);
-      }
+    // CONFIGURE LUT
+    this->findChild<QAction*>("LUT")->setEnabled(true);
+    this->findChild<QAction*>("ScalarBar")->setEnabled(true);
     }
   else
     {
-    m_Image->ShallowCopy( m_MegaCaptureReader->GetOutput(min_ch) );
-    m_Image->SetNumberOfScalarComponents(1);
-
-    if( m_InternalImages.size() != 1 )
-      {
-      m_InternalImages.resize( 1 );
-      }
-    m_InternalImages[0] = m_Image;
-
-    // LUT ENABLED
-    this->findChild<QAction*>("LUT")->setEnabled(true);
-    this->findChild<QAction*>("ScalarBar")->setEnabled(true);
+    m_ImageView->SetImage(NULL);
+    m_ImageView->SetLookupTable(NULL);
     }
 }
 
@@ -1759,213 +1758,34 @@ QGoTabImageView3DwT::SetTimePointWithMegaCapture()
 
 //-------------------------------------------------------------------------
 void
-QGoTabImageView3DwT::SetTimePointWithMegaCaptureTimeChannels(int iChannel,
-                                                             int iPreviousT)
+QGoTabImageView3DwT::BuildDopplerWidget()
 {
-  int min_t = m_MegaCaptureReader->GetMinTimePoint();
-  int max_t = m_MegaCaptureReader->GetMaxTimePoint();
-
-  int t0 = m_TCoord - m_DopplerStep;
-  int t1 = m_TCoord;
-  int t2 = m_TCoord + m_DopplerStep;
-
-  // special case if we are at the borders
-  if ( t0 < min_t )
+  // update widget
+  //update values - show requiered widgets
+  std::vector<int> time = m_ImageProcessor->getDopplerTime(m_TCoord);
+  // get number of items in container
+  // requiereds to call this method since the number of items varies
+  for(unsigned int i=0; i<m_ImageProcessor->getDopplerSize(); ++i)
     {
-    t0 = min_t;
-    }
-
-  if ( t2 > max_t )
-    {
-    t2 = max_t;
-    }
-
-  vtkSmartPointer< vtkImageAppendComponents > append_filter =
-    vtkSmartPointer< vtkImageAppendComponents >::New();
-
-  // if step != 1 and we have previous and next time point loaded
-  if( m_DopplerStep != 1 || iPreviousT == 0 )
-    {
-    // resize internal image
-    // clean the vector since is is a vector of smartpointers
-    m_InternalImages.resize(3, NULL);
-
-    vtkSmartPointer< vtkImageData > i0 = vtkSmartPointer< vtkImageData >::New();
-    i0->ShallowCopy( m_MegaCaptureReader->GetImage(iChannel, t0) );
-    m_InternalImages[0] = i0;
-    append_filter->AddInput(m_InternalImages[0]);
-
-    vtkSmartPointer< vtkImageData > i1 = vtkSmartPointer< vtkImageData >::New();
-    i1->ShallowCopy( m_MegaCaptureReader->GetImage(iChannel, t1) );
-    m_InternalImages[1] = i1;
-    append_filter->AddInput(m_InternalImages[1]);
-
-    vtkSmartPointer< vtkImageData > i2 = vtkSmartPointer< vtkImageData >::New();
-    i2->ShallowCopy( m_MegaCaptureReader->GetImage(iChannel, t2) );
-    m_InternalImages[2] = i2;
-    append_filter->AddInput(m_InternalImages[2]);
-    }
-  else
-    {
-    // if we go FORWARD and step == 1
-    if( iPreviousT < m_TCoord)
+    if(time[i]>=0)
       {
-      // assume we imcrease t point all the time for testing
-      vtkSmartPointer< vtkImageData > i0 = vtkSmartPointer< vtkImageData >::New();
-      i0->ShallowCopy(m_InternalImages[1]);
-      // clean smartpointer
-      m_InternalImages[0] = NULL;
-      m_InternalImages[0] = i0;
-      append_filter->AddInput(m_InternalImages[0]);
-
-      vtkSmartPointer< vtkImageData > i1 = vtkSmartPointer< vtkImageData >::New();
-      i1->ShallowCopy(m_InternalImages[2]);
-      // clean smartpointer
-      m_InternalImages[1] = NULL;
-      m_InternalImages[1] = i1;
-      append_filter->AddInput(m_InternalImages[1]);
-
-      vtkSmartPointer< vtkImageData > i2 = vtkSmartPointer< vtkImageData >::New();
-      i2->ShallowCopy( m_MegaCaptureReader->GetImage(iChannel, t2) );
-      // clean smartpointer
-      m_InternalImages[2] = NULL;
-      m_InternalImages[2] = i2;
-      append_filter->AddInput(m_InternalImages[2]);
-      }
-    // if we go BACKWARD and step == 1
-    else
-      {
-      vtkSmartPointer< vtkImageData > i2 = vtkSmartPointer< vtkImageData >::New();
-      i2->ShallowCopy(m_InternalImages[1]);
-      // clean smartpointer
-      m_InternalImages[2] = NULL;
-      m_InternalImages[2] = i2;
-      append_filter->AddInput(m_InternalImages[2]);
-
-      vtkSmartPointer< vtkImageData > i1 = vtkSmartPointer< vtkImageData >::New();
-      i1->ShallowCopy(m_InternalImages[0]);
-      // clean smartpointer
-      m_InternalImages[1] = NULL;
-      m_InternalImages[1] = i1;
-      append_filter->AddInput(m_InternalImages[1]);
-
-      vtkSmartPointer< vtkImageData > i0 = vtkSmartPointer< vtkImageData >::New();
-      i0->ShallowCopy( m_MegaCaptureReader->GetImage(iChannel, t0) );
-      // clean smartpointer
-      m_InternalImages[0] = NULL;
-      m_InternalImages[0] = i0;
-      append_filter->AddInput(m_InternalImages[0]);
+      std::string name = m_ImageProcessor->getChannelName(time[i]);
+      // channel color
+      std::vector<double> color = m_ImageProcessor->getColor(name);
+      // update navigation dockwidget
+      m_NavigationDockWidget->AddDoppler(
+            QString::fromStdString(name),
+            QColor(color[0],
+                   color[1],
+                   color[2],
+                   color[3]),
+            time[i],
+            true); // all checkboxes are check edwhen we start
       }
     }
-
-  append_filter->Update();
-
-  if ( this->m_NavigationDockWidget->ShowAllChannels() )
-    {
-    m_Image->ShallowCopy( append_filter->GetOutput() );
-
-    // LUT DISABLED
-    this->findChild<QAction*>("LUT")->setEnabled(false);
-    this->findChild<QAction*>("ScalarBar")->setEnabled(false);
-    }
-  else
-    {
-    int ch = this->m_NavigationDockWidget->GetCurrentChannel();
-    if ( ch != -1 )
-      {
-      m_Image->ShallowCopy(m_InternalImages[ch]);
-      }
-    // LUT ENABLED
-    this->findChild<QAction*>("LUT")->setEnabled(true);
-    this->findChild<QAction*>("ScalarBar")->setEnabled(true);
-    }
-
-  // Create channels names
-  QString t_minus_step;
-  t_minus_step.append( QLatin1String("t: ") ); // + m_DopplerStep);
-  t_minus_step.append( QString::number(t0, 10) );
-
-  QString t_current_step;
-  t_current_step.append( QLatin1String("t: ") ); // + m_DopplerStep);
-  t_current_step.append( QString::number(t1, 10) );
-
-  QString t_plus_step;
-  t_plus_step.append( QLatin1String("t: ") ); //() + m_DopplerStep);
-  t_plus_step.append( QString::number(t2, 10) );
-
-  // update channels in navigation DockWidget
-  m_NavigationDockWidget->SetNumberOfChannels(3);
-  m_NavigationDockWidget->blockSignals(true);
-  // Create the channels labels
-  m_NavigationDockWidget->SetChannel(0, t_minus_step);
-  m_NavigationDockWidget->SetChannel(1, t_current_step);
-  m_NavigationDockWidget->SetChannel(2, t_plus_step);
-  // Update the current channel
-  m_NavigationDockWidget->SetCurrentChannel(1);
-  m_NavigationDockWidget->blockSignals(false);
-
-  //update channels in segmentation widgets
-  // Create the channels labels
-  m_ContourSegmentationDockWidget->SetNumberOfChannels(3);
-  m_ContourSegmentationDockWidget->SetChannel(0, t_minus_step);
-  m_ContourSegmentationDockWidget->SetChannel(1, t_current_step);
-  m_ContourSegmentationDockWidget->SetChannel(2, t_plus_step);
-  // Update the current channel
-  m_ContourSegmentationDockWidget->SetCurrentChannel(1);
-
-  // Create the channels labels
-  m_MeshSegmentationDockWidget->SetNumberOfChannels(3);
-  m_MeshSegmentationDockWidget->SetChannel(0, t_minus_step);
-  m_MeshSegmentationDockWidget->SetChannel(1, t_current_step);
-  m_MeshSegmentationDockWidget->SetChannel(2, t_plus_step);
-  // Update the current channel
-  m_MeshSegmentationDockWidget->SetCurrentChannel(1);
-}
-
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-QGoTabImageView3DwT::SetTimePointWithLSMReaders()
-{
-  m_LSMReader[0]->SetUpdateTimePoint(m_TCoord);
-
-  int NumberOfChannels = m_LSMReader[0]->GetNumberOfChannels();
-
-  if ( NumberOfChannels > 1 )
-    {
-    m_InternalImages[0] = m_LSMReader[0]->GetOutput();
-
-    vtkSmartPointer< vtkImageAppendComponents > append_filter =
-      vtkSmartPointer< vtkImageAppendComponents >::New();
-    append_filter->AddInput(m_InternalImages[0]);
-
-    for ( int i = 1; i < NumberOfChannels; i++ )
-      {
-      m_LSMReader[i]->SetUpdateTimePoint(m_TCoord);
-      m_LSMReader[i]->Update();
-
-      m_InternalImages[i] = m_LSMReader[i]->GetOutput();
-      append_filter->AddInput(m_InternalImages[i]);
-      }
-    // This is really stupid!!!
-    if ( NumberOfChannels < 3 )
-      {
-      for ( int i = NumberOfChannels; i < 3; i++ )
-        {
-        append_filter->AddInput(m_InternalImages[0]);
-        }
-      }
-    append_filter->Update();
-
-    m_Image->ShallowCopy( append_filter->GetOutput() );
-    }
-  else
-    {
-    m_LSMReader[0]->Update();
-
-    m_Image->ShallowCopy( m_LSMReader[0]->GetOutput() );
-    }
+  // set channel name
+  this->m_NavigationDockWidget->setChannelName(
+        QString("Channel %1").arg(m_ImageProcessor->getDopplerChannel()));
 }
 
 //-------------------------------------------------------------------------
@@ -1981,72 +1801,41 @@ QGoTabImageView3DwT::SetTimePoint(const int & iTimePoint)
 
   QApplication::setOverrideCursor( QCursor(Qt::WaitCursor) );
 
-  if ( !m_LSMReader.empty() )
+  m_TCoord = iTimePoint;
+
+  if (!m_ImageProcessor->getDopplerMode())
     {
-    if ( iTimePoint >= m_LSMReader[0]->GetNumberOfTimePoints() )
-      {
-      return;
-      }
-    else
-      {
-      m_TCoord = iTimePoint;
-      SetTimePointWithLSMReaders();
-      emit TimePointChanged(m_TCoord);
-      }
+    // update image processor
+    m_ImageProcessor->setTimePoint(m_TCoord);
     }
   else
     {
-    if ( !m_FileList.empty() )
-      {
-      unsigned int t = static_cast< unsigned int >( iTimePoint );
-      if ( ( t < m_MegaCaptureReader->GetMinTimePoint() )
-           || ( t > m_MegaCaptureReader->GetMaxTimePoint() ) )
-        {
-        return;
-        }
-      else
-        {
-        int previousT = m_TCoord;
-        m_TCoord = iTimePoint;
-        if ( m_ChannelClassicMode )
-          {
-          //qDebug() << "CLASSIC mode";
-          SetTimePointWithMegaCapture();
-          }
-        else
-          {
-          //qDebug() << "TRACK mode";
-          //qDebug() << "CHANNEL: " << m_ChannelOfInterest;
-          SetTimePointWithMegaCaptureTimeChannels(m_ChannelOfInterest, previousT);
-          }
-        emit TimePointChanged(m_TCoord);
-        }
-      }
-    else
-      {
-      // no lsm reader, no file list. did you really provide any input?
-      qWarning() << "No lsm reader. No file list";
-      }
+    // delete previous doppler widget
+    this->m_NavigationDockWidget->DeleteDopplerWidgets();
+    // update the image processor
+    m_ImageProcessor->setDoppler(m_TCoord, 0); // 0 is for optimization later on...
+    //rebuild navigation widget
+    BuildDopplerWidget();
     }
+
+  UpdateImage();
+
+  EnableVolumeRendering(this->m_ViewActions.at(12)->isChecked());
+
+  // for the trace widget, navigation widget and table widget
+  emit TimePointChanged(m_TCoord);
 
   this->m_ContourContainer->ShowActorsWithGivenTimePoint(m_TCoord);
   this->m_MeshContainer->ShowActorsWithGivenTimePoint(m_TCoord);
-  //this->m_TrackContainer->ShowActorsWithGivenTimePoint(m_TCoord);
 
-  Update();
+  m_ImageView->Update();
 
   QApplication::restoreOverrideCursor();
 }
+//-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoTabImageView3DwT::Update()
-{
-  m_ImageView->SetImage(m_Image);
-  m_ImageView->Update();
-}
-
-//-------------------------------------------------------------------------
-void
+/*void
 QGoTabImageView3DwT::ChangeLookupTable()
 {
   vtkImageData *image = m_ImageView->GetImage();
@@ -2063,7 +1852,7 @@ QGoTabImageView3DwT::ChangeLookupTable()
       lut->Delete();
       }
     }
-}
+}*/
 
 //-------------------------------------------------------------------------
 
@@ -2257,111 +2046,59 @@ QGoTabImageView3DwT::ChangeBackgroundColor()
 
 //-------------------------------------------------------------------------
 void
-QGoTabImageView3DwT::ShowAllChannels(bool iChecked)
+QGoTabImageView3DwT::ModeChanged(int iChannel)
 {
-  if ( iChecked )
+  if ( iChannel == 1 )
     {
-    // Requiered if we modified the window level
-    /** \todo Nicolas-Find a better solution */
-    m_ImageView->ResetWindowLevel();
-
-    vtkSmartPointer< vtkImageAppendComponents > append_filter =
-      vtkSmartPointer< vtkImageAppendComponents >::New();
-
-    for ( unsigned int i = 0; i < m_InternalImages.size(); i++ )
-      {
-      append_filter->AddInput(m_InternalImages[i]);
-      }
-
-    // This is really stupid!!!
-    if ( m_InternalImages.size() < 3 )
-      {
-      for ( size_t i = m_InternalImages.size(); i < 3; i++ )
-        {
-        append_filter->AddInput(m_InternalImages[0]);
-        }
-      }
-
-    append_filter->Update();
-
-    m_Image->ShallowCopy( append_filter->GetOutput() );
-    Update();
-
-    // Update LUT
-    this->findChild<QAction*>("LUT")->setEnabled(false);
-    this->findChild<QAction*>("ScalarBar")->setEnabled(false);
+    // set image processor and build navigation widget if we click on ok
+    StartDopplerView();
     }
   else
     {
-    int ch = this->m_NavigationDockWidget->GetCurrentChannel();
-    if ( ch != -1 )
-      {
-      m_Image->ShallowCopy(m_InternalImages[ch]);
-      Update();
-      }
-
-    // Update LUT
-    this->findChild<QAction*>("LUT")->setEnabled(true);
-    this->findChild<QAction*>("ScalarBar")->setEnabled(true);
-
-    // show the scalarbar automatically if the button is checked
-    bool showScalarBar = this->findChild<QAction*>("ScalarBar")->isChecked();
-    m_ImageView->ShowScalarBar(showScalarBar);
-    }
-}
-
-//------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-QGoTabImageView3DwT::ShowOneChannel(int iChannel)
-{
-  if ( ( iChannel != -1 ) && ( !m_InternalImages.empty() ) )
-    {
-    // Update lut
-    this->findChild<QAction*>("LUT")->setEnabled(true);
-    this->findChild<QAction*>("ScalarBar")->setEnabled(true);
-
-    m_Image->ShallowCopy(m_InternalImages[iChannel]);
-    Update();
-    }
-}
-
-//------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-QGoTabImageView3DwT::ModeChanged(int iChannel)
-{
-  //std::cout << "channel: " << iChannel << std::endl;
-
-  if ( iChannel == 1 )
-    {
-    LoadChannelTime();
+    this->m_NavigationDockWidget->DeleteDopplerWidgets();
+    m_ImageProcessor->setDopplerMode(false, 0);
+    // update image processor
+    m_ImageProcessor->initTimePoint(m_TCoord);
+    // change visibility
+    this->m_NavigationDockWidget->VisibilityListChannels(true);
     }
 
-  ChannelTimeMode(iChannel);
+  //update images
+  UpdateImage();
+  // update visualization
+  m_ImageView->Update();
+  //update the trace editing widget
+  UpdateTracesEditingWidget();
 }
-
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::StepChanged(int iStep)
 {
-  m_DopplerStep = iStep;
-
-  SetTimePointWithMegaCaptureTimeChannels(m_ChannelOfInterest);
-  Update();
+  // delete previous doppler widget
+  this->m_NavigationDockWidget->DeleteDopplerWidgets();
+  // set the new doppler step
+  m_ImageProcessor->setDopplerStep(iStep);
+  // update the image processor
+  m_ImageProcessor->setDoppler(m_TCoord, 0); // 0 is for optimization later on...
+  //rebuild navigation widget
+  BuildDopplerWidget();
+  // build new image
+  UpdateImage();
+  //update
+  m_ImageView->Update();
+  //update the trace editing widget
+  UpdateTracesEditingWidget();
 }
-
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
-QGoTabImageView3DwT::SaveContour(vtkPolyData *contour, vtkPolyData *contour_nodes)
+QGoTabImageView3DwT::SaveContour(vtkPolyData *contour, vtkPolyData *contour_nodes,
+  int iTCoord)
 {
-  if ( ( contour->GetNumberOfPoints() > 2 ) && ( m_TCoord >= 0 ) )
+  if ( ( contour->GetNumberOfPoints() > 2 ) && ( iTCoord >= 0 ) )
     {
     // Compute Bounding Box
     std::vector< int > bounds = GetBoundingBox(contour);
@@ -2369,7 +2106,7 @@ QGoTabImageView3DwT::SaveContour(vtkPolyData *contour, vtkPolyData *contour_node
     this->m_DataBaseTables->SaveContoursFromVisuInDB(bounds[0],
                                                      bounds[2],
                                                      bounds[4],
-                                                     m_TCoord,
+                                                     iTCoord,
                                                      bounds[1],
                                                      bounds[3],
                                                      bounds[5],
@@ -2405,7 +2142,7 @@ QGoTabImageView3DwT::GetBoundingBox(vtkPolyData *iElement)
     int *max_idx = this->GetImageCoordinatesFromWorldCoordinates(Max);
 
     int extent[6];
-    this->m_Image->GetExtent(extent);
+    m_ImageProcessor->getImageBW()->GetExtent(extent);
 
     for ( i = 0; i < 3; i++ )
       {
@@ -2469,10 +2206,9 @@ QGoTabImageView3DwT::VisualizeTrace(vtkPolyData *iTrace, double *iRGBA)
 
 //-------------------------------------------------------------------------
 void
-QGoTabImageView3DwT::ValidateContour()
+QGoTabImageView3DwT::ValidateContour(int iTCoord)
 {
-  bool re_edit = m_ContourSegmentationDockWidget->GetReeditMode();
-
+  bool re_edit = this->m_ContourEditingWidget->GetReeditMode();
   for ( int i = 0; i < m_ImageView->GetNumberOfImageViewers(); i++ )
     {
     vtkPolyData *nodes = m_ImageView->GetContourRepresentationNodePolydata(i);
@@ -2485,7 +2221,7 @@ QGoTabImageView3DwT::ValidateContour()
       contour->DeepCopy( m_ImageView->GetContourRepresentationAsPolydata(i) );
 
       //polydata for bounding box, node for points
-      SaveContour(contour, nodes);
+      SaveContour(contour, nodes, iTCoord);
 
       // polydata
       //ADD TRACE ID IN POLYDATA
@@ -2499,7 +2235,8 @@ QGoTabImageView3DwT::ValidateContour()
       //nodes
       m_ContourContainer->UpdateCurrentElementFromVisu(actors,
                                                        nodes,
-                                                       m_TCoord,
+                                                      // m_TCoord,
+                                                       iTCoord,
                                                        re_edit, //highlighted
                                                        true);   //visible
 
@@ -2511,9 +2248,10 @@ QGoTabImageView3DwT::ValidateContour()
     {
     this->m_TraceSettingsToolBar->setEnabled(true);
     this->m_TraceSettingsWidget->setEnabled(true);
-    m_ContourSegmentationDockWidget->SetReeditMode(false);
+    this->m_ContourEditingWidget->SetReeditMode(false);
     m_ImageView->ReinitializeContourWidget();
-    m_ContourSegmentationDockWidget->hide();
+    //m_ContourSegmentationDockWidget->hide();
+    this->m_ContourEditingWidget->GetDockWidget()->hide();
     }
 }
 
@@ -2567,9 +2305,12 @@ QGoTabImageView3DwT::ReEditContour(const unsigned int & iId)
 
       this->m_TraceSettingsToolBar->setEnabled(false);
       this->m_TraceSettingsWidget->setEnabled(false);
-      this->m_ContourSegmentationDockWidget->show();
-      this->m_ContourSegmentationDockWidget->SegmentationMethod(0);
-      this->m_ContourSegmentationDockWidget->SetReeditMode(true);
+    //this->m_ContourSegmentationDockWidget->show();
+      //this->m_ContourSegmentationDockWidget->SegmentationMethod(0);
+      //this->m_ContourSegmentationDockWidget->SetReeditMode(true);
+      this->m_ContourEditingWidget->SetReeditMode(true);
+      this->m_ContourEditingWidget->GetDockWidget()->show();
+
       }
     }
 }
@@ -2683,7 +2424,7 @@ int QGoTabImageView3DwT::GetTimePoint() const
 //-------------------------------------------------------------------------
 int QGoTabImageView3DwT::GetTimeInterval() const
 {
-  return static_cast< int >( m_MegaCaptureReader->GetTimeInterval() );
+  return m_ImageProcessor->getTimeInterval();
 }
 
 //-------------------------------------------------------------------------
@@ -2742,7 +2483,7 @@ QGoTabImageView3DwT::SetSliceView()
 
 //-------------------------------------------------------------------------
 int
-QGoTabImageView3DwT::SaveAndVisuContour(vtkPolyData *iView)
+QGoTabImageView3DwT::SaveAndVisuContour(int iTCoord, vtkPolyData *iView)
 {
   if ( !m_DataBaseTables->IsDatabaseUsed() )
     {
@@ -2761,7 +2502,7 @@ QGoTabImageView3DwT::SaveAndVisuContour(vtkPolyData *iView)
   CreateContour(contour_nodes, iView);
 
   // polydata for bounding box, nodes for db
-  SaveContour(iView, contour_nodes);
+  SaveContour(iView, contour_nodes, iTCoord);
 
   AddTraceIDIntoPolydata(iView, this->m_ContourContainer->m_CurrentElement.TraceID, "CONTOUR");
 
@@ -2775,7 +2516,8 @@ QGoTabImageView3DwT::SaveAndVisuContour(vtkPolyData *iView)
   // update the container
   m_ContourContainer->UpdateCurrentElementFromVisu(actors,
                                                    contour_nodes,
-                                                   m_TCoord,
+                                                   //m_TCoord,
+                                                   iTCoord,
                                                    false, //highlighted
                                                    true); //visible
 
@@ -2814,21 +2556,19 @@ QGoTabImageView3DwT::CreateContour(vtkPolyData *contour_nodes, vtkPolyData *iVie
 
 //-------------------------------------------------------------------------
 void
-QGoTabImageView3DwT::SaveMesh(vtkPolyData *iView, int iTShift)
+QGoTabImageView3DwT::SaveMesh(vtkPolyData *iView, int iTCoord)
 {
   // Compute Bounding Box
   std::vector< int > bounds = this->GetBoundingBox(iView);
 
-  int tcoord = static_cast< int >( m_TCoord ) + iTShift;
-
   // Save mesh in database
   GoFigureMeshAttributes
       MeshAttributes =
-        ComputeMeshAttributes( iView, true, static_cast< unsigned int >( tcoord ) );
+        ComputeMeshAttributes( iView, true, static_cast< unsigned int >( iTCoord ) );
 
   this->m_DataBaseTables->SaveMeshFromVisuInDB(bounds[0], bounds[2], bounds[4],
                                                bounds[1], bounds[3], bounds[5],
-                                               iTShift,
+                                               iTCoord,
                                                iView,
                                                &MeshAttributes);
 }
@@ -2836,33 +2576,84 @@ QGoTabImageView3DwT::SaveMesh(vtkPolyData *iView, int iTShift)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void
+/*void
 QGoTabImageView3DwT::SaveAndVisuMeshFromSegmentation(vtkPolyData *iView, int iTCoord)
 {
   SaveAndVisuMesh(iView, m_TCoord, iTCoord);
+}*/
+void
+QGoTabImageView3DwT::SaveInDBAndRenderMeshForVisu(
+  std::vector<vtkPolyData *> iVectPolydata, int iTCoord)
+{
+  std::cout<< "reveived..." << std::endl;
+  std::vector<vtkPolyData *>::iterator iter = iVectPolydata.begin();
+  while(iter != iVectPolydata.end())
+    {
+    SaveAndVisuMesh(*iter, iTCoord);
+    ++iter;
+    }
+}
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+SaveInDBAndRenderSetOfContoursForVisu(
+  std::vector<std::vector<vtkPolyData*> > iVectorSetOfContours, int iTCoord)
+{
+  // just add to visu as of now
+  std::vector<std::vector<vtkPolyData*> >::iterator it1 =
+      iVectorSetOfContours.begin();
+  while(it1!=iVectorSetOfContours.end())
+    {
+    std::vector<vtkPolyData*>::iterator it2 = (*it1).begin();
+    while(it2!=(*it1).end())
+      {
+      vtkPolyData* data = vtkPolyData::New();
+      data->DeepCopy(*it2);
+      this->AddContour(data);
+      ++it2;
+      }
+    ++it1;
+    }
 }
 
+//-------------------------------------------------------------------------
+void QGoTabImageView3DwT::SaveInDBAndRenderContourForVisu(
+  std::vector<vtkPolyData *> iVectPolydata, int iTCoord)
+{
+  std::vector<vtkPolyData *>::iterator iter = iVectPolydata.begin();
+  while(iter != iVectPolydata.end())
+    {
+      std::cout << "receive polydata" << std::endl;
+    vtkPolyData* data = vtkPolyData::New();
+    data->DeepCopy(*iter);
+    this->AddContour(data);
+    //SaveAndVisuContour(*iter, m_TCoord, iTCoord);
+    ++iter;
+    }
+
+}
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::SaveAndVisuMesh(vtkPolyData *iView,
-                                     unsigned int iTCoord,
-                                     int iTShift)
+                                     unsigned int iTCoord)
 {
-  if ( !this->m_ChannelClassicMode )
+  /*
+  if (m_ImageProcessor->getDopplerMode())
     {
-    iTShift = iTShift * m_DopplerStep;
+    iTShift = iTShift * m_ImageProcessor->getDopplerStep();
+    unsigned int* time = m_ImageProcessor->getBoundsTime();
 
-    if ( iTCoord + iTShift < m_MegaCaptureReader->GetMinTimePoint() )
+    if ( iTCoord + iTShift < time[0] )
       {
-      iTShift = -( m_TCoord - m_MegaCaptureReader->GetMinTimePoint() );
+      iTShift = -( m_TCoord - time[0] );
       }
     else
       {
-      if ( iTCoord + iTShift > m_MegaCaptureReader->GetMaxTimePoint() )
+      if ( iTCoord + iTShift > time[1] )
         {
-        iTShift = m_MegaCaptureReader->GetMaxTimePoint() - m_TCoord;
+        iTShift = time[1] - m_TCoord;
         }
       }
     }
@@ -2874,7 +2665,7 @@ QGoTabImageView3DwT::SaveAndVisuMesh(vtkPolyData *iView,
     {
     std::cerr << "Problem with DB" << std::endl;
     return;
-    }
+    }*/
 
   if ( !iView )
     {
@@ -2882,7 +2673,13 @@ QGoTabImageView3DwT::SaveAndVisuMesh(vtkPolyData *iView,
     return;
     }
 
-  SaveMesh(iView, iTShift);
+  std::cout << "save mesh..." << std::endl;
+
+  SaveMesh(iView, iTCoord);
+
+    std::cout << "add mesh to visu..." << std::endl;
+
+  // should be done in the mesh manager, from goprintdatabase
 
   //ADD TRACE ID IN POLYDATA
   AddTraceIDIntoPolydata(iView, this->m_MeshContainer->m_CurrentElement.TraceID, "MESH");
@@ -2894,7 +2691,7 @@ QGoTabImageView3DwT::SaveAndVisuMesh(vtkPolyData *iView,
   // update container since a new mesh is created
   m_MeshContainer->UpdateCurrentElementFromVisu(actors,
                                                 iView,
-                                                iTCoord + iTShift,
+                                                iTCoord,
                                                 false,  // highlighted
                                                 true);  // visible
   m_MeshContainer->InsertCurrentElement();
@@ -2981,17 +2778,16 @@ ComputeMeshAttributes(vtkPolyData *iMesh,
   calculator->SetIntensityBasedComputation(iIntensity);
 
   GoFigureMeshAttributes oAttributes;
-
-  if( this->m_ChannelClassicMode )
+  if(!m_ImageProcessor->getDopplerMode())
     {
-    for ( size_t i = 0; i < m_InternalImages.size(); i++ )
+    for ( size_t i = 0; i < m_ImageProcessor->getNumberOfChannels(); i++ )
       {
       vtkSmartPointer< vtkImageExport > vtk_exporter =
         vtkSmartPointer< vtkImageExport >::New();
       itk::VTKImageImport< ImageType >::Pointer itk_importer =
         itk::VTKImageImport< ImageType >::New();
 
-      vtk_exporter->SetInput(m_InternalImages[i]);
+      vtk_exporter->SetInput(m_ImageProcessor->getImageBW(i));
 
       ConnectPipelines< vtkImageExport, itk::VTKImageImport< ImageType >::Pointer >(
         vtk_exporter, itk_importer);
@@ -2999,14 +2795,12 @@ ComputeMeshAttributes(vtkPolyData *iMesh,
       calculator->Update();
 
       oAttributes.m_Volume = calculator->GetPhysicalSize();
-      //qDebug() << "volume:" << oAttributes.m_Volume;
       oAttributes.m_Area = calculator->GetArea();
       oAttributes.m_Size = calculator->GetSize();
 
       if ( iIntensity )
         {
-        QString     q_channelname = this->m_ChannelNames[i];
-        std::string channelname = q_channelname.toStdString();
+        std::string channelname = m_ImageProcessor->getChannelName(i);
 
         oAttributes.m_TotalIntensityMap[channelname] =
           static_cast< int >( calculator->GetSumIntensity() );
@@ -3021,18 +2815,17 @@ ComputeMeshAttributes(vtkPolyData *iMesh,
     }
   else
     {
-    unsigned int min_ch = m_MegaCaptureReader->GetMinChannel();
-    unsigned int max_ch = m_MegaCaptureReader->GetMaxChannel();
-    unsigned int NumberOfChannels = max_ch - min_ch + 1;
+    unsigned int* boundChannel = m_ImageProcessor->getBoundsChannel();
+    unsigned int NumberOfChannels = m_ImageProcessor->getNumberOfChannels();
 
     std::vector< vtkSmartPointer< vtkImageData > > temp_image( NumberOfChannels );
 
-    m_MegaCaptureReader->SetTimePoint( iTCoord );
-    m_MegaCaptureReader->Update();
+    // load real image
+    m_ImageProcessor->initTimePoint(iTCoord);
 
-    for ( unsigned int i = min_ch; i <= max_ch; i++ )
+    for ( unsigned int i = boundChannel[0]; i <= boundChannel[1]; i++ )
       {
-      temp_image[i] = m_MegaCaptureReader->GetOutput( i );
+      temp_image[i] = m_ImageProcessor->getImageBW(i);
 
       vtkSmartPointer< vtkImageExport > vtk_exporter =
         vtkSmartPointer< vtkImageExport >::New();
@@ -3053,8 +2846,7 @@ ComputeMeshAttributes(vtkPolyData *iMesh,
 
       if ( iIntensity )
         {
-        QString     q_channelname = this->m_ChannelNames[i];
-        std::string channelname = q_channelname.toStdString();
+        std::string channelname = m_ImageProcessor->getChannelName(i);
 
         oAttributes.m_TotalIntensityMap[channelname] =
           static_cast< int >( calculator->GetSumIntensity() );
@@ -3066,6 +2858,9 @@ ComputeMeshAttributes(vtkPolyData *iMesh,
         break;
         }
       }
+    // load doppler image
+    // visibility should be updated...
+    m_ImageProcessor->setDoppler(m_TCoord, 0);
     }
   return oAttributes;
 }
@@ -3139,7 +2934,8 @@ QGoTabImageView3DwT::CreateMeshFromSelectedContours(
     vtkPolyData *mesh = filter->GetOutput();
 
     vtkBox *implicitFunction = vtkBox::New();
-    implicitFunction->SetBounds( m_InternalImages[0]->GetBounds() );
+    // get bounds from the first visible image
+    implicitFunction->SetBounds( m_ImageProcessor->getImageBW()->GetBounds() );
 
     vtkClipPolyData *cutter = vtkClipPolyData::New();
     cutter->SetInput(mesh);
@@ -3157,7 +2953,7 @@ QGoTabImageView3DwT::CreateMeshFromSelectedContours(
     //as the element is already in the container we need to delete it in order
     //to update it in the SaveAndVisuMesh:
     this->m_MeshContainer->RemoveElementFromVisualizationWithGivenTraceID(iMeshID);
-    SaveAndVisuMesh(temp, tcoord, 0);
+    SaveAndVisuMesh(temp, tcoord);
     }
 }
 
@@ -3224,8 +3020,8 @@ QGoTabImageView3DwT::SetTraceSettingsToolBarVisible(bool IsVisible)
 {
   if (!IsVisible)
     {
-    if (!this->m_ContourSegmentationDockWidget->toggleViewAction()->isChecked() &&
-      !this->m_MeshSegmentationDockWidget->toggleViewAction()->isChecked() &&
+      if (!this->m_ContourEditingWidget->GetToggleViewAction()->isChecked() &&
+        !this->m_MeshEditingWidget->GetToggleViewAction()->isChecked() &&
       !this->m_DataBaseTables->toggleViewAction()->isChecked() )
       {
       this->m_TraceSettingsToolBar->setVisible(IsVisible);
@@ -3233,15 +3029,15 @@ QGoTabImageView3DwT::SetTraceSettingsToolBarVisible(bool IsVisible)
     }
   else
     {
-    if (this->m_ContourSegmentationDockWidget->toggleViewAction()->isChecked())
+      if (this->m_ContourEditingWidget->GetToggleViewAction()->isChecked())
       {
       this->m_DataBaseTables->SetTraceNameForTableWidget("contour");
       }
-    if (this->m_MeshSegmentationDockWidget->toggleViewAction()->isChecked() )
+      if (this->m_MeshEditingWidget->GetToggleViewAction()->isChecked() )
       {
       this->m_DataBaseTables->SetTraceNameForTableWidget("mesh");
       }
-    if(this->m_DataBaseTables->NeedTraceSettingsToolBarVisible() ) //if the dockwidget is not on floating mode 
+    if(this->m_DataBaseTables->NeedTraceSettingsToolBarVisible() ) //if the dockwidget is not on floating mode
       //or if the trace settings widget is not already visible in the dockwidget or if the TW is not visible
       {
       this->m_TraceSettingsToolBar->setVisible(IsVisible);
@@ -3256,53 +3052,61 @@ QGoTabImageView3DwT::InitializeToolsForTracesToolBar(
 QMenu* iMenu, QToolBar* iToolBar)
 {
   //iToolBar->clear();
-  QGoToolBarStatus* TracesToolBar = 
+  QGoToolBarStatus* TracesToolBar =
     new QGoToolBarStatus(iToolBar, iMenu, Qt::TopToolBarArea, true, true, this);
 
   QActionGroup* group = this->findChild< QActionGroup* >("ModeGroup");
 
   //Contour Editing
   QAction *ContourSegmentationAction =
-    m_ContourSegmentationDockWidget->toggleViewAction();
+    this->m_ContourEditingWidget->GetToggleViewAction();
   ContourSegmentationAction->setParent(this);
   ContourSegmentationAction->setObjectName("ContourEditingMode");
 
   group->addAction(ContourSegmentationAction);
   //group->addAction(this->m_ContourSegmentationDockWidget->GetActionForToggle() );
 
-  TracesToolBar->m_VectorAction.push_back(ContourSegmentationAction); 
-  //this->m_TracesActions.push_back(this->m_ContourSegmentationDockWidget->GetActionForToggle()); 
+  TracesToolBar->m_VectorAction.push_back(ContourSegmentationAction);
+  //this->m_TracesActions.push_back(this->m_ContourSegmentationDockWidget->GetActionForToggle());
 
   //Mesh Editing
   QAction *MeshSegmentationAction =
-    m_MeshSegmentationDockWidget->toggleViewAction();
+    this->m_MeshEditingWidget->GetToggleViewAction();
 
   group->addAction(MeshSegmentationAction);
 
   TracesToolBar->m_VectorAction.push_back(MeshSegmentationAction);
 
   // Track Color Coding
-  TracesToolBar->m_VectorAction.push_back( 
+  TracesToolBar->m_VectorAction.push_back(
     m_TrackViewDockWidget->toggleViewAction() );
 
   // Lineage Color Coding
-  TracesToolBar->m_VectorAction.push_back( 
+  TracesToolBar->m_VectorAction.push_back(
     m_LineageViewDockWidget->toggleViewAction() );
 
+  //QObject::connect( ContourSegmentationAction,
+  //                  SIGNAL( toggled(bool) ),
+  //                  m_ContourSegmentationDockWidget,
+   //                 SLOT( interactorBehavior(bool) ) );
   QObject::connect( ContourSegmentationAction,
                     SIGNAL( toggled(bool) ),
-                    m_ContourSegmentationDockWidget,
-                    SLOT( interactorBehavior(bool) ) );
+                    m_ContourEditingWidget,
+                    SLOT( SetVisible(bool) ) );
 
   QObject::connect( ContourSegmentationAction,
                     SIGNAL( toggled(bool) ),
                     this,
                     SLOT( SetTraceSettingsToolBarVisible(bool) ) );
 
+  //QObject::connect( MeshSegmentationAction,
+  //                  SIGNAL( toggled(bool) ),
+  //                  m_MeshSegmentationDockWidget,
+  //                  SLOT( interactorBehavior(bool) ) );
   QObject::connect( MeshSegmentationAction,
                     SIGNAL( toggled(bool) ),
-                    m_MeshSegmentationDockWidget,
-                    SLOT( interactorBehavior(bool) ) );
+                    m_MeshEditingWidget,
+                    SLOT( SetVisible(bool) ) );
 
   QObject::connect( MeshSegmentationAction,
                     SIGNAL( toggled(bool) ),
@@ -3323,6 +3127,45 @@ QGoTabImageView3DwT::InitializeTraceSettingsToolBar(QToolBar* iToolBar)
     this->m_DataBaseTables->GetTraceSettingsWidgetForToolBar() );
 
   this->m_ToolBarList.push_back(TraceSettingsToolBar);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::UpdateTracesEditingWidget()
+{
+  if (this->m_MeshEditingWidget != NULL && this->m_ContourEditingWidget != NULL)
+    {
+    if (!this->m_ImageProcessor->getDopplerMode())
+      {
+      this->m_MeshEditingWidget->SetTSliceForClassicView();
+      this->m_ContourEditingWidget->SetTSliceForClassicView();
+      }
+    else
+      {
+      std::map<QString, QColor> ListTimePoints;
+      std::vector<int> dopplerT =
+          this->m_ImageProcessor->getDopplerTime(this->m_TCoord);
+
+      for(unsigned int i=0; i<this->m_ImageProcessor->getDopplerSize(); ++i)
+      {
+        if (dopplerT[i] >= 0 )
+          {
+          double* rgb = vtkMath::HSVToRGB(
+                static_cast<double>(i) /
+                static_cast<double>(
+                  this->m_ImageProcessor->getDopplerSize()),1,1);
+          QColor color(rgb[0]*255, rgb[1]*255, rgb[2]*255);
+          ListTimePoints[tr("%1").arg(dopplerT[i])] = color;
+          }
+      }
+
+      this->m_MeshEditingWidget->SetTSliceForDopplerView(ListTimePoints,
+        m_ImageProcessor->getDopplerChannel());
+      this->m_ContourEditingWidget->SetTSliceForDopplerView(ListTimePoints,
+        m_ImageProcessor->getDopplerChannel());
+      }
+    }
 }
 //-------------------------------------------------------------------------
 
@@ -3448,4 +3291,113 @@ QGoTabImageView3DwT::CreateModeToolBar(QMenu* iMenu, QToolBar* iToolBar)
                     this, SLOT( AngleWidgetInteractorBehavior(bool) ) );
 
   //this->m_ToolBarList.push_back(this->m_ModeToolBar);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+visibilityChanged(QString iName, bool iVisibility)
+{
+  m_ImageProcessor->visibilityChanged(iName.toStdString(), iVisibility);
+  UpdateImage();
+  //if we are in volume rendering
+  EnableVolumeRendering(this->m_ViewActions.at(12)->isChecked());
+  // update visu
+  m_ImageView->Update();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+DopplerSizeChanged(int iDopplerSize)
+{
+  // delete previous doppler widget
+  this->m_NavigationDockWidget->DeleteDopplerWidgets();
+  // set the new doppler step
+  m_ImageProcessor->setDopplerSize(iDopplerSize);
+  // update the image processor
+  m_ImageProcessor->setDoppler(m_TCoord, 0); // 0 is for optimization later on...
+  //rebuild navigation widget
+  BuildDopplerWidget();
+  // build new image
+  UpdateImage();
+  //update
+  m_ImageView->Update();
+  //update the trace editing widget
+  UpdateTracesEditingWidget();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+openTransferFunctionEditor(QString iName)
+{
+  // create editor
+  GoTransferFunctionEditorWidget* editor =
+      new GoTransferFunctionEditorWidget(NULL, iName );
+  // connect signals
+
+  QObject::connect( editor,
+                    SIGNAL( updateVisualization() ),
+                    this,
+                    SLOT( updateSlot()) );
+
+  QObject::connect( editor,
+                    SIGNAL( updatePoints(QString, std::vector< std::map< unsigned int, unsigned int> >) ),
+                    this,
+                    SLOT( updatePoints(QString, std::vector< std::map< unsigned int, unsigned int> >)) );
+
+  // show editor - to have consistent geomerty to add the points
+  editor->show();
+  // add color
+  editor->AddColor(m_ImageProcessor->getColor(iName.toStdString()));
+  // add points
+  editor->AddPoints(m_ImageProcessor->getRGBA(iName.toStdString()));
+  // add LUT
+  editor->AddLookupTable(m_ImageProcessor->getLookuptable(iName.toStdString()));
+  // add Opacity TF
+  editor->AddOpacityTransferFunction(
+        m_ImageProcessor->getOpacityTransferFunction(iName.toStdString()));
+  // add histogram - should not recalculate all the time...
+  editor->AddHistogram(m_ImageProcessor->getHistogram(iName.toStdString()));
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+// color changed
+void
+QGoTabImageView3DwT::updateSlot()
+{
+  UpdateImage();
+  EnableVolumeRendering(this->m_ViewActions.at(12)->isChecked());
+  m_ImageView->Update();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+updatePoints(QString iName, std::vector< std::map< unsigned int, unsigned int> > iPoints)
+{
+  m_ImageProcessor->updatePoints(iName.toStdString(), iPoints);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+EnableVolumeRendering(bool iEnable)
+{
+  if(iEnable)
+    {
+    m_ImageView->EnableVolumeRendering(m_ImageProcessor->getColoredImages(),
+                                       m_ImageProcessor->getOpacityTransferFunctions());
+    }
+  else
+    {
+    m_ImageView->DisableVolumeRendering();
+    }
 }

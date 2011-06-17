@@ -92,7 +92,6 @@
 #include "vtkProperty.h"
 #include "vtkActor.h"
 #include "vtkPolyDataMapper.h"
-#include "vtkProp3DCollection.h"
 #include "vtkPoints.h"
 #include "vtkIdList.h"
 #include "vtkOutlineSource.h"
@@ -117,7 +116,6 @@ vtkViewImage::vtkViewImage()
   this->TextProperty = vtkTextProperty::New();
   this->LookupTable = vtkLookupTable::New();
   this->ScalarBarActor = vtkScalarBarActor::New();
-  this->Prop3DCollection = vtkProp3DCollection::New();
   this->OrientationTransform = vtkMatrixToLinearTransform::New();
 
   this->OrientationMatrix->Identity();
@@ -171,13 +169,20 @@ void vtkViewImage::SetInput(vtkImageData *in)
 
     if ( this->IsColor )
       {
+      this->ImageActor->SetInput(this->WindowLevel->GetOutput());
       this->WindowLevel->SetLookupTable(NULL);
+      // image is unsigned char ()
+      this->WindowLevel->SetWindow(255);
+      this->WindowLevel->SetLevel(127.5);
       this->ShowScalarBar = false;
       this->ScalarBarActor->SetVisibility(this->ShowScalarBar);
       }
     else
       {
+      this->ImageActor->SetInput(this->WindowLevel->GetOutput());
       this->WindowLevel->SetLookupTable(this->LookupTable);
+      this->WindowLevel->SetWindow(in->GetScalarRange()[1]-in->GetScalarRange()[0]);
+      this->WindowLevel->SetLevel(in->GetScalarRange()[0]+(in->GetScalarRange()[1]-in->GetScalarRange()[0])/2);
       }
     }
 }
@@ -197,9 +202,6 @@ vtkViewImage::~vtkViewImage()
   this->CornerAnnotation->Delete();
   this->LookupTable->Delete();
   this->ScalarBarActor->Delete();
-
-  // delete the collection
-  this->Prop3DCollection->Delete();
 }
 
 //----------------------------------------------------------------------------
@@ -215,7 +217,7 @@ void vtkViewImage::SetOrientationMatrix(vtkMatrix4x4 *matrix)
 //----------------------------------------------------------------------------
 void vtkViewImage::SetLookupTable(vtkLookupTable *lookuptable)
 {
-  if ( !this->IsColor )
+  if ( lookuptable )
     {
     vtkSetObjectMacro2Body(LookupTable, vtkLookupTable, lookuptable);
     this->WindowLevel->SetLookupTable(this->LookupTable);
@@ -321,19 +323,7 @@ double vtkViewImage::GetValueAtPosition(double worldcoordinates[3],
 
   return value;
 }
-
 //----------------------------------------------------------------------------
-
-void vtkViewImage::RemoveProp(vtkProp *prop)
-{
-  this->Renderer->RemoveViewProp(prop);
-
-  int index = this->Prop3DCollection->IsItemPresent(prop);
-  if( index )
-  {
-  this->Prop3DCollection->RemoveItem(index);
-  }
-}
 
 //----------------------------------------------------------------------------
 double * vtkViewImage::GetWorldCoordinatesFromImageCoordinates(int indices[3])
@@ -456,7 +446,7 @@ void vtkViewImage::ResetWindowLevel(void)
     return;
     }
 
-  if ( !this->IsColor )
+ if ( !this->IsColor )
     {
     double *range = input->GetScalarRange();
     double  window = range[1] - range[0];

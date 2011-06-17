@@ -87,8 +87,8 @@
 
 //--------------------------------------------------------------------------
 QGoMainWindow::QGoMainWindow(QWidget *iParent, Qt::WindowFlags iFlags) :
-  QMainWindow(iParent, iFlags), m_ModeToolBar(NULL), m_TracesToolBar(NULL), 
-  m_TraceSettingsToolBar(NULL), m_ViewToolBar(NULL)
+  QMainWindow(iParent, iFlags), m_ViewToolBar(NULL), m_ModeToolBar(NULL),
+  m_TracesToolBar(NULL), m_TraceSettingsToolBar(NULL)
 {
   QString title("<*)0|00|0>< ~~ <*)0|00|0><     GoFigure    ><0|00|0(*> ~~ ><0|00|0(*>");
 
@@ -184,7 +184,12 @@ QGoMainWindow::QGoMainWindow(QWidget *iParent, Qt::WindowFlags iFlags) :
 //--------------------------------------------------------------------------
 QGoMainWindow::~QGoMainWindow()
 {
-//   m_LSMReader->Delete();
+  // clear will call destructor on all of the element in the list
+  // what is the point of the list?
+  if(this->m_LSMReader.back())
+    {
+    this->m_LSMReader.back()->Delete();
+    }
   this->WriteSettings();
   delete m_TabManager;
   delete m_DBWizard;
@@ -521,6 +526,7 @@ QGoMainWindow::LoadMeshesFromDatabase(const int & iT)
           w3t->m_DataBaseTables->PrintVolumeAreaForMesh(
             &attributes, mesh_list_it->TraceID);
           }
+
         w3t->AddMeshFromNodes< TraceID >(mesh_list_it);
 
         progress.setValue( i );

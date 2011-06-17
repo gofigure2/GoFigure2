@@ -54,9 +54,13 @@
 
 #include "vtkSmartPointer.h"
 
+#include "GoImageProcessor.h"
+
 // base segmentation dock widget
-class QGoContourSegmentationBaseDockWidget;
-class QGoMeshSegmentationBaseDockWidget;
+class QGoContourEditingWidgetManager;
+class QGoMeshEditingWidgetManager;
+//class QGoContourSegmentationBaseDockWidget;
+//class QGoMeshSegmentationBaseDockWidget;
 
 //track dockwidget
 class QGoTrackViewDockWidget;
@@ -135,11 +139,6 @@ public:
     const GoFigure::FileType & iFileType,
     const std::string & iHeader,
     const unsigned int & iTimePoint);
-
-  /**
-   * \brief
-   */
-  virtual void Update();
 
   /**
    * \brief
@@ -271,6 +270,8 @@ public slots:
 
   void GoToDefaultMenu(bool iEnable = false);
 
+  void updatePoints(QString, std::vector< std::map< unsigned int, unsigned int> >);
+
 #if defined ( ENABLEFFMPEG ) || defined ( ENABLEAVI )
   void SetRendererWindow(int);
 #endif /* ENABLEVIDEORECORD */
@@ -305,33 +306,38 @@ public slots:
 
   void FullScreenViewXYZ();
 
-  void ChangeLookupTable();
+  //void ChangeLookupTable();
 
   void ChangeBackgroundColor();
-
-  void ShowAllChannels(bool iChecked);
-
-  void ShowOneChannel(int iChannel);
 
   void ModeChanged(int iChannel);
 
   void StepChanged(int iStep);
 
-  void ValidateContour();
+  void DopplerSizeChanged( int iSize);
 
-  int SaveAndVisuContour(vtkPolyData *iView = NULL);
+  void ValidateContour(int iTCoord);
+
+  int SaveAndVisuContour(int iTCoord, vtkPolyData *iView = NULL);
 
   //void SaveAndVisuContoursList(std::vector<vtkPolyData* >* iContours);
 
   /** \brief Save a mesh in the database and render the mesh
    * at the given time point.
   \todo to be renamed */
-  void  SaveAndVisuMesh(vtkPolyData *iView, unsigned int iTCoord, int iTShift);
+  void  SaveAndVisuMesh(vtkPolyData *iView, unsigned int iTCoord);
 
   /** \brief Save a mesh in the database and render the mesh.
    * at the current time point
-  \todo to be renamed */
-  void  SaveAndVisuMeshFromSegmentation(vtkPolyData *iView, int iTCoord);
+  */
+  void SaveInDBAndRenderMeshForVisu(
+    std::vector<vtkPolyData *> iVectPolydata, int iTCoord);
+
+  void SaveInDBAndRenderSetOfContoursForVisu(
+    std::vector<std::vector<vtkPolyData*> >, int);
+
+  void SaveInDBAndRenderContourForVisu(
+    std::vector<vtkPolyData *> iVectPolydata, int iTCoord);
 
   void ReEditContour(const unsigned int & iId);
 
@@ -348,15 +354,20 @@ public slots:
 
   void AddContourForMeshToContours(vtkPolyData *);
 
+  void visibilityChanged(QString iName, bool iVisibility);
+
+  void openTransferFunctionEditor(QString iName);
+
+  void updateSlot();
+
 protected:
   QGoImageView3D *                               m_ImageView;
-  std::vector< vtkSmartPointer< vtkLSMReader > > m_LSMReader;
-  std::vector< vtkSmartPointer< vtkImageData > > m_InternalImages;
-  vtkImageData *                                 m_Image;
 
   vtkProperty *m_HighlightedContoursProperty;
   vtkProperty *m_HighlightedMeshesProperty;
 
+  GoImageProcessor*                         m_ImageProcessor;
+  // TODO Nicolas don't need it...
   itk::MegaCaptureReader::Pointer           m_MegaCaptureReader;
   GoFigureFileInfoHelperMultiIndexContainer m_FileList;
   GoFigure::FileType                        m_FileType;
@@ -366,7 +377,6 @@ protected:
   QToolBar*                                 m_TraceSettingsToolBar;
 
   float m_IntersectionLineWidth;
-  std::vector< QString > m_ChannelNames;
 
   int m_PCoord;
   int m_RCoord;
@@ -379,10 +389,12 @@ protected:
   QGoNavigationDockWidget *m_NavigationDockWidget;
 
   // base segmentation dockwidget for contours
-  QGoContourSegmentationBaseDockWidget *m_ContourSegmentationDockWidget;
+  //QGoContourSegmentationBaseDockWidget *m_ContourSegmentationDockWidget;
 
   // base segmentation dockwidget for meshes
-  QGoMeshSegmentationBaseDockWidget *m_MeshSegmentationDockWidget;
+  //QGoMeshSegmentationBaseDockWidget *m_MeshSegmentationDockWidget;
+  QGoMeshEditingWidgetManager*       m_MeshEditingWidget;
+  QGoContourEditingWidgetManager*    m_ContourEditingWidget;
 
   QGoTrackViewDockWidget*   m_TrackViewDockWidget;
 
@@ -390,7 +402,8 @@ protected:
 
   QGoTraceSettingsWidget*   m_TraceSettingsWidget;
 
-  vtkPoints *m_Seeds;
+  std::vector< vtkPoints* > m_Seeds;
+  //std::vector<vtkPoints*> m_OrderedSeeds;
 
   ContourContainer *m_ContourContainer;
   MeshContainer    *m_MeshContainer;
@@ -399,22 +412,13 @@ protected:
 
   //bool m_TraceWidgetRequiered;
 
-  /** \brief We are in the regular visualization mode (true) or in the time
-   * visualization mode (false) */
-  bool m_ChannelClassicMode;
-  /** \brief ID of the channel that we want to visualize in the time
-   * visualization mode */
-  int  m_ChannelOfInterest;
-
-  int m_DopplerStep;
-
   /// \todo remove m_FFMPEGWriter and m_AVIWriter from this class
 
   #if defined ENABLEFFMPEG || defined ENABLEAVI
   QGoVideoRecorder *m_VideoRecorderWidget;
   #endif /* ENABLEFFMPEG || ENABLEAVI */
 
-  void SaveContour(vtkPolyData *contour, vtkPolyData *contour_nodes);
+  void SaveContour(vtkPolyData *contour, vtkPolyData *contour_nodes, int iTCoord);
 
   std::vector< vtkActor * > VisualizeTrace(vtkPolyData *iTrace, double* iRGBA);
 
@@ -513,6 +517,32 @@ protected:
                                                               iVisible );
     }
 
+  template<typename T>
+  void CreateConnectionsTraceEditingWidget(int iTimeMin, int iTimeMax, T* iTraceWidget)
+    {
+    m_DockWidgetList.push_back(
+    std::pair< QGoDockWidgetStatus *, QDockWidget * >(
+      new QGoDockWidgetStatus(
+        iTraceWidget->GetDockWidget(), Qt::LeftDockWidgetArea, false, true),
+        iTraceWidget->GetDockWidget()) );
+
+    QObject::connect(iTraceWidget,
+                   SIGNAL(UpdateSeeds() ),
+                   this,
+                   SLOT(UpdateSeeds() ) );
+
+    QObject::connect(iTraceWidget,
+                   SIGNAL(ClearAllSeeds() ),
+                   this->m_ImageView,
+                   SLOT(ClearAllSeeds() ) );
+
+    QObject::connect( iTraceWidget,
+                    SIGNAL( SetSeedInteractorBehaviour(bool) ),
+                    this,
+                    SLOT( SeedInteractorBehavior(bool) ) );
+    }
+
+
   std::vector< int > GetBoundingBox(vtkPolyData *contour);
 
   void CreateContour(vtkPolyData *contour_nodes, vtkPolyData *iView);
@@ -520,9 +550,9 @@ protected:
   /**
    * \brief Save mesh in Database
    * \param[in] iMesh mesh to be saved
-   * \param[in] iTShift time shift (used in the Doppler View case)
+   * \param[in] iTCoord
    */
-  void SaveMesh(vtkPolyData *iMesh, int iTShift);
+  void SaveMesh(vtkPolyData *iMesh, int iTCoord);
 
   void GetBackgroundColorFromImageViewer();
 
@@ -541,9 +571,10 @@ protected:
   void CreateVisuDockWidget();
 
   // segmentation dockwidgets
-  void CreateContourSegmentationDockWidget();
-
-  void CreateMeshSegmentationDockWidget();
+  //void CreateContourSegmentationDockWidget();
+  void CreateContourEditingDockWidget(int iTimeMin, int iTimeMax);
+  //void CreateMeshSegmentationDockWidget();
+  void CreateMeshEditingDockWidget(int iTimeMin, int iTimeMax);
 
   void CreateDataBaseTablesConnection();
 
@@ -558,11 +589,11 @@ protected:
   std::vector< vtkActor * > AddContour(vtkPolyData *dataset,
                                        vtkProperty *property = NULL);
 
-  void SetTimePointWithLSMReaders();
+  // TODO remove megacapture
+  void UpdateImage();
 
-  void SetTimePointWithMegaCapture();
-
-  void SetTimePointWithMegaCaptureTimeChannels(int channel, int PreviousT = 0);
+    // TODO remove megacaptureZz
+  void BuildDopplerWidget();
 
   /**
   \brief give the adress for the contours, meshes and tracks container to the
@@ -643,17 +674,10 @@ protected slots:
   void ImportTracks();
 
   /**
-  \brief switch between the 2 visualization modes:
-  -classic mode where a channel is an entity (nuclei, membrane) of interest.
-  -time mode where a channel represents the same entity through the time. (t-1, t and t+1).
-    updates the navigation widget.
-  */
-  void ChannelTimeMode( bool );
-  /**
   \brief access to the megacapture reader to get the entity of interest images through time.
   updates the navigation widget.
   */
-  void LoadChannelTime();
+  void StartDopplerView();
 
   /**
   \brief give the adress for the contours, meshes and tracks container to the
@@ -664,7 +688,17 @@ protected slots:
 
   void AddTraceIDIntoPolydata( vtkPolyData* iPolydata, unsigned int iTraceID, const char* iTrace);
 
+  /**
+  \brief depending on the doppler/classic mode, update the TimePoints and channels
+  of the mesh and contour widget
+  */
+  void UpdateTracesEditingWidget();
+
+  void EnableVolumeRendering(bool iEnable);
+
 private:
+  void InitializeImageRelatedWidget();
+
   Q_DISABLE_COPY(QGoTabImageView3DwT);
 };
 

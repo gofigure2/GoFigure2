@@ -167,7 +167,6 @@ ELSE( SUPERBUILD )
   #----------------------------------------------------------
   # Then find ITK
   #### ITK ####
-
   INCLUDE( "${GOFIGURE2_SOURCE_DIR}/CMake/ConfigITK.cmake" )
 
   #----------------------------------------------------------
@@ -203,8 +202,15 @@ ELSE( SUPERBUILD )
     ${GOFIGURE2_BINARY_DIR}/Code/
     ${GOFIGURE2_SOURCE_DIR}/Code/IO/
     ${GOFIGURE2_BINARY_DIR}/Code/IO/
+    ${GOFIGURE2_SOURCE_DIR}/Code/IO/GoImage/
+    ${GOFIGURE2_BINARY_DIR}/Code/IO/GoImage/
     ${GOFIGURE2_SOURCE_DIR}/Code/Filters/
     ${GOFIGURE2_BINARY_DIR}/Code/Filters/
+    ${GOFIGURE2_SOURCE_DIR}/Code/Filters/Contour/
+    ${GOFIGURE2_SOURCE_DIR}/Code/Filters/Mesh/
+    ${GOFIGURE2_SOURCE_DIR}/Code/Filters/Mesh/Attributes/
+    ${GOFIGURE2_SOURCE_DIR}/Code/Filters/Mesh/Split/
+    ${GOFIGURE2_SOURCE_DIR}/Code/Filters/Mesh/Merge/
     ${GOFIGURE2_SOURCE_DIR}/Code/GUI/
     ${GOFIGURE2_BINARY_DIR}/Code/GUI/
     ${GOFIGURE2_SOURCE_DIR}/Code/GUI/lib/
@@ -218,6 +224,10 @@ ELSE( SUPERBUILD )
     ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/Video/
     ${GOFIGURE2_SOURCE_DIR}/Code/GUI/lib/Wizard/
     ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/Wizard/
+    ${GOFIGURE2_SOURCE_DIR}/Code/GUI/lib/TraceEditing/
+    ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/TraceEditing/
+    ${GOFIGURE2_SOURCE_DIR}/Code/GUI/lib/TransferFunctionEditor/
+    ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/TransferFunctionEditor/
     ${GOFIGURE2_SOURCE_DIR}/Interfaces/
     ${GOFIGURE2_BINARY_DIR}/Interfaces/
     ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/
@@ -322,7 +332,5 @@ ELSE( SUPERBUILD )
   ADD_CUSTOM_TARGET( uninstall
     "${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_BINARY_DIR}/GOFIGURE2Uninstall.cmake"
     )
-
-  INCLUDE( GOFIGURE2CPack.cmake )
 
 ENDIF( SUPERBUILD )

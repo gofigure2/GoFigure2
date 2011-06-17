@@ -136,6 +136,9 @@ MegaCaptureReader::SetMegaCaptureHeader(const std::string & iHeader)
 {
   m_HeaderReader->SetFileName(iHeader);
   m_HeaderReader->Read();
+
+  m_ChannelColor = m_HeaderReader->m_ChannelColor;
+
   m_Modified = true;
 }
 
@@ -254,6 +257,7 @@ MegaCaptureReader::AddToVTKVolumeBuilder(const int & iCounter,
 void
 MegaCaptureReader::Update()
 {
+  std::cout << __FILE__ << " START building new IMAGE" << std::endl;
   if ( m_Modified )
     {
     std::map< unsigned int, std::list< std::string > > filelistperchannel;
@@ -272,7 +276,6 @@ MegaCaptureReader::Update()
       }
 
     // prepare the final output
-
     std::map< unsigned int, std::list< std::string > >::iterator
       fch_it = filelistperchannel.begin();
     std::map< unsigned int, std::list< std::string > >::iterator
@@ -284,6 +287,7 @@ MegaCaptureReader::Update()
 
       vtkSmartPointer< vtkImageAppend > volumeBuilder =
         vtkSmartPointer< vtkImageAppend >::New();
+      volumeBuilder->SetNumberOfThreads(VTK_MAX_THREADS);
       volumeBuilder->SetAppendAxis(2);
 
       std::list< std::string >::iterator f_it = fch_it->second.begin();
@@ -328,6 +332,7 @@ MegaCaptureReader::Update()
 
       ++fch_it;
       }
+    std::cout << __FILE__ << " FINISH building new IMAGE" << std::endl;
     m_TimeInterval = m_HeaderReader->m_TimeInterval;
     }
 }
@@ -372,6 +377,7 @@ MegaCaptureReader::GetImage(const unsigned int & iCh,
     {
     vtkSmartPointer< vtkImageAppend > volumeBuilder =
       vtkSmartPointer< vtkImageAppend >::New();
+    volumeBuilder->SetNumberOfThreads(VTK_MAX_THREADS);
     volumeBuilder->SetAppendAxis(2);
 
     std::list< std::string >::iterator f_it = filenames.begin();
@@ -402,5 +408,14 @@ MegaCaptureReader::GetOutputs()
 {
   return m_OutputImageMap;
 }
+//--------------------------------------------------------------------------
 
-} //end of namespace
+//--------------------------------------------------------------------------
+std::vector< std::vector< int > >
+MegaCaptureReader::
+GetChannelColor()
+{
+  return m_ChannelColor;
+}
+//--------------------------------------------------------------------------
+}//end of namespace
