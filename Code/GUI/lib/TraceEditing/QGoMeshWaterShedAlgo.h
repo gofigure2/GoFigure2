@@ -117,39 +117,13 @@ protected:
           typename QGoFilterWatershed::OutputPixelType,
           ImageDimension>( ItkOutPut );
 
-//FilterOutPutToVTK->Print(cout);
-
-
     // Nicolas- should be able to tune the parameter -0.5-
     vtkPolyData* temp_output = this->ExtractPolyData(FilterOutPutToVTK, 0.5);
     FilterOutPutToVTK->Delete();
 
-    double temp_bounds[6];
-    temp_output->GetBounds( temp_bounds );
-
-    double temp_center[3];
-    temp_center[0] = ( temp_bounds[0] + temp_bounds[1] ) * 0.5;
-    temp_center[1] = ( temp_bounds[2] + temp_bounds[3] ) * 0.5;
-    temp_center[2] = ( temp_bounds[4] + temp_bounds[5] ) * 0.5;
-
-    vtkSmartPointer< vtkTransform > translation =
-        vtkSmartPointer< vtkTransform >::New();
-
-    /// \todo fix it to get the real center!!!
-    translation->Translate(iCenter[0] - temp_center[0],
-                           iCenter[1] - temp_center[1],
-                           iCenter[2] - temp_center[2] );
-
-    vtkSmartPointer< vtkTransformPolyDataFilter > mesh_transform =
-        vtkSmartPointer< vtkTransformPolyDataFilter >::New();
-    mesh_transform->SetTransform(translation);
-    mesh_transform->SetInput( temp_output );
-    mesh_transform->Update();
-    temp_output->Delete();
-
     // MIGHT LEAK! CHECK IT  IS DELETED!
     vtkPolyData* mesh = vtkPolyData::New();
-    mesh->DeepCopy( mesh_transform->GetOutput() );
+    mesh->DeepCopy( temp_output );
 
     return mesh;
     }

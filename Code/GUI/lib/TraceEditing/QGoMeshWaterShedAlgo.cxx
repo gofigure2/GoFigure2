@@ -82,8 +82,6 @@ ApplyAlgo(GoImageProcessor* iImages, std::string iChannel, bool iIsInvertedOn)
             CenterVect, //cente
             iImages->getImageITK< unsigned char, 3>(iChannel, iIsInvertedOn)); //input raw image
 
-      std::cout << "ApplyWaterShedFilter called" << std::endl;
-
       if(temp_output->GetNumberOfCells() > 0)
         {
         oNewMeshes.push_back( temp_output );
