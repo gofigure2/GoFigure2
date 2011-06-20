@@ -57,15 +57,13 @@ class QGOIO_EXPORT TreeNodeStructure : public TraceStructure
 public:
   TreeNodeStructure() : TraceStructure(), m_Mother( NULL )
   {
-    m_Child[0] = NULL;
-    m_Child[1] = NULL;
+    m_Child.resize(0);
   }
 
   TreeNodeStructure( const TreeNodeStructure & iE ) : TraceStructure( iE ),
       m_Mother(iE.m_Mother)
   {
-    m_Child[0] = iE.m_Child[0];
-    m_Child[1] = iE.m_Child[1];
+    m_Child = iE.m_Child;
   }
 
   ~TreeNodeStructure(){};
@@ -106,12 +104,11 @@ public:
 
   const bool IsLeaf() const
     {
-    return ( ( this->m_Child[0] == NULL ) &&
-             ( this->m_Child[1] == NULL ) );
+    return ( !this->m_Child.size() );
     }
 
   T* m_Mother;
-  T* m_Child[2];
+  std::vector<T*> m_Child;
 };
 
 #endif

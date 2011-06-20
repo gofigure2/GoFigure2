@@ -69,7 +69,6 @@ void QGoDBMeshManager::SetMeshesInfoContainerForVisu(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-
 void QGoDBMeshManager::SetCollectionsTraceNames()
 {
   this->m_TraceName = "mesh";
@@ -179,9 +178,11 @@ void QGoDBMeshManager::AddActionsContextMenu(QMenu *iMenu)
 unsigned int QGoDBMeshManager::SaveNewMeshFromVisu(
   unsigned int iXCoordMin, unsigned int iYCoordMin, unsigned int iZCoordMin,
   unsigned int iXCoordMax, unsigned int iYCoordMax,
-  unsigned int iZCoordMax, int iTShift, vtkPolyData *iTraceNodes,
+  unsigned int iZCoordMax, int iTCoord,//int iTShift, 
+  vtkPolyData *iTraceNodes,
   vtkMySQLDatabase *iDatabaseConnector,
-  GoFigureMeshAttributes *iMeshAttributes)
+  GoFigureMeshAttributes *iMeshAttributes,
+  unsigned int iTrackID)
 {
   GoDBMeshRow NewMesh(this->m_ImgSessionID);
 
@@ -190,28 +191,50 @@ unsigned int QGoDBMeshManager::SaveNewMeshFromVisu(
 
   this->SetMeshBoundingBoxAndPoints(iXCoordMin, iYCoordMin, iZCoordMin,
                                     iXCoordMax, iYCoordMax, iZCoordMax, iTraceNodes, iDatabaseConnector, NewMesh,
-                                    iMeshAttributes, iTShift);
-  //unsigned int TrackID = 0;
-  std::string test = this->m_SelectedCollectionData->first; //for test
-  //if (this->m_SelectedCollectionData->first != "Add a new track ...") no need
-  // as it will be directly 0
-  // TrackID = ss_atoi<unsigned int>(this->m_SelectedCollectionData->first);
-
+                                    iMeshAttributes, iTCoord);
   //save the intensities for each channel !!!
   unsigned int NewMeshID = this->m_CollectionOfTraces->CreateNewTraceInDB< GoDBMeshRow >(
-      NewMesh, iDatabaseConnector, *this->m_SelectedColorData,
-      ss_atoi< unsigned int >(this->m_SelectedCollectionData->first) );
-
+      NewMesh, iDatabaseConnector, *this->m_SelectedColorData, iTrackID );
+  // pointer to double has to be deleted after usage...
   double *rgba = this->GetVectorFromQColor(this->m_SelectedColorData->second);
   this->m_MeshContainerInfoForVisu->UpdateCurrentElementFromDB(
     NewMeshID, rgba);
+  delete[] rgba;
   this->DisplayInfoForLastCreatedMesh(iDatabaseConnector, iMeshAttributes);
   return NewMeshID;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+unsigned int QGoDBMeshManager::SaveNewMeshFromVisu(
+  unsigned int iXCoordMin, unsigned int iYCoordMin, unsigned int iZCoordMin,
+  unsigned int iXCoordMax, unsigned int iYCoordMax,
+  unsigned int iZCoordMax, int iTCoord, vtkPolyData *iTraceNodes,
+  vtkMySQLDatabase *iDatabaseConnector,
+  GoFigureMeshAttributes *iMeshAttributes)
+{
+  return SaveNewMeshFromVisu(iXCoordMin, iYCoordMin, iZCoordMin, iXCoordMax, iYCoordMax, 
+    iZCoordMax, iTCoord, iTraceNodes, iDatabaseConnector, iMeshAttributes, 
+    ss_atoi<unsigned int>(this->m_SelectedCollectionData->first) );
 }
 
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+unsigned int QGoDBMeshManager::SaveNewMeshWithNoTrackFromVisu(
+  unsigned int iXCoordMin, unsigned int iYCoordMin, unsigned int iZCoordMin,
+  unsigned int iXCoordMax, unsigned int iYCoordMax,
+  unsigned int iZCoordMax, int iTShift, vtkPolyData *iTraceNodes,
+  vtkMySQLDatabase *iDatabaseConnector,
+  GoFigureMeshAttributes *iMeshAttributes)
+{
+  return SaveNewMeshFromVisu(iXCoordMin, iYCoordMin, iZCoordMin, iXCoordMax, iYCoordMax, 
+    iZCoordMax, iTShift, iTraceNodes, iDatabaseConnector, iMeshAttributes, 0 );
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+
 void QGoDBMeshManager::SaveGeneratedMeshFromVisu(unsigned int iXCoordMin,
                                                  unsigned int iYCoordMin,
                                                  unsigned int iZCoordMin,
@@ -270,12 +293,12 @@ unsigned int QGoDBMeshManager::CreateNewMeshWithNoContourNoPoints(
   unsigned int NewMeshID =
     this->m_CollectionOfTraces->CreateCollectionWithNoTracesNoPoints< GoDBMeshRow >(
       iDatabaseConnector, *this->m_SelectedColorData, NewMesh, *this->m_CurrentTimePoint);
+  // pointer to double has to be deleted after usage...
   double *color = this->GetVectorFromQColor(this->m_SelectedColorData->second);
   this->m_MeshContainerInfoForVisu->ResetCurrentElement();
   this->m_MeshContainerInfoForVisu->UpdateCurrentElementFromDB(
     NewMeshID, color);
   delete[] color;
-
   this->m_MeshContainerInfoForVisu->InsertCurrentElement();
   this->DisplayInfoForLastCreatedTrace(iDatabaseConnector);
 
@@ -323,12 +346,13 @@ void QGoDBMeshManager::SetMeshBoundingBoxAndPoints(unsigned int iXCoordMin,
                                                    vtkMySQLDatabase *iDatabaseConnector,
                                                    GoDBMeshRow & iMesh,
                                                    GoFigureMeshAttributes *iMeshAttributes,
-                                                   int iShift)
+                                                   int iTCoord)
+                                                   //int iShift)
 {
   GoDBCoordinateRow coord_min = this->GetCoordinateFromInt(iXCoordMin,
-                                                           iYCoordMin, iZCoordMin, *this->m_CurrentTimePoint + iShift);
+                                                           iYCoordMin, iZCoordMin, iTCoord);//*this->m_CurrentTimePoint + iShift);
   GoDBCoordinateRow coord_max = this->GetCoordinateFromInt(iXCoordMax,
-                                                           iYCoordMax, iZCoordMax, *this->m_CurrentTimePoint + +iShift);
+                                                           iYCoordMax, iZCoordMax, iTCoord);//*this->m_CurrentTimePoint + +iShift);
 
   iMesh.SetTheDataFromTheVisu(iDatabaseConnector, iTraceNodes,
                               coord_min, coord_max, iMeshAttributes);
@@ -526,7 +550,8 @@ unsigned int QGoDBMeshManager::ReassignTrackIDForPreviousMeshWithSameTimePoint(v
 
 //-------------------------------------------------------------------------
 QString QGoDBMeshManager::CheckExistingMeshesForTheTrack(
-  unsigned int iTrackID, vtkMySQLDatabase *iDatabaseConnector, int iShift)
+  unsigned int iTrackID, vtkMySQLDatabase *iDatabaseConnector, 
+  int iTCoord)
 {
   QString MessageToPrint("");
 
@@ -534,7 +559,7 @@ QString QGoDBMeshManager::CheckExistingMeshesForTheTrack(
     {
     unsigned int MeshIDKickedOut =
       this->ReassignTrackIDForPreviousMeshWithSameTimePoint(
-        iDatabaseConnector, iTrackID, *this->m_CurrentTimePoint + iShift);
+        iDatabaseConnector, iTrackID, iTCoord);
     if ( MeshIDKickedOut != 0 )
       {
       MessageToPrint =

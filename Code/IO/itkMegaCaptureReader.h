@@ -99,6 +99,8 @@ public:
 
   std::map< unsigned int, vtkImageData * > GetOutputs();
 
+  std::vector< std::vector< int > > GetChannelColor();
+
 protected:
   MegaCaptureReader();
   ~MegaCaptureReader();
@@ -108,10 +110,12 @@ protected:
                            const std::string& iFileName,
                            vtkImageAppend * iBuilder );
 
-  std::map< unsigned int, vtkImageData * >     m_OutputImageMap;
+  std::map< unsigned int, vtkImageData * >  m_OutputImageMap;
   GoFigureFileInfoHelperMultiIndexContainer m_FileList;
   GoFigure::FileType m_FileType;
   MegaCaptureHeaderReader *m_HeaderReader;
+
+  std::vector< std::vector< int > > m_ChannelColor;
 
   unsigned int m_MinTimePoint;
   unsigned int m_MaxTimePoint;

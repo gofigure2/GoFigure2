@@ -87,17 +87,16 @@ void QGoDBLineageManager::SetLineagesInfoContainersForVisu(
                     this,
                     SLOT( UpdateElementHighlighting(unsigned int) ) );
 
-  // for a list of lineages - NOT TESTED
+  // for a list of lineages
   QObject::connect( m_LineageContainerInfoForVisu,
-                    SIGNAL( HighlightLineage(unsigned int, bool) ),
+                    SIGNAL( HighlightLineage(const unsigned int&, const bool&) ),
                     m_TrackContainerInfoForVisu,
-                    SLOT( HighlightCollection(unsigned int, bool) ) );
+                    SLOT( HighlightCollection(const unsigned int&, const bool&) ) );
 
   QObject::connect( m_LineageContainerInfoForVisu,
-                    SIGNAL( ShowLineage(unsigned int, bool) ),
+                    SIGNAL( ShowLineage(const unsigned int&, const bool&) ),
                     m_TrackContainerInfoForVisu,
-                    SLOT( ShowCollection(unsigned int, bool) ) );
-
+                    SLOT( ShowCollection(const unsigned int&, const bool&) ) );
   // export lineage
   QObject::connect( m_LineageContainerInfoForVisu,
                     SIGNAL( ExportLineages() ),
@@ -203,10 +202,12 @@ unsigned int QGoDBLineageManager::CreateNewLineageWithTrackRoot(
     this->m_CollectionOfTraces->CreateCollectionWithNoTracesNoPoints< GoDBLineageRow >(
       iDatabaseConnector, *this->m_SelectedColorData, NewLineage);
   this->UpdateTrackRootSelectedLineage(iDatabaseConnector, NewLineageID, iTrackRoot);
-
-  this->m_LineageContainerInfoForVisu->InsertNewLineage(NewLineageID, 
-    this->GetVectorFromQColor(this->m_SelectedColorData->second), iTrackRoot,
+  // pointer to double has to be deleted after usage...
+  double* color = this->GetVectorFromQColor(this->m_SelectedColorData->second);
+  this->m_LineageContainerInfoForVisu->InsertNewLineage(NewLineageID, color
+    , iTrackRoot,
     true);
+  delete[] color;
   this->DisplayInfoForLastCreatedTrace(iDatabaseConnector);
   
   return NewLineageID;
@@ -226,9 +227,11 @@ std::list< unsigned int > QGoDBLineageManager::UpdateTheTracesColor(
   std::list< unsigned int >::iterator it = oList.begin();
   while( it != oList.end() )
     {
+    // pointer to double has to be deleted after usage...
+    double* color = this->GetVectorFromQColor(this->m_SelectedColorData->second);
     unsigned int trackRoot = this->m_LineageContainerInfoForVisu->GetLineageTrackRootID(*it);
-     m_TrackContainerInfoForVisu->UpdateCollectionColorsData( trackRoot, 
-       this->GetVectorFromQColor(this->m_SelectedColorData->second) );
+     m_TrackContainerInfoForVisu->UpdateCollectionColorsData( trackRoot, color);
+    delete[] color;
     ++it;
     }
 
@@ -477,10 +480,16 @@ QGoDBLineageManager::UpdateBoundingBoxes(vtkMySQLDatabase *iDatabaseConnector,
   std::list<unsigned int>::iterator iter = iListTracesIDs.begin();
   while(iter != iListTracesIDs.end() )
     {
-    this->UpdateDivisionsInTrackContainer(*iter);
-    if ( UpdateTW )
+    std::list<unsigned int> Listiter;
+    Listiter.push_back(*iter);
+    //need to check first that the lineage does exist, which corresponds to check if there are tracks that have this lineageid:
+    if (!this->m_CollectionOfTraces->GetListTracesIDsFromThisCollectionOf(iDatabaseConnector, Listiter).empty())
       {
-      this->DisplayInfoForExistingTrace(iDatabaseConnector, *iter);
+      this->UpdateDivisionsInTrackContainer(*iter);
+      if ( UpdateTW )
+        {
+        this->DisplayInfoForExistingTrace(iDatabaseConnector, *iter);
+        }
       }
     ++iter;
     }

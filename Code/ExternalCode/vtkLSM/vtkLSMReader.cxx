@@ -101,8 +101,8 @@ vtkLSMReader::vtkLSMReader()
   this->ChannelDataTypes = 0;
   this->TrackWavelengths = 0;
   this->ImageOffsets = 0;
-  this->ReadSizes = 0;
-  this->Description = 0;
+  this->ReadSizes = NULL;
+  this->Description = NULL;
 
 #ifdef VTK_WORDS_BIGENDIAN
   this->SwapBytes = true;
@@ -142,18 +142,17 @@ vtkLSMReader::~vtkLSMReader()
     this->TimeStampInformation->Delete();
     }
 
-/// \todo Fix leaks
-/*
 if(Description)
     {
     delete[] Description;
+    Description = NULL;
     }
 
   if(Objective)
     {
     delete[] Objective;
+    Objective = NULL;
     }
-*/
 }
 
 void vtkLSMReader::ClearFileName()
@@ -719,18 +718,16 @@ int vtkLSMReader::ReadScanInformation(ifstream *f, unsigned long pos)
 
     switch ( entry )
       {
-      double gain;
-      int mode;
       case DETCHANNEL_ENTRY_DETECTOR_GAIN_FIRST:
-        gain = this->ReadDouble(f, pos);
+        this->ReadDouble(f, pos); // double gain
         continue;
         break;
       case DETCHANNEL_ENTRY_DETECTOR_GAIN_LAST:
-        gain = this->ReadDouble(f, pos);
+        this->ReadDouble(f, pos); // double gain
         continue;
         break;
       case DETCHANNEL_ENTRY_INTEGRATION_MODE:
-        mode = this->ReadInt(f, pos);
+        this->ReadInt(f, pos); // int mode
         continue;
         break;
       case LASER_ENTRY_NAME:

@@ -78,11 +78,7 @@
 
 #include "MultiGridOctest.h"
 #include "MultiGridOctreeData.h"
-//#include "MemoryUsage.h"
 
-#include "vtkPolyDataWriter.h"
-
-vtkCxxRevisionMacro(vtkPoissonReconstruction, "$Revision: 1.70 $");
 vtkStandardNewMacro(vtkPoissonReconstruction);
 
 vtkPoissonReconstruction::vtkPoissonReconstruction()
@@ -193,11 +189,11 @@ int vtkPoissonReconstruction::RequestData(vtkInformation *vtkNotUsed(request),
 
   if ( this->IsoDivide )
     {
-    tree.GetMCIsoTriangles(isoValue, this->IsoDivide, &mesh);
+    tree.GetMCIsoTriangles(isoValue, this->IsoDivide, &mesh, 0, 1, true);
     }
   else
     {
-    tree.GetMCIsoTriangles(isoValue, &mesh);
+    tree.GetMCIsoTriangles(isoValue, &mesh, 0, 1, true);
     }
 
   //PlyWriteTriangles(Out.value,&mesh,PLY_BINARY_NATIVE,center,scale,comments,commentNum);

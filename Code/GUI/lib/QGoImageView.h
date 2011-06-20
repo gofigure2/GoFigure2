@@ -222,11 +222,11 @@ public:
 
   void EnableSeedWidget(bool iEnable);
 
-  /**
-   * \brief Get all the seeds positions.
-   * The seeds have been defined using the one click mode.
+  /*
+   * \brief Get seeds ordered by view in a vector
+   * \param iPoints vector of points containing the seeds
    */
-  vtkPoints * GetAllSeeds();
+  void GetSeeds( std::vector<vtkPoints*>& iPoints );
 
 public slots:
   /** \brief Set background color for all views.

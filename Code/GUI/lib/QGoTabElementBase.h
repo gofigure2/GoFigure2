@@ -154,7 +154,7 @@ protected:
 
   std::list< QGoDockWidgetStatusPair >  m_DockWidgetList;
   std::list< QGoToolBarStatus* >        m_ToolBarList;
-  QStatusBar*              m_StatusBar;
+  QStatusBar*                           m_StatusBar;
 
 private:
   Q_DISABLE_COPY(QGoTabElementBase);

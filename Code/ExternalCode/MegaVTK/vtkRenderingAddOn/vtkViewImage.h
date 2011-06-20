@@ -76,7 +76,6 @@
 #include <vtkCornerAnnotation.h>
 #include <vtkActor.h>
 #include <vtkDataSet.h>
-#include <vtkProp3DCollection.h>
 
 #include <vector>
 
@@ -129,7 +128,6 @@ class vtkActor;
 class vtkDataSet;
 class vtkPolyData;
 class vtkProperty;
-class vtkProp3DCollection;
 class vtkMatrixToLinearTransform;
 class vtkRenderWindowInteractor;
 
@@ -250,14 +248,6 @@ public:
   virtual void SetTextProperty(vtkTextProperty *textproperty);
 
   /**
-   * \brief Get a pointer to the current vtkProp3DCollection
-   *
-   * All displayed dataset generates an actor which is added to the renderer.
-   * These actors are gathered in this vtkProp3DCollection for easier access.
-  */
-  vtkGetObjectMacro (Prop3DCollection, vtkProp3DCollection);
-
-  /**
    * \brief Set the world coordinates
    * \param[in] x x value
    * \param[in] y y value
@@ -273,8 +263,6 @@ public:
                            const double & y, const double & z);
 
   virtual void SetWorldCoordinates(double pos[3]) = 0;
-
-  virtual void RemoveProp(vtkProp *iProp);
 
   /**
      \brief Set/Get the current slice to display (depending on the orientation
@@ -547,11 +535,6 @@ protected:
      of the viewer.
   */
   vtkScalarBarActor *ScalarBarActor;
-  /**
-     All displayed dataset generates an actor which is added to the renderer. (See AddDataSet()).
-     These actors are gathered in this vtkProp3DCollection for easier access.
-  */
-  vtkProp3DCollection *Prop3DCollection;
   /**
      This vtkTransform instance carries the OrientationMatrix (see GetOrientationMatrix())
      and is used to quickly transform the slice plane in vtkViewImage2D.

@@ -80,7 +80,7 @@ private:
 
 template <class T> struct change_visible
 {
-  change_visible(bool& iVisibile):visible(iVisibile){}
+  change_visible(const bool& iVisibile):visible(iVisibile){}
 
   void operator()(T& iStructure)
   {
@@ -607,7 +607,7 @@ protected:
   /** \brief Set the scalar range */
   void SetScalarRangeForAllElements(const double& iMin, const double& iMax );
 
-  void UpdateCurrentElementFromVisuBase( std::vector< vtkActor* > iActors,
+  void UpdateCurrentElementFromVisuBase( std::vector< vtkActor* >& iActors,
                                          vtkPolyData* iNodes,
                                          const bool& iHighlighted,
                                          const bool& iVisible );
@@ -621,7 +621,7 @@ protected:
   \return false else
   */
   void UpdateElementHighlightingWithTraceID(
-      unsigned int& oTraceId,
+      const unsigned int& oTraceId,
       Qt::CheckState& oState )
     {
       using boost::multi_index::get;
@@ -672,8 +672,8 @@ protected:
     }
 
   void UpdateElementVisibilityWithTraceID(
-      unsigned int& oTraceId,
-      bool iState)
+      const unsigned int& oTraceId,
+      const bool& iState)
     {
     using boost::multi_index::get;
 

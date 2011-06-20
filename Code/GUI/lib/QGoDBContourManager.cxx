@@ -169,6 +169,7 @@ std::list< unsigned int > QGoDBContourManager::UpdateTheTracesColor(
 
 //-------------------------------------------------------------------------
 unsigned int QGoDBContourManager::SaveNewContourFromVisu(
+  int iTCoord,
   unsigned int iXCoordMin, unsigned int iYCoordMin, unsigned int iZCoordMin,
   unsigned int iXCoordMax, unsigned int iYCoordMax,
   unsigned int iZCoordMax, vtkPolyData *iTraceNodes,
@@ -185,13 +186,12 @@ unsigned int QGoDBContourManager::SaveNewContourFromVisu(
   GoDBContourRow NewContour(this->m_ImgSessionID);
 
   int NewContourID = this->CreateNewTraceInDBFromVisu< GoDBContourRow >(
-      iXCoordMin, iYCoordMin, iZCoordMin, *this->m_CurrentTimePoint,
+      iXCoordMin, iYCoordMin, iZCoordMin, iTCoord,//*this->m_CurrentTimePoint,
       iXCoordMax, iYCoordMax, iZCoordMax, iTraceNodes,
       *this->m_SelectedColorData,
       iDatabaseConnector, NewContour, iMeshID);
-
+  // pointer to double has to be deleted after usage...
   double *rgba = this->GetVectorFromQColor(this->m_SelectedColorData->second);
-
   this->m_ContourContainerInfoForVisu->UpdateCurrentElementFromDB(
     NewContourID, rgba);
   delete[] rgba;

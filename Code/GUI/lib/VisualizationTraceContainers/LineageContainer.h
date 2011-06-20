@@ -169,14 +169,14 @@ public:
   std::list< unsigned int > DeleteAllHighlightedElements();
 
 signals:
-  void HighlightLineage(unsigned int, bool);
+  void HighlightLineage(const unsigned int&, const bool&);
   /*
    \todo Nicolas-Signal there to avoid warning but has to be connected to the box widget
    */
   void TraceVisibilityChanged(unsigned int, Qt::CheckState);
-  void ShowLineage(unsigned int, bool);
-  void DeleteLineage(unsigned int);
-  /** \brief When one track has been picked (highlighted) from the visualization */
+  void ShowLineage(const unsigned int&, const bool&);
+  void DeleteLineage(unsigned int);  
+/** \brief When one track has been picked (highlighted) from the visualization */
   void TracePicked(unsigned int, Qt::CheckState);
 
   void ExportLineages();

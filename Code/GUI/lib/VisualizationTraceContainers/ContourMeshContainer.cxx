@@ -93,7 +93,7 @@ ContourMeshContainer::SetTimePoint(const unsigned int & iT)
 
 //-------------------------------------------------------------------------
 void
-ContourMeshContainer::UpdateCurrentElementFromVisu(std::vector< vtkActor * > iActors,
+ContourMeshContainer::UpdateCurrentElementFromVisu(std::vector< vtkActor * >& iActors,
                                                    vtkPolyData *iNodes,
                                                    const unsigned int & iT,
                                                    const bool & iHighlighted,
@@ -265,6 +265,9 @@ ContourMeshContainer::DeleteAllHighlightedElements()
 
   while ( it0 != it1 )
     {
+
+      std::cout << "TRACE ID TO BE DELETED: " << it0->TraceID << std::endl;
+
     oList.push_back(it0->TraceID);
 
     if ( it0->ActorXY )

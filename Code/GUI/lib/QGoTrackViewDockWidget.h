@@ -58,8 +58,8 @@ public slots:
   void ColorCodeTracksBySpeed(bool);
   void ColorCodeTracksByOriginalColor(bool);
 signals:
-  void UpdateTracksRepresentation(double, double);
-  void ChangeColorCode( const char* );
+  void UpdateTracksRepresentation(const double&, const double&);
+  void ChangeColorCode( const QString& );
 
 protected:
   
