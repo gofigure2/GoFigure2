@@ -1,0 +1,44 @@
+Date: 05/01/11
+Author: Evan Schwab (Megason Lab, Harvard Medical School)
+
+
+
+Installation
+------------
+
+First run ./install.sh to download the Bio-Formats command line tools and
+loci_tools.jar file which will place these tools in a specified directory
+called bioformatsTools/ within your working directory.
+
+
+Usage
+-----
+
+ImageConversion.sh has one input parameter: the path-to-file to be converted
+to megacapture format.
+
+It must include the the appropriate .lsm or .zvi extension.
+Creates folder	with same name as input file and same path with the .meg
+metadata and the corresponding .png image files.
+
+./ImageConversion.sh ../Data/SNAP-154443-0011.zvi
+
+
+How to add a new file format
+----------------------------
+
+As evidenced by .lsm and .zvi, most format files have different metadata field names.
+Therefore, in order to add a new file format to ImageConversion.sh it must be added 
+as another { elif [ "$EXTENSION" == "ext" ]; then } statement.  Then there are 13 
+metadata fields that must be put in an array EXT.  These fields will be replaced by 
+the MEG megacapture metadata fields in sed "s/${EXT[${i}]}:/${MEG[${i}]}/" input.tmp > ext.tmp.  
+But first the EXT fields must be in the correct form.
+
+Where I have written sed -e 's/\tSizeT =/SizeT:/g' -e 's/\tSizeZ =/SizeZ:/g' , etc.
+I am changing the fields of various forms like \tFIELD = into FIELD: so that they can
+be changed automatically in the sed "s/${EXT[${i}]}:/${MEG[${i}]}/" loop above.
+
+So since each file format metadata is different these exceptional field forms must be
+taken care of on a case by case basis in order to ready it for the 
+sed "s/${EXT[${i}]}:/${MEG[${i}]}/" loop.
+

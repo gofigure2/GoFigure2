@@ -1,11 +1,4 @@
-#will have to click trace and table to get right size for xyview images and navigation widget to see if things moved or not
-#import os
-#address = os.getcwd()
-#address = "/home/es1076/GITROOT/GoFigure2/Testing/Sikuli/gofigure2_images"
 
-#address = address+"/gofigure2_images"
-
-#setBundlePath(address)
 Toolbar = ("default","ZoomIcon.png","PanIcon.png","ActorPickingIcon.png")
 
 
@@ -22,10 +15,6 @@ for i in range(4):
 	pointy[i] = Init_view[i].y+ int(round(0.6*(Init_view[i].h)))
 	print pointx[i],pointy[i], "this is pointx and pointy"
 	print Init_view[i]
-	#Init_XZview = find(Pattern(ViewRegion[1]).similar(0.30))
-	#Init_YZview = find(Pattern(ViewRegion[2]).similar(0.30))
-	#Init_XYZview = find(Pattern(ViewRegion[3]).similar(0.30))
-
 
 for mode in Toolbar:
 
@@ -33,9 +22,7 @@ for mode in Toolbar:
 	 	click(mode)
 
 	for j in range(4):
-		#pointx= 2*(Init_view[j].x+Init_view[j].h)/3
-		#pointy= 2*(Init_view[j].y+Init_view[j].w)/3
-		#print pointx, pointy
+
 		#single left click
 		mouseMove(Location(pointx[j],pointy[j]))
 		view_withmouse = capture(Init_view[j].getRect())
