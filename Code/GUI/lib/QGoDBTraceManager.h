@@ -361,7 +361,7 @@ protected:
 
   template< typename C, typename S >
   void GetTracesInfoFromDBAndModifyContainerForVisu(
-    vtkMySQLDatabase* iDatabaseConnector,std::vector<int> iVectIDs,
+    vtkMySQLDatabase* iDatabaseConnector, std::vector<int> iVectIDs,
     C *iContainerForVisu)
   {
     std::list<S> list_of_traces =
@@ -398,6 +398,29 @@ protected:
   {
     TWContainerType RowContainer =
     iTWContainer->GetContainerLoadedWithAllFromDB(iDatabaseConnector);
+
+    std::list< std::pair< std::string, std::string >  > ColumnNamesAndToolTips =
+      iTWContainer->GetListColumnsNamesAndToolTipsForTableWidget();
+    this->m_Table->DisplayContent(
+      RowContainer,
+      iTWContainer->GetIndexForGroupColor(this->m_TraceName),
+      iTWContainer->GetIndexForGroupColor(this->m_CollectionName),
+      this->m_TraceName, this->m_CollectionName, ColumnNamesAndToolTips, 
+      iState, iIndexShowColumn);
+    //this->m_Table->setSortingEnabled(true);
+  }
+
+  template< typename T >
+  void DisplayInfoForTracesForSpecificTPsTemplate(T *iTWContainer,
+                                       vtkMySQLDatabase *iDatabaseConnector,
+                                       Qt::CheckState iState,
+                                       std::list<unsigned int> iListTPs,
+                                       int iIndexShowColumn = 0)
+  {
+    //load the container with the traces infos for the TW for the TimePoints contained
+    //in iListTPs:
+    TWContainerType RowContainer =
+    iTWContainer->GetContainerLoadedWithAllFromDB(iDatabaseConnector, iListTPs);
 
     std::list< std::pair< std::string, std::string >  > ColumnNamesAndToolTips =
       iTWContainer->GetListColumnsNamesAndToolTipsForTableWidget();
