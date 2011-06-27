@@ -389,8 +389,8 @@ void vtkViewImage3D::SetVolumeRenderingOn(const std::vector<vtkImageData*>& iIma
 
   CleanVolumeRenderingVectors();
 
-  for(unsigned int  j=0; j<iImages.size();++j)
-  {
+  //for(unsigned int  j=0; j<iImages.size();++j)
+  //{
     // MAPPER
     // crop volume into 27? small regions
     // for efficiency?
@@ -402,10 +402,24 @@ void vtkViewImage3D::SetVolumeRenderingOn(const std::vector<vtkImageData*>& iIma
 
     // PROPERTY
     vtkVolumeProperty* volumeProperty = vtkVolumeProperty::New();
-    volumeProperty->SetScalarOpacity(0, iOpacities[j]);
-    volumeProperty->SetScalarOpacity(1, iOpacities[j]);
-    volumeProperty->SetScalarOpacity(2, iOpacities[j]);
-      // one dataset-1 tf, not 1 tf for each component
+    if(iOpacities.size() == 1)
+      {
+      volumeProperty->SetScalarOpacity(0, iOpacities[0]);
+      volumeProperty->SetScalarOpacity(1, iOpacities[0]);
+      volumeProperty->SetScalarOpacity(2, iOpacities[0]);
+      }
+    else
+      {
+      vtkSmartPointer<vtkPiecewiseFunction> opacityFunction =
+          vtkSmartPointer<vtkPiecewiseFunction>::New();
+      opacityFunction->AddPoint (0, 0.0);
+      opacityFunction->AddPoint (255, 1.0);
+      volumeProperty->SetScalarOpacity(0, opacityFunction);
+      volumeProperty->SetScalarOpacity(1, opacityFunction);
+      volumeProperty->SetScalarOpacity(2, opacityFunction);
+      }
+
+    // one dataset-1 tf, not 1 tf for each component
     volumeProperty->IndependentComponentsOff();
     volumeProperty->SetInterpolationTypeToLinear();
     //volumeProperty->SetScalarOpacityUnitDistance(1.0);
@@ -422,31 +436,64 @@ void vtkViewImage3D::SetVolumeRenderingOn(const std::vector<vtkImageData*>& iIma
     m_VolumeActors.push_back(volumeActor);
 
   // get the index of the first non-NULL component
-  int i(0);
-  for(i=0; i<3;++i)
-    {
-    double range[2];
-    iImages[j]->GetPointData()->GetScalars()->GetRange(range,i);
-    if(range[1]>0)
+    int i(0);
+    if(iOpacities.size() == 1)
       {
-      break;
+      for(i=0; i<3;++i)
+        {
+        double range[2];
+        iImages[0]->GetPointData()->GetScalars()->GetRange(range,i);
+        if(range[1]>0)
+          {
+          break;
+          }
+        }
       }
-    }
+    else
+      {
+      for(i=0; i<3;++i)
+        {
+        double range[2];
+        this->GetInput()->GetPointData()->GetScalars()->GetRange(range,i);
+        if(range[1]>0)
+          {
+          break;
+          }
+        }
+      }
 
   // mix components
   // dont't really get the point but has sth to do with the alpha component
   // create a "FAKE" 4th alpha channel...??
   vtkImageExtractComponents* extComp = vtkImageExtractComponents::New();
-  extComp->SetInput(iImages[j]);
+  if(iOpacities.size() == 1)
+    {
+    extComp->SetInput(iImages[0]);
+    }
+  else
+    {
+    extComp->SetInput(this->GetInput());
+    }
   extComp->SetComponents(i);
   extComp->Update();
 
   vtkImageAppendComponents* addComp = vtkImageAppendComponents::New();
-  addComp->AddInput(iImages[j]);
+  if(iOpacities.size() == 1)
+    {
+    addComp->AddInput(iImages[0]);
+    }
+  else
+    {
+    addComp->AddInput(this->GetInput());
+    }
   addComp->AddInput( extComp->GetOutput() );
   addComp->Update();
 
-  iImages[j]->Delete();
+  for(unsigned int  j=0; j<iImages.size();++j)
+    {
+    iImages[j]->Delete();
+    }
+
   extComp->Delete();
 
   // add output to mapper
@@ -455,7 +502,7 @@ void vtkViewImage3D::SetVolumeRenderingOn(const std::vector<vtkImageData*>& iIma
   addComp->Delete();
 
   this->Renderer->AddViewProp (volumeActor);
-  }
+  //}
 }
 
 //----------------------------------------------------------------------------
