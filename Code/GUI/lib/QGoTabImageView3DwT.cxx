@@ -108,6 +108,9 @@
 //trackediting dw
 #include "QGoTrackEditingWidget.h"
 
+// lineage viwer
+#include "QGoLineageViewerWidget.h"
+
 // image processors
 #include "GoMegaImageProcessor.h"
 #include "GoLSMImageProcessor.h"
@@ -207,6 +210,10 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
                     SIGNAL( ChangeDivisionsColorCode(const QString&) ),
                     m_TrackContainer,
                     SLOT( ChangeDivisionsColorCode(const QString&) ) );
+
+  // lineage viewer
+  m_QGoLineageViewerWidget =  new QGoLineageViewerWidget(NULL);
+  m_QGoLineageViewerWidget->setObjectName("QGoLineageViewerWidget");
 
   CreateDataBaseTablesConnection();
 
@@ -331,9 +338,14 @@ QGoTabImageView3DwT::
     }
 
   if(m_ImageProcessor)
-  {
+    {
     delete m_ImageProcessor;
-  }
+    }
+
+  if( m_QGoLineageViewerWidget)
+    {
+    delete m_QGoLineageViewerWidget;
+    }
 }
 
 //-------------------------------------------------------------------------
@@ -3084,6 +3096,10 @@ QMenu* iMenu, QToolBar* iToolBar)
   // Lineage Color Coding
   TracesToolBar->m_VectorAction.push_back(
     m_LineageViewDockWidget->toggleViewAction() );
+
+  // Lineage Viewer
+  TracesToolBar->m_VectorAction.push_back(
+    m_QGoLineageViewerWidget->toggleViewAction() );
 
   //QObject::connect( ContourSegmentationAction,
   //                  SIGNAL( toggled(bool) ),

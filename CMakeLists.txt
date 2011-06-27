@@ -228,6 +228,8 @@ ELSE( SUPERBUILD )
     ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/TraceEditing/
     ${GOFIGURE2_SOURCE_DIR}/Code/GUI/lib/TransferFunctionEditor/
     ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/TransferFunctionEditor/
+    ${GOFIGURE2_SOURCE_DIR}/Code/GUI/lib/LineageViewer/
+    ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/LineageViewer/
     ${GOFIGURE2_SOURCE_DIR}/Interfaces/
     ${GOFIGURE2_BINARY_DIR}/Interfaces/
     ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/

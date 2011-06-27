@@ -115,6 +115,9 @@ SET( QGoGUILIB_SRC
   TransferFunctionEditor/GoTransferFunctionWidget.cxx
   TransferFunctionEditor/hoverpoints.cpp
 
+  # lineage viewer
+  LineageViewer/QGoLineageViewerWidget.cxx
+
   ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoAboutWidget.cxx
   ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoNetworkUtilities.cxx
 )
@@ -256,6 +259,9 @@ SET( QGoGUILIB_HDRS
   TransferFunctionEditor/GoTransferFunctionEditorWidget.h
   TransferFunctionEditor/GoTransferFunctionWidget.h
   TransferFunctionEditor/hoverpoints.h
+
+  # lineage viewer
+  LineageViewer/QGoLineageViewerWidget.h
 )
 
 IF( BUILD_COMPARETOOL )
@@ -310,6 +316,9 @@ SET( QGoGUILIB_UI
 
   # for tracks
   Resources/TrackEditingWidget.ui
+
+  # lineage viewer
+  LineageViewer/QGoLineageViewerWidget.ui
 )
 
 IF( BUILD_COMPARETOOL )

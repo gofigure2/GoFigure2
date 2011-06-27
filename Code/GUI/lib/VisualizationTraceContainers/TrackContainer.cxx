@@ -54,6 +54,9 @@
 #include "vtkViewImage2D.h"
 
 #include "vtkLookupTable.h"
+
+#include "vtkStringArray.h"
+
 #include <limits>
 
 #include <QDebug>
@@ -1666,6 +1669,9 @@ ExportLineage(const unsigned int& iTrackID)
   // arrays we want to export
   vtkDoubleArray* depth = vtkDoubleArray::New();
   depth->SetName("Lineage Depth");
+
+  vtkStringArray* cellType = vtkStringArray::New();
+  depth->SetName("Cell Type");
 
   UpdateLineage(motherIt,
                    graph,

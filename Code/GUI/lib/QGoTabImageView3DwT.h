@@ -68,6 +68,9 @@ class QGoTrackViewDockWidget;
 //lineage dock widget
 class QGoLineageViewDockWidget;
 
+// lineage viewer
+class QGoLineageViewerWidget;
+
 class QGoImageView3D;
 class QGoNavigationDockWidget;
 class QGoPrintDatabase;
@@ -399,6 +402,8 @@ protected:
   QGoTrackViewDockWidget*   m_TrackViewDockWidget;
 
   QGoLineageViewDockWidget* m_LineageViewDockWidget;
+
+  QGoLineageViewerWidget*            m_QGoLineageViewerWidget;
 
   QGoTraceSettingsWidget*   m_TraceSettingsWidget;
 
