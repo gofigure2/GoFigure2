@@ -84,7 +84,7 @@ public:
   \param[in] iIndexShowColumn index of the show column in the TW Container(
   for contour and mesh)
   */
-  void DisplayContent(TWContainerType iTWRowContainer,
+  void DisplayInitialContent(TWContainerType iTWRowContainer,
                       std::vector< int > iIndexColorTraceRowContainer,
                       std::vector< int > iIndexColorCollectionRowContainer,
                       std::string iTraceName, std::string iCollectionName,
@@ -104,7 +104,7 @@ public:
   \param[in] iTraceName name of the trace
   \param[in] iCollectionName name of the collection
  */
-  void InsertNewRow(TWContainerType iTWRowContainer,
+  void InsertOnlyOneNewRow(TWContainerType iTWRowContainer,
                     std::vector< int > iIndexColorTraceRowContainer,
                     std::vector< int > iIndexColorCollectionRowContainer,
                     std::string iTraceName, std::string iCollectionName,
@@ -371,7 +371,7 @@ protected:
   \param[in] iNbOfRows number of rows for which to put a checkbox
   \param[in] iStartedRow index of the first row where to put a checkbox
   */
-  void SetSelectedColumn(unsigned int iNbOfRows, unsigned int iStartedRow);
+  void SetSelectedColumn(unsigned int iIndexRow);
 
   /**
   \brief Put checkboxes and icons in the column "Show"
@@ -379,8 +379,8 @@ protected:
   \param[in] iStartedRow index of the first row where to put a checkbox and an icon
   \param[in] iListState list of states to which the checkboxes need to be set
   */
-  void SetVisibleColumn(unsigned int iNbOfRows, unsigned int iStartedRow,
-  std::vector<std::string> iListState);
+  //void SetVisibleColumn(unsigned int iNbOfRows, unsigned int iStartedRow,
+  //std::vector<std::string> iListState);
 
   /**
   \brief Put checkboxes and icons in the column "Show"
@@ -388,8 +388,7 @@ protected:
   \param[in] iStartedRow index of the first row where to put a checkbox and an icon
   \param[in] iState state to which the checkboxes need to be set
   */
-  void SetVisibleColumn( unsigned int iNbOfRows,
-                         unsigned int iStartedRow,
+  void SetVisibleColumn( unsigned int iIndexRow,
                          Qt::CheckState iState = Qt::Checked);
 
   /**
@@ -403,8 +402,10 @@ protected:
   \param[in] iStartRow index of the first row where to display the color
   */
   void SetColorForTable(TWContainerType iTWRowContainer,
+                        unsigned int iIndexTWRowContainer,
                         std::vector< int > iIndexColorRowContainer,
-                        std::string iNameGroupColor, unsigned int iStartRow);
+                        std::string iNameGroupColor,
+                        unsigned int iIndexRowTW);
 
   QStringList recordHeaderNamesOrder();
 
@@ -416,6 +417,26 @@ protected:
   \return true if the value needs to be displayed, false if not
   */
   bool CheckValueToDisplayData(std::string iValue, std::string iHeaderCol);
+
+  void InsertNewRows(TWContainerType iTWRowContainer,
+                    std::vector< int > iIndexColorTraceRowContainer,
+                    std::vector< int > iIndexColorCollectionRowContainer,
+                    std::string iTraceName, std::string iCollectionName,
+                    Qt::CheckState iVisible = Qt::Checked);
+
+  void InsertNewRow(TWContainerType iTWRowContainer,
+                    unsigned int iIndexTWRowContainer,
+                    std::vector< int > iIndexColorTraceRowContainer,
+                    std::vector< int > iIndexColorCollectionRowContainer,
+                    std::string iTraceName, std::string iCollectionName,
+                    Qt::CheckState iVisible = Qt::Checked);
+
+  void DisplayDataForOneRow(TWContainerType iTWRowContainer,
+                            unsigned int iIndexTWRowContainer,
+                            unsigned int iIndexTWRow,
+                            std::vector< int > iIndexColorTraceRowContainer,
+                            std::vector< int > iIndexColorCollectionRowContainer,
+                            std::string iTraceName, std::string iCollectionName);
 
 protected slots:
   /**

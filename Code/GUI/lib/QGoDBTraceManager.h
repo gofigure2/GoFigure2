@@ -401,7 +401,7 @@ protected:
 
     std::list< std::pair< std::string, std::string >  > ColumnNamesAndToolTips =
       iTWContainer->GetListColumnsNamesAndToolTipsForTableWidget();
-    this->m_Table->DisplayContent(
+    this->m_Table->DisplayInitialContent(
       RowContainer,
       iTWContainer->GetIndexForGroupColor(this->m_TraceName),
       iTWContainer->GetIndexForGroupColor(this->m_CollectionName),
@@ -421,10 +421,10 @@ protected:
     //in iListTPs:
     TWContainerType RowContainer =
     iTWContainer->GetContainerLoadedWithAllFromDB(iDatabaseConnector, iListTPs);
-
-    std::list< std::pair< std::string, std::string >  > ColumnNamesAndToolTips =
-      iTWContainer->GetListColumnsNamesAndToolTipsForTableWidget();
-    this->m_Table->DisplayContent(
+    //only for the first time:
+    //std::list< std::pair< std::string, std::string >  > ColumnNamesAndToolTips =
+    //  iTWContainer->GetListColumnsNamesAndToolTipsForTableWidget();
+    this->m_Table->DisplayInitialContent(
       RowContainer,
       iTWContainer->GetIndexForGroupColor(this->m_TraceName),
       iTWContainer->GetIndexForGroupColor(this->m_CollectionName),
@@ -452,7 +452,7 @@ protected:
                                                     TraceID);
 
     //this->m_Table->setSortingEnabled(false);
-    this->m_Table->InsertNewRow(RowContainer,
+    this->m_Table->InsertOnlyOneNewRow(RowContainer,
                                 iTWContainer->GetIndexForGroupColor(this->m_TraceName),
                                 iTWContainer->GetIndexForGroupColor(this->m_CollectionName),
                                 this->m_TraceName, this->m_CollectionName);
@@ -594,7 +594,7 @@ protected:
       TWContainerType RowContainer =
         iTWContainer->GetContainerForOneSpecificTrace(iDatabaseConnector,
                                                       *iter);
-      this->m_Table->InsertNewRow(RowContainer,
+      this->m_Table->InsertOnlyOneNewRow(RowContainer,
                                   iTWContainer->GetIndexForGroupColor(this->m_TraceName),
                                   iTWContainer->GetIndexForGroupColor(this->m_CollectionName),
                                   this->m_TraceName, this->m_CollectionName);

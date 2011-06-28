@@ -165,7 +165,7 @@ void QGoDBLineageManager::InsertLineageInTW(vtkMySQLDatabase *iDatabaseConnector
                                                     iTraceID);
 
     //this->m_Table->setSortingEnabled(false);
-    this->m_Table->InsertNewRow(RowContainer,
+    this->m_Table->InsertOnlyOneNewRow(RowContainer,
                                 this->m_TWContainer->GetIndexForGroupColor(this->m_TraceName),
                                 this->m_TWContainer->GetIndexForGroupColor(this->m_CollectionName),
                                 this->m_TraceName, this->m_CollectionName, Qt::Unchecked);
