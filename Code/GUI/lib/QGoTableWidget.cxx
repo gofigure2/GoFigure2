@@ -335,43 +335,6 @@ void QGoTableWidget::SetVisibleColumn(unsigned int iIndexRow,
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-/*void QGoTableWidget::SetVisibleColumn(unsigned int iNbOfRows,
-                                      unsigned int StartedRow,
-                                      std::vector< std::string > iListState)
-{
-  int indexCol = findColumnName("Show");
-
-  if ( iNbOfRows != iListState.size() )
-    {
-    std::cout << "can not fill the isVisible column ";
-    std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
-    std::cout << std::endl;
-    return;
-    }
-
-  for ( unsigned int i = StartedRow; i < iNbOfRows + StartedRow; i++ )
-    {
-    QTableWidgetItem *Checkbox = new QTableWidgetItem;
-    //Checkbox->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable |
-    // Qt::ItemIsUserCheckable);
-    Checkbox->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-    QColor WhiteColor(Qt::white);
-    Checkbox->setTextColor(WhiteColor);
-    this->setItem(i, indexCol, Checkbox);
-    if ( iListState.at(i) == "true" )
-      {
-      this->setVisibleStateCheckBox(Checkbox, Qt::Checked, false);
-      }
-    else
-      {
-      this->setVisibleStateCheckBox(Checkbox, Qt::Unchecked, false);
-      }
-    }
-}*/
-
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
 void QGoTableWidget::SetColorForTable(TWContainerType iTWRowContainer,
                                       unsigned int iIndexTWRowContainer,
                                       std::vector< int > iIndexColorRowContainer,
