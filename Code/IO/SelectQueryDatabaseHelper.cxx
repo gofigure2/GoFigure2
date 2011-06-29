@@ -630,7 +630,7 @@ std::vector< std::vector< std::string > > GetValuesFromSeveralTables(
     Querystream << " ";
     j = j + 2;
     }
-  Querystream << "WHERE ( (";
+  Querystream << "WHERE ( ";
   Querystream << MainTable;
   Querystream << ".";
   Querystream << field;
