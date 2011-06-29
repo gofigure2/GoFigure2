@@ -407,7 +407,6 @@ protected:
       iTWContainer->GetIndexForGroupColor(this->m_CollectionName),
       this->m_TraceName, this->m_CollectionName, ColumnNamesAndToolTips, 
       iState, iIndexShowColumn);
-    //this->m_Table->setSortingEnabled(true);
   }
 
   template< typename T >
@@ -421,16 +420,33 @@ protected:
     //in iListTPs:
     TWContainerType RowContainer =
     iTWContainer->GetContainerLoadedWithAllFromDB(iDatabaseConnector, iListTPs);
-    //only for the first time:
-    //std::list< std::pair< std::string, std::string >  > ColumnNamesAndToolTips =
-    //  iTWContainer->GetListColumnsNamesAndToolTipsForTableWidget();
+
+    //to load the column names and display the content of the TWContainer:
     this->m_Table->DisplayInitialContent(
       RowContainer,
       iTWContainer->GetIndexForGroupColor(this->m_TraceName),
       iTWContainer->GetIndexForGroupColor(this->m_CollectionName),
       this->m_TraceName, this->m_CollectionName, ColumnNamesAndToolTips, 
       iState, iIndexShowColumn);
-    //this->m_Table->setSortingEnabled(true);
+  }
+
+  template< typename T>
+  void AddInfoForTracesForSpecificTPsTemplate(T *iTWContainer,
+                                       vtkMySQLDatabase *iDatabaseConnector,
+                                       Qt::CheckState iState,
+                                       std::list<unsigned int> iListTPs,
+                                       int iIndexShowColumn = 0)
+  {
+    //load the container with the traces infos for the TW for the TimePoints contained
+    //in iListTPs:
+    TWContainerType RowContainer =
+    iTWContainer->GetContainerLoadedWithAllFromDB(iDatabaseConnector, iListTPs);
+
+    this->m_Table->InsertNewRows(RowContainer,
+                                 iTWContainer->GetIndexForGroupColor(this->m_TraceName),
+                                 iTWContainer->GetIndexForGroupColor(this->m_CollectionName),
+                                 this->m_TraceName, this->m_CollectionName, ColumnNamesAndToolTips, 
+                                 iState, iIndexShowColumn);
   }
 
   /**
@@ -451,12 +467,10 @@ protected:
       iTWContainer->GetContainerForOneSpecificTrace(iDatabaseConnector,
                                                     TraceID);
 
-    //this->m_Table->setSortingEnabled(false);
     this->m_Table->InsertOnlyOneNewRow(RowContainer,
                                 iTWContainer->GetIndexForGroupColor(this->m_TraceName),
                                 iTWContainer->GetIndexForGroupColor(this->m_CollectionName),
                                 this->m_TraceName, this->m_CollectionName);
-    //this->m_Table->setSortingEnabled(true);
   }
 
   /**
@@ -562,6 +576,20 @@ protected:
     std::vector< int >           VectorIDs = iTWContainer->GetAllTraceIDsInContainer();
     //std::vector< int >::iterator iter = VectorIDs.begin();
     std::list<unsigned int> ListIDs(VectorIDs.begin(), VectorIDs.end());
+    this->GetTracesInfoFromDBAndModifyContainerForVisu(iDatabaseConnector,ListIDs);
+  }
+
+  template< typename T>
+  void DisplayInfoAndLoadVisuContainerWithAllTracesForSpecificTPs(T *iTWContainer,
+                                                    vtkMySQLDatabase *iDatabaseConnector,
+                                                    std::list<unsigned int> iListTPs)
+  {
+    //to be implemented in the children of trace manager, calling DisplayInfoForTracesForSpecificTPsTemplate
+   // this->DisplayInfoForTracesForSpecificTPs(
+   //   iTWContainer, iDatabaseConnector, iListTPs);
+    std::list<unsigned int> ListIDs = 
+      this->m_CollectionOfTraces->GetTraceIDsBelongingToListTimePoints(
+        iDatabaseConnector,  iListTPs);
     this->GetTracesInfoFromDBAndModifyContainerForVisu(iDatabaseConnector,ListIDs);
   }
 
@@ -814,6 +842,7 @@ protected:
   virtual void GetTracesInfoFromDBAndModifyContainerForVisu(
     vtkMySQLDatabase* iDatabaseConnector,
     std::list<unsigned int> iListTraceIDs = std::list< unsigned int >())= 0;
+
 
   bool CheckThatThereAreTracesToDelete(std::list<unsigned int> iListTracesIDToDelete);
 

@@ -416,6 +416,9 @@ public:
   std::list<unsigned int> GetTraceIDsBelongingToCollectionID(
     vtkMySQLDatabase *iDatabaseConnector,std::list<unsigned int> iListCollectionIDs);
 
+  std::list<unsigned int> GetTraceIDsBelongingToListTimePoints(
+    vtkMySQLDatabase *iDatabaseConnector,std::list<unsigned int> iListTPs);
+
   /**
   \brief get the timepoints (non distinct) for all the traceIDs in iListTraceIDs
   \param[in] iDatabaseConnector connection to the database
