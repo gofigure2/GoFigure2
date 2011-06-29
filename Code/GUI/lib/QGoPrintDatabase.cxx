@@ -219,7 +219,8 @@ void QGoPrintDatabase::CloseDBConnection()
 void QGoPrintDatabase::FillTableFromDatabase()
 {
   OpenDBConnection();
-  this->GetContentAndDisplayAllTracesInfo(this->m_DatabaseConnector);
+  //this->GetContentAndDisplayAllTracesInfo(this->m_DatabaseConnector);
+  this->GetContentAndDisplayAllTracesInfoFor3TPs(this->m_DatabaseConnector);
   CloseDBConnection();
 
   QString title = QString("Table for: %1 ").arg( m_ImgSessionName.c_str() );
@@ -1143,6 +1144,28 @@ void QGoPrintDatabase::GetContentAndDisplayAllTracesInfo(
   this->m_TracksManager->LoadInfoVisuContainerForTrackFamilies(iDatabaseConnector);
   this->m_LineagesManager->DisplayInfoAndLoadVisuContainerForAllLineages(
     iDatabaseConnector);
+}
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+
+void QGoPrintDatabase::GetContentAndDisplayAllTracesInfoFor3TPs(
+  vtkMySQLDatabase *iDatabaseConnector)
+{
+  std::list<unsigned int> ListTimepoints;
+  ListTimepoints.push_back(*this->m_SelectedTimePoint);
+  ListTimepoints.push_back(*this->m_SelectedTimePoint + 1);
+  ListTimepoints.push_back(*this->m_SelectedTimePoint + 2);
+  this->m_ContoursManager->
+    DisplayInfoAndLoadVisuContainerForAllContoursForSpecificTPs(iDatabaseConnector,
+    ListTimepoints);
+  this->m_MeshesManager->
+    DisplayInfoAndLoadVisuContainerForAllMeshesForSpecificTPs(iDatabaseConnector,
+    ListTimepoints);
+
+  this->m_TracksManager->DisplayInfoAndLoadVisuContainerForAllTracks(iDatabaseConnector);
+  this->m_LineagesManager->DisplayInfoAndLoadVisuContainerForAllLineages(iDatabaseConnector);
 }
 
 //-------------------------------------------------------------------------

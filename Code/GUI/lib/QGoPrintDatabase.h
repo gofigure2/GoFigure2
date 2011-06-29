@@ -437,6 +437,8 @@ protected:
   */
   void GetContentAndDisplayAllTracesInfo(vtkMySQLDatabase *iDatabaseConnector);
 
+  void GetContentAndDisplayAllTracesInfoFor3TPs(vtkMySQLDatabase *iDatabaseConnector);
+
   /**
   \brief get the RGB Alpha values from the iTraceRow and set a QColor with them
   \tparam T any children of GoDBTraceRow

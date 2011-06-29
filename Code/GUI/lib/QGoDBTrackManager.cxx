@@ -98,6 +98,16 @@ void QGoDBTrackManager::DisplayInfoForAllTraces(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+void QGoDBTrackManager::DisplayInfoForTracesForSpecificTPs(
+    vtkMySQLDatabase *iDatabaseConnector, std::list<unsigned int> iListTPs)
+{
+  (void) iListTPs;
+  this->DisplayInfoForAllTraces(iDatabaseConnector);
+}
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 void QGoDBTrackManager::DisplayInfoAndLoadVisuContainerForAllTracks(
   vtkMySQLDatabase *iDatabaseConnector)
 {

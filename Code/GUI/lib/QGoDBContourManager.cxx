@@ -92,6 +92,16 @@ void QGoDBContourManager::DisplayInfoAndLoadVisuContainerForAllContours(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+void QGoDBContourManager::DisplayInfoAndLoadVisuContainerForAllContoursForSpecificTPs(
+  vtkMySQLDatabase *iDatabaseConnector, std::list<unsigned int> iListTPs)
+{
+  this->DisplayInfoAndLoadVisuContainerWithAllTracesForSpecificTPs< ContourMeshContainer >
+    (iDatabaseConnector, this->m_ContourContainerInfoForVisu, iListTPs);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+
 void QGoDBContourManager::DisplayInfoForAllTraces(
   vtkMySQLDatabase *iDatabaseConnector)
 
@@ -100,6 +110,18 @@ void QGoDBContourManager::DisplayInfoForAllTraces(
 
   this->DisplayInfoForAllTracesTemplate< GoDBTWContainerForContourMesh >(
     this->m_TWContainer, iDatabaseConnector, Qt::Unchecked, IndexShowColumn);
+}
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoDBContourManager::DisplayInfoForTracesForSpecificTPs(
+  vtkMySQLDatabase *iDatabaseConnector, std::list<unsigned int> iListTPs)
+{
+  int IndexShowColumn = this->m_TWContainer->GetIndexShowColumn();
+  this->DisplayInfoForTracesForSpecificTPsTemplate< GoDBTWContainerForContourMesh >(
+    this->m_TWContainer, iDatabaseConnector, Qt::Unchecked, iListTPs,
+    IndexShowColumn);
 }
 
 //-------------------------------------------------------------------------

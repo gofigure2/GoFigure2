@@ -70,6 +70,9 @@ public:
   */
   void DisplayInfoAndLoadVisuContainerForAllMeshes(vtkMySQLDatabase *iDatabaseConnector);
 
+  void DisplayInfoAndLoadVisuContainerForAllMeshesForSpecificTPs(
+    vtkMySQLDatabase *iDatabaseConnector, std::list<unsigned int> iListTPs);
+
   virtual void DisplayInfoForLastCreatedTrace(vtkMySQLDatabase *iDatabaseConnector);
 
   void DisplayInfoForLastCreatedMesh(vtkMySQLDatabase *iDatabaseConnector,
@@ -263,6 +266,10 @@ protected:
 
   //virtual pure method in QGoDBTraceManager
   virtual void DisplayInfoForAllTraces(vtkMySQLDatabase *iDatabaseConnector);
+
+  //virtual pure method in QGoDBTraceManager
+  virtual void DisplayInfoForTracesForSpecificTPs(vtkMySQLDatabase *iDatabaseConnector, 
+    std::list<unsigned int> iListTPs);
 
   void SetMeshBoundingBoxAndPoints(unsigned int iXCoordMin,
                                    unsigned int iYCoordMin,

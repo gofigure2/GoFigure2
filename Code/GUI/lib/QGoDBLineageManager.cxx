@@ -127,6 +127,16 @@ void QGoDBLineageManager::DisplayInfoForAllTraces(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+void QGoDBLineageManager::DisplayInfoForTracesForSpecificTPs(
+    vtkMySQLDatabase *iDatabaseConnector, std::list<unsigned int> iListTPs)
+{
+  (void) iListTPs;
+  this->DisplayInfoForAllTraces(iDatabaseConnector);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+
 void QGoDBLineageManager::DisplayInfoAndLoadVisuContainerForAllLineages(
   vtkMySQLDatabase *iDatabaseConnector)
 {

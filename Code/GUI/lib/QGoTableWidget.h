@@ -62,9 +62,6 @@ public:
 
   typedef GoDBTableWidgetContainer::TWContainerType TWContainerType;
 
-  /** \todo Lydie: check the code redondancies between DisplayContent,
-  InsertNewRow and UpdateRow*/
-
   /** \todo Lydie: check if code reduction with a class member variable Tracename
   and a method to return TraceNameID from TraceName*/
 

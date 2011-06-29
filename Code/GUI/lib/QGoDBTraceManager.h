@@ -299,6 +299,9 @@ protected:
   */
   virtual void DisplayInfoForAllTraces(vtkMySQLDatabase *iDatabaseConnector) = 0;
 
+  virtual void DisplayInfoForTracesForSpecificTPs(
+    vtkMySQLDatabase *iDatabaseConnector, std::list<unsigned int> iListTPs) = 0;
+
   /**
   \brief Virtual pure method: get the data needed from the database for the
   last created trace and display them in a new inserted row of the m_Table.
@@ -420,6 +423,9 @@ protected:
     //in iListTPs:
     TWContainerType RowContainer =
     iTWContainer->GetContainerLoadedWithAllFromDB(iDatabaseConnector, iListTPs);
+
+    std::list< std::pair< std::string, std::string >  > ColumnNamesAndToolTips =
+      iTWContainer->GetListColumnsNamesAndToolTipsForTableWidget();
 
     //to load the column names and display the content of the TWContainer:
     this->m_Table->DisplayInitialContent(
@@ -579,14 +585,16 @@ protected:
     this->GetTracesInfoFromDBAndModifyContainerForVisu(iDatabaseConnector,ListIDs);
   }
 
-  template< typename T>
-  void DisplayInfoAndLoadVisuContainerWithAllTracesForSpecificTPs(T *iTWContainer,
+  template< typename C>
+  void DisplayInfoAndLoadVisuContainerWithAllTracesForSpecificTPs(
                                                     vtkMySQLDatabase *iDatabaseConnector,
+                                                    C* iContainerForVisu,
                                                     std::list<unsigned int> iListTPs)
   {
-    //to be implemented in the children of trace manager, calling DisplayInfoForTracesForSpecificTPsTemplate
-   // this->DisplayInfoForTracesForSpecificTPs(
-   //   iTWContainer, iDatabaseConnector, iListTPs);
+    //erase everything in the container for visu: todo 
+   //iContainerForVisu->clear();
+   this->m_Table->clear();
+   this->DisplayInfoForTracesForSpecificTPs( iDatabaseConnector, iListTPs);
     std::list<unsigned int> ListIDs = 
       this->m_CollectionOfTraces->GetTraceIDsBelongingToListTimePoints(
         iDatabaseConnector,  iListTPs);

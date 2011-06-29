@@ -82,10 +82,19 @@ void QGoDBMeshManager::SetCollectionsTraceNames()
 void QGoDBMeshManager::DisplayInfoAndLoadVisuContainerForAllMeshes(
   vtkMySQLDatabase *iDatabaseConnector)
 {
-  this->DisplayInfoAndLoadVisuContainerWithAllTraces< GoDBTWContainerForMesh >
-    (this->m_TWContainer, iDatabaseConnector);
+  this->DisplayInfoAndLoadVisuContainerWithAllTraces< 
+    GoDBTWContainerForMesh >(this->m_TWContainer, iDatabaseConnector);
 }
 
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoDBMeshManager::DisplayInfoAndLoadVisuContainerForAllMeshesForSpecificTPs(
+  vtkMySQLDatabase *iDatabaseConnector, std::list<unsigned int> iListTPs)
+{
+  this->DisplayInfoAndLoadVisuContainerWithAllTracesForSpecificTPs< ContourMeshContainer >
+    (iDatabaseConnector, this->m_MeshContainerInfoForVisu, iListTPs);
+}
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -98,6 +107,17 @@ void QGoDBMeshManager::DisplayInfoForAllTraces(
     this->m_TWContainer, iDatabaseConnector, Qt::Unchecked, IndexShowColumn);
 }
 
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoDBMeshManager::DisplayInfoForTracesForSpecificTPs(
+  vtkMySQLDatabase *iDatabaseConnector, std::list<unsigned int> iListTPs)
+{
+  int IndexShowColumn = this->m_TWContainer->GetIndexShowColumn();
+  this->DisplayInfoForTracesForSpecificTPsTemplate<GoDBTWContainerForMesh >(
+    this->m_TWContainer, iDatabaseConnector, Qt::Unchecked, iListTPs,
+    IndexShowColumn);
+}
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
