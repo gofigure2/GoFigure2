@@ -434,7 +434,7 @@ GoDBTWContainerForMesh::GetContainerLoadedWithAllFromDB(
     }
   else
     {
-    FieldWithValue joinCondition = {"coordinate.meshID", "mesh.meshID", "="};
+    FieldWithValue joinCondition = {"CoordIDMin", "CoordID", "="};
     FieldWithValue andCondition = {"ImagingSessionID", ConvertToString< unsigned int >(this->m_ImgSessionID), "="};
     std::vector< std::string > VectorValues = ListUnsgIntToVectorString(iListTPs);
       std::list<unsigned int> MeshIDs = GetListValuesFromTwoTablesAndCondition(
