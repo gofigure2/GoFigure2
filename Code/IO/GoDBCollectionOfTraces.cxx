@@ -908,9 +908,6 @@ std::list<unsigned int> GoDBCollectionOfTraces::GetTraceIDsBelongingToListTimePo
   return GetAllSelectedValuesFromTwoTables(iDatabaseConnector, this->m_TracesName, 
     "coordinate", this->m_TracesIDName, JoinCondition, "TCoord", VectTimePoints,
      AndCondition);
- /* return GetAllSelectedValuesFromTwoTables(iDatabaseConnector,
-    this->m_TracesName, "coordinate", this->m_TracesIDName, JoinCondition,
-    "TCoord", VectTimePoints);*/
 }
 
 //-------------------------------------------------------------------------

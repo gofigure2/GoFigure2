@@ -978,3 +978,22 @@ void QGoTableWidget::ShowAllRows()
     this->showRow(i);
     }
 }
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoTableWidget::DeleteRowsWithSpecificTimePoints(
+  QStringList iListTPs)
+{
+  int IndexColumnTime = this->findColumnName("TCoord");
+  if (IndexColumnTime != -1)
+    {
+      for (unsigned int i = 0; i < this->rowCount();++i)
+      {
+        if (iListTPs.contains(this->item(i, IndexColumnTime)->text() ) )
+        {
+        this->removeRow(i);
+        }
+      }
+    }
+
+}

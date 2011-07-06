@@ -1171,6 +1171,18 @@ void QGoPrintDatabase::GetContentAndDisplayAllTracesInfoFor3TPs(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+void QGoPrintDatabase::RemoveTracesFromListTimePoints(
+  vtkMySQLDatabase *iDatabaseConnector, std::list<unsigned int> iListTimePoints)
+{
+  this->m_ContoursManager->RemoveTracesFromTWAndContainerForVisuForSpecificTPs(
+    iDatabaseConnector, iListTimePoints);
+  this->m_MeshesManager->RemoveTracesFromTWAndContainerForVisuForSpecificTPs(
+    iDatabaseConnector, iListTimePoints);
+}
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 void QGoPrintDatabase::CreateContextMenu(const QPoint & iPos)
 {
   QMenu *ContextMenu = new QMenu;

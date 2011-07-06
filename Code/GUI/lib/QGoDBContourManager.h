@@ -97,6 +97,10 @@ public:
   void DisplayInfoAndLoadVisuContainerForAllContoursForSpecificTPs(
     vtkMySQLDatabase *iDatabaseConnector, std::list<unsigned int> iListTPs);
 
+  void RemoveTracesFromTWAndContainerForVisuForSpecificTPs(
+                                                    vtkMySQLDatabase *iDatabaseConnector,
+                                                    std::list<unsigned int> iListTPs);
+
   /**
   \brief is called when the user choses the change color action in the
   context menu,emit signals to get the databaseconnection and the selectedColor

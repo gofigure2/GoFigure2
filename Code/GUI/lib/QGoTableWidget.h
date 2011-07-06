@@ -126,6 +126,9 @@ public:
                  std::string iTraceName, std::string iCollectionName,
                  int iTraceID);
 
+
+  void DeleteRowsWithSpecificTimePoints(QStringList iListTPs);
+
   /**
   \brief delete the rows previously checked by the user
   \param[in] iTraceNameID name of the traceID displayed in the table

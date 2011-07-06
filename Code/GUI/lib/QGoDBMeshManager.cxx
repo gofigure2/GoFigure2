@@ -121,6 +121,17 @@ void QGoDBMeshManager::DisplayInfoForTracesForSpecificTPs(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+void QGoDBMeshManager::RemoveTracesFromTWAndContainerForVisuForSpecificTPs(
+                                                    vtkMySQLDatabase *iDatabaseConnector,
+                                                    std::list<unsigned int> iListTPs)
+{
+  this->RemoveTracesFromTWAndContainerForVisuForSpecificTPsTemplate< ContourMeshContainer >
+    (iDatabaseConnector, this->m_MeshContainerInfoForVisu, iListTPs);
+}
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 void QGoDBMeshManager::DisplayInfoForLastCreatedTrace(
   vtkMySQLDatabase *iDatabaseConnector)
 {

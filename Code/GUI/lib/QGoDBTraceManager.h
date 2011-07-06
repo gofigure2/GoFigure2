@@ -591,7 +591,7 @@ protected:
                                                     C* iContainerForVisu,
                                                     std::list<unsigned int> iListTPs)
   {
-    //erase everything in the container for visu: todo 
+    /** \todo Nico :erase everything in the container for visu */
    //iContainerForVisu->clear();
    this->m_Table->clear();
    this->DisplayInfoForTracesForSpecificTPs( iDatabaseConnector, iListTPs);
@@ -601,6 +601,29 @@ protected:
     this->GetTracesInfoFromDBAndModifyContainerForVisu(iDatabaseConnector,ListIDs);
   }
 
+  template< typename C>
+  void RemoveTracesFromTWAndContainerForVisuForSpecificTPsTemplate(
+                                                    vtkMySQLDatabase *iDatabaseConnector,
+                                                    C* iContainerForVisu,
+                                                    std::list<unsigned int> iListTPs)
+  {
+    std::list<unsigned int> ListIDs =
+      this->m_CollectionOfTraces->GetTraceIDsBelongingToListTimePoints(
+        iDatabaseConnector, iListTPs);
+    /** \todo Nico :erase the corresponding traces in the container for visu based
+    on the timepoints or to the ListIDs above*/
+    QStringList StrgListTPs;
+    std::list<unsigned int>::iterator iter = iListTPs.begin();
+    while (iter != iListTPs.end() )
+      {
+      QString temp(*iter);
+      StrgListTPs.append(temp);
+      ++iter;
+      }
+    //erase in the table widget:
+    this->m_Table->DeleteRowsWithSpecificTimePoints(StrgListTPs);
+
+  }
   /**
   \brief update for the imported traces the table widget and the database info
   of the container for visu.

@@ -73,6 +73,10 @@ public:
   void DisplayInfoAndLoadVisuContainerForAllMeshesForSpecificTPs(
     vtkMySQLDatabase *iDatabaseConnector, std::list<unsigned int> iListTPs);
 
+  void RemoveTracesFromTWAndContainerForVisuForSpecificTPs(
+                                                    vtkMySQLDatabase *iDatabaseConnector,
+                                                    std::list<unsigned int> iListTPs);
+
   virtual void DisplayInfoForLastCreatedTrace(vtkMySQLDatabase *iDatabaseConnector);
 
   void DisplayInfoForLastCreatedMesh(vtkMySQLDatabase *iDatabaseConnector,
