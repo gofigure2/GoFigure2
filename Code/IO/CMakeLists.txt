@@ -76,10 +76,10 @@ SET( QGOIO_SRC
 )
 
 SET_SOURCE_FILES_PROPERTIES(
-  GoDBRow.cxx
-  GoDBTraceRow.cxx
+  DBRow/GoDBRow.cxx
+  DBRow/GoDBTraceRow.cxx
   GoDBTableWidgetContainer.cxx
-  GoDBNameDescRow.cxx
+  DBRow/GoDBNameDescRow.cxx
   ABSTRACT
   )
 
