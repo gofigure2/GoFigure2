@@ -2597,7 +2597,6 @@ void
 QGoTabImageView3DwT::SaveInDBAndRenderMeshForVisu(
   std::vector<vtkPolyData *> iVectPolydata, int iTCoord)
 {
-  std::cout<< "reveived..." << std::endl;
   std::vector<vtkPolyData *>::iterator iter = iVectPolydata.begin();
   while(iter != iVectPolydata.end())
     {
@@ -2651,34 +2650,6 @@ void
 QGoTabImageView3DwT::SaveAndVisuMesh(vtkPolyData *iView,
                                      unsigned int iTCoord)
 {
-  /*
-  if (m_ImageProcessor->getDopplerMode())
-    {
-    iTShift = iTShift * m_ImageProcessor->getDopplerStep();
-    unsigned int* time = m_ImageProcessor->getBoundsTime();
-
-    if ( iTCoord + iTShift < time[0] )
-      {
-      iTShift = -( m_TCoord - time[0] );
-      }
-    else
-      {
-      if ( iTCoord + iTShift > time[1] )
-        {
-        iTShift = time[1] - m_TCoord;
-        }
-      }
-    }
-  else
-    {
-    iTShift = 0;
-    }
-  if ( !m_DataBaseTables->IsDatabaseUsed() )
-    {
-    std::cerr << "Problem with DB" << std::endl;
-    return;
-    }*/
-
   if ( !iView )
     {
     std::cerr << "Input Mesh is NULL" << std::endl;

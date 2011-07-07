@@ -216,7 +216,9 @@ ELSE( SUPERBUILD )
     ${GOFIGURE2_SOURCE_DIR}/Code/GUI/lib/
     ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/
     ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/Resources/
-    ${GOFIGURE2_SOURCE_DIR}/Code/GUI/lib/SynchronizedViews/
+    ${GOFIGURE2_SOURCE_DIR}/Code/GUI/lib/DBManager/
+    ${GOFIGURE2_SOURCE_DIR}/Code/GUI/lib/DBManager/
+    ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/SynchronizedViews/
     ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/SynchronizedViews/
     ${GOFIGURE2_SOURCE_DIR}/Code/GUI/lib/VisualizationTraceContainers/
     ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/VisualizationTraceContainers/
