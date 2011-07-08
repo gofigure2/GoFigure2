@@ -447,8 +447,8 @@ void QGoDBTrackManager::DisplayOnlyCalculatedValuesForExistingTrack(
     {
     int timeInterval = m_TrackContainerInfoForVisu->getTimeInterval();
 
-    std::vector< std::string > ColumnNames (6);
-    std::vector< std::string > Values (6);
+    std::vector< std::string > ColumnNames (7);
+    std::vector< std::string > Values (7);
 
     ColumnNames.at(0) = "Deplacement";
     Values.at(0) = ConvertToString< double >(iTrackAttributes->total_length);
@@ -464,6 +464,8 @@ void QGoDBTrackManager::DisplayOnlyCalculatedValuesForExistingTrack(
     ColumnNames.at(5) = "MaxSpeed";
     Values.at(5) = ConvertToString< double >
         (iTrackAttributes->max_speed / timeInterval);
+    ColumnNames.at(6) = "AvgVolume";
+    Values.at(6) = ConvertToString< double >(iTrackAttributes->avg_volume);
 
     this->m_Table->AddValuesForID(ColumnNames, Values, iTrackID, "trackID");
     }

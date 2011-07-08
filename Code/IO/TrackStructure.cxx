@@ -50,7 +50,7 @@
 #include "vtkMath.h"
 
 //--------------------------------------------------------------------------
-TrackStructure::TrackStructure() : TraceStructure()
+TrackStructure::TrackStructure() : TraceStructure(), m_AverageVolume(-1)
 {
 }
 
@@ -58,7 +58,8 @@ TrackStructure::TrackStructure() : TraceStructure()
 
 //--------------------------------------------------------------------------
 TrackStructure::TrackStructure(const TrackStructure & iE) :
-  TraceStructure(iE), TreeNode(iE.TreeNode), PointsMap(iE.PointsMap)
+  TraceStructure(iE), TreeNode(iE.TreeNode), PointsMap(iE.PointsMap),
+  m_AverageVolume(iE.m_AverageVolume)
 {
 }
 
@@ -247,6 +248,8 @@ TrackStructure::ComputeAttributes() const
     oAttributes.phi   = vtkMath::DegreesFromRadians( acos( ( q[2] - org[2] )
                                                           / oAttributes.distance ) );
     }
+
+  oAttributes.avg_volume = this->m_AverageVolume;
 
   return oAttributes;
 }

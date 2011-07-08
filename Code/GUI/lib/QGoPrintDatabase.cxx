@@ -1243,8 +1243,16 @@ void QGoPrintDatabase::PrintVolumeAreaForMesh(GoFigureMeshAttributes *
 void QGoPrintDatabase::PrintCalculatedValuesForTrack(GoFigureTrackAttributes *
                                                      iTrackAttributes, unsigned int iTrackID)
 {
+  // straight forward values from track polydata
   this->m_TracksManager->DisplayOnlyCalculatedValuesForExistingTrack(
     iTrackAttributes, iTrackID);
+  // other values from mesh
+  // do sth for the average volume
+  // do everything here but should be optimized later on
+  // calculate average volume
+  //std::list< std::pair<int, double> > list =this->m_MeshesManager->GetAverageVolumePerTrack();
+  //modify structure (which will update table!)
+  //this->m_TracksManager->SetAverageVolumePerTrack(list);
 }
 
 //--------------------------------------------------------------------------

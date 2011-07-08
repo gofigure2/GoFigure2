@@ -109,6 +109,15 @@ void GoDBTWContainerForTrack::SetSpecificInfoForTrackTable()
   PairTemp.first = temp;
   m_RowContainer.push_back(PairTemp);
   temp.Clear();
+
+  //Get the info for MaxSpeed:
+  temp.InfoName = "AvgVolume";
+  temp.ColumnNameTableWidget = "AvgVolume";
+  temp.ToolTip = "micron cube";
+  m_ColumnsInfos.push_back(temp);
+  PairTemp.first = temp;
+  m_RowContainer.push_back(PairTemp);
+  temp.Clear();
 }
 
 //--------------------------------------------------------------------------
