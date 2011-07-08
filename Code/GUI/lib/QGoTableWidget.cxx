@@ -987,13 +987,15 @@ void QGoTableWidget::DeleteRowsWithSpecificTimePoints(
   int IndexColumnTime = this->findColumnName("TCoord");
   if (IndexColumnTime != -1)
     {
-      for (unsigned int i = 0; i < this->rowCount();++i)
+    this->setSortingEnabled(false);
+      for (int i = 0; i < this->rowCount();++i)
       {
         if (iListTPs.contains(this->item(i, IndexColumnTime)->text() ) )
         {
         this->removeRow(i);
         }
       }
+    this->setSortingEnabled(true);
     }
 
 }

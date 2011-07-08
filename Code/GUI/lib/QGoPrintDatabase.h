@@ -439,6 +439,9 @@ protected:
 
   void GetContentAndDisplayAllTracesInfoFor3TPs(vtkMySQLDatabase *iDatabaseConnector);
 
+  void AddTracesForSelectedTimePoints(
+  vtkMySQLDatabase *iDatabaseConnector, std::list<unsigned int> iListTimePoints);
+
   void RemoveTracesFromListTimePoints(
   vtkMySQLDatabase *iDatabaseConnector, std::list<unsigned int> iListTimePoints);
 

@@ -1171,6 +1171,15 @@ void QGoPrintDatabase::GetContentAndDisplayAllTracesInfoFor3TPs(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+void QGoPrintDatabase::AddTracesForSelectedTimePoints(
+  vtkMySQLDatabase *iDatabaseConnector, std::list<unsigned int> iListTimePoints)
+{
+
+}
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 void QGoPrintDatabase::RemoveTracesFromListTimePoints(
   vtkMySQLDatabase *iDatabaseConnector, std::list<unsigned int> iListTimePoints)
 {

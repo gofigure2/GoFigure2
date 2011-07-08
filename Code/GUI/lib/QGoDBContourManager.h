@@ -97,6 +97,9 @@ public:
   void DisplayInfoAndLoadVisuContainerForAllContoursForSpecificTPs(
     vtkMySQLDatabase *iDatabaseConnector, std::list<unsigned int> iListTPs);
 
+   void AddInfoInTWAndVisuContainerForContoursForSpecificTPs(
+    vtkMySQLDatabase *iDatabaseConnector, std::list<unsigned int> iListTPs);
+
   void RemoveTracesFromTWAndContainerForVisuForSpecificTPs(
                                                     vtkMySQLDatabase *iDatabaseConnector,
                                                     std::list<unsigned int> iListTPs);
@@ -153,6 +156,9 @@ protected:
 
   //virtual pure method in QGoDBTraceManager
   virtual void DisplayInfoForTracesForSpecificTPs(vtkMySQLDatabase *iDatabaseConnector, 
+    std::list<unsigned int> iListTPs);
+
+  void AddInfoForContoursInTWForSpecificTPs(vtkMySQLDatabase *iDatabaseConnector, 
     std::list<unsigned int> iListTPs);
 
   //virtual pure method in QGoDBTraceManager

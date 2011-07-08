@@ -436,8 +436,8 @@ protected:
       iState, iIndexShowColumn);
   }
 
-  template< typename T>
-  void AddInfoForTracesForSpecificTPsTemplate(T *iTWContainer,
+  /*template< typename T>
+  void AddInfoForTracesInTWForSpecificTPsTemplate(T *iTWContainer,
                                        vtkMySQLDatabase *iDatabaseConnector,
                                        Qt::CheckState iState,
                                        std::list<unsigned int> iListTPs,
@@ -453,7 +453,7 @@ protected:
                                  iTWContainer->GetIndexForGroupColor(this->m_CollectionName),
                                  this->m_TraceName, this->m_CollectionName, ColumnNamesAndToolTips, 
                                  iState, iIndexShowColumn);
-  }
+  }*/
 
   /**
   \brief fill the TWContainer with the data needed from the database for
@@ -600,6 +600,22 @@ protected:
         iDatabaseConnector,  iListTPs);
     this->GetTracesInfoFromDBAndModifyContainerForVisu(iDatabaseConnector,ListIDs);
   }
+
+  /*template< typename C >
+  void AddInfoInTWAndContainerForVisuForSpecificTPs(
+                                                    vtkMySQLDatabase *iDatabaseConnector,
+                                                    C* iContainerForVisu,
+                                                    std::list<unsigned int> iListTPs)
+  {
+    this->AddInfoForTracesInTWForSpecificTPs(iDatabaseConnector, iListTPs);
+    std::list<S> list_of_traces =
+    GetTracesInfoFromDBForVisuContainer( list_of_traces,
+        iDatabaseConnector, this->m_TraceName, this->m_CollectionName,
+        this->m_ImgSessionID, -1, iVectIDs);
+    /** \todo Nico: implement a method that get list_of_traces as argument and as this list
+    of structure in the container for visu */
+
+ // }
 
   template< typename C>
   void RemoveTracesFromTWAndContainerForVisuForSpecificTPsTemplate(

@@ -89,6 +89,11 @@ public:
                       Qt::CheckState iState,
                       int iIndexShowColumn = 0);
 
+  void InsertNewRows(TWContainerType iTWRowContainer,
+                    std::vector< int > iIndexColorTraceRowContainer,
+                    std::vector< int > iIndexColorCollectionRowContainer,
+                    std::string iTraceName, std::string iCollectionName,
+                    Qt::CheckState iVisible = Qt::Checked);
   /**
   \brief Insert a new row and fill the cells with the data
   contained in the RowContainer
@@ -408,12 +413,6 @@ protected:
   \return true if the value needs to be displayed, false if not
   */
   bool CheckValueToDisplayData(std::string iValue, std::string iHeaderCol);
-
-  void InsertNewRows(TWContainerType iTWRowContainer,
-                    std::vector< int > iIndexColorTraceRowContainer,
-                    std::vector< int > iIndexColorCollectionRowContainer,
-                    std::string iTraceName, std::string iCollectionName,
-                    Qt::CheckState iVisible = Qt::Checked);
 
   void InsertNewRow(TWContainerType iTWRowContainer,
                     unsigned int iIndexTWRowContainer,
