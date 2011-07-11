@@ -209,6 +209,45 @@ private:
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
+  /**
+  \struct add_avg_volume
+  \brief Create a polydata for a division with an unary function.
+  Useful for the color coding.
+  \sa TrackStructure
+  */
+struct add_avg_volume
+{
+  add_avg_volume(const double& iVolume):volume(iVolume){}
+
+  void operator()(TrackStructure& iStructure)
+  {
+    iStructure.AddVolume(volume);
+  }
+
+private:
+  double volume;
+};
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
+  /**
+  \struct add_avg_volume
+  \brief Create a polydata for a division with an unary function.
+  Useful for the color coding.
+  \sa TrackStructure
+  */
+struct compute_avg_volume
+{
+  compute_avg_volume(){}
+
+  void operator()(TrackStructure& iStructure)
+  {
+    iStructure.AverageVolume();
+  }
+};
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
 
 namespace boost
 {
@@ -813,6 +852,10 @@ public slots:
   void DeleteADivision(const unsigned int& iMotherID);
 
   void UpdateAverageVolume(const unsigned int& iTrackID, const double& iVolume);
+
+  void AddVolume(const unsigned int& iTrackID, const double& iVolume);
+
+  void AverageVolume();
 
 protected:
   /*

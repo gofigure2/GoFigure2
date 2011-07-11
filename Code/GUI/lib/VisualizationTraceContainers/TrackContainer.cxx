@@ -1974,7 +1974,39 @@ UpdateAverageVolume(const unsigned int& iTrackID, const double& iVolume)
   MultiIndexContainerTraceIDIterator
     trace_it = this->m_Container.get< TraceID >().find(iTrackID);
 
-  assert ( trace_it != m_Container.get< TraceID >().end() );
+  if ( trace_it != m_Container.get< TraceID >().end() )
+    {
+    m_Container.get< TraceID >().modify( trace_it , modify_avg_volume(iVolume) );
+    }
+}
+//-------------------------------------------------------------------------
 
-  m_Container.get< TraceID >().modify( trace_it , modify_avg_volume(iVolume) );
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+AddVolume(const unsigned int& iTrackID, const double& iVolume)
+{
+  MultiIndexContainerTraceIDIterator
+    trace_it = this->m_Container.get< TraceID >().find(iTrackID);
+
+  if ( trace_it != m_Container.get< TraceID >().end() )
+    {
+    m_Container.get< TraceID >().modify( trace_it , add_avg_volume(iVolume) );
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+AverageVolume()
+{
+  MultiIndexContainerTraceIDIterator
+    trace_it = this->m_Container.get< TraceID >().begin();
+
+  while ( trace_it != m_Container.get< TraceID >().end() )
+    {
+    m_Container.get< TraceID >().modify( trace_it , compute_avg_volume() );
+    ++trace_it;
+    }
 }

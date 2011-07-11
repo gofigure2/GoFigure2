@@ -50,7 +50,7 @@
 #include "vtkMath.h"
 
 //--------------------------------------------------------------------------
-TrackStructure::TrackStructure() : TraceStructure(), m_AverageVolume(-1)
+TrackStructure::TrackStructure() : TraceStructure(), m_AverageVolume(0)
 {
 }
 
@@ -355,7 +355,25 @@ void
 TrackStructure::
 ModifyAverageVolume(const double& iVolume)
 {
-    double volume = m_AverageVolume*(PointsMap.size());
-    m_AverageVolume = (volume + iVolume)/(PointsMap.size() +1);
+  double volume = m_AverageVolume*(PointsMap.size());
+  m_AverageVolume = (volume + iVolume)/(PointsMap.size() +1);
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+TrackStructure::
+AddVolume(const double& iVolume)
+{
+  m_AverageVolume += iVolume;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+TrackStructure::
+AverageVolume()
+{
+  m_AverageVolume = m_AverageVolume/(PointsMap.size());
 }
 //--------------------------------------------------------------------------

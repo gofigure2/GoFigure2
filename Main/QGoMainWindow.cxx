@@ -493,6 +493,7 @@ QGoMainWindow::LoadMeshesFromDatabase(const int & iT)
   if ( w3t )
     {
     MeshContainer *temp =  w3t->GetMeshContainer();
+    TrackContainer *temp2 =  w3t->GetTrackContainer();
     if ( temp )
       {
       // let's iterate on the container with increasing TraceID
@@ -513,7 +514,6 @@ QGoMainWindow::LoadMeshesFromDatabase(const int & iT)
       while ( mesh_list_it != mesh_list_end )
         {
         // note here it only makes sense when the trace is a mesh (for now)
-        //std::cout << "IN WHILE" << std::endl;
 
         if ( mesh_list_it->Nodes )
           {
@@ -525,6 +525,12 @@ QGoMainWindow::LoadMeshesFromDatabase(const int & iT)
               );
           w3t->m_DataBaseTables->PrintVolumeAreaForMesh(
             &attributes, mesh_list_it->TraceID);
+
+          // update track average volume
+          if(temp2)
+            {
+            temp2->AddVolume(mesh_list_it->CollectionID, attributes.m_Volume);
+            }
           }
 
         w3t->AddMeshFromNodes< TraceID >(mesh_list_it);
@@ -537,6 +543,7 @@ QGoMainWindow::LoadMeshesFromDatabase(const int & iT)
 
       progress.setValue( nb_meshes );
       }
+    temp2->AverageVolume();
     }
 }
 
