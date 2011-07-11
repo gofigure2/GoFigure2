@@ -1964,3 +1964,17 @@ SetDivisionRandomColor(const std::string & iColumnName,
   assert ( m_ImageView );
   this->m_ImageView->UpdateRenderWindows();
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+UpdateAverageVolume(const unsigned int& iTrackID, const double& iVolume)
+{
+  MultiIndexContainerTraceIDIterator
+    trace_it = this->m_Container.get< TraceID >().find(iTrackID);
+
+  assert ( trace_it != m_Container.get< TraceID >().end() );
+
+  m_Container.get< TraceID >().modify( trace_it , modify_avg_volume(iVolume) );
+}

@@ -188,6 +188,27 @@ private:
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
+  /**
+  \struct modify_avg_volume
+  \brief Create a polydata for a division with an unary function.
+  Useful for the color coding.
+  \sa TrackStructure
+  */
+struct modify_avg_volume
+{
+  modify_avg_volume(const double& iVolume):volume(iVolume){}
+
+  void operator()(TrackStructure& iStructure)
+  {
+    iStructure.ModifyAverageVolume(volume);
+  }
+
+private:
+  double volume;
+};
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
 
 namespace boost
 {
@@ -790,6 +811,8 @@ public slots:
    * \param[in] iMotherID ID of the track which owns the division
    */
   void DeleteADivision(const unsigned int& iMotherID);
+
+  void UpdateAverageVolume(const unsigned int& iTrackID, const double& iVolume);
 
 protected:
   /*

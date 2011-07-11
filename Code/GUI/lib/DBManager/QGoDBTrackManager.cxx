@@ -443,6 +443,7 @@ void QGoDBTrackManager::SplitMergeTrackWithWidget()
 void QGoDBTrackManager::DisplayOnlyCalculatedValuesForExistingTrack(
   GoFigureTrackAttributes *iTrackAttributes, unsigned iTrackID)
 {
+    std::cout <<"DisplayOnlyCalculatedValuesForExistingTrack: "<< iTrackAttributes << std::endl;
   if ( iTrackAttributes != 0 )
     {
     int timeInterval = m_TrackContainerInfoForVisu->getTimeInterval();
@@ -1083,4 +1084,12 @@ void QGoDBTrackManager::UpdateDivisions(std::list<unsigned int> iListMotherTrack
     this->m_TrackContainerInfoForVisu->CreateDivisionPolydata(*iter);
     ++iter;
     }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoDBTrackManager::
+UpdateAverageVolume(const unsigned int& iTrackID, const double& iVolume)
+{
+  this->m_TrackContainerInfoForVisu->UpdateAverageVolume(iTrackID, iVolume);
 }

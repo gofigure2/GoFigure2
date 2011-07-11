@@ -178,5 +178,8 @@ void GoDBTWContainerForTrack::GetValuesAndNamesForTrackComputedValues(
     ioNames.push_back("MaxSpeed");
     temp.push_back( ConvertToString< double >(iTrackAttributes->max_speed) );
     ioValues.push_back(temp);
+    ioNames.push_back("AvgVolume");
+    temp.push_back( ConvertToString< double >(iTrackAttributes->avg_volume) );
+    ioValues.push_back(temp);
     }
 }

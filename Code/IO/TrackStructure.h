@@ -162,6 +162,8 @@ public:
   const bool IsRoot() const;
   const bool IsLeaf() const;
 
+  void ModifyAverageVolume(const double& iVolume);
+
   // to be moved
   double m_AverageVolume;
 };

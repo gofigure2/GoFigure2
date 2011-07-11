@@ -349,6 +349,7 @@ QGoPrintDatabase::SaveMeshFromVisuInDB(unsigned int iXCoordMin,
                                                            iMeshNodes,
                                                            this->m_DatabaseConnector,
                                                            iMeshAttributes);
+
     std::list< unsigned int > ListNewMeshes;
     ListNewMeshes.push_back(NewMeshID);
     //here update the CurrentElement for trackContainer with the data from the
@@ -357,8 +358,14 @@ QGoPrintDatabase::SaveMeshFromVisuInDB(unsigned int iXCoordMin,
     //update the bounding box and the visu for the tracks:
     std::list< unsigned int > trackIDs = this->m_MeshesManager->GetListCollectionIDs(this->m_DatabaseConnector,
                                                                                      ListNewMeshes);
+
+    // old nb of points in map track structure
+    this->m_TracksManager->UpdateAverageVolume(TrackID, iMeshAttributes->m_Volume);
+
+    // new nb of point in map track structure
     this->m_TracksManager->UpdateBoundingBoxes(this->m_DatabaseConnector,
                                                trackIDs);
+
     if (!MotherTrackDivisionToUpdate.empty() )
       {
       this->m_TracksManager->UpdateDivisions(MotherTrackDivisionToUpdate);

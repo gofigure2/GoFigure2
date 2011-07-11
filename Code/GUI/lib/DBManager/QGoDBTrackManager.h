@@ -157,6 +157,8 @@ public:
   */
   void UpdateDivisions(std::list<unsigned int> iListMotherTrackIDs);
 
+  void UpdateAverageVolume(const unsigned int& iTrackID, const double& iVolume);
+
 signals:
   void NeedMeshesInfoForImportedTrack(unsigned int iTrackID);
   void TrackToSplit(unsigned int iTrackID, std::list<unsigned int> iListMeshIDs);
