@@ -759,7 +759,7 @@ std::pair< unsigned int, unsigned int > QGoDBMeshManager::GetInfoForTheOnlyOneCh
 
 //-------------------------------------------------------------------------
 
-//-------------------------------------------------------------------------v
+//-------------------------------------------------------------------------
 std::list< QGoDBTraceManager::NameWithColorData >
 QGoDBMeshManager::GetAllTraceIDsWithColor(
   vtkMySQLDatabase *iDatabaseConnector, std::string & ioIDToSelect)
@@ -768,3 +768,33 @@ QGoDBMeshManager::GetAllTraceIDsWithColor(
   return this->m_CollectionOfTraces->GetTracesIDsWithColorForATimePoint(
            iDatabaseConnector, *this->m_CurrentTimePoint);
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::list< std::pair<unsigned int, double> >
+QGoDBMeshManager::
+GetListVolumes()
+{
+  std::list< std::pair<unsigned int, double> > oList;
+
+  QGoTableWidget* tableWidget = this->GetTableWidget();
+
+  std::list<unsigned int> list = this->GetListHighlightedIDs();
+  std::list<unsigned int>::iterator it = list.begin();
+
+  while(it!=list.end())
+    {
+    std::cout << "mesh ID: " << *it << std::endl;
+
+    int volume = tableWidget->GetValue( *it, "mesh", "T.I.Channel 0" );
+
+    std::cout << "volume: " << volume << std::endl;
+
+    int trackID = tableWidget->GetValue( *it, "mesh", "Volume" );
+
+    std::cout << "track ID: " << trackID << std::endl;
+    ++it;
+    }
+
+}
+//-------------------------------------------------------------------------

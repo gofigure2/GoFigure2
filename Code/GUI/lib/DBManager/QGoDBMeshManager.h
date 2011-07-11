@@ -170,6 +170,8 @@ public:
   virtual std::list< NameWithColorData > GetAllTraceIDsWithColor(
     vtkMySQLDatabase *iDatabaseConnector, std::string & ioIDToSelect);
 
+  std::list< std::pair<unsigned int, double> > GetListVolumes();
+
 public slots:
   /**
   \brief get the coordinate info for meshes needed for the visu

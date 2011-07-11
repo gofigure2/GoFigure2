@@ -1185,6 +1185,12 @@ void QGoPrintDatabase::DeleteCheckedContours()
 //--------------------------------------------------------------------------
 void QGoPrintDatabase::DeleteCheckedMeshes()
 {
+  // upade average mesh volume over a track
+  // get IDs
+    std::list< std::pair<unsigned int, double> > list =
+          this->m_MeshesManager->GetListVolumes();
+  // update tracks volumes
+
   this->DeleteCheckedTraces< QGoDBMeshManager, QGoDBTrackManager, QGoDBContourManager >(
     this->m_MeshesManager, this->m_TracksManager, this->m_ContoursManager);
 }
