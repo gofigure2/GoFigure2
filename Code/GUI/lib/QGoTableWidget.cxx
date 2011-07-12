@@ -926,22 +926,18 @@ GoDBCoordinateRow QGoTableWidget::GetCoordinateCenterBoundingBox(
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-int QGoTableWidget::GetValue(unsigned int iTraceID, std::string iTraceName,
+QString QGoTableWidget::GetValue(unsigned int iTraceID, std::string iTraceName,
                              std::string iColumn)
 {
-    std::cout << iTraceID << std::endl;
-    std::cout << iTraceName << std::endl;
-    std::cout << iColumn << std::endl;
   int RowIndex = this->GetRowForTraceID(iTraceID, iTraceName);
-  return GetValueForItem(iColumn, RowIndex);
+  return this->item(
+          RowIndex, this->findColumnName( iColumn.c_str() ) )->text();
 }
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 int QGoTableWidget::GetValueForItem(std::string iColumnName, int iRowIndex)
 {
-    std::cout << "value double: " << this->item(
-            iRowIndex, this->findColumnName( iColumnName.c_str() ) )->text().toDouble() << std::endl;
   return
     this->item(
       iRowIndex, this->findColumnName( iColumnName.c_str() ) )->text().toInt();

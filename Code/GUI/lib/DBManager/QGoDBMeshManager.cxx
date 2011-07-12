@@ -786,11 +786,11 @@ GetListVolumes()
     {
     std::cout << "mesh ID: " << *it << std::endl;
 
-    int volume = tableWidget->GetValue( *it, "mesh", "T.I.Channel 0" );
+    double volume = (tableWidget->GetValue( *it, "mesh", "Volume" )).toDouble();
 
     std::cout << "volume: " << volume << std::endl;
 
-    int trackID = tableWidget->GetValue( *it, "mesh", "Volume" );
+    int trackID = (tableWidget->GetValue( *it, "mesh", "Collection" )).toInt();
 
     std::cout << "track ID: " << trackID << std::endl;
     ++it;
