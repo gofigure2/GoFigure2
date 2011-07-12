@@ -1089,7 +1089,26 @@ void QGoDBTrackManager::UpdateDivisions(std::list<unsigned int> iListMotherTrack
 
 //-------------------------------------------------------------------------
 void QGoDBTrackManager::
-UpdateAverageVolume(const unsigned int& iTrackID, const double& iVolume)
+AddVolume(const unsigned int& iTrackID, const double& iVolume)
 {
-  this->m_TrackContainerInfoForVisu->UpdateAverageVolume(iTrackID, iVolume);
+  this->m_TrackContainerInfoForVisu->AddVolume(iTrackID, iVolume);
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoDBTrackManager::
+RemoveVolumes(std::list< std::pair<unsigned int, double> > iVolumes)
+{
+  std::list< std::pair<unsigned int, double> >::iterator it =
+          iVolumes.begin();
+  while(it != iVolumes.end())
+    {
+    std::cout << "Remove: " << std::endl;
+    std::cout << "track: " << (*it).first << std::endl;
+    std::cout << "volume: " << (-1)*((*it).second) << std::endl;
+    this->m_TrackContainerInfoForVisu->AddVolume((*it).first, (-1)*((*it).second));
+    ++it;
+    }
+}
+//-------------------------------------------------------------------------

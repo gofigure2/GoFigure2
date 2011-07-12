@@ -360,7 +360,7 @@ QGoPrintDatabase::SaveMeshFromVisuInDB(unsigned int iXCoordMin,
                                                                                      ListNewMeshes);
 
     // old nb of points in map track structure
-    this->m_TracksManager->UpdateAverageVolume(TrackID, iMeshAttributes->m_Volume);
+    this->m_TracksManager->AddVolume(TrackID, iMeshAttributes->m_Volume);
 
     // new nb of point in map track structure
     this->m_TracksManager->UpdateBoundingBoxes(this->m_DatabaseConnector,
@@ -1187,9 +1187,10 @@ void QGoPrintDatabase::DeleteCheckedMeshes()
 {
   // upade average mesh volume over a track
   // get IDs
-    std::list< std::pair<unsigned int, double> > temp_list =
-          this->m_MeshesManager->GetListVolumes();
+  std::list< std::pair<unsigned int, double> > temp_list =
+        this->m_MeshesManager->GetListVolumes();
   // update tracks volumes
+  this->m_TracksManager->RemoveVolumes(temp_list);
 
   this->DeleteCheckedTraces< QGoDBMeshManager, QGoDBTrackManager, QGoDBContourManager >(
     this->m_MeshesManager, this->m_TracksManager, this->m_ContoursManager);

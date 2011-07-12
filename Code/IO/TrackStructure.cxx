@@ -249,7 +249,7 @@ TrackStructure::ComputeAttributes() const
                                                           / oAttributes.distance ) );
     }
 
-  oAttributes.avg_volume = this->m_AverageVolume;
+  oAttributes.avg_volume = this->m_AverageVolume/(PointsMap.size());
   std::cout << "struct avg volume: " << oAttributes.avg_volume << std::endl;
 
   return oAttributes;
@@ -353,27 +353,8 @@ IsLeaf() const
 //--------------------------------------------------------------------------
 void
 TrackStructure::
-ModifyAverageVolume(const double& iVolume)
-{
-  double volume = m_AverageVolume*(PointsMap.size());
-  m_AverageVolume = (volume + iVolume)/(PointsMap.size() +1);
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-void
-TrackStructure::
 AddVolume(const double& iVolume)
 {
   m_AverageVolume += iVolume;
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-void
-TrackStructure::
-AverageVolume()
-{
-  m_AverageVolume = m_AverageVolume/(PointsMap.size());
 }
 //--------------------------------------------------------------------------

@@ -785,7 +785,7 @@ GetListVolumes()
   while(it!=list.end())
     {
     double volume = (tableWidget->GetValue( *it, "mesh", "Volume" )).toDouble();
-    int trackID = (tableWidget->GetValue( *it, "mesh", "Collection" )).toInt();
+    int trackID = (tableWidget->GetValue( *it, "mesh", "trackID" )).toInt();
 
     std::pair<unsigned int, double> trackAndVolume(trackID, volume);
     oList.push_back(trackAndVolume);

@@ -532,7 +532,6 @@ QGoMainWindow::LoadMeshesFromDatabase(const int & iT)
             temp2->AddVolume(mesh_list_it->CollectionID, attributes.m_Volume);
             }
           }
-
         w3t->AddMeshFromNodes< TraceID >(mesh_list_it);
 
         progress.setValue( i );
@@ -543,7 +542,6 @@ QGoMainWindow::LoadMeshesFromDatabase(const int & iT)
 
       progress.setValue( nb_meshes );
       }
-    temp2->AverageVolume();
     }
 }
 
