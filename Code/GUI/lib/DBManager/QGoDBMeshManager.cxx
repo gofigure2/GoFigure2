@@ -576,7 +576,8 @@ QString QGoDBMeshManager::CheckExistingMeshesForTheTrack(
 //-------------------------------------------------------------------------
 QString QGoDBMeshManager::CheckExistingMeshesForTheTrack(
   unsigned int iTrackID, vtkMySQLDatabase *iDatabaseConnector,
-  std::list< unsigned int > & ioListMeshIDs)
+  std::list< unsigned int > & ioListMeshIDs,
+  std::list< unsigned int > & ioNullListMeshIDs)
 {
   QString MessageQString("");
 
@@ -596,6 +597,7 @@ QString QGoDBMeshManager::CheckExistingMeshesForTheTrack(
             iDatabaseConnector, iTrackID, *iter);
         if ( MeshIDKickedOut != 0 )
           {
+          ioNullListMeshIDs.push_back(MeshIDKickedOut);
           MeshIDToPrint += ConvertToString< unsigned int >(MeshIDKickedOut);
           MeshIDToPrint += ", ";
           }
@@ -783,6 +785,31 @@ GetListVolumes()
   std::list<unsigned int>::iterator it = list.begin();
 
   while(it!=list.end())
+    {
+    double volume = (tableWidget->GetValue( *it, "mesh", "Volume" )).toDouble();
+    int trackID = (tableWidget->GetValue( *it, "mesh", "trackID" )).toInt();
+
+    std::pair<unsigned int, double> trackAndVolume(trackID, volume);
+    oList.push_back(trackAndVolume);
+    ++it;
+    }
+
+  return oList;
+
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::list< std::pair<unsigned int, double> >
+QGoDBMeshManager::
+GetListVolumes(std::list<unsigned int> iMeshIDs)
+{
+  std::list< std::pair<unsigned int, double> > oList;
+  QGoTableWidget* tableWidget = this->GetTableWidget();
+
+  std::list<unsigned int>::iterator it = iMeshIDs.begin();
+
+  while(it!=iMeshIDs.end())
     {
     double volume = (tableWidget->GetValue( *it, "mesh", "Volume" )).toDouble();
     int trackID = (tableWidget->GetValue( *it, "mesh", "trackID" )).toInt();

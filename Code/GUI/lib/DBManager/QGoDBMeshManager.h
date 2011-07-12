@@ -171,6 +171,8 @@ public:
     vtkMySQLDatabase *iDatabaseConnector, std::string & ioIDToSelect);
 
   std::list< std::pair<unsigned int, double> > GetListVolumes();
+  std::list< std::pair<unsigned int, double> > GetListVolumes(
+          std::list<unsigned int> iMeshIDs);
 
 public slots:
   /**
@@ -214,7 +216,8 @@ public slots:
   */
   QString CheckExistingMeshesForTheTrack(
    unsigned int iTrackID,vtkMySQLDatabase* iDatabaseConnector,
-   std::list<unsigned int> & ioListMeshIDs);
+   std::list<unsigned int> & ioListMeshIDs,
+   std::list< unsigned int > & ioNullListMeshIDs);
 
   /**
   \brief check if in the iListMeshIDs, several have the same timepoint, if so,
