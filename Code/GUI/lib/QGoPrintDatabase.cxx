@@ -1711,11 +1711,14 @@ void QGoPrintDatabase::AddCheckedContoursToSelectedMesh(std::list< unsigned int 
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoPrintDatabase::AddListMeshesToATrack(std::list< unsigned int > iListMeshes, unsigned int iTrackID)
+void
+QGoPrintDatabase::
+AddListMeshesToATrack(std::list< unsigned int > iListMeshes, unsigned int iTrackID)
 {
   this->OpenDBConnection();
   std::list< unsigned int > ListMeshToBelongToTheTrack;
   std::list< unsigned int > ListNullMeshToBelongToTheTrack;
+  std::list< std::pair<unsigned int, double> > temp;
   if ( iTrackID == 0 )
     {
     ListMeshToBelongToTheTrack = iListMeshes;
@@ -1732,9 +1735,9 @@ void QGoPrintDatabase::AddListMeshesToATrack(std::list< unsigned int > iListMesh
         ListMeshToBelongToTheTrack, ListMeshToReassign);
 
     // remove all meshes from previous track avg_volume, from mesh ID
-    this->m_MeshesManager->GetListVolumes(ListMeshToBelongToTheTrack);
+    temp = this->m_MeshesManager->GetListVolumes(ListMeshToBelongToTheTrack);
     // update tracks volumes
-    //this->m_TracksManager->RemoveVolumes(temp_list);
+    this->m_TracksManager->RemoveVolumes(temp);
 
     // if there is already a mesh at the same time point in the track,
     // change the mesh's track id to 0
@@ -1744,11 +1747,11 @@ void QGoPrintDatabase::AddListMeshesToATrack(std::list< unsigned int > iListMesh
         ListMeshToBelongToTheTrack, ListNullMeshToBelongToTheTrack).toStdString();
 
     // add meshes to next track average volume, from Mesh ID
-    this->m_MeshesManager->GetListVolumes(ListMeshToBelongToTheTrack);
+    temp = this->m_MeshesManager->GetListVolumes(ListMeshToBelongToTheTrack);
+    this->m_TracksManager->AddVolumes(temp, iTrackID);
     // remove meshes assigned to 0
-    this->m_MeshesManager->GetListVolumes(ListNullMeshToBelongToTheTrack);
-    // MessageToPrint contains the meshes assigned to 0
-    std::cout << "MessageToPrint: " << MessageToPrint << std::endl;
+    temp = this->m_MeshesManager->GetListVolumes(ListNullMeshToBelongToTheTrack);
+    this->m_TracksManager->RemoveVolumes(temp, iTrackID);
 
     if ( MessageToPrint != "" )
       {

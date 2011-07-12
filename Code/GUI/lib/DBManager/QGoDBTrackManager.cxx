@@ -1098,6 +1098,24 @@ AddVolume(const unsigned int& iTrackID, const double& iVolume)
 //-------------------------------------------------------------------------
 void
 QGoDBTrackManager::
+AddVolumes(std::list< std::pair<unsigned int, double> > iVolumes)
+{
+  std::list< std::pair<unsigned int, double> >::iterator it =
+          iVolumes.begin();
+  while(it != iVolumes.end())
+    {
+    std::cout << "Add: " << std::endl;
+    std::cout << "track: " << (*it).first << std::endl;
+    std::cout << "volume: " << ((*it).second) << std::endl;
+    this->m_TrackContainerInfoForVisu->AddVolume((*it).first, (*it).second);
+    ++it;
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoDBTrackManager::
 RemoveVolumes(std::list< std::pair<unsigned int, double> > iVolumes)
 {
   std::list< std::pair<unsigned int, double> >::iterator it =
@@ -1108,6 +1126,44 @@ RemoveVolumes(std::list< std::pair<unsigned int, double> > iVolumes)
     std::cout << "track: " << (*it).first << std::endl;
     std::cout << "volume: " << (-1)*((*it).second) << std::endl;
     this->m_TrackContainerInfoForVisu->AddVolume((*it).first, (-1)*((*it).second));
+    ++it;
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoDBTrackManager::
+AddVolumes(std::list< std::pair<unsigned int, double> > iVolumes,
+           unsigned int iTrackID)
+{
+  std::list< std::pair<unsigned int, double> >::iterator it =
+          iVolumes.begin();
+  while(it != iVolumes.end())
+    {
+    std::cout << "Add: " << std::endl;
+    std::cout << "track: " << iTrackID << std::endl;
+    std::cout << "volume: " << ((*it).second) << std::endl;
+    this->m_TrackContainerInfoForVisu->AddVolume(iTrackID, (*it).second);
+    ++it;
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoDBTrackManager::
+RemoveVolumes(std::list< std::pair<unsigned int, double> > iVolumes,
+              unsigned int iTrackID)
+{
+  std::list< std::pair<unsigned int, double> >::iterator it =
+          iVolumes.begin();
+  while(it != iVolumes.end())
+    {
+    std::cout << "Remove: " << std::endl;
+    std::cout << "track: " << iTrackID << std::endl;
+    std::cout << "volume: " << (-1)*((*it).second) << std::endl;
+    this->m_TrackContainerInfoForVisu->AddVolume(iTrackID, (-1)*((*it).second));
     ++it;
     }
 }

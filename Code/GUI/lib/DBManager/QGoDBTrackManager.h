@@ -159,7 +159,15 @@ public:
 
   void AddVolume(const unsigned int& iTrackID, const double& iVolume);
 
+  void AddVolumes(std::list< std::pair<unsigned int, double> > iVolumes);
+
   void RemoveVolumes(std::list< std::pair<unsigned int, double> > iVolumes);
+
+  void AddVolumes(std::list< std::pair<unsigned int, double> > iVolumes,
+                  unsigned int iTrackID);
+
+  void RemoveVolumes(std::list< std::pair<unsigned int, double> > iVolumes,
+                     unsigned int iTrackID);
 
 signals:
   void NeedMeshesInfoForImportedTrack(unsigned int iTrackID);
