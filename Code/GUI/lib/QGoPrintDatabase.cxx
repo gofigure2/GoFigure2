@@ -1187,7 +1187,7 @@ void QGoPrintDatabase::DeleteCheckedMeshes()
 {
   // upade average mesh volume over a track
   // get IDs
-    std::list< std::pair<unsigned int, double> > list =
+    std::list< std::pair<unsigned int, double> > temp_list =
           this->m_MeshesManager->GetListVolumes();
   // update tracks volumes
 
