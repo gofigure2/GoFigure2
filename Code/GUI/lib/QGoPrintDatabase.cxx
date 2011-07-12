@@ -1623,6 +1623,7 @@ void QGoPrintDatabase::CreateNewTrackFromListMeshes(
   unsigned int NewTrackID =
     this->m_TracksManager->CreateNewTrackWithNoMesh(
       this->m_DatabaseConnector);
+  std::list< std::pair<unsigned int, double> > temp;
 
   std::list< unsigned int > ListMeshToBelongToTheTrack;
   std::list< unsigned int > ListMeshToReassign;
@@ -1632,12 +1633,23 @@ void QGoPrintDatabase::CreateNewTrackFromListMeshes(
       this->m_DatabaseConnector, iListCheckedMeshes,
       ListMeshToBelongToTheTrack, ListMeshToReassign);
 
+  // remove all meshes from previous track avg_volume, from mesh ID
+  temp = this->m_MeshesManager->GetListVolumes(ListMeshToBelongToTheTrack);
+  // update tracks volumes
+  this->m_TracksManager->RemoveVolumes(temp);
+
   //at that moment, do nothing for the checked meshes not selected to be part of
   // the track
   if ( MessageToPrint != "" )
     {
     emit PrintMessage( MessageToPrint.c_str() );
     }
+
+  // remove all meshes from previous track avg_volume, from mesh ID
+  temp = this->m_MeshesManager->GetListVolumes(ListMeshToBelongToTheTrack);
+  // update tracks volumes
+  this->m_TracksManager->AddVolumes(temp, NewTrackID);
+
   this->AddCheckedTracesToCollection< QGoDBMeshManager, QGoDBTrackManager >(
     this->m_MeshesManager, this->m_TracksManager,
     NewTrackID, ListMeshToBelongToTheTrack);
