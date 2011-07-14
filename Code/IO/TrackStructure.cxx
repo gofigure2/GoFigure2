@@ -356,5 +356,12 @@ TrackStructure::
 AddVolume(const double& iVolume)
 {
   m_AverageVolume += iVolume;
+
+  // useful for the track editing widget...
+  // temp solution
+  if(m_AverageVolume < 0)
+    {
+    m_AverageVolume = 0;
+    }
 }
 //--------------------------------------------------------------------------

@@ -1141,7 +1141,7 @@ AddVolumes(std::list< std::pair<unsigned int, double> > iVolumes,
           iVolumes.begin();
   while(it != iVolumes.end())
     {
-    std::cout << "Add: " << std::endl;
+    std::cout << "Add with track ID: " << std::endl;
     std::cout << "track: " << iTrackID << std::endl;
     std::cout << "volume: " << ((*it).second) << std::endl;
     this->m_TrackContainerInfoForVisu->AddVolume(iTrackID, (*it).second);

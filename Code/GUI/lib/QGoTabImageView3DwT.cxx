@@ -105,9 +105,6 @@
 // lineage dockwidget
 #include "QGoLineageViewDockWidget.h"
 
-//trackediting dw
-#include "QGoTrackEditingWidget.h"
-
 // lineage viwer
 #include "QGoLineageViewerWidget.h"
 

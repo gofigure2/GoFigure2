@@ -1758,12 +1758,12 @@ AddListMeshesToATrack(std::list< unsigned int > iListMeshes, unsigned int iTrack
         iTrackID, this->m_DatabaseConnector,
         ListMeshToBelongToTheTrack, ListNullMeshToBelongToTheTrack).toStdString();
 
-    // add meshes to next track average volume, from Mesh ID
-    temp = this->m_MeshesManager->GetListVolumes(ListMeshToBelongToTheTrack);
-    this->m_TracksManager->AddVolumes(temp, iTrackID);
     // remove meshes assigned to 0
     temp = this->m_MeshesManager->GetListVolumes(ListNullMeshToBelongToTheTrack);
     this->m_TracksManager->RemoveVolumes(temp, iTrackID);
+    // add meshes to next track average volume, from Mesh ID
+    temp = this->m_MeshesManager->GetListVolumes(ListMeshToBelongToTheTrack);
+    this->m_TracksManager->AddVolumes(temp, iTrackID);
 
     if ( MessageToPrint != "" )
       {
