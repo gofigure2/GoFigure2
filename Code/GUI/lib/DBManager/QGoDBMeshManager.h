@@ -174,6 +174,8 @@ public:
   std::list< std::pair<unsigned int, double> > GetListVolumes(
           std::list<unsigned int> iMeshIDs);
 
+  double GetVolume(unsigned int iMeshID);
+
 public slots:
   /**
   \brief get the coordinate info for meshes needed for the visu

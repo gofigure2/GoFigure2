@@ -562,10 +562,7 @@ QString QGoDBMeshManager::CheckExistingMeshesForTheTrack(
         iDatabaseConnector, iTrackID, iTCoord);
     if ( MeshIDKickedOut != 0 )
       {
-      MessageToPrint =
-        tr(
-          "Warning: existing mesh at this timepoint for this track !!The track of the mesh with the meshID %1 has been reassigned to 0")
-        .arg(MeshIDKickedOut);
+      MessageToPrint = QString::number(MeshIDKickedOut);
       }
     }
   return MessageToPrint;
@@ -821,5 +818,14 @@ GetListVolumes(std::list<unsigned int> iMeshIDs)
 
   return oList;
 
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+double
+QGoDBMeshManager::
+GetVolume(unsigned int iMeshID)
+{
+  return (this->GetTableWidget()->GetValue( iMeshID, "mesh", "Volume" )).toDouble();
 }
 //-------------------------------------------------------------------------

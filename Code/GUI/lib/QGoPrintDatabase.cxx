@@ -316,6 +316,15 @@ QGoPrintDatabase::SaveMeshFromVisuInDB(unsigned int iXCoordMin,
                                                                                    iTCoord);
     if ( MessageToPrint != "" )
       {
+      // remove old mesh from track average volume
+        int kickedMeshID = MessageToPrint.toInt();
+        double volume = this->m_MeshesManager->GetVolume(kickedMeshID);
+        this->m_TracksManager->AddVolume(TrackID, (-1)*volume);
+      // write message
+      MessageToPrint =
+        tr(
+          "Warning: existing mesh at this timepoint for this track !!The track of the mesh with the meshID %1 has been reassigned to 0")
+        .arg(kickedMeshID);
       emit PrintMessage(MessageToPrint);
       }
     std::list<unsigned int> MotherTrackDivisionToUpdate;
@@ -335,11 +344,6 @@ QGoPrintDatabase::SaveMeshFromVisuInDB(unsigned int iXCoordMin,
                                                                         iMeshNodes,
                                                                         this->m_DatabaseConnector,
                                                                         iMeshAttributes);
-      // track updated?
-
-      // update volume
-
-
       this->CloseDBConnection();
       return;
       }
