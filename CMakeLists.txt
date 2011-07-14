@@ -100,14 +100,22 @@ SET( CMAKE_ARCHIVE_OUTPUT_DIRECTORY
   ${GOFIGURE2_BINARY_DIR}/lib
 )
 
+IF( NOT APPLE )
 # all shared libraries will be in ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
 # Note that modules (plugins) are considered as shared libraries
 SET( CMAKE_LIBRARY_OUTPUT_DIRECTORY
 #  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/plugins
    ${GOFIGURE2_BINARY_DIR}/lib
 )
-SET( GOFIGURE2_LIBRARY_DIRS ${GOFIGURE2_BINARY_DIR}/lib )
+ELSE()
+SET( CMAKE_LIBRARY_OUTPUT_DIRECTORY
+   ${GOFIGURE2_BINARY_DIR}/bin/gofigure.app/Contents/MacOS/
+)
 
+ENDIF()
+
+
+SET( GOFIGURE2_LIBRARY_DIRS ${CMAKE_LIBRARY_OUTPUT_DIRECTORY} )
 #---------------------------------------------------------------------------
 # Define TESTING_DATA_PATH
 #---------------------------------------------------------------------------

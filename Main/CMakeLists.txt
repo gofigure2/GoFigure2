@@ -187,7 +187,8 @@ IF( APPLE )
   SET( plugin_dest_dir gofigure.app/Contents/MacOS )
   SET( qtconf_dest_dir gofigure.app/Contents/Resources )
   SET( APPS
-    "\${CMAKE_INSTALL_PREFIX}/${GOFIGURE2_INSTALL_BUNDLE_DIR}/gofigure.app" )
+    "\${CMAKE_INSTALL_PREFIX}/gofigure.app" )
+#    "\${CMAKE_INSTALL_PREFIX}/${GOFIGURE2_INSTALL_BUNDLE_DIR}/gofigure.app" )
 ENDIF( APPLE )
 
 IF( WIN32 )
@@ -300,13 +301,14 @@ IF( USE_BUNDLE_UTILITIES )
 
   # directories to look for dependencies
   SET( DIRS
-    ${QT_LIBRARY_DIR}
-    ${QT_PLUGINS_DIR}
-    ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
-    ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
-    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
-    ${ITK_LIBRARY_DIRS}
-    ${VTK_LIBRARY_DIRS}
+#    ${QT_LIBRARY_DIR}
+#    ${QT_PLUGINS_DIR}
+#    ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
+#    ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
+#    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+#    ${ITK_LIBRARY_DIRS}
+#    ${VTK_LIBRARY_DIRS}
+  " "
   )
 
   # Now the work of copying dependencies into the bundle/package
