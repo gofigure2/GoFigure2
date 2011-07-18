@@ -170,10 +170,20 @@ public:
   virtual std::list< NameWithColorData > GetAllTraceIDsWithColor(
     vtkMySQLDatabase *iDatabaseConnector, std::string & ioIDToSelect);
 
+  /**
+    * \brief Get volume of checked mesh IDs
+    */
   std::list< std::pair<unsigned int, double> > GetListVolumes();
+
+  /**
+    * \brief Get volume of given mesh IDs
+    */
   std::list< std::pair<unsigned int, double> > GetListVolumes(
           std::list<unsigned int> iMeshIDs);
 
+  /**
+    * \brief Get volume of given mesh ID
+    */
   double GetVolume(unsigned int iMeshID);
 
 public slots:

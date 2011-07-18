@@ -250,7 +250,6 @@ TrackStructure::ComputeAttributes() const
     }
 
   oAttributes.avg_volume = this->m_AverageVolume/(PointsMap.size());
-  std::cout << "struct avg volume: " << oAttributes.avg_volume << std::endl;
 
   return oAttributes;
 }
@@ -358,7 +357,7 @@ AddVolume(const double& iVolume)
   m_AverageVolume += iVolume;
 
   // useful for the track editing widget...
-  // temp solution
+  // temp solution?
   if(m_AverageVolume < 0)
     {
     m_AverageVolume = 0;

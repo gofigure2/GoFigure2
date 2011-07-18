@@ -162,6 +162,8 @@ public:
   const bool IsRoot() const;
   const bool IsLeaf() const;
 
+  // Add volume to a track
+  // note that added volume can be < 0
   void AddVolume(const double& iVolume);
 
   // to be moved

@@ -493,7 +493,7 @@ QGoMainWindow::LoadMeshesFromDatabase(const int & iT)
   if ( w3t )
     {
     MeshContainer *temp =  w3t->GetMeshContainer();
-    TrackContainer *temp2 =  w3t->GetTrackContainer();
+    TrackContainer *trackContainer =  w3t->GetTrackContainer();
     if ( temp )
       {
       // let's iterate on the container with increasing TraceID
@@ -527,9 +527,9 @@ QGoMainWindow::LoadMeshesFromDatabase(const int & iT)
             &attributes, mesh_list_it->TraceID);
 
           // update track average volume
-          if(temp2)
+          if(trackContainer)
             {
-            temp2->AddVolume(mesh_list_it->CollectionID, attributes.m_Volume);
+            trackContainer->AddVolume(mesh_list_it->CollectionID, attributes.m_Volume);
             }
           }
         w3t->AddMeshFromNodes< TraceID >(mesh_list_it);
