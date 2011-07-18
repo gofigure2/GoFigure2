@@ -357,14 +357,16 @@ UpdatePointsForATrack(const unsigned int& iTrackID,
   // get pointer to the track
   MultiIndexContainerTraceIDIterator motherIt
       = m_Container.get< TraceID >().find(iTrackID);
+  TrackStructure* mother;
 
-  assert ( motherIt != m_Container.get< TraceID >().end() );
+  if ( motherIt != m_Container.get< TraceID >().end() )
+    {
 
   /*
    * \note Nicolas- const_cast is OK to modify polydata in the container since
     we don't sort on it but better avoid it
    */
-  TrackStructure* mother =  const_cast<TrackStructure*>(&(*motherIt));
+  mother =  const_cast<TrackStructure*>(&(*motherIt));
   RecomputeMap(mother, iListCenterBoundingBoxes);
 
   // if the element has no polydata create a new address for the polydata
@@ -385,7 +387,12 @@ UpdatePointsForATrack(const unsigned int& iTrackID,
     return mother;
     }
 
-  UpdateTrackActors( *mother );
+    UpdateTrackActors( *mother );
+    }
+  else
+    {
+    mother = new TrackStructure;
+    }
 
   return mother;
 }
@@ -1964,3 +1971,19 @@ SetDivisionRandomColor(const std::string & iColumnName,
   assert ( m_ImageView );
   this->m_ImageView->UpdateRenderWindows();
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+AddVolume(const unsigned int& iTrackID, const double& iVolume)
+{
+  MultiIndexContainerTraceIDIterator
+    trace_it = this->m_Container.get< TraceID >().find(iTrackID);
+
+  if ( trace_it != m_Container.get< TraceID >().end() )
+    {
+    m_Container.get< TraceID >().modify( trace_it , add_volume(iVolume) );
+    }
+}
+//-------------------------------------------------------------------------

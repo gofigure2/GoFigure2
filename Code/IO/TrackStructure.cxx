@@ -50,7 +50,7 @@
 #include "vtkMath.h"
 
 //--------------------------------------------------------------------------
-TrackStructure::TrackStructure() : TraceStructure()
+TrackStructure::TrackStructure() : TraceStructure(), m_AverageVolume(0)
 {
 }
 
@@ -58,7 +58,8 @@ TrackStructure::TrackStructure() : TraceStructure()
 
 //--------------------------------------------------------------------------
 TrackStructure::TrackStructure(const TrackStructure & iE) :
-  TraceStructure(iE), TreeNode(iE.TreeNode), PointsMap(iE.PointsMap)
+  TraceStructure(iE), TreeNode(iE.TreeNode), PointsMap(iE.PointsMap),
+  m_AverageVolume(iE.m_AverageVolume)
 {
 }
 
@@ -248,6 +249,8 @@ TrackStructure::ComputeAttributes() const
                                                           / oAttributes.distance ) );
     }
 
+  oAttributes.avg_volume = this->m_AverageVolume/(PointsMap.size());
+
   return oAttributes;
 }
 
@@ -343,5 +346,21 @@ TrackStructure::
 IsLeaf() const
 {
   return this->TreeNode.IsLeaf();
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+TrackStructure::
+AddVolume(const double& iVolume)
+{
+  m_AverageVolume += iVolume;
+
+  // useful for the track editing widget...
+  // temp solution?
+  if(m_AverageVolume < 0)
+    {
+    m_AverageVolume = 0;
+    }
 }
 //--------------------------------------------------------------------------

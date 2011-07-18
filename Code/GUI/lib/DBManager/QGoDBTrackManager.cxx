@@ -443,12 +443,13 @@ void QGoDBTrackManager::SplitMergeTrackWithWidget()
 void QGoDBTrackManager::DisplayOnlyCalculatedValuesForExistingTrack(
   GoFigureTrackAttributes *iTrackAttributes, unsigned iTrackID)
 {
+    std::cout <<"DisplayOnlyCalculatedValuesForExistingTrack: "<< iTrackAttributes << std::endl;
   if ( iTrackAttributes != 0 )
     {
     int timeInterval = m_TrackContainerInfoForVisu->getTimeInterval();
 
-    std::vector< std::string > ColumnNames (6);
-    std::vector< std::string > Values (6);
+    std::vector< std::string > ColumnNames (7);
+    std::vector< std::string > Values (7);
 
     ColumnNames.at(0) = "Deplacement";
     Values.at(0) = ConvertToString< double >(iTrackAttributes->total_length);
@@ -464,6 +465,8 @@ void QGoDBTrackManager::DisplayOnlyCalculatedValuesForExistingTrack(
     ColumnNames.at(5) = "MaxSpeed";
     Values.at(5) = ConvertToString< double >
         (iTrackAttributes->max_speed / timeInterval);
+    ColumnNames.at(6) = "AvgVolume";
+    Values.at(6) = ConvertToString< double >(iTrackAttributes->avg_volume);
 
     this->m_Table->AddValuesForID(ColumnNames, Values, iTrackID, "trackID");
     }
@@ -1082,3 +1085,74 @@ void QGoDBTrackManager::UpdateDivisions(std::list<unsigned int> iListMotherTrack
     ++iter;
     }
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoDBTrackManager::
+AddVolume(const unsigned int& iTrackID, const double& iVolume)
+{
+  this->m_TrackContainerInfoForVisu->AddVolume(iTrackID, iVolume);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoDBTrackManager::
+AddVolumes(std::list< std::pair<unsigned int, double> > iVolumes)
+{
+  std::list< std::pair<unsigned int, double> >::iterator it =
+          iVolumes.begin();
+  while(it != iVolumes.end())
+    {
+    this->m_TrackContainerInfoForVisu->AddVolume((*it).first, (*it).second);
+    ++it;
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoDBTrackManager::
+RemoveVolumes(std::list< std::pair<unsigned int, double> > iVolumes)
+{
+  std::list< std::pair<unsigned int, double> >::iterator it =
+          iVolumes.begin();
+  while(it != iVolumes.end())
+    {
+    this->m_TrackContainerInfoForVisu->AddVolume((*it).first, (-1)*((*it).second));
+    ++it;
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoDBTrackManager::
+AddVolumes(std::list< std::pair<unsigned int, double> > iVolumes,
+           unsigned int iTrackID)
+{
+  std::list< std::pair<unsigned int, double> >::iterator it =
+          iVolumes.begin();
+  while(it != iVolumes.end())
+    {
+    this->m_TrackContainerInfoForVisu->AddVolume(iTrackID, (*it).second);
+    ++it;
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoDBTrackManager::
+RemoveVolumes(std::list< std::pair<unsigned int, double> > iVolumes,
+              unsigned int iTrackID)
+{
+  std::list< std::pair<unsigned int, double> >::iterator it =
+          iVolumes.begin();
+  while(it != iVolumes.end())
+    {
+    this->m_TrackContainerInfoForVisu->AddVolume(iTrackID, (-1)*((*it).second));
+    ++it;
+    }
+}
+//-------------------------------------------------------------------------

@@ -18,22 +18,13 @@ CONFIGURE_FILE( ${CMAKE_CURRENT_SOURCE_DIR}/QGoNetworkUtilities.cxx.in
   ${CMAKE_CURRENT_BINARY_DIR}/QGoNetworkUtilities.cxx @ONLY IMMEDIATE )
 
 SET( QGoGUILIB_SRC
-  VisualizationTraceContainers/ContourContainer.cxx
-  VisualizationTraceContainers/MeshContainer.cxx
-  VisualizationTraceContainers/ContourMeshContainer.cxx
-  VisualizationTraceContainers/TrackContainer.cxx
-  VisualizationTraceContainers/LineageContainer.cxx
-  Wizard/QGoConnectServerPage.cxx
-  Wizard/QGoCreateImgSessionPage.cxx
   QGoImageView.cxx
   QGoImageView2D.cxx
   QGoImageView3D.cxx
+  QGoPrintDatabase.cxx
   QGoImageInfo.cxx
   QGoLUTDialog.cxx
   TraceEditing/QGoManualSegmentationSettingsDialog.cxx
-  Wizard/QGoOpenCreateImgSessionPage.cxx
-  Wizard/QGoOpenCreateProjectPage.cxx
-  QGoPrintDatabase.cxx
   QGoTabElementBase.cxx
   QGoTabImageView2D.cxx
   QGoTabImageView3D.cxx
@@ -41,41 +32,56 @@ SET( QGoGUILIB_SRC
   QGoTabImageViewElementBase.cxx
   QGoTabImageViewNDBase.cxx
   QGoNavigationDockWidget.cxx
-  Wizard/QGoWizardDB.cxx
   QSplitterChild.cxx
   QGoTableWidget.cxx
   SnapshotHelper.cxx
   QGoCreateMeshDialog.cxx
   QGoLsmToMegaExportDialog.cxx
   ConversionLsmToMegaThread.cxx
-  QGoDBBookmarkManager.cxx
   QTextEditChild.cxx
   QGoNameDescriptionInputDialog.cxx
   QGoDockWidgetStatus.cxx
   QGoDeleteFromListDialog.cxx
-  QGoDBNameDescEntityManager.cxx
-  QGoDBCellTypeManager.cxx
-  QGoDBSubCellTypeManager.cxx
-  QGoDBColorManager.cxx
   QGoTraceSettingsWidget.cxx
-  Wizard/QGoDBInitializationWizard.cxx
-  Wizard/QGoDBInitCreateUserPage.cxx
-  Wizard/QGoDBInitCreateAuthorsPage.cxx
-  Wizard/QGoDBInitCreateMicroscopePage.cxx
   QGoColorComboBox.cxx
   QGoSelectedColorComboBox.cxx
   QGoCollectionColorComboBox.cxx
   QGoComboBox.cxx
-  QGoDBTraceManager.cxx
-  QGoDBContourManager.cxx
-  QGoDBMeshManager.cxx
-  QGoDBTrackManager.cxx
-  QGoDBLineageManager.cxx
   QGoColorCodingDialog.cxx
   QGoDockWidget.cxx
   QGoToolBarStatus.cxx
+
+  # trace containers
+  VisualizationTraceContainers/ContourContainer.cxx
+  VisualizationTraceContainers/MeshContainer.cxx
+  VisualizationTraceContainers/ContourMeshContainer.cxx
+  VisualizationTraceContainers/TrackContainer.cxx
+  VisualizationTraceContainers/LineageContainer.cxx
   
-# for the tracks
+  # Wizard
+  Wizard/QGoDBInitializationWizard.cxx
+  Wizard/QGoDBInitCreateUserPage.cxx
+  Wizard/QGoDBInitCreateAuthorsPage.cxx
+  Wizard/QGoDBInitCreateMicroscopePage.cxx
+  Wizard/QGoOpenCreateImgSessionPage.cxx
+  Wizard/QGoOpenCreateProjectPage.cxx
+  Wizard/QGoConnectServerPage.cxx
+  Wizard/QGoCreateImgSessionPage.cxx
+  Wizard/QGoWizardDB.cxx
+ 
+  # DB Managers
+  DBManager/QGoDBTraceManager.cxx
+  DBManager/QGoDBContourManager.cxx
+  DBManager/QGoDBMeshManager.cxx
+  DBManager/QGoDBTrackManager.cxx
+  DBManager/QGoDBLineageManager.cxx
+  DBManager/QGoDBNameDescEntityManager.cxx
+  DBManager/QGoDBCellTypeManager.cxx
+  DBManager/QGoDBSubCellTypeManager.cxx
+  DBManager/QGoDBColorManager.cxx
+  DBManager/QGoDBBookmarkManager.cxx
+
+  # for the tracks
   QGoTrackViewDockWidget.cxx
   QGoTrackEditingWidget.cxx
 
@@ -128,7 +134,7 @@ SET_SOURCE_FILES_PROPERTIES(
   QGoTabImageViewElementBase.cxx
   QGoImageView.cxx
   QGoFilterSemiAutoBase.cxx
-  QGoDBTraceManager.cxx
+  DBManager/QGoDBTraceManager.cxx
   QGoDBNameDescEntityManager.cxx
   QGoColorComboBox.cxx
   ABSTRACT
@@ -173,21 +179,12 @@ ENDIF( ENABLE_VIDEO_RECORD_AVI )
 #---------------------------------------------------------------------------
 
 SET( QGoGUILIB_HDRS
-  VisualizationTraceContainers/ContourContainer.h
-  VisualizationTraceContainers/MeshContainer.h
-  VisualizationTraceContainers/ContourMeshContainer.h
-  VisualizationTraceContainers/TrackContainer.h
-  VisualizationTraceContainers/LineageContainer.h
-  Wizard/QGoConnectServerPage.h
-  Wizard/QGoCreateImgSessionPage.h
   QGoImageView.h
   QGoImageView2D.h
   QGoImageView3D.h
   QGoImageInfo.h
   QGoLUTDialog.h
   TraceEditing/QGoManualSegmentationSettingsDialog.h
-  Wizard/QGoOpenCreateImgSessionPage.h
-  Wizard/QGoOpenCreateProjectPage.h
   QGoPrintDatabase.h
   QGoTabElementBase.h
   QGoTabImageView2D.h
@@ -196,40 +193,55 @@ SET( QGoGUILIB_HDRS
   QGoTabImageViewElementBase.h
   QGoTabImageViewNDBase.h
   QGoNavigationDockWidget.h
-  Wizard/QGoWizardDB.h
   QSplitterChild.h
   QGoTableWidget.h
   QGoCreateMeshDialog.h
   QGoLsmToMegaExportDialog.h
   ConversionLsmToMegaThread.h
-  QGoDBBookmarkManager.h
   QTextEditChild.h
   QGoNameDescriptionInputDialog.h
   QGoDockWidgetStatus.h
   QGoDeleteFromListDialog.h
-  QGoDBNameDescEntityManager.h
-  QGoDBCellTypeManager.h
-  QGoDBSubCellTypeManager.h
-  QGoDBColorManager.h
   QGoTraceSettingsWidget.h
   QGoAboutWidget.h
-  Wizard/QGoDBInitializationWizard.h
-  Wizard/QGoDBInitCreateUserPage.h
-  Wizard/QGoDBInitCreateAuthorsPage.h
-  Wizard/QGoDBInitCreateMicroscopePage.h
   QGoNetworkUtilities.h
   QGoColorComboBox.h
   QGoSelectedColorComboBox.h
   QGoCollectionColorComboBox.h
   QGoComboBox.h
-  QGoDBTraceManager.h
-  QGoDBContourManager.h
-  QGoDBMeshManager.h
-  QGoDBTrackManager.h
-  QGoDBLineageManager.h
   QGoColorCodingDialog.h
   QGoDockWidget.h
   QGoToolBarStatus.h
+
+  # Trace containers
+  VisualizationTraceContainers/ContourContainer.h
+  VisualizationTraceContainers/MeshContainer.h
+  VisualizationTraceContainers/ContourMeshContainer.h
+  VisualizationTraceContainers/TrackContainer.h
+  VisualizationTraceContainers/LineageContainer.h
+
+  # Wizard
+  Wizard/QGoConnectServerPage.h
+  Wizard/QGoCreateImgSessionPage.h
+  Wizard/QGoOpenCreateImgSessionPage.h
+  Wizard/QGoOpenCreateProjectPage.h
+  Wizard/QGoWizardDB.h
+  Wizard/QGoDBInitializationWizard.h
+  Wizard/QGoDBInitCreateUserPage.h
+  Wizard/QGoDBInitCreateAuthorsPage.h
+  Wizard/QGoDBInitCreateMicroscopePage.h
+
+  # DB Manager
+  DBManager/QGoDBBookmarkManager.h
+  DBManager/QGoDBNameDescEntityManager.h
+  DBManager/QGoDBCellTypeManager.h
+  DBManager/QGoDBSubCellTypeManager.h
+  DBManager/QGoDBColorManager.h
+  DBManager/QGoDBTraceManager.h
+  DBManager/QGoDBContourManager.h
+  DBManager/QGoDBMeshManager.h
+  DBManager/QGoDBTrackManager.h
+  DBManager/QGoDBLineageManager.h
 
   # for the tracks
   QGoTrackViewDockWidget.h

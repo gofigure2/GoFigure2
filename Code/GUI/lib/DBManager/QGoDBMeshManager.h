@@ -170,6 +170,22 @@ public:
   virtual std::list< NameWithColorData > GetAllTraceIDsWithColor(
     vtkMySQLDatabase *iDatabaseConnector, std::string & ioIDToSelect);
 
+  /**
+    * \brief Get volume of checked mesh IDs
+    */
+  std::list< std::pair<unsigned int, double> > GetListVolumes();
+
+  /**
+    * \brief Get volume of given mesh IDs
+    */
+  std::list< std::pair<unsigned int, double> > GetListVolumes(
+          std::list<unsigned int> iMeshIDs);
+
+  /**
+    * \brief Get volume of given mesh ID
+    */
+  double GetVolume(unsigned int iMeshID);
+
 public slots:
   /**
   \brief get the coordinate info for meshes needed for the visu
@@ -212,7 +228,8 @@ public slots:
   */
   QString CheckExistingMeshesForTheTrack(
    unsigned int iTrackID,vtkMySQLDatabase* iDatabaseConnector,
-   std::list<unsigned int> & ioListMeshIDs);
+   std::list<unsigned int> & ioListMeshIDs,
+   std::list< unsigned int > & ioNullListMeshIDs);
 
   /**
   \brief check if in the iListMeshIDs, several have the same timepoint, if so,

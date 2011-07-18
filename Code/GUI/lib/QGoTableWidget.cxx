@@ -923,7 +923,16 @@ GoDBCoordinateRow QGoTableWidget::GetCoordinateCenterBoundingBox(
     }
   return CenterCoord;
 }
+//--------------------------------------------------------------------------
 
+//--------------------------------------------------------------------------
+QString QGoTableWidget::GetValue(unsigned int iTraceID, std::string iTraceName,
+                             std::string iColumn)
+{
+  int RowIndex = this->GetRowForTraceID(iTraceID, iTraceName);
+  return this->item(
+          RowIndex, this->findColumnName( iColumn.c_str() ) )->text();
+}
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------

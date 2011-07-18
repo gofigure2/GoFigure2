@@ -316,6 +316,15 @@ QGoPrintDatabase::SaveMeshFromVisuInDB(unsigned int iXCoordMin,
                                                                                    iTCoord);
     if ( MessageToPrint != "" )
       {
+      // remove old mesh from track average volume
+        int kickedMeshID = MessageToPrint.toInt();
+        double volume = this->m_MeshesManager->GetVolume(kickedMeshID);
+        this->m_TracksManager->AddVolume(TrackID, (-1)*volume);
+      // write message
+      MessageToPrint =
+        tr(
+          "Warning: existing mesh at this timepoint for this track !!The track of the mesh with the meshID %1 has been reassigned to 0")
+        .arg(kickedMeshID);
       emit PrintMessage(MessageToPrint);
       }
     std::list<unsigned int> MotherTrackDivisionToUpdate;
@@ -349,6 +358,7 @@ QGoPrintDatabase::SaveMeshFromVisuInDB(unsigned int iXCoordMin,
                                                            iMeshNodes,
                                                            this->m_DatabaseConnector,
                                                            iMeshAttributes);
+
     std::list< unsigned int > ListNewMeshes;
     ListNewMeshes.push_back(NewMeshID);
     //here update the CurrentElement for trackContainer with the data from the
@@ -357,8 +367,14 @@ QGoPrintDatabase::SaveMeshFromVisuInDB(unsigned int iXCoordMin,
     //update the bounding box and the visu for the tracks:
     std::list< unsigned int > trackIDs = this->m_MeshesManager->GetListCollectionIDs(this->m_DatabaseConnector,
                                                                                      ListNewMeshes);
+
+    // old nb of points in map track structure
+    this->m_TracksManager->AddVolume(TrackID, iMeshAttributes->m_Volume);
+
+    // new nb of point in map track structure
     this->m_TracksManager->UpdateBoundingBoxes(this->m_DatabaseConnector,
                                                trackIDs);
+
     if (!MotherTrackDivisionToUpdate.empty() )
       {
       this->m_TracksManager->UpdateDivisions(MotherTrackDivisionToUpdate);
@@ -1178,6 +1194,13 @@ void QGoPrintDatabase::DeleteCheckedContours()
 //--------------------------------------------------------------------------
 void QGoPrintDatabase::DeleteCheckedMeshes()
 {
+  // upade average mesh volume over a track
+  // get IDs
+  std::list< std::pair<unsigned int, double> > temp_list =
+        this->m_MeshesManager->GetListVolumes();
+  // update tracks volumes
+  this->m_TracksManager->RemoveVolumes(temp_list);
+
   this->DeleteCheckedTraces< QGoDBMeshManager, QGoDBTrackManager, QGoDBContourManager >(
     this->m_MeshesManager, this->m_TracksManager, this->m_ContoursManager);
 }
@@ -1243,8 +1266,16 @@ void QGoPrintDatabase::PrintVolumeAreaForMesh(GoFigureMeshAttributes *
 void QGoPrintDatabase::PrintCalculatedValuesForTrack(GoFigureTrackAttributes *
                                                      iTrackAttributes, unsigned int iTrackID)
 {
+  // straight forward values from track polydata
   this->m_TracksManager->DisplayOnlyCalculatedValuesForExistingTrack(
     iTrackAttributes, iTrackID);
+  // other values from mesh
+  // do sth for the average volume
+  // do everything here but should be optimized later on
+  // calculate average volume
+  //std::list< std::pair<int, double> > list =this->m_MeshesManager->GetAverageVolumePerTrack();
+  //modify structure (which will update table!)
+  //this->m_TracksManager->SetAverageVolumePerTrack(list);
 }
 
 //--------------------------------------------------------------------------
@@ -1596,6 +1627,7 @@ void QGoPrintDatabase::CreateNewTrackFromListMeshes(
   unsigned int NewTrackID =
     this->m_TracksManager->CreateNewTrackWithNoMesh(
       this->m_DatabaseConnector);
+  std::list< std::pair<unsigned int, double> > temp;
 
   std::list< unsigned int > ListMeshToBelongToTheTrack;
   std::list< unsigned int > ListMeshToReassign;
@@ -1605,12 +1637,23 @@ void QGoPrintDatabase::CreateNewTrackFromListMeshes(
       this->m_DatabaseConnector, iListCheckedMeshes,
       ListMeshToBelongToTheTrack, ListMeshToReassign);
 
+  // remove all meshes from previous track avg_volume, from mesh ID
+  temp = this->m_MeshesManager->GetListVolumes(ListMeshToBelongToTheTrack);
+  // update tracks volumes
+  this->m_TracksManager->RemoveVolumes(temp);
+
   //at that moment, do nothing for the checked meshes not selected to be part of
   // the track
   if ( MessageToPrint != "" )
     {
     emit PrintMessage( MessageToPrint.c_str() );
     }
+
+  // remove all meshes from previous track avg_volume, from mesh ID
+  temp = this->m_MeshesManager->GetListVolumes(ListMeshToBelongToTheTrack);
+  // update tracks volumes
+  this->m_TracksManager->AddVolumes(temp, NewTrackID);
+
   this->AddCheckedTracesToCollection< QGoDBMeshManager, QGoDBTrackManager >(
     this->m_MeshesManager, this->m_TracksManager,
     NewTrackID, ListMeshToBelongToTheTrack);
@@ -1684,29 +1727,47 @@ void QGoPrintDatabase::AddCheckedContoursToSelectedMesh(std::list< unsigned int 
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoPrintDatabase::AddListMeshesToATrack(std::list< unsigned int > iListMeshes, unsigned int iTrackID)
+void
+QGoPrintDatabase::
+AddListMeshesToATrack(std::list< unsigned int > iListMeshes, unsigned int iTrackID)
 {
   this->OpenDBConnection();
   std::list< unsigned int > ListMeshToBelongToTheTrack;
+  std::list< unsigned int > ListNullMeshToBelongToTheTrack;
+  std::list< std::pair<unsigned int, double> > temp;
   if ( iTrackID == 0 )
     {
     ListMeshToBelongToTheTrack = iListMeshes;
     }
   else
     {
+    // list the meshes which will not be moved
+    // i.e. if we try to move 2 points belonging to T0,
+    // the smallest ID will not move
     std::list< unsigned int > ListMeshToReassign;
-    //at that moment, do nothing for the checked meshes not selected to be part
-    // of the track
     std::string MessageToPrint =
       this->m_MeshesManager->CheckListMeshesFromDifferentTimePoints(
         this->m_DatabaseConnector, iListMeshes,
         ListMeshToBelongToTheTrack, ListMeshToReassign);
 
-    //check for the existing ones:
+    // remove all meshes from previous track avg_volume, from mesh ID
+    temp = this->m_MeshesManager->GetListVolumes(ListMeshToBelongToTheTrack);
+    // update tracks volumes
+    this->m_TracksManager->RemoveVolumes(temp);
+
+    // if there is already a mesh at the same time point in the track,
+    // change the mesh's track id to 0
     MessageToPrint +=
       this->m_MeshesManager->CheckExistingMeshesForTheTrack(
         iTrackID, this->m_DatabaseConnector,
-        ListMeshToBelongToTheTrack).toStdString();
+        ListMeshToBelongToTheTrack, ListNullMeshToBelongToTheTrack).toStdString();
+
+    // remove meshes assigned to 0
+    temp = this->m_MeshesManager->GetListVolumes(ListNullMeshToBelongToTheTrack);
+    this->m_TracksManager->RemoveVolumes(temp, iTrackID);
+    // add meshes to next track average volume, from Mesh ID
+    temp = this->m_MeshesManager->GetListVolumes(ListMeshToBelongToTheTrack);
+    this->m_TracksManager->AddVolumes(temp, iTrackID);
 
     if ( MessageToPrint != "" )
       {
@@ -1714,6 +1775,7 @@ void QGoPrintDatabase::AddListMeshesToATrack(std::list< unsigned int > iListMesh
       }
     }
 
+  // assign meshes to the track since we have cleaned the track now
   this->AddCheckedTracesToCollection< QGoDBMeshManager, QGoDBTrackManager >(
     this->m_MeshesManager, this->m_TracksManager,
     iTrackID, ListMeshToBelongToTheTrack);
