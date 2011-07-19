@@ -530,6 +530,7 @@ QGoMainWindow::LoadMeshesFromDatabase(const int & iT)
         ++mesh_list_it;
         }
 
+      temp->ShowActorsWithGivenTimePoint(iT);
       progress.setValue( nb_meshes );
       }
     }
