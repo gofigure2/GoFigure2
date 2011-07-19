@@ -29,26 +29,26 @@ SET( QGOIO_SRC
   GoDBImport.cxx
   GoDBCollectionOfTraces.cxx
   
-  # DB Row
-  DBRow/GoDBAuthorRow.cxx
-  DBRow/GoDBChannelRow.cxx
-  DBRow/GoDBColorRow.cxx
-  DBRow/GoDBContourRow.cxx
-  DBRow/GoDBCoordinateRow.cxx
-  DBRow/GoDBImageRow.cxx
-  DBRow/GoDBImgSessionRow.cxx
-  DBRow/GoDBMeshRow.cxx
-  DBRow/GoDBProjectRow.cxx
-  DBRow/GoDBTraceRow.cxx
-  DBRow/GoDBRow.cxx
-  DBRow/GoDBTrackRow.cxx
-  DBRow/GoDBTrackFamilyRow.cxx
-  DBRow/GoDBLineageRow.cxx
-  DBRow/GoDBNameDescRow.cxx
-  DBRow/GoDBBookmarkRow.cxx
-  DBRow/GoDBCellTypeRow.cxx
-  DBRow/GoDBSubCellTypeRow.cxx
-  DBRow/GoDBIntensityRow.cxx
+  # GoDB*Row
+  GoDBRow/GoDBAuthorRow.cxx
+  GoDBRow/GoDBChannelRow.cxx
+  GoDBRow/GoDBColorRow.cxx
+  GoDBRow/GoDBContourRow.cxx
+  GoDBRow/GoDBCoordinateRow.cxx
+  GoDBRow/GoDBImageRow.cxx
+  GoDBRow/GoDBImgSessionRow.cxx
+  GoDBRow/GoDBMeshRow.cxx
+  GoDBRow/GoDBProjectRow.cxx
+  GoDBRow/GoDBTraceRow.cxx
+  GoDBRow/GoDBRow.cxx
+  GoDBRow/GoDBTrackRow.cxx
+  GoDBRow/GoDBTrackFamilyRow.cxx
+  GoDBRow/GoDBLineageRow.cxx
+  GoDBRow/GoDBNameDescRow.cxx
+  GoDBRow/GoDBBookmarkRow.cxx
+  GoDBRow/GoDBCellTypeRow.cxx
+  GoDBRow/GoDBSubCellTypeRow.cxx
+  GoDBRow/GoDBIntensityRow.cxx
 
   # Mega related files
   GoImage/GoImageProcessor.cxx
@@ -76,10 +76,10 @@ SET( QGOIO_SRC
 )
 
 SET_SOURCE_FILES_PROPERTIES(
-  DBRow/GoDBRow.cxx
-  DBRow/GoDBTraceRow.cxx
+  GoDBRow/GoDBRow.cxx
+  GoDBRow/GoDBTraceRow.cxx
   GoDBTableWidgetContainer.cxx
-  DBRow/GoDBNameDescRow.cxx
+  GoDBRow/GoDBNameDescRow.cxx
   ABSTRACT
   )
 
