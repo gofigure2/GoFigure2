@@ -228,8 +228,8 @@ QGoFilterShape::GenerateSphere(double *iCenter)
   vtkSphereSource *sphere = vtkSphereSource::New();
 
   sphere->SetRadius( getRadius() );
-  sphere->SetThetaResolution(30);
-  sphere->SetPhiResolution(30);
+  sphere->SetThetaResolution(8);
+  sphere->SetPhiResolution(8);
   sphere->SetCenter(iCenter);
   sphere->Update();
   sphere->GetOutput()->GetPointData()->SetNormals(NULL);
