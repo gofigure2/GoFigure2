@@ -458,8 +458,7 @@ protected:
     if ( iIt->Nodes )
       {
       bool highlighted = false;
-      bool visibility =
-        ( static_cast< unsigned int >( m_TCoord ) == iIt->TCoord );
+      bool visibility = false;
 
       AddTraceIDIntoPolydata(iIt->Nodes, iIt->TraceID, "MESH");
 

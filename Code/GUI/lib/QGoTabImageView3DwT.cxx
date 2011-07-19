@@ -1645,9 +1645,6 @@ QGoTabImageView3DwT::SetMegaCaptureFile(
   m_ImageProcessor->initTimePoint(m_TCoord);
   //update images
   UpdateImage();
-  // update actors
-  this->m_ContourContainer->ShowActorsWithGivenTimePoint(iTimePoint);
-  this->m_MeshContainer->ShowActorsWithGivenTimePoint(iTimePoint);
   // update widgets on image loading
   InitializeImageRelatedWidget();
   // render

@@ -482,11 +482,6 @@ QGoMainWindow::LoadContoursFromDatabase(const int & iT)
 void
 QGoMainWindow::LoadMeshesFromDatabase(const int & iT)
 {
-  /// \note let's keep for the time being iT parameter in the case where
-  /// we would only load traces for a given time point (that could be usefule
-  /// somehow).
-  (void)iT;
-
   QGoTabImageView3DwT *w3t =
     dynamic_cast< QGoTabImageView3DwT * >( this->CentralTabWidget->currentWidget() );
 
