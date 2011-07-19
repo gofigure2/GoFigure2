@@ -376,5 +376,32 @@ ContourMeshContainer::GetMeshesPoints(std::list< unsigned int > iMeshID)
 
   return meshPosition;
 }
+//-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
+void
+ContourMeshContainer::
+Clear()
+{
+  MultiIndexContainerTraceIDIterator  it = m_Container.get< TraceID >().begin();
+  while ( it != m_Container.get< TraceID >().end() )
+    {
+    DeleteElement(it);
+    ++it;
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+ContourMeshContainer::
+Clear( const std::list<unsigned int>& iTraceIDs)
+{
+  std::list<unsigned int>::const_iterator it = iTraceIDs.begin();
+  while(it!= iTraceIDs.end())
+    {
+    DeleteElement(*it);
+    ++it;
+    }
+}
 //-------------------------------------------------------------------------

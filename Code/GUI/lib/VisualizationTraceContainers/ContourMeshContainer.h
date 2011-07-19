@@ -282,6 +282,16 @@ public:
   */
   std::list< unsigned int > DeleteAllHighlightedElements();
 
+  /**
+  \brief Delete all elements from the container
+  */
+  void Clear();
+
+  /**
+  \brief Delete given elements from the container
+  */
+  void Clear( const std::list<unsigned int>& iTraceIDs);
+
    /**
     \return the traceIDs with TCoord = iTimePoint
     \param[in] iTimePoint timepoint for which the traceIDs are needed

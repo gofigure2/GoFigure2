@@ -126,6 +126,10 @@ public:
   //virtual pure method in QGoDBTraceManager
   virtual std::list< unsigned int > GetListHighlightedIDs();
 
+
+  void UpdateTWAndContainerForGivenTimePoint(vtkMySQLDatabase *iDatabaseConnector,
+                                             const std::list<unsigned int>& iTimePoints);
+
 signals:
   /**
   \brief signal emitted when the user clicks on "Reedit contour" in the context menu

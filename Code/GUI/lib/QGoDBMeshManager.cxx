@@ -828,10 +828,9 @@ std::pair< unsigned int, unsigned int > QGoDBMeshManager::GetInfoForTheOnlyOneCh
   oInfo.second = ListTimePoints.front();
   return oInfo;
 }
-
 //-------------------------------------------------------------------------
 
-//-------------------------------------------------------------------------v
+//-------------------------------------------------------------------------
 std::list< QGoDBTraceManager::NameWithColorData >
 QGoDBMeshManager::GetAllTraceIDsWithColor(
   vtkMySQLDatabase *iDatabaseConnector, std::string & ioIDToSelect)
@@ -839,4 +838,15 @@ QGoDBMeshManager::GetAllTraceIDsWithColor(
   ioIDToSelect = this->m_LastSelectedTraceAsCollection;
   return this->m_CollectionOfTraces->GetTracesIDsWithColorForATimePoint(
            iDatabaseConnector, *this->m_CurrentTimePoint);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoDBMeshManager::
+UpdateTWAndContainerForGivenTimePoint(vtkMySQLDatabase *iDatabaseConnector,
+                                      const std::list<unsigned int>& iTimePoints)
+{
+  this->RemoveTracesFromTWAndContainerForVisuForSpecificTPsTemplate<MeshContainer>(
+          iDatabaseConnector, this->m_MeshContainerInfoForVisu, iTimePoints);
 }

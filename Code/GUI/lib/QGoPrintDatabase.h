@@ -266,6 +266,10 @@ public:
   */
   bool NeedTraceSettingsToolBarVisible();
 
+  void UpdateTableWidgetAndContainersForGivenTimePoint(
+          const unsigned int& iOldTimePoint,
+          const unsigned int& iNewTimePoint);
+
 public slots:
   void DeleteBookmarks();
 

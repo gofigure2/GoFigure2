@@ -591,31 +591,14 @@ protected:
                                                     C* iContainerForVisu,
                                                     std::list<unsigned int> iListTPs)
   {
-    /** \todo Nico :erase everything in the container for visu */
-   //iContainerForVisu->clear();
-   this->m_Table->clear();
+   iContainerForVisu->Clear();
+   this->m_Table->DeleteRowsAndColumns();
    this->DisplayInfoForTracesForSpecificTPs( iDatabaseConnector, iListTPs);
     std::list<unsigned int> ListIDs = 
       this->m_CollectionOfTraces->GetTraceIDsBelongingToListTimePoints(
         iDatabaseConnector,  iListTPs);
     this->GetTracesInfoFromDBAndModifyContainerForVisu(iDatabaseConnector,ListIDs);
   }
-
-  /*template< typename C >
-  void AddInfoInTWAndContainerForVisuForSpecificTPs(
-                                                    vtkMySQLDatabase *iDatabaseConnector,
-                                                    C* iContainerForVisu,
-                                                    std::list<unsigned int> iListTPs)
-  {
-    this->AddInfoForTracesInTWForSpecificTPs(iDatabaseConnector, iListTPs);
-    std::list<S> list_of_traces =
-    GetTracesInfoFromDBForVisuContainer( list_of_traces,
-        iDatabaseConnector, this->m_TraceName, this->m_CollectionName,
-        this->m_ImgSessionID, -1, iVectIDs);
-    /** \todo Nico: implement a method that get list_of_traces as argument and as this list
-    of structure in the container for visu */
-
- // }
 
   template< typename C>
   void RemoveTracesFromTWAndContainerForVisuForSpecificTPsTemplate(
@@ -626,8 +609,7 @@ protected:
     std::list<unsigned int> ListIDs =
       this->m_CollectionOfTraces->GetTraceIDsBelongingToListTimePoints(
         iDatabaseConnector, iListTPs);
-    /** \todo Nico :erase the corresponding traces in the container for visu based
-    on the timepoints or to the ListIDs above*/
+    iContainerForVisu->Clear(ListIDs);
     QStringList StrgListTPs;
     std::list<unsigned int>::iterator iter = iListTPs.begin();
     while (iter != iListTPs.end() )

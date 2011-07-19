@@ -45,7 +45,6 @@ QGoDBTraceManager::QGoDBTraceManager(QObject *iParent) :
   m_IsColorCodingOn(false), m_IsShowOnlyCurrentTimePointOn(false)
 {
 }
-
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -56,7 +55,6 @@ QGoDBTraceManager::~QGoDBTraceManager()
     delete this->m_CollectionOfTraces;
     }
 }
-
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------

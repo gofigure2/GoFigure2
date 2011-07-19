@@ -228,6 +228,8 @@ public:
   void DisplayColumnNames(
     std::list< std::pair<std::string, std::string > > iColumnNamesAndToolTip);
 
+  void DeleteRowsAndColumns();
+
 public slots:
 
   /**

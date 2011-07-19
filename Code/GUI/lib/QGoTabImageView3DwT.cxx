@@ -1801,6 +1801,8 @@ QGoTabImageView3DwT::SetTimePoint(const int & iTimePoint)
 
   QApplication::setOverrideCursor( QCursor(Qt::WaitCursor) );
 
+  unsigned int oldTimePoint = m_TCoord;
+
   m_TCoord = iTimePoint;
 
   if (!m_ImageProcessor->getDopplerMode())
@@ -1825,8 +1827,14 @@ QGoTabImageView3DwT::SetTimePoint(const int & iTimePoint)
   // for the trace widget, navigation widget and table widget
   emit TimePointChanged(m_TCoord);
 
-  this->m_ContourContainer->ShowActorsWithGivenTimePoint(m_TCoord);
-  this->m_MeshContainer->ShowActorsWithGivenTimePoint(m_TCoord);
+  // clean table widget and container
+  // then load new ones
+  this->m_DataBaseTables->UpdateTableWidgetAndContainersForGivenTimePoint(
+          oldTimePoint,
+          m_TCoord);
+
+  //this->m_ContourContainer->ShowActorsWithGivenTimePoint(m_TCoord);
+  //this->m_MeshContainer->ShowActorsWithGivenTimePoint(m_TCoord);
 
   m_ImageView->Update();
 

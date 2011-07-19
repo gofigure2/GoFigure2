@@ -219,7 +219,6 @@ void QGoPrintDatabase::CloseDBConnection()
 void QGoPrintDatabase::FillTableFromDatabase()
 {
   OpenDBConnection();
-  //this->GetContentAndDisplayAllTracesInfo(this->m_DatabaseConnector);
   this->GetContentAndDisplayAllTracesInfoFor3TPs(this->m_DatabaseConnector);
   CloseDBConnection();
 
@@ -1874,3 +1873,41 @@ void QGoPrintDatabase::ShowHideTraceSettingsFromContextMenu(bool isVisible)
     }
    return !this->m_TraceSettingsVisible;
  }
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+QGoPrintDatabase::
+UpdateTableWidgetAndContainersForGivenTimePoint(
+        const unsigned int& iOldTimePoint,
+        const unsigned int& iNewTimePoint)
+{
+  this->OpenDBConnection();
+
+  std::list<unsigned int> ListTimepoints;
+  // remove
+  ListTimepoints.push_back(iOldTimePoint);
+  ListTimepoints.push_back(iOldTimePoint + 1);
+  ListTimepoints.push_back(iOldTimePoint + 2);
+
+  this->m_MeshesManager->UpdateTWAndContainerForGivenTimePoint(
+    this->m_DatabaseConnector, ListTimepoints);
+
+  // load
+  ListTimepoints.clear();
+  ListTimepoints.push_back(iNewTimePoint);
+  ListTimepoints.push_back(iNewTimePoint + 1);
+  ListTimepoints.push_back(iNewTimePoint + 2);
+
+  this->m_ContoursManager->
+    DisplayInfoAndLoadVisuContainerForAllContoursForSpecificTPs(
+    this->m_DatabaseConnector,
+    ListTimepoints);
+  this->m_MeshesManager->
+    DisplayInfoAndLoadVisuContainerForAllMeshesForSpecificTPs(
+    this->m_DatabaseConnector,
+    ListTimepoints);
+
+  this->CloseDBConnection();
+}
+//--------------------------------------------------------------------------

@@ -89,6 +89,8 @@ int QGoTableWidget::findValueGivenColumn(int iValue, QString iColumn)
 {
   int ColumnIndex = findColumnName(iColumn);
 
+  std::cout << "column: " << ColumnIndex << std::endl;
+
   if ( ColumnIndex == -1 )
     {
     std::cout << "The column figureID has not been found";
@@ -999,3 +1001,21 @@ void QGoTableWidget::DeleteRowsWithSpecificTimePoints(
     }
 
 }
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+QGoTableWidget::
+DeleteRowsAndColumns()
+{
+  for(int i=rowCount()-1; i>=0; --i)
+    {
+    this->removeRow(i);
+    }
+
+  for(int i=columnCount()-1; i>=0; --i)
+    {
+    this->removeColumn(i);
+    }
+}
+//--------------------------------------------------------------------------

@@ -180,6 +180,9 @@ public:
   virtual std::list< NameWithColorData > GetAllTraceIDsWithColor(
     vtkMySQLDatabase *iDatabaseConnector, std::string & ioIDToSelect);
 
+  void UpdateTWAndContainerForGivenTimePoint(vtkMySQLDatabase *iDatabaseConnector,
+                                             const std::list<unsigned int>& iTimePoints);
+
 public slots:
   /**
   \brief get the coordinate info for meshes needed for the visu
