@@ -127,8 +127,8 @@ public:
   virtual std::list< unsigned int > GetListHighlightedIDs();
 
 
-  void UpdateTWAndContainerForGivenTimePoint(vtkMySQLDatabase *iDatabaseConnector,
-                                             const std::list<unsigned int>& iTimePoints);
+  void CleanTWAndContainerForGivenTimePoint(vtkMySQLDatabase *iDatabaseConnector,
+                                            const std::list<unsigned int>& iTimePoints);
 
 signals:
   /**

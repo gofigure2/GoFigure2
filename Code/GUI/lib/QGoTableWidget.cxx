@@ -43,6 +43,8 @@
 #include <QToolButton>
 #include <QMessageBox>
 
+#include <QDebug>
+
 QGoTableWidget::QGoTableWidget(QWidget *iParent) : QTableWidget(iParent)
 {
   PrevCol = -1;
@@ -984,14 +986,20 @@ void QGoTableWidget::ShowAllRows()
 void QGoTableWidget::DeleteRowsWithSpecificTimePoints(
   QStringList iListTPs)
 {
-  int IndexColumnTime = this->findColumnName("TCoord");
+
+  qDebug() << iListTPs;
+
+  int IndexColumnTime = this->findColumnName("TimePoint");
+
   if (IndexColumnTime != -1)
     {
     this->setSortingEnabled(false);
-      for (int i = 0; i < this->rowCount();++i)
+    for (int i = 0; i<rowCount(); ++i)
       {
+          std::cout << "row: " << i << std::endl;
         if (iListTPs.contains(this->item(i, IndexColumnTime)->text() ) )
         {
+            std::cout << "remove: " << i << std::endl;
         this->removeRow(i);
         }
       }

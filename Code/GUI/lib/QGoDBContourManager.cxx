@@ -469,9 +469,10 @@ bool QGoDBContourManager::AreCheckedContoursFromCurrentTimepoint()
 //-------------------------------------------------------------------------
 void
 QGoDBContourManager::
-UpdateTWAndContainerForGivenTimePoint(vtkMySQLDatabase *iDatabaseConnector,
-                                      const std::list<unsigned int>& iTimePoints)
+CleanTWAndContainerForGivenTimePoint(vtkMySQLDatabase *iDatabaseConnector,
+                                     const std::list<unsigned int>& iTimePoints)
 {
   this->RemoveTracesFromTWAndContainerForVisuForSpecificTPsTemplate<ContourContainer>(
           iDatabaseConnector, this->m_ContourContainerInfoForVisu, iTimePoints);
 }
+//-------------------------------------------------------------------------

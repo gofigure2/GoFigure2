@@ -1890,7 +1890,9 @@ UpdateTableWidgetAndContainersForGivenTimePoint(
   ListTimepoints.push_back(iOldTimePoint + 1);
   ListTimepoints.push_back(iOldTimePoint + 2);
 
-  this->m_MeshesManager->UpdateTWAndContainerForGivenTimePoint(
+  this->m_ContoursManager->CleanTWAndContainerForGivenTimePoint(
+    this->m_DatabaseConnector, ListTimepoints);
+  this->m_MeshesManager->CleanTWAndContainerForGivenTimePoint(
     this->m_DatabaseConnector, ListTimepoints);
 
   // load

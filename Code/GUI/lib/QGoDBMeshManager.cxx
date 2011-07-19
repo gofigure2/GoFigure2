@@ -844,8 +844,8 @@ QGoDBMeshManager::GetAllTraceIDsWithColor(
 //-------------------------------------------------------------------------
 void
 QGoDBMeshManager::
-UpdateTWAndContainerForGivenTimePoint(vtkMySQLDatabase *iDatabaseConnector,
-                                      const std::list<unsigned int>& iTimePoints)
+CleanTWAndContainerForGivenTimePoint(vtkMySQLDatabase *iDatabaseConnector,
+                                     const std::list<unsigned int>& iTimePoints)
 {
   this->RemoveTracesFromTWAndContainerForVisuForSpecificTPsTemplate<MeshContainer>(
           iDatabaseConnector, this->m_MeshContainerInfoForVisu, iTimePoints);

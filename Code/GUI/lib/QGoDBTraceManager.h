@@ -47,6 +47,8 @@
 #include "vtkLookupTable.h"
 #include "vtkLookupTableManager.h"
 
+#include <QDebug>
+
 /**
 \class QGoDBTraceManager
 \brief Abstract class inherited by QGoDBContourManager,Mesh,Track,Lineage
@@ -591,8 +593,8 @@ protected:
                                                     C* iContainerForVisu,
                                                     std::list<unsigned int> iListTPs)
   {
-   iContainerForVisu->Clear();
-   this->m_Table->DeleteRowsAndColumns();
+   //iContainerForVisu->Clear();
+   //this->m_Table->DeleteRowsAndColumns();
    this->DisplayInfoForTracesForSpecificTPs( iDatabaseConnector, iListTPs);
     std::list<unsigned int> ListIDs = 
       this->m_CollectionOfTraces->GetTraceIDsBelongingToListTimePoints(
@@ -612,10 +614,14 @@ protected:
     iContainerForVisu->Clear(ListIDs);
     QStringList StrgListTPs;
     std::list<unsigned int>::iterator iter = iListTPs.begin();
+    std::cout << "before while: "<< std::endl;
     while (iter != iListTPs.end() )
       {
+      std::cout << "add: " << *iter << std::endl;
       QString temp(*iter);
+      qDebug() << "string: " << temp;
       StrgListTPs.append(temp);
+      qDebug() << "list: " << StrgListTPs;
       ++iter;
       }
     //erase in the table widget:

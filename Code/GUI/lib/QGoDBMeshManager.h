@@ -180,8 +180,8 @@ public:
   virtual std::list< NameWithColorData > GetAllTraceIDsWithColor(
     vtkMySQLDatabase *iDatabaseConnector, std::string & ioIDToSelect);
 
-  void UpdateTWAndContainerForGivenTimePoint(vtkMySQLDatabase *iDatabaseConnector,
-                                             const std::list<unsigned int>& iTimePoints);
+  void CleanTWAndContainerForGivenTimePoint(vtkMySQLDatabase *iDatabaseConnector,
+                                            const std::list<unsigned int>& iTimePoints);
 
 public slots:
   /**
