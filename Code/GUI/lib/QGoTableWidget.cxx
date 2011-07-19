@@ -89,8 +89,6 @@ int QGoTableWidget::findValueGivenColumn(int iValue, QString iColumn)
 {
   int ColumnIndex = findColumnName(iColumn);
 
-  std::cout << "column: " << ColumnIndex << std::endl;
-
   if ( ColumnIndex == -1 )
     {
     std::cout << "The column figureID has not been found";

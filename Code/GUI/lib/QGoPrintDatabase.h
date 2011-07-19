@@ -266,7 +266,7 @@ public:
   */
   bool NeedTraceSettingsToolBarVisible();
 
-  void UpdateTableWidgetAndContainersForGivenTimePoint(
+  std::list<unsigned int> UpdateTableWidgetAndContainersForGivenTimePoint(
           const unsigned int& iOldTimePoint,
           const unsigned int& iNewTimePoint);
 

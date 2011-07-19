@@ -1876,7 +1876,7 @@ void QGoPrintDatabase::ShowHideTraceSettingsFromContextMenu(bool isVisible)
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void
+std::list<unsigned int>
 QGoPrintDatabase::
 UpdateTableWidgetAndContainersForGivenTimePoint(
         const unsigned int& iOldTimePoint,
@@ -1909,5 +1909,7 @@ UpdateTableWidgetAndContainersForGivenTimePoint(
     ListTimepoints);
 
   this->CloseDBConnection();
+
+  return ListTimepoints;
 }
 //--------------------------------------------------------------------------

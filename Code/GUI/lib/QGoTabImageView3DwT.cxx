@@ -1829,12 +1829,45 @@ QGoTabImageView3DwT::SetTimePoint(const int & iTimePoint)
 
   // clean table widget and container
   // then load new ones
-  this->m_DataBaseTables->UpdateTableWidgetAndContainersForGivenTimePoint(
+  std::list<unsigned int> timePoints =
+          this->m_DataBaseTables->UpdateTableWidgetAndContainersForGivenTimePoint(
           oldTimePoint,
           m_TCoord);
 
-  //this->m_ContourContainer->ShowActorsWithGivenTimePoint(m_TCoord);
-  //this->m_MeshContainer->ShowActorsWithGivenTimePoint(m_TCoord);
+  /////////////////////////////////////////
+
+  // create actors and compute statistics
+  MeshContainer::MultiIndexContainerType::index< TraceID >::type::iterator
+    mesh_list_it = this->m_MeshContainer->m_Container.get< TraceID >().begin();
+
+  MeshContainer::MultiIndexContainerType::index< TraceID >::type::iterator
+    mesh_list_end = this->m_MeshContainer->m_Container.get< TraceID >().end();
+
+  while ( mesh_list_it != mesh_list_end )
+    {
+    // note here it only makes sense when the trace is a mesh (for now)
+    //std::cout << "IN WHILE" << std::endl;
+
+    if ( mesh_list_it->Nodes )
+      {
+      GoFigureMeshAttributes attributes =
+        ComputeMeshAttributes(
+          mesh_list_it->Nodes, // mesh
+          false, // do not need to compute intensity based measure
+          mesh_list_it->TCoord
+          );
+      this->m_DataBaseTables->PrintVolumeAreaForMesh(
+        &attributes, mesh_list_it->TraceID);
+      }
+
+    AddMeshFromNodes< TraceID >(mesh_list_it);
+    ++mesh_list_it;
+    }
+
+  /////////////////////////////////////////
+
+  this->m_ContourContainer->ShowActorsWithGivenTimePoint(m_TCoord);
+  this->m_MeshContainer->ShowActorsWithGivenTimePoint(m_TCoord);
 
   m_ImageView->Update();
 
