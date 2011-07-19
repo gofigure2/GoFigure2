@@ -242,6 +242,9 @@ public:
   void InitializeToolsForTracesToolBar(QMenu* iMenu, QToolBar* iToolBar);
   void InitializeTraceSettingsToolBar(QToolBar* iToolBar);
 
+  void CreateContoursActorsFromVisuContainer(const unsigned int& iTimePoint);
+  void CreateMeshesActorsFromVisuContainer(const unsigned int& iTimePoint);
+
 signals:
   void TimePointChanged(int TimePoint);
 

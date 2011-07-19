@@ -433,46 +433,12 @@ QGoMainWindow::LoadAllTracesFromDatabaseManager(const int & iT)
 void
 QGoMainWindow::LoadContoursFromDatabase(const int & iT)
 {
-  /// \note let's keep for the time being iT parameter in the case where
-  /// we would only load traces for a given time point (that could be usefule
-  /// somehow).
-  (void)iT;
-
   QGoTabImageView3DwT *w3t =
     dynamic_cast< QGoTabImageView3DwT * >( this->CentralTabWidget->currentWidget() );
 
   if ( w3t )
     {
-    ContourContainer *temp = w3t->GetContourContainer();
-
-    if ( temp )
-      {
-      // let's iterate on the container with increasing TraceID
-      ContourContainer::MultiIndexContainerType::index< TraceID >::type::iterator
-        contour_list_it = temp->m_Container.get< TraceID >().begin();
-
-      ContourContainer::MultiIndexContainerType::index< TraceID >::type::iterator
-        contour_list_end = temp->m_Container.get< TraceID >().end();
-
-      size_t nb_contours = temp->m_Container.get< TraceID >().size();
-
-      QProgressDialog progress( "Loading Contours...", QString(), 0, nb_contours );
-
-      size_t i = 0;
-
-      // we don't need here to save this contour in the database,
-      // since they have just been extracted from it!
-      while ( contour_list_it != contour_list_end )
-        {
-        w3t->AddContourFromNodes< TraceID >( contour_list_it );
-
-        progress.setValue( i );
-
-        ++i;
-        ++contour_list_it;
-        }
-      progress.setValue( nb_contours );
-      }
+    w3t->CreateContoursActorsFromVisuContainer(iT);
     }
 }
 
@@ -487,52 +453,7 @@ QGoMainWindow::LoadMeshesFromDatabase(const int & iT)
 
   if ( w3t )
     {
-    MeshContainer *temp =  w3t->GetMeshContainer();
-    if ( temp )
-      {
-      // let's iterate on the container with increasing TraceID
-      MeshContainer::MultiIndexContainerType::index< TraceID >::type::iterator
-        mesh_list_it = temp->m_Container.get< TraceID >().begin();
-
-      MeshContainer::MultiIndexContainerType::index< TraceID >::type::iterator
-        mesh_list_end = temp->m_Container.get< TraceID >().end();
-
-      size_t nb_meshes = temp->m_Container.get< TraceID >().size();
-
-      QProgressDialog progress( "Loading Meshes...", QString(), 0, nb_meshes );
-
-      size_t i = 0;
-
-      // we don't need here to save this contour in the database,
-      // since they have just been extracted from it!
-      while ( mesh_list_it != mesh_list_end )
-        {
-        // note here it only makes sense when the trace is a mesh (for now)
-        //std::cout << "IN WHILE" << std::endl;
-
-        if ( mesh_list_it->Nodes )
-          {
-          GoFigureMeshAttributes attributes =
-            w3t->ComputeMeshAttributes(
-              mesh_list_it->Nodes, // mesh
-              false, // do not need to compute intensity based measure
-              mesh_list_it->TCoord
-              );
-          w3t->m_DataBaseTables->PrintVolumeAreaForMesh(
-            &attributes, mesh_list_it->TraceID);
-          }
-
-        w3t->AddMeshFromNodes< TraceID >(mesh_list_it);
-
-        progress.setValue( i );
-
-        ++i;
-        ++mesh_list_it;
-        }
-
-      temp->ShowActorsWithGivenTimePoint(iT);
-      progress.setValue( nb_meshes );
-      }
+    w3t->CreateMeshesActorsFromVisuContainer(iT);
     }
 }
 
