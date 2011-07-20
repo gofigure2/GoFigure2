@@ -132,7 +132,7 @@ public:
                  int iTraceID);
 
 
-  void DeleteRowsWithSpecificTimePoints(QStringList iListTPs);
+  void DeleteRowsWithSpecificTimePoints(QList<QString> iListTPs);
 
   /**
   \brief delete the rows previously checked by the user

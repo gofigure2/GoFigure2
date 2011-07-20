@@ -612,16 +612,13 @@ protected:
       this->m_CollectionOfTraces->GetTraceIDsBelongingToListTimePoints(
         iDatabaseConnector, iListTPs);
     iContainerForVisu->Clear(ListIDs);
-    QStringList StrgListTPs;
+    QList<QString> StrgListTPs;
     std::list<unsigned int>::iterator iter = iListTPs.begin();
-    std::cout << "before while: "<< std::endl;
     while (iter != iListTPs.end() )
       {
-      std::cout << "add: " << *iter << std::endl;
-      QString temp(*iter);
-      qDebug() << "string: " << temp;
-      StrgListTPs.append(temp);
-      qDebug() << "list: " << StrgListTPs;
+      QString temp;
+      temp.setNum(static_cast<int>(*iter));
+      StrgListTPs << temp;
       ++iter;
       }
     //erase in the table widget:

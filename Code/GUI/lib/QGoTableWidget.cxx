@@ -984,7 +984,7 @@ void QGoTableWidget::ShowAllRows()
 
 //--------------------------------------------------------------------------
 void QGoTableWidget::DeleteRowsWithSpecificTimePoints(
-  QStringList iListTPs)
+  QList<QString> iListTPs)
 {
 
   qDebug() << iListTPs;
@@ -994,12 +994,10 @@ void QGoTableWidget::DeleteRowsWithSpecificTimePoints(
   if (IndexColumnTime != -1)
     {
     this->setSortingEnabled(false);
-    for (int i = 0; i<rowCount(); ++i)
+    for (int i = rowCount()-1; i>=0; --i)
       {
-          std::cout << "row: " << i << std::endl;
         if (iListTPs.contains(this->item(i, IndexColumnTime)->text() ) )
         {
-            std::cout << "remove: " << i << std::endl;
         this->removeRow(i);
         }
       }
