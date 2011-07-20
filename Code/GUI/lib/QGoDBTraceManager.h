@@ -47,8 +47,6 @@
 #include "vtkLookupTable.h"
 #include "vtkLookupTableManager.h"
 
-#include <QDebug>
-
 /**
 \class QGoDBTraceManager
 \brief Abstract class inherited by QGoDBContourManager,Mesh,Track,Lineage
