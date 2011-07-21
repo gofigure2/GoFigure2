@@ -20,7 +20,7 @@ FIND_PACKAGE( ITK REQUIRED )
 
     # check if requiered modules are enabled
     # note that ITK-Review requires all modules to be turned ON...
-    list(FIND ITK_MODULES_ENABLED ITK-Review ITK-Review_FOUND)
+    list(FIND ITK_MODULES_ENABLED ITKReview ITK-Review_FOUND)
     IF( ITK-Review_FOUND LESS 0 )
       MESSAGE( SEND_ERROR "GoFigure2 requires ITK to be compiled with ITK-Review turned ON")
     ENDIF( ITK-Review_FOUND LESS 0 )

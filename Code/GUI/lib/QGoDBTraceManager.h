@@ -610,7 +610,7 @@ protected:
       this->m_CollectionOfTraces->GetTraceIDsBelongingToListTimePoints(
         iDatabaseConnector, iListTPs);
     iContainerForVisu->Clear(ListIDs);
-    QList<QString> StrgListTPs;
+    QStringList StrgListTPs;
     std::list<unsigned int>::iterator iter = iListTPs.begin();
     while (iter != iListTPs.end() )
       {

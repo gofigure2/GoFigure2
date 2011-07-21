@@ -982,7 +982,7 @@ void QGoTableWidget::ShowAllRows()
 
 //--------------------------------------------------------------------------
 void QGoTableWidget::DeleteRowsWithSpecificTimePoints(
-  QList<QString> iListTPs)
+  QStringList iListTPs)
 {
   int IndexColumnTime = this->findColumnName("TimePoint");
 
