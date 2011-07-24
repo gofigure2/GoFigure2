@@ -562,10 +562,7 @@ QString QGoDBMeshManager::CheckExistingMeshesForTheTrack(
         iDatabaseConnector, iTrackID, iTCoord);
     if ( MeshIDKickedOut != 0 )
       {
-      MessageToPrint =
-        tr(
-          "Warning: existing mesh at this timepoint for this track !!The track of the mesh with the meshID %1 has been reassigned to 0")
-        .arg(MeshIDKickedOut);
+      MessageToPrint = QString::number(MeshIDKickedOut);
       }
     }
   return MessageToPrint;
@@ -576,7 +573,8 @@ QString QGoDBMeshManager::CheckExistingMeshesForTheTrack(
 //-------------------------------------------------------------------------
 QString QGoDBMeshManager::CheckExistingMeshesForTheTrack(
   unsigned int iTrackID, vtkMySQLDatabase *iDatabaseConnector,
-  std::list< unsigned int > & ioListMeshIDs)
+  std::list< unsigned int > & ioListMeshIDs,
+  std::list< unsigned int > & ioNullListMeshIDs)
 {
   QString MessageQString("");
 
@@ -596,6 +594,7 @@ QString QGoDBMeshManager::CheckExistingMeshesForTheTrack(
             iDatabaseConnector, iTrackID, *iter);
         if ( MeshIDKickedOut != 0 )
           {
+          ioNullListMeshIDs.push_back(MeshIDKickedOut);
           MeshIDToPrint += ConvertToString< unsigned int >(MeshIDKickedOut);
           MeshIDToPrint += ", ";
           }
@@ -759,7 +758,7 @@ std::pair< unsigned int, unsigned int > QGoDBMeshManager::GetInfoForTheOnlyOneCh
 
 //-------------------------------------------------------------------------
 
-//-------------------------------------------------------------------------v
+//-------------------------------------------------------------------------
 std::list< QGoDBTraceManager::NameWithColorData >
 QGoDBMeshManager::GetAllTraceIDsWithColor(
   vtkMySQLDatabase *iDatabaseConnector, std::string & ioIDToSelect)
@@ -768,3 +767,65 @@ QGoDBMeshManager::GetAllTraceIDsWithColor(
   return this->m_CollectionOfTraces->GetTracesIDsWithColorForATimePoint(
            iDatabaseConnector, *this->m_CurrentTimePoint);
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::list< std::pair<unsigned int, double> >
+QGoDBMeshManager::
+GetListVolumes()
+{
+  std::list< std::pair<unsigned int, double> > oList;
+
+  QGoTableWidget* tableWidget = this->GetTableWidget();
+
+  std::list<unsigned int> list = this->GetListHighlightedIDs();
+  std::list<unsigned int>::iterator it = list.begin();
+
+  while(it!=list.end())
+    {
+    double volume = (tableWidget->GetValue( *it, "mesh", "Volume" )).toDouble();
+    int trackID = (tableWidget->GetValue( *it, "mesh", "trackID" )).toInt();
+
+    std::pair<unsigned int, double> trackAndVolume(trackID, volume);
+    oList.push_back(trackAndVolume);
+    ++it;
+    }
+
+  return oList;
+
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::list< std::pair<unsigned int, double> >
+QGoDBMeshManager::
+GetListVolumes(std::list<unsigned int> iMeshIDs)
+{
+  std::list< std::pair<unsigned int, double> > oList;
+  QGoTableWidget* tableWidget = this->GetTableWidget();
+
+  std::list<unsigned int>::iterator it = iMeshIDs.begin();
+
+  while(it!=iMeshIDs.end())
+    {
+    double volume = (tableWidget->GetValue( *it, "mesh", "Volume" )).toDouble();
+    int trackID = (tableWidget->GetValue( *it, "mesh", "trackID" )).toInt();
+
+    std::pair<unsigned int, double> trackAndVolume(trackID, volume);
+    oList.push_back(trackAndVolume);
+    ++it;
+    }
+
+  return oList;
+
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+double
+QGoDBMeshManager::
+GetVolume(unsigned int iMeshID)
+{
+  return (this->GetTableWidget()->GetValue( iMeshID, "mesh", "Volume" )).toDouble();
+}
+//-------------------------------------------------------------------------

@@ -157,6 +157,33 @@ public:
   */
   void UpdateDivisions(std::list<unsigned int> iListMotherTrackIDs);
 
+  /**
+  \brief Modify volume of the given track ID
+  */
+  void AddVolume(const unsigned int& iTrackID, const double& iVolume);
+
+  /**
+  \brief Modify volume of the given track ID
+  */
+  void AddVolumes(std::list< std::pair<unsigned int, double> > iVolumes);
+
+  /**
+  \brief Modify volume of the given track ID
+  */
+  void RemoveVolumes(std::list< std::pair<unsigned int, double> > iVolumes);
+
+  /**
+  \brief Modify volume of the given track ID
+  */
+  void AddVolumes(std::list< std::pair<unsigned int, double> > iVolumes,
+                  unsigned int iTrackID);
+
+  /**
+  \brief Modify volume of the given track ID
+  */
+  void RemoveVolumes(std::list< std::pair<unsigned int, double> > iVolumes,
+                     unsigned int iTrackID);
+
 signals:
   void NeedMeshesInfoForImportedTrack(unsigned int iTrackID);
   void TrackToSplit(unsigned int iTrackID, std::list<unsigned int> iListMeshIDs);

@@ -223,6 +223,9 @@ public:
   void DisplayColumnNames(
     std::list< std::pair<std::string, std::string > > iColumnNamesAndToolTip);
 
+  QString GetValue(unsigned int iTraceID, std::string iTraceName,
+               std::string iColumn);
+
 public slots:
 
   /**

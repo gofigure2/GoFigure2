@@ -58,16 +58,18 @@ struct QGOIO_EXPORT GoFigureTrackAttributes
   double theta;
   /** phi in spherical coordinate system */
   double phi;
+  /** average mesh volume over the track */
+  double avg_volume;
 
   /** Constructors */
   GoFigureTrackAttributes() : total_length( 0. ), avg_speed( 0. ),
-    max_speed( 0. ), distance( 0. ), theta( 0. ), phi( 0. )
+    max_speed( 0. ), distance( 0. ), theta( 0. ), phi( 0. ), avg_volume(0.)
     {}
 
   GoFigureTrackAttributes(const GoFigureTrackAttributes & iE):
     total_length(iE.total_length), avg_speed(iE.avg_speed),
     max_speed(iE.max_speed), distance(iE.distance),
-    theta(iE.theta), phi(iE.phi)
+    theta(iE.theta), phi(iE.phi), avg_volume(iE.avg_volume)
   {}
 
   GoFigureTrackAttributes& operator = ( GoFigureTrackAttributes & iE )
@@ -78,6 +80,7 @@ struct QGOIO_EXPORT GoFigureTrackAttributes
     this->distance = iE.distance;
     this->theta = iE.theta;
     this->phi = iE.phi;
+    this->avg_volume = iE.avg_volume;
 
     return *this;
     }

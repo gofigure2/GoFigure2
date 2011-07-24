@@ -119,6 +119,7 @@ public:
     os << "ActorYZ " << c.ActorYZ << std::endl;
     os << "ActorXYZ " << c.ActorXYZ << std::endl;
     os << "Nodes " << c.Nodes << std::endl;
+    os << "Average Volume " << c.m_AverageVolume << std::endl;
     os << "Map " << std::endl;
 
     std::map< unsigned int, double*>::const_iterator end = c.PointsMap.end();
@@ -160,6 +161,13 @@ public:
 
   const bool IsRoot() const;
   const bool IsLeaf() const;
+
+  // Add volume to a track
+  // note that added volume can be < 0
+  void AddVolume(const double& iVolume);
+
+  // to be moved
+  double m_AverageVolume;
 };
 
 #endif

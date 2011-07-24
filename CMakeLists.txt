@@ -202,6 +202,8 @@ ELSE( SUPERBUILD )
     ${GOFIGURE2_BINARY_DIR}/Code/
     ${GOFIGURE2_SOURCE_DIR}/Code/IO/
     ${GOFIGURE2_BINARY_DIR}/Code/IO/
+    ${GOFIGURE2_SOURCE_DIR}/Code/IO/GoDBRow/
+    ${GOFIGURE2_BINARY_DIR}/Code/IO/GoDBRow/
     ${GOFIGURE2_SOURCE_DIR}/Code/IO/GoImage/
     ${GOFIGURE2_BINARY_DIR}/Code/IO/GoImage/
     ${GOFIGURE2_SOURCE_DIR}/Code/Filters/
@@ -216,7 +218,9 @@ ELSE( SUPERBUILD )
     ${GOFIGURE2_SOURCE_DIR}/Code/GUI/lib/
     ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/
     ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/Resources/
-    ${GOFIGURE2_SOURCE_DIR}/Code/GUI/lib/SynchronizedViews/
+    ${GOFIGURE2_SOURCE_DIR}/Code/GUI/lib/DBManager/
+    ${GOFIGURE2_SOURCE_DIR}/Code/GUI/lib/DBManager/
+    ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/SynchronizedViews/
     ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/SynchronizedViews/
     ${GOFIGURE2_SOURCE_DIR}/Code/GUI/lib/VisualizationTraceContainers/
     ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/VisualizationTraceContainers/
