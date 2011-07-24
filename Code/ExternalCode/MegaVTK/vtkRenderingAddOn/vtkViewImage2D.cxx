@@ -88,7 +88,7 @@
 #include "vtkLookupTable.h"
 #include "vtkMath.h"
 #include "vtkPlane.h"
-#include "vtkCutter.h"
+#include "vtkPlaneCutter.h"
 // #include "vtkQuadricLODActor.h"
 #include "vtkActor.h"
 #include "vtkPolyDataMapper.h"
@@ -915,7 +915,8 @@ vtkViewImage2D::AddDataSet(vtkPolyData *dataset,
   mapper->ImmediateModeRenderingOn();
 
   vtkActor *                                    actor = vtkActor::New();
-  vtkSmartPointer< vtkCutter >                  cutter = vtkSmartPointer< vtkCutter >::New();
+  vtkSmartPointer< vtkPlaneCutter >             cutter = 
+    vtkSmartPointer< vtkPlaneCutter >::New();
   vtkSmartPointer< vtkExtractPolyDataGeometry > extracter =
     vtkSmartPointer< vtkExtractPolyDataGeometry >::New();
 
