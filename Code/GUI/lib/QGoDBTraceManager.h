@@ -436,25 +436,6 @@ protected:
       iState, iIndexShowColumn);
   }
 
-  /*template< typename T>
-  void AddInfoForTracesInTWForSpecificTPsTemplate(T *iTWContainer,
-                                       vtkMySQLDatabase *iDatabaseConnector,
-                                       Qt::CheckState iState,
-                                       std::list<unsigned int> iListTPs,
-                                       int iIndexShowColumn = 0)
-  {
-    //load the container with the traces infos for the TW for the TimePoints contained
-    //in iListTPs:
-    TWContainerType RowContainer =
-    iTWContainer->GetContainerLoadedWithAllFromDB(iDatabaseConnector, iListTPs);
-
-    this->m_Table->InsertNewRows(RowContainer,
-                                 iTWContainer->GetIndexForGroupColor(this->m_TraceName),
-                                 iTWContainer->GetIndexForGroupColor(this->m_CollectionName),
-                                 this->m_TraceName, this->m_CollectionName, ColumnNamesAndToolTips, 
-                                 iState, iIndexShowColumn);
-  }*/
-
   /**
   \brief fill the TWContainer with the data needed from the database for
   the last created trace and insert a new row into the m_Table to display them
@@ -584,6 +565,8 @@ protected:
     std::list<unsigned int> ListIDs(VectorIDs.begin(), VectorIDs.end());
     this->GetTracesInfoFromDBAndModifyContainerForVisu(iDatabaseConnector,ListIDs);
   }
+
+
 
   template< typename C>
   void DisplayInfoAndLoadVisuContainerWithAllTracesForSpecificTPs(
@@ -748,6 +731,8 @@ protected:
   highlighted in the visu
   \tparam T ContourMeshContainer or TrackContainer
   */
+
+  // TODO Nico- useless bool, should test lenght of list instead...!
   template<typename T>
   void DeleteTracesTemplate(vtkMySQLDatabase *iDatabaseConnector,
     T *iContainerForVisu, std::list<unsigned int> iListTracesToDelete = std::list<unsigned int>(), 
