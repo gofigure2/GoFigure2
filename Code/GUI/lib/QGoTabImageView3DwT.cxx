@@ -3472,10 +3472,8 @@ CreateMeshesActorsFromVisuContainer(const unsigned int& iTimePoint)
     // since they have just been extracted from it!
     while ( mesh_list_it != mesh_list_end )
       {
-      std::cout << "loading meshes at t point: " << iTimePoint << std::endl;
       if ( mesh_list_it->Nodes )
         {
-          std::cout << "has node at T: " << mesh_list_it->TCoord << std::endl;
         GoFigureMeshAttributes attributes =
           this->ComputeMeshAttributes(
             mesh_list_it->Nodes, // mesh
