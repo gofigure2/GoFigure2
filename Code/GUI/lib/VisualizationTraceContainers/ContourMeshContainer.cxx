@@ -207,6 +207,7 @@ ContourMeshContainer::DeleteElement(MultiIndexContainerTraceIDIterator iIter)
         {
         this->m_ImageView->RemoveActor(0, iIter->ActorXY);
         }
+      iIter->ActorXY->GetMapper()->Delete();
       iIter->ActorXY->Delete();
       }
     if ( iIter->ActorXZ )
@@ -215,6 +216,7 @@ ContourMeshContainer::DeleteElement(MultiIndexContainerTraceIDIterator iIter)
         {
         this->m_ImageView->RemoveActor(1, iIter->ActorXZ);
         }
+      iIter->ActorXZ->GetMapper()->Delete();
       iIter->ActorXZ->Delete();
       }
     if ( iIter->ActorYZ )
@@ -223,6 +225,7 @@ ContourMeshContainer::DeleteElement(MultiIndexContainerTraceIDIterator iIter)
         {
         this->m_ImageView->RemoveActor(2, iIter->ActorYZ);
         }
+      iIter->ActorYZ->GetMapper()->Delete();
       iIter->ActorYZ->Delete();
       }
     if ( iIter->ActorXYZ )
@@ -231,6 +234,7 @@ ContourMeshContainer::DeleteElement(MultiIndexContainerTraceIDIterator iIter)
         {
         this->m_ImageView->RemoveActor(3, iIter->ActorXYZ);
         }
+      iIter->ActorXYZ->GetMapper()->Delete();
       iIter->ActorXYZ->Delete();
       }
 

@@ -577,10 +577,18 @@ protected:
    //iContainerForVisu->Clear();
    //this->m_Table->DeleteRowsAndColumns();
    this->DisplayInfoForTracesForSpecificTPs( iDatabaseConnector, iListTPs);
+
     std::list<unsigned int> ListIDs = 
       this->m_CollectionOfTraces->GetTraceIDsBelongingToListTimePoints(
         iDatabaseConnector,  iListTPs);
-    this->GetTracesInfoFromDBAndModifyContainerForVisu(iDatabaseConnector,ListIDs);
+
+    /**
+       \todo shouldnt have to check it-> bug after somewhere
+       */
+    if(ListIDs.size() > 0)
+      {
+      this->GetTracesInfoFromDBAndModifyContainerForVisu(iDatabaseConnector,ListIDs);
+      }
   }
 
   template< typename C>

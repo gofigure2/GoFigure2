@@ -245,6 +245,7 @@ colorImage(vtkSmartPointer<vtkImageData> iImage,
   coloredImage->SetInput( iImage );
   coloredImage->SetOutputFormatToRGB();
   coloredImage->SetNumberOfThreads(VTK_MAX_THREADS);
+  coloredImage->ReleaseDataFlagOn();
   coloredImage->Update();
 
   return coloredImage->GetOutput();
@@ -314,6 +315,7 @@ getVisibleImages()
       vtkSmartPointer<vtkImageBlend>::New();
   blendedImage->RemoveAllInputs();
   blendedImage->SetBlendModeToCompound();
+  blendedImage->ReleaseDataFlagOn();
   blendedImage->SetNumberOfThreads(VTK_MAX_THREADS);
 
   GoMegaImageStructureMultiIndexContainer::index<Visibility>::type::iterator it =
@@ -345,6 +347,7 @@ getVisibleImages()
     scale->SetInput(blendedImage->GetOutput());
     scale->SetScale(255/range);
     scale->SetOutputScalarTypeToUnsignedChar();
+    scale->ReleaseDataFlagOn();
     scale->SetNumberOfThreads(VTK_MAX_THREADS);
     scale->Update();
 

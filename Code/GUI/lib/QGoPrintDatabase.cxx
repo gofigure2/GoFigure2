@@ -1900,11 +1900,11 @@ UpdateTableWidgetAndContainersForGivenTimePoint(
   ListTimepoints.push_back(iNewTimePoint);
   ListTimepoints.push_back(iNewTimePoint + 1);
   ListTimepoints.push_back(iNewTimePoint + 2);
-
+/*
   this->m_ContoursManager->
     DisplayInfoAndLoadVisuContainerForAllContoursForSpecificTPs(
     this->m_DatabaseConnector,
-    ListTimepoints);
+    ListTimepoints);*/
   this->m_MeshesManager->
     DisplayInfoAndLoadVisuContainerForAllMeshesForSpecificTPs(
     this->m_DatabaseConnector,

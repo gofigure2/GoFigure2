@@ -626,8 +626,7 @@ vtkViewImage3D::AddDataSet(vtkDataSet *dataset,
     return NULL;
     }
 
-  vtkSmartPointer< vtkPolyDataMapper > mapper =
-    vtkSmartPointer< vtkPolyDataMapper >::New();
+  vtkPolyDataMapper* mapper = vtkPolyDataMapper::New();
   mapper->SetInput( dynamic_cast< vtkPolyData * >( dataset ) );
   mapper->SetScalarVisibility(iDataVisibility);
   mapper->StaticOn();

@@ -909,19 +909,12 @@ vtkViewImage2D::AddDataSet(vtkPolyData *dataset,
     return NULL;
     }
 
-  vtkSmartPointer< vtkPolyDataMapper > mapper =
-    vtkSmartPointer< vtkPolyDataMapper >::New();
+  vtkPolyDataMapper* mapper = vtkPolyDataMapper::New();
   mapper->SetScalarVisibility(iDataVisibility);
   mapper->ImmediateModeRenderingOn();
 
-  vtkActor *                                    actor = vtkActor::New();
-  vtkSmartPointer< vtkCutter >                  cutter = vtkSmartPointer< vtkCutter >::New();
-  vtkSmartPointer< vtkExtractPolyDataGeometry > extracter =
-    vtkSmartPointer< vtkExtractPolyDataGeometry >::New();
-
   // check if input data is 2D
   double *bounds = dataset->GetBounds();
-
   //  get normal
   double *normal = this->SliceImplicitPlane->GetNormal();
 
@@ -930,29 +923,31 @@ vtkViewImage2D::AddDataSet(vtkPolyData *dataset,
        || ( ( bounds[2] == bounds[3] ) && ( normal[2] == 0 ) && ( normal[0] == 0 ) )
        || ( ( bounds[4] == bounds[5] ) && ( normal[0] == 0 ) && ( normal[1] == 0 ) ) )
     {
+    vtkExtractPolyDataGeometry* extracter = vtkExtractPolyDataGeometry::New();
     extracter->SetInput(dataset);
     extracter->SetImplicitFunction(this->SliceImplicitPlane);
     extracter->Update();
     mapper->SetInput( extracter->GetOutput() );
+    extracter->Delete();
     }
   // i.e. if we cut a volume
   else
     {
     if ( intersection )
       {
+      vtkCutter* cutter = vtkCutter::New();
       cutter->SetInput(dataset);
       cutter->SetCutFunction(this->SliceImplicitPlane);
-      //cutter->Update();
       mapper->SetInput( cutter->GetOutput() );
+      cutter->Delete();
       }
     else
       {
-      //std::cout << "else" << std::endl;
       mapper->SetInput(dataset);
       }
     }
 
-  //mapper->Update();
+  vtkActor * actor = vtkActor::New();
   actor->SetMapper(mapper);
 
   if ( property )
@@ -963,17 +958,6 @@ vtkViewImage2D::AddDataSet(vtkPolyData *dataset,
   actor->GetProperty()->SetLineWidth(this->IntersectionLineWidth);
 
   this->Renderer->AddViewProp(actor);
-
-  /*if(     ( bounds[0] != bounds[1] )
-      &&  ( bounds[2] != bounds[3] )
-      &&  ( bounds[4] != bounds[5] ))
-  {
-  //  std::cout << "extract actors..." << std::endl;
-  ExtractActors(dataset, XY);
-  ExtractActors(dataset, XZ);
-  ExtractActors(dataset, YZ);
-  }*/
-
 
   return actor;
 }
