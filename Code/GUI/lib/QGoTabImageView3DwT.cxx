@@ -1829,7 +1829,8 @@ QGoTabImageView3DwT::SetTimePoint(const int & iTimePoint)
           m_TCoord);
 
   // create actors and upate visibility
-  this->CreateContoursActorsFromVisuContainer(m_TCoord);
+  // function has to be splitted->Load/Visible
+  this->CreateContoursActorsFromVisuContainer(m_TCoord, timePoints);
   this->CreateMeshesActorsFromVisuContainer(m_TCoord, timePoints);
 
   m_ImageView->Update();
@@ -3410,37 +3411,63 @@ EnableVolumeRendering(bool iEnable)
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
-CreateContoursActorsFromVisuContainer(const unsigned int& iTimePoint)
+CreateContoursActorsFromVisuContainer(const unsigned int& iTimePoint,
+                                      std::list<unsigned int> iTPointToLoad)
 {
   if ( this->m_ContourContainer )
     {
-    // let's iterate on the container with increasing TraceID
-    ContourContainer::MultiIndexContainerType::index< TraceID >::type::iterator
-    contour_list_it = this->m_ContourContainer->m_Container.get< TraceID >().begin();
+    // load everything if no list given
+    if ( iTPointToLoad.size() == 0)
+      {
+      // let's iterate on the container with increasing TraceID
+      ContourContainer::MultiIndexContainerType::index< TraceID >::type::iterator
+      contour_list_it = this->m_ContourContainer->m_Container.get< TraceID >().begin();
 
-    ContourContainer::MultiIndexContainerType::index< TraceID >::type::iterator
-    contour_list_end = this->m_ContourContainer->m_Container.get< TraceID >().end();
+      ContourContainer::MultiIndexContainerType::index< TraceID >::type::iterator
+      contour_list_end = this->m_ContourContainer->m_Container.get< TraceID >().end();
 
-    size_t nb_contours = this->m_ContourContainer->m_Container.get< TraceID >().size();
+      size_t nb_contours = this->m_ContourContainer->m_Container.get< TraceID >().size();
 
-    QProgressDialog progress( "Loading Contours...", QString(), 0, nb_contours );
+      QProgressDialog progress( "Loading Contours...", QString(), 0, nb_contours );
 
-    size_t i = 0;
+      size_t i = 0;
 
-    // we don't need here to save this contour in the database,
-    // since they have just been extracted from it!
-    while ( contour_list_it != contour_list_end )
-    {
-    //this->AddContourFromNodes< TraceID >( contour_list_it );
+      // we don't need here to save this contour in the database,
+      // since they have just been extracted from it!
+      while ( contour_list_it != contour_list_end )
+      {
+      this->AddContourFromNodes< TraceID >( contour_list_it );
+      progress.setValue( i );
+      ++i;
+      ++contour_list_it;
+      }
 
-    progress.setValue( i );
+      this->m_ContourContainer->ShowActorsWithGivenTimePoint(iTimePoint);
+      progress.setValue( nb_contours );
+      }
+    else
+      {
+      std::list<unsigned int>::iterator it = iTPointToLoad.begin();
+      while(it != iTPointToLoad.end())
+        {
+        // let's iterate on the container with increasing TraceID
+        ContourContainer::MultiIndexContainerType::index< TCoord >::type::iterator
+        contour_list_it = this->m_ContourContainer->m_Container.get< TCoord >().find(*it);
 
-    ++i;
-    ++contour_list_it;
-    }
+        ContourContainer::MultiIndexContainerType::index< TCoord >::type::iterator
+        contour_list_end = this->m_ContourContainer->m_Container.get< TCoord >().end();
 
-    //this->m_ContourContainer->ShowActorsWithGivenTimePoint(iTimePoint);
-    progress.setValue( nb_contours );
+        // we don't need here to save this contour in the database,
+        // since they have just been extracted from it!
+        while ( contour_list_it != contour_list_end )
+          {
+          this->AddContourFromNodes< TCoord >( contour_list_it );
+          ++contour_list_it;
+          }
+        ++it;
+        }
+      }
+    this->m_ContourContainer->ShowActorsWithGivenTimePoint(iTimePoint);
     }
 }
 //-------------------------------------------------------------------------
@@ -3524,6 +3551,6 @@ CreateMeshesActorsFromVisuContainer(const unsigned int& iTimePoint,
         }
       }
     this->m_MeshContainer->ShowActorsWithGivenTimePoint(iTimePoint);
-  }
+    }
 }
 //-------------------------------------------------------------------------
