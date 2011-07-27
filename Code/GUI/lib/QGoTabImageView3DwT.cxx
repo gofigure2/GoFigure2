@@ -1603,8 +1603,7 @@ QGoTabImageView3DwT::SetLSMReader(vtkLSMReader *iReader, const int & iTimePoint)
   //update images
   UpdateImage();
   // update actors
-  this->m_ContourContainer->ShowActorsWithGivenTimePoint(iTimePoint);
-  this->m_MeshContainer->ShowActorsWithGivenTimePoint(iTimePoint);
+  this->ShowTraces(m_TCoord);
   // update widgets on image loading
   InitializeImageRelatedWidget();
   // render
@@ -1828,10 +1827,13 @@ QGoTabImageView3DwT::SetTimePoint(const int & iTimePoint)
           this->m_DataBaseTables->UpdateTableWidgetAndContainersForGivenTimePoint(
           m_TCoord);
 
-  // create actors and upate visibility
-  // function has to be splitted->Load/Visible
-  this->CreateContoursActorsFromVisuContainer(m_TCoord, timePoints);
-  this->CreateMeshesActorsFromVisuContainer(m_TCoord, timePoints);
+  // create actors
+  // function has to be splitted-> remove duplications
+  this->CreateContoursActorsFromVisuContainer(timePoints);
+  this->CreateMeshesActorsFromVisuContainer(timePoints);
+
+  //show time specific actors
+  this->ShowTraces(m_TCoord);
 
   m_ImageView->Update();
 
@@ -3411,8 +3413,7 @@ EnableVolumeRendering(bool iEnable)
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
-CreateContoursActorsFromVisuContainer(const unsigned int& iTimePoint,
-                                      std::list<unsigned int> iTPointToLoad)
+CreateContoursActorsFromVisuContainer(std::list<unsigned int> iTPointToLoad)
 {
   if ( this->m_ContourContainer )
     {
@@ -3441,8 +3442,6 @@ CreateContoursActorsFromVisuContainer(const unsigned int& iTimePoint,
       ++i;
       ++contour_list_it;
       }
-
-      this->m_ContourContainer->ShowActorsWithGivenTimePoint(iTimePoint);
       progress.setValue( nb_contours );
       }
     else
@@ -3467,7 +3466,6 @@ CreateContoursActorsFromVisuContainer(const unsigned int& iTimePoint,
         ++it;
         }
       }
-    this->m_ContourContainer->ShowActorsWithGivenTimePoint(iTimePoint);
     }
 }
 //-------------------------------------------------------------------------
@@ -3475,8 +3473,7 @@ CreateContoursActorsFromVisuContainer(const unsigned int& iTimePoint,
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
-CreateMeshesActorsFromVisuContainer(const unsigned int& iTimePoint,
-                                    std::list<unsigned int> iTPointToLoad)
+CreateMeshesActorsFromVisuContainer(std::list<unsigned int> iTPointToLoad)
 {
   if( this->m_MeshContainer)
     {
@@ -3550,7 +3547,17 @@ CreateMeshesActorsFromVisuContainer(const unsigned int& iTimePoint,
         ++it;
         }
       }
-    this->m_MeshContainer->ShowActorsWithGivenTimePoint(iTimePoint);
     }
 }
 //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+ShowTraces(const unsigned int& iTimePoint)
+{
+  // only contours and meshes will be modified since tracks and lineage contain
+  // several time points
+  this->m_ContourContainer->ShowActorsWithGivenTimePoint(iTimePoint);
+  this->m_MeshContainer->ShowActorsWithGivenTimePoint(iTimePoint);
+}

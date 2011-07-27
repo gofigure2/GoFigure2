@@ -402,8 +402,10 @@ void QGoMainWindow::DisplayFilesfromDB(std::string iFirst_Filename)
   QObject::connect( w3t, SIGNAL( UpdateBookmarkOpenActions(std::vector< QAction * > ) ),
                     this->m_TabManager, SLOT( UpdateBookmarkMenu(std::vector< QAction * > ) ) );
 
-  // Load all contours and only display the ones from the first time point
+  // Load all traces
   LoadAllTracesFromDatabaseManager(TimePoint);
+  // Show contour/mesh for given T point
+  w3t->ShowTraces(TimePoint);
 
   this->menuBookmarks->setEnabled(true);
   //this->addToolBar(w3t->GetTraceSettingsToolBar() );
@@ -433,12 +435,13 @@ QGoMainWindow::LoadAllTracesFromDatabaseManager(const int & iT)
 void
 QGoMainWindow::LoadContoursFromDatabase(const int & iT)
 {
+  (void)iT;
   QGoTabImageView3DwT *w3t =
     dynamic_cast< QGoTabImageView3DwT * >( this->CentralTabWidget->currentWidget() );
 
   if ( w3t )
     {
-    w3t->CreateContoursActorsFromVisuContainer(iT);
+    w3t->CreateContoursActorsFromVisuContainer();
     }
 }
 
@@ -448,12 +451,13 @@ QGoMainWindow::LoadContoursFromDatabase(const int & iT)
 void
 QGoMainWindow::LoadMeshesFromDatabase(const int & iT)
 {
+  (void)iT;
   QGoTabImageView3DwT *w3t =
     dynamic_cast< QGoTabImageView3DwT * >( this->CentralTabWidget->currentWidget() );
 
   if ( w3t )
     {
-    w3t->CreateMeshesActorsFromVisuContainer(iT);
+    w3t->CreateMeshesActorsFromVisuContainer();
     }
 }
 
