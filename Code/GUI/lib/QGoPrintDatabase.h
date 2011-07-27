@@ -267,7 +267,6 @@ public:
   bool NeedTraceSettingsToolBarVisible();
 
   std::list<unsigned int> UpdateTableWidgetAndContainersForGivenTimePoint(
-          const unsigned int& iOldTimePoint,
           const unsigned int& iNewTimePoint);
 
 public slots:
@@ -885,6 +884,7 @@ protected slots:
 
   //**********************End TraceSettingsWidget slots // related****************
 private:
+  std::list<unsigned int> m_VisibleTimePoints;
   Q_DISABLE_COPY(QGoPrintDatabase);
 };
 

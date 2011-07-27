@@ -1798,8 +1798,6 @@ QGoTabImageView3DwT::SetTimePoint(const int & iTimePoint)
 
   QApplication::setOverrideCursor( QCursor(Qt::WaitCursor) );
 
-  unsigned int oldTimePoint = m_TCoord;
-
   m_TCoord = iTimePoint;
 
   if (!m_ImageProcessor->getDopplerMode())
@@ -1828,7 +1826,6 @@ QGoTabImageView3DwT::SetTimePoint(const int & iTimePoint)
   // then load new traces in TW and put polydatas in container
   std::list<unsigned int> timePoints =
           this->m_DataBaseTables->UpdateTableWidgetAndContainersForGivenTimePoint(
-          oldTimePoint,
           m_TCoord);
 
   // create actors and upate visibility
@@ -3434,7 +3431,7 @@ CreateContoursActorsFromVisuContainer(const unsigned int& iTimePoint)
     // since they have just been extracted from it!
     while ( contour_list_it != contour_list_end )
     {
-    this->AddContourFromNodes< TraceID >( contour_list_it );
+    //this->AddContourFromNodes< TraceID >( contour_list_it );
 
     progress.setValue( i );
 
@@ -3442,7 +3439,7 @@ CreateContoursActorsFromVisuContainer(const unsigned int& iTimePoint)
     ++contour_list_it;
     }
 
-    this->m_ContourContainer->ShowActorsWithGivenTimePoint(iTimePoint);
+    //this->m_ContourContainer->ShowActorsWithGivenTimePoint(iTimePoint);
     progress.setValue( nb_contours );
     }
 }
@@ -3472,6 +3469,7 @@ CreateMeshesActorsFromVisuContainer(const unsigned int& iTimePoint)
     // since they have just been extracted from it!
     while ( mesh_list_it != mesh_list_end )
       {
+      std::cout << "time point in container: " << mesh_list_it->TCoord << std::endl;
       if ( mesh_list_it->Nodes )
         {
         GoFigureMeshAttributes attributes =
@@ -3483,7 +3481,7 @@ CreateMeshesActorsFromVisuContainer(const unsigned int& iTimePoint)
         this->m_DataBaseTables->PrintVolumeAreaForMesh(
           &attributes, mesh_list_it->TraceID);
         }
-      this->AddMeshFromNodes< TraceID >(mesh_list_it);
+      //this->AddMeshFromNodes< TraceID >(mesh_list_it);
       progress.setValue( i );
       ++i;
       ++mesh_list_it;

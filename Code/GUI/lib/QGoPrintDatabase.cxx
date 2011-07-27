@@ -1152,16 +1152,16 @@ void QGoPrintDatabase::GetContentAndDisplayAllTracesInfo(
 void QGoPrintDatabase::GetContentAndDisplayAllTracesInfoFor3TPs(
   vtkMySQLDatabase *iDatabaseConnector)
 {
-  std::list<unsigned int> ListTimepoints;
-  ListTimepoints.push_back(*this->m_SelectedTimePoint);
-  ListTimepoints.push_back(*this->m_SelectedTimePoint + 1);
-  ListTimepoints.push_back(*this->m_SelectedTimePoint + 2);
+  m_VisibleTimePoints.clear();
+  m_VisibleTimePoints.push_back(*this->m_SelectedTimePoint);
+  m_VisibleTimePoints.push_back(*this->m_SelectedTimePoint+1);
+  m_VisibleTimePoints.push_back(*this->m_SelectedTimePoint+2);
   this->m_ContoursManager->
     DisplayInfoAndLoadVisuContainerForAllContoursForSpecificTPs(iDatabaseConnector,
-    ListTimepoints);
+    m_VisibleTimePoints);
   this->m_MeshesManager->
     DisplayInfoAndLoadVisuContainerForAllMeshesForSpecificTPs(iDatabaseConnector,
-    ListTimepoints);
+    m_VisibleTimePoints);
 
   this->m_TracksManager->DisplayInfoAndLoadVisuContainerForAllTracks(iDatabaseConnector);
   this->m_LineagesManager->DisplayInfoAndLoadVisuContainerForAllLineages(iDatabaseConnector);
@@ -1879,39 +1879,90 @@ void QGoPrintDatabase::ShowHideTraceSettingsFromContextMenu(bool isVisible)
 std::list<unsigned int>
 QGoPrintDatabase::
 UpdateTableWidgetAndContainersForGivenTimePoint(
-        const unsigned int& iOldTimePoint,
         const unsigned int& iNewTimePoint)
 {
   this->OpenDBConnection();
 
-  std::list<unsigned int> ListTimepoints;
-  // remove
-  ListTimepoints.push_back(iOldTimePoint);
-  ListTimepoints.push_back(iOldTimePoint + 1);
-  ListTimepoints.push_back(iOldTimePoint + 2);
+  // list to be removed
+  std::list<unsigned int> listToRemove;
+  listToRemove = m_VisibleTimePoints;
+  // iterator
+  std::list<unsigned int>::iterator it_listToRemove = listToRemove.begin();
 
+  // list to be added
+  std::list<unsigned int> listToAdd;
+  listToAdd.push_back(iNewTimePoint);
+  listToAdd.push_back(iNewTimePoint+1);
+  listToAdd.push_back(iNewTimePoint+2);
+  // iterator
+  std::list<unsigned int>::iterator it_listToAdd = listToAdd.begin();
+  m_VisibleTimePoints = listToAdd;
+
+  // list common t points
+  std::list<unsigned int> listCommonT;
+  while(it_listToRemove != listToRemove.end())
+    {
+    while(it_listToAdd != listToAdd.end())
+      {
+      if(*it_listToRemove == *it_listToAdd)
+        {
+        /**
+          \todo check if we can do it properly
+        // remove elements from a list while iterating on it doesn't sound safe
+        // that's why we use listCommonT
+        // To be checked
+          */
+        listCommonT.push_back(*it_listToRemove);
+        }
+      ++it_listToAdd;
+      }
+    it_listToAdd = listToAdd.begin();
+    ++it_listToRemove;
+    }
+
+  // remove common t points
+  // iterator
+  std::list<unsigned int>::iterator it_listCommonT = listCommonT.begin();
+  while(it_listCommonT != listCommonT.end())
+    {
+    listToRemove.remove(*it_listCommonT);
+    listToAdd.remove(*it_listCommonT);
+    ++it_listCommonT;
+    }
+
+  // print lists for info
+  it_listToRemove = listToRemove.begin();
+  while(it_listToRemove != listToRemove.end())
+      {
+      std::cout << "remove T: " << *it_listToRemove << std::endl;
+      ++it_listToRemove;
+      }
+  it_listToAdd = listToAdd.begin();
+  while(it_listToAdd != listToAdd.end())
+      {
+      std::cout << "add T: " << *it_listToAdd << std::endl;
+      ++it_listToAdd;
+      }
+
+  // remove time points
   this->m_ContoursManager->CleanTWAndContainerForGivenTimePoint(
-    this->m_DatabaseConnector, ListTimepoints);
+    this->m_DatabaseConnector, listToRemove);
   this->m_MeshesManager->CleanTWAndContainerForGivenTimePoint(
-    this->m_DatabaseConnector, ListTimepoints);
+    this->m_DatabaseConnector, listToRemove);
 
-  // load
-  ListTimepoints.clear();
-  ListTimepoints.push_back(iNewTimePoint);
-  ListTimepoints.push_back(iNewTimePoint + 1);
-  ListTimepoints.push_back(iNewTimePoint + 2);
-/*
+
+  // add time points
   this->m_ContoursManager->
     DisplayInfoAndLoadVisuContainerForAllContoursForSpecificTPs(
     this->m_DatabaseConnector,
-    ListTimepoints);*/
+    listToAdd);
   this->m_MeshesManager->
     DisplayInfoAndLoadVisuContainerForAllMeshesForSpecificTPs(
     this->m_DatabaseConnector,
-    ListTimepoints);
+    listToAdd);
 
   this->CloseDBConnection();
 
-  return ListTimepoints;
+  return m_VisibleTimePoints;
 }
 //--------------------------------------------------------------------------
