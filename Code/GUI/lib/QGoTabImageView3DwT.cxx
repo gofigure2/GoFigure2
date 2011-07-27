@@ -1830,7 +1830,7 @@ QGoTabImageView3DwT::SetTimePoint(const int & iTimePoint)
 
   // create actors and upate visibility
   this->CreateContoursActorsFromVisuContainer(m_TCoord);
-  this->CreateMeshesActorsFromVisuContainer(m_TCoord);
+  this->CreateMeshesActorsFromVisuContainer(m_TCoord, timePoints);
 
   m_ImageView->Update();
 
@@ -3448,47 +3448,82 @@ CreateContoursActorsFromVisuContainer(const unsigned int& iTimePoint)
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
-CreateMeshesActorsFromVisuContainer(const unsigned int& iTimePoint)
+CreateMeshesActorsFromVisuContainer(const unsigned int& iTimePoint,
+                                    std::list<unsigned int> iTPointToLoad)
 {
-  if ( this->m_MeshContainer )
+  if( this->m_MeshContainer)
     {
-    // let's iterate on the container with increasing TraceID
-    MeshContainer::MultiIndexContainerType::index< TraceID >::type::iterator
-      mesh_list_it = this->m_MeshContainer->m_Container.get< TraceID >().begin();
-
-    MeshContainer::MultiIndexContainerType::index< TraceID >::type::iterator
-      mesh_list_end = this->m_MeshContainer->m_Container.get< TraceID >().end();
-
-    size_t nb_meshes = this->m_MeshContainer->m_Container.get< TraceID >().size();
-
-    QProgressDialog progress( "Loading Meshes...", QString(), 0, nb_meshes );
-
-    size_t i = 0;
-
-    // we don't need here to save this contour in the database,
-    // since they have just been extracted from it!
-    while ( mesh_list_it != mesh_list_end )
+    // load everything if no list given
+    if ( iTPointToLoad.size() == 0)
       {
-      std::cout << "time point in container: " << mesh_list_it->TCoord << std::endl;
-      if ( mesh_list_it->Nodes )
-        {
-        GoFigureMeshAttributes attributes =
-          this->ComputeMeshAttributes(
-            mesh_list_it->Nodes, // mesh
-            false, // do not need to compute intensity based measure
-            mesh_list_it->TCoord
-            );
-        this->m_DataBaseTables->PrintVolumeAreaForMesh(
-          &attributes, mesh_list_it->TraceID);
-        }
-      //this->AddMeshFromNodes< TraceID >(mesh_list_it);
-      progress.setValue( i );
-      ++i;
-      ++mesh_list_it;
-      }
+      // let's iterate on the container with increasing TraceID
+      MeshContainer::MultiIndexContainerType::index< TraceID >::type::iterator
+        mesh_list_it = this->m_MeshContainer->m_Container.get< TraceID >().begin();
 
-      this->m_MeshContainer->ShowActorsWithGivenTimePoint(iTimePoint);
-      progress.setValue( nb_meshes );
+      MeshContainer::MultiIndexContainerType::index< TraceID >::type::iterator
+        mesh_list_end = this->m_MeshContainer->m_Container.get< TraceID >().end();
+
+      size_t nb_meshes = this->m_MeshContainer->m_Container.get< TraceID >().size();
+
+      QProgressDialog progress( "Loading Meshes...", QString(), 0, nb_meshes );
+
+      size_t i = 0;
+
+      // we don't need here to save this contour in the database,
+      // since they have just been extracted from it!
+      while ( mesh_list_it != mesh_list_end )
+        {
+        if ( mesh_list_it->Nodes )
+          {
+          GoFigureMeshAttributes attributes =
+            this->ComputeMeshAttributes(
+              mesh_list_it->Nodes, // mesh
+              false, // do not need to compute intensity based measure
+              mesh_list_it->TCoord
+              );
+          this->m_DataBaseTables->PrintVolumeAreaForMesh(
+            &attributes, mesh_list_it->TraceID);
+          }
+        this->AddMeshFromNodes< TraceID >(mesh_list_it);
+        progress.setValue( i );
+        ++i;
+        ++mesh_list_it;
+        }
+        progress.setValue( nb_meshes );
+        }
+    else
+      {
+      std::list<unsigned int>::iterator it = iTPointToLoad.begin();
+      while(it != iTPointToLoad.end())
+        {
+        MeshContainer::MultiIndexContainerType::index< TCoord >::type::iterator
+          mesh_list_it = this->m_MeshContainer->m_Container.get< TCoord >().find(*it);
+
+        MeshContainer::MultiIndexContainerType::index< TCoord >::type::iterator
+          mesh_list_end = this->m_MeshContainer->m_Container.get< TCoord >().end();
+
+        // we don't need here to save this contour in the database,
+        // since they have just been extracted from it!
+        while ( mesh_list_it != mesh_list_end )
+          {
+          if ( mesh_list_it->Nodes )
+            {
+            GoFigureMeshAttributes attributes =
+              this->ComputeMeshAttributes(
+                mesh_list_it->Nodes, // mesh
+                false, // do not need to compute intensity based measure
+                mesh_list_it->TCoord
+                );
+            this->m_DataBaseTables->PrintVolumeAreaForMesh(
+              &attributes, mesh_list_it->TraceID);
+            }
+          this->AddMeshFromNodes< TCoord >(mesh_list_it);
+          ++mesh_list_it;
+          }
+        ++it;
+        }
       }
+    this->m_MeshContainer->ShowActorsWithGivenTimePoint(iTimePoint);
+  }
 }
 //-------------------------------------------------------------------------

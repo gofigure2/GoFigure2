@@ -1930,20 +1930,6 @@ UpdateTableWidgetAndContainersForGivenTimePoint(
     ++it_listCommonT;
     }
 
-  // print lists for info
-  it_listToRemove = listToRemove.begin();
-  while(it_listToRemove != listToRemove.end())
-      {
-      std::cout << "remove T: " << *it_listToRemove << std::endl;
-      ++it_listToRemove;
-      }
-  it_listToAdd = listToAdd.begin();
-  while(it_listToAdd != listToAdd.end())
-      {
-      std::cout << "add T: " << *it_listToAdd << std::endl;
-      ++it_listToAdd;
-      }
-
   // remove time points
   this->m_ContoursManager->CleanTWAndContainerForGivenTimePoint(
     this->m_DatabaseConnector, listToRemove);
@@ -1963,6 +1949,6 @@ UpdateTableWidgetAndContainersForGivenTimePoint(
 
   this->CloseDBConnection();
 
-  return m_VisibleTimePoints;
+  return listToAdd;
 }
 //--------------------------------------------------------------------------
