@@ -243,9 +243,9 @@ public:
   void InitializeTraceSettingsToolBar(QToolBar* iToolBar);
 
   void CreateContoursActorsFromVisuContainer(
-          std::list<unsigned int> iTPointToLoad = std::list<unsigned int>());
+          std::list<unsigned int> iTPointToLoad);
   void CreateMeshesActorsFromVisuContainer(
-          std::list<unsigned int> iTPointToLoad = std::list<unsigned int>());
+          std::list<unsigned int> iTPointToLoad);
 
   void ShowTraces(const unsigned int& iTimePoint);
 

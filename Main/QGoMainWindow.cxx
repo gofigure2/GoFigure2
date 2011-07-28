@@ -435,13 +435,16 @@ QGoMainWindow::LoadAllTracesFromDatabaseManager(const int & iT)
 void
 QGoMainWindow::LoadContoursFromDatabase(const int & iT)
 {
-  (void)iT;
   QGoTabImageView3DwT *w3t =
     dynamic_cast< QGoTabImageView3DwT * >( this->CentralTabWidget->currentWidget() );
 
   if ( w3t )
     {
-    w3t->CreateContoursActorsFromVisuContainer();
+    std::list<unsigned int> timePoints;
+    timePoints.push_back(iT);
+    timePoints.push_back(iT+1);
+    timePoints.push_back(iT+2);
+    w3t->CreateContoursActorsFromVisuContainer(timePoints);
     }
 }
 
@@ -451,13 +454,16 @@ QGoMainWindow::LoadContoursFromDatabase(const int & iT)
 void
 QGoMainWindow::LoadMeshesFromDatabase(const int & iT)
 {
-  (void)iT;
   QGoTabImageView3DwT *w3t =
     dynamic_cast< QGoTabImageView3DwT * >( this->CentralTabWidget->currentWidget() );
 
   if ( w3t )
     {
-    w3t->CreateMeshesActorsFromVisuContainer();
+    std::list<unsigned int> timePoints;
+    timePoints.push_back(iT);
+    timePoints.push_back(iT+1);
+    timePoints.push_back(iT+2);
+    w3t->CreateMeshesActorsFromVisuContainer(timePoints);
     }
 }
 
