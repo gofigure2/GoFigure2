@@ -266,6 +266,12 @@ public:
   */
   bool NeedTraceSettingsToolBarVisible();
 
+  /**
+    \brief Update the table widget and the visualization container contents
+    based on the given time point and the previous visible time points.
+    It erases actors and remove them from the visualization.
+    It doesn't create actors after adding polydata to container.
+    */
   std::list<unsigned int> UpdateTableWidgetAndContainersForGivenTimePoint(
           const unsigned int& iNewTimePoint);
 
