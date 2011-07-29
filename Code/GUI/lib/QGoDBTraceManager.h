@@ -231,6 +231,10 @@ public:
 
   void UpdateLastSelectedOneAsCollection();
 
+  int GetNumberOfTracesFromDB(vtkMySQLDatabase *iDatabaseConnector,
+                              unsigned int iImagingSessionID,
+                              std::string iTraceName);
+
 signals:
   /**
   \brief signal emitted when the user click on the action "change color" from

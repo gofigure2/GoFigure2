@@ -660,4 +660,9 @@ std::list<unsigned int> GetListValuesFromTwoTablesAndCondition(
   FieldWithValue iJoinCondition,std::string iField,
   std::vector<std::string> iVectorValues, FieldWithValue iAndCondition);
 
+QGOIO_EXPORT
+int NumberOfElementForGivenImagingSessionAndTrace(
+  vtkMySQLDatabase *DatabaseConnector,
+  unsigned int iImagingSession, std::string iTrace);
+
 #endif

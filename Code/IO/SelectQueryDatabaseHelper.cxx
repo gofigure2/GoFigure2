@@ -1537,7 +1537,21 @@ std::list< double * > GetCenterBoundingBoxes(vtkMySQLDatabase *DatabaseConnector
     }
   return Results;
 }
+//------------------------------------------------------------------------------
 
+//------------------------------------------------------------------------------
+int NumberOfElementForGivenImagingSessionAndTrace(
+  vtkMySQLDatabase *DatabaseConnector,
+  unsigned int iImagingSession, std::string iTrace)
+{
+  std::string What = "COUNT(*)";
+  std::string Where = itoa(iTrace);
+  std::string Condition = "ImagingSessionID = ";
+  Condition += iImagingSession;
+  std::string QueryString = SelectGeneralQueryConditions(What,Where,Condition);
+  return ExecuteSelectQueryOneValue< int >(DatabaseConnector,
+                                                    QueryString);
+}
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
