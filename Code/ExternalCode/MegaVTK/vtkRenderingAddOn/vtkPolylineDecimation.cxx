@@ -1,6 +1,6 @@
 /*=========================================================================
- Modifications were made by the GoFigure Dev. Team.
- while at Megason Lab, Systems biology, Harvard Medical school, 2009-11
+ Authors: The GoFigure Dev. Team.
+ at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
  Copyright (c) 2009-11, President and Fellows of Harvard College.
  All rights reserved.
@@ -30,7 +30,7 @@
  OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
- =========================================================================*/
+=========================================================================*/
 
 #include "vtkPolylineDecimation.h"
 
