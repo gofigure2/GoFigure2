@@ -225,7 +225,7 @@ void QGoPrintDatabase::FillTableFromDatabase()
           this->m_ImgSessionID,
           "mesh");
 
-  // if there are more than 5 thousands t points, only load 3 time points in
+  // if there are more than 5 thousands meshes, only load 3 time points in
   // memory
   if(nbOfTraces > 5000)
     {
@@ -1177,7 +1177,7 @@ void QGoPrintDatabase::GetContentAndDisplayAllTracesInfoFor3TPs(
     m_VisibleTimePoints.push_back(*this->m_SelectedTimePoint-1);
     }
   m_VisibleTimePoints.push_back(*this->m_SelectedTimePoint);
-  m_VisibleTimePoints.push_back(*this->m_SelectedTimePoint);
+  m_VisibleTimePoints.push_back(*this->m_SelectedTimePoint+1);
   this->m_ContoursManager->
     DisplayInfoAndLoadVisuContainerForAllContoursForSpecificTPs(iDatabaseConnector,
     m_VisibleTimePoints);
