@@ -1545,10 +1545,14 @@ int NumberOfElementForGivenImagingSessionAndTrace(
   unsigned int iImagingSession, std::string iTrace)
 {
   std::string What = "COUNT(*)";
-  std::string Where = itoa(iTrace);
+  std::string Where = iTrace;
   std::string Condition = "ImagingSessionID = ";
-  Condition += iImagingSession;
+  std::stringstream s;
+  s << iImagingSession;
+  Condition += s.str();
+
   std::string QueryString = SelectGeneralQueryConditions(What,Where,Condition);
+
   return ExecuteSelectQueryOneValue< int >(DatabaseConnector,
                                                     QueryString);
 }

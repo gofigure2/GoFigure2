@@ -220,11 +220,11 @@ void QGoPrintDatabase::FillTableFromDatabase()
 {
   OpenDBConnection();
   // Get number of meshes to be loaded
-  int nbOfMeshes = this->m_MeshesManager->GetNumberOfTracesFromDB(this->m_DatabaseConnector,
+  int nbOfTraces = this->m_MeshesManager->GetNumberOfTracesFromDB(this->m_DatabaseConnector,
                                                  this->m_ImgSessionID,
                                                  "mesh");
   // will be a global variable
-  std::cout << "there are: " << nbOfMeshes << std::endl;
+  std::cout << "there are: " << nbOfTraces << std::endl;
 
   this->GetContentAndDisplayAllTracesInfoFor3TPs(this->m_DatabaseConnector);
   CloseDBConnection();
