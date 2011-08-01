@@ -220,13 +220,24 @@ void QGoPrintDatabase::FillTableFromDatabase()
 {
   OpenDBConnection();
   // Get number of meshes to be loaded
-  int nbOfTraces = this->m_MeshesManager->GetNumberOfTracesFromDB(this->m_DatabaseConnector,
-                                                 this->m_ImgSessionID,
-                                                 "mesh");
-  // will be a global variable
-  std::cout << "there are: " << nbOfTraces << std::endl;
+  int nbOfTraces = NumberOfElementForGivenImagingSessionAndTrace(
+          this->m_DatabaseConnector,
+          this->m_ImgSessionID,
+          "mesh");
 
-  this->GetContentAndDisplayAllTracesInfoFor3TPs(this->m_DatabaseConnector);
+  // if there are more than 5 thousands t points, only load 3 time points in
+  // memory
+  if(nbOfTraces > 5000)
+    {
+    this->m_VisibleTimePoints.resize(3);
+    this->GetContentAndDisplayAllTracesInfoFor3TPs(this->m_DatabaseConnector);
+    }
+  else
+    {
+    this->m_VisibleTimePoints.resize(0);
+    this->GetContentAndDisplayAllTracesInfo(this->m_DatabaseConnector);
+    }
+
   CloseDBConnection();
 
   QString title = QString("Table for: %1 ").arg( m_ImgSessionName.c_str() );
@@ -1160,9 +1171,13 @@ void QGoPrintDatabase::GetContentAndDisplayAllTracesInfoFor3TPs(
   vtkMySQLDatabase *iDatabaseConnector)
 {
   m_VisibleTimePoints.clear();
+
+  if(*this->m_SelectedTimePoint>0)
+    {
+    m_VisibleTimePoints.push_back(*this->m_SelectedTimePoint-1);
+    }
   m_VisibleTimePoints.push_back(*this->m_SelectedTimePoint);
-  m_VisibleTimePoints.push_back(*this->m_SelectedTimePoint+1);
-  m_VisibleTimePoints.push_back(*this->m_SelectedTimePoint+2);
+  m_VisibleTimePoints.push_back(*this->m_SelectedTimePoint);
   this->m_ContoursManager->
     DisplayInfoAndLoadVisuContainerForAllContoursForSpecificTPs(iDatabaseConnector,
     m_VisibleTimePoints);
@@ -1890,72 +1905,81 @@ UpdateTableWidgetAndContainersForGivenTimePoint(
 {
   this->OpenDBConnection();
 
-  // list to be removed
-  std::list<unsigned int> listToRemove;
-  listToRemove = m_VisibleTimePoints;
-  // iterator
-  std::list<unsigned int>::iterator it_listToRemove = listToRemove.begin();
-
-  // list to be added
-  std::list<unsigned int> listToAdd;
-  listToAdd.push_back(iNewTimePoint);
-  listToAdd.push_back(iNewTimePoint+1);
-  listToAdd.push_back(iNewTimePoint+2);
-  // iterator
-  std::list<unsigned int>::iterator it_listToAdd = listToAdd.begin();
-  m_VisibleTimePoints = listToAdd;
-
-  // list common t points
-  std::list<unsigned int> listCommonT;
-  while(it_listToRemove != listToRemove.end())
+  if(this->m_VisibleTimePoints.size() == 3)
     {
-    while(it_listToAdd != listToAdd.end())
+    // list to be removed
+    std::list<unsigned int> listToRemove;
+    listToRemove = m_VisibleTimePoints;
+    // iterator
+    std::list<unsigned int>::iterator it_listToRemove = listToRemove.begin();
+
+    // list to be added
+    std::list<unsigned int> listToAdd;
+    if(iNewTimePoint>0)
       {
-      if(*it_listToRemove == *it_listToAdd)
-        {
-        /**
-          \todo check if we can do it properly
-        // remove elements from a list while iterating on it doesn't sound safe
-        // that's why we use listCommonT
-        // To be checked
-          */
-        listCommonT.push_back(*it_listToRemove);
-        }
-      ++it_listToAdd;
+      listToAdd.push_back(iNewTimePoint-1);
       }
-    it_listToAdd = listToAdd.begin();
-    ++it_listToRemove;
-    }
+    listToAdd.push_back(iNewTimePoint);
+    listToAdd.push_back(iNewTimePoint+1);
+    // iterator
+    std::list<unsigned int>::iterator it_listToAdd = listToAdd.begin();
+    m_VisibleTimePoints = listToAdd;
 
-  // remove common t points
-  // iterator
-  std::list<unsigned int>::iterator it_listCommonT = listCommonT.begin();
-  while(it_listCommonT != listCommonT.end())
-    {
-    listToRemove.remove(*it_listCommonT);
-    listToAdd.remove(*it_listCommonT);
-    ++it_listCommonT;
-    }
+    // list common t points
+    std::list<unsigned int> listCommonT;
+    while(it_listToRemove != listToRemove.end())
+      {
+      while(it_listToAdd != listToAdd.end())
+        {
+        if(*it_listToRemove == *it_listToAdd)
+          {
+          /**
+            \todo check if we can do it properly
+          // remove elements from a list while iterating on it doesn't sound safe
+          // that's why we use listCommonT
+          // To be checked
+            */
+          listCommonT.push_back(*it_listToRemove);
+          }
+        ++it_listToAdd;
+        }
+      it_listToAdd = listToAdd.begin();
+      ++it_listToRemove;
+      }
 
-  // remove time points
-  this->m_ContoursManager->CleanTWAndContainerForGivenTimePoint(
-    this->m_DatabaseConnector, listToRemove);
-  this->m_MeshesManager->CleanTWAndContainerForGivenTimePoint(
-    this->m_DatabaseConnector, listToRemove);
+    // remove common t points
+    // iterator
+    std::list<unsigned int>::iterator it_listCommonT = listCommonT.begin();
+    while(it_listCommonT != listCommonT.end())
+      {
+      listToRemove.remove(*it_listCommonT);
+      listToAdd.remove(*it_listCommonT);
+      ++it_listCommonT;
+      }
+
+    // remove time points
+    this->m_ContoursManager->CleanTWAndContainerForGivenTimePoint(
+      this->m_DatabaseConnector, listToRemove);
+    this->m_MeshesManager->CleanTWAndContainerForGivenTimePoint(
+      this->m_DatabaseConnector, listToRemove);
 
 
-  // add time points
-  this->m_ContoursManager->
-    DisplayInfoAndLoadVisuContainerForAllContoursForSpecificTPs(
-    this->m_DatabaseConnector,
-    listToAdd);
-  this->m_MeshesManager->
-    DisplayInfoAndLoadVisuContainerForAllMeshesForSpecificTPs(
-    this->m_DatabaseConnector,
-    listToAdd);
+    // add time points
+    this->m_ContoursManager->
+      DisplayInfoAndLoadVisuContainerForAllContoursForSpecificTPs(
+      this->m_DatabaseConnector,
+      listToAdd);
+    this->m_MeshesManager->
+      DisplayInfoAndLoadVisuContainerForAllMeshesForSpecificTPs(
+      this->m_DatabaseConnector,
+      listToAdd);
 
-  this->CloseDBConnection();
+    this->CloseDBConnection();
+    return listToAdd;
+  }
 
+  std::list<unsigned int> listToAdd(0);
   return listToAdd;
+
 }
 //--------------------------------------------------------------------------

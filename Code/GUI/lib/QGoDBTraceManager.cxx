@@ -588,15 +588,3 @@ void QGoDBTraceManager::UpdateLastSelectedOneAsCollection()
     this->m_SelectedCollectionData->first;
 }
 //-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-int
-QGoDBTraceManager::
-GetNumberOfTracesFromDB(vtkMySQLDatabase *iDatabaseConnector,
-                        unsigned int iImagingSessionID,
-                        std::string iTraceName)
-{
-  return NumberOfElementForGivenImagingSessionAndTrace(iDatabaseConnector,
-                                                       iImagingSessionID,
-                                                       iTraceName);
-}

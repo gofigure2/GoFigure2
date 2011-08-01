@@ -665,4 +665,11 @@ int NumberOfElementForGivenImagingSessionAndTrace(
   vtkMySQLDatabase *DatabaseConnector,
   unsigned int iImagingSession, std::string iTrace);
 
+/*
+QGOIO_EXPORT
+int NumberOfTimePointsForGivenImagingSession(
+        vtkMySQLDatabase *DatabaseConnector,
+        unsigned int iImagingSession);
+        */
+
 #endif
