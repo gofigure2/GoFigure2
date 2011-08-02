@@ -81,7 +81,8 @@ QGoPrintDatabase::QGoPrintDatabase(QWidget *iParent) :
   m_DatabaseConnector(NULL),
   m_IsDatabaseUsed(false),
   m_ReeditMode(false),
-  m_MeshGenerationMode(false)
+  m_MeshGenerationMode(false),
+  m_MaxNumberOfTraces(5000)
 { 
   this->SetUpUi();
 
@@ -227,7 +228,7 @@ void QGoPrintDatabase::FillTableFromDatabase()
 
   // if there are more than 5 thousands meshes, only load 3 time points in
   // memory
-  if(nbOfTraces > 5000)
+  if(nbOfTraces > m_MaxNumberOfTraces)
     {
     this->m_VisibleTimePoints.resize(3);
     this->GetContentAndDisplayAllTracesInfoFor3TPs(this->m_DatabaseConnector);
