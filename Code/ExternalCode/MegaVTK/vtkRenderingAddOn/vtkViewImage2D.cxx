@@ -909,7 +909,8 @@ vtkViewImage2D::AddDataSet(vtkPolyData *dataset,
     return NULL;
     }
 
-  vtkPolyDataMapper* mapper = vtkPolyDataMapper::New();
+  vtkSmartPointer<vtkPolyDataMapper> mapper =
+      vtkSmartPointer<vtkPolyDataMapper>::New();
   mapper->SetScalarVisibility(iDataVisibility);
   mapper->ImmediateModeRenderingOn();
 
@@ -923,23 +924,23 @@ vtkViewImage2D::AddDataSet(vtkPolyData *dataset,
        || ( ( bounds[2] == bounds[3] ) && ( normal[2] == 0 ) && ( normal[0] == 0 ) )
        || ( ( bounds[4] == bounds[5] ) && ( normal[0] == 0 ) && ( normal[1] == 0 ) ) )
     {
-    vtkExtractPolyDataGeometry* extracter = vtkExtractPolyDataGeometry::New();
+    vtkSmartPointer<vtkExtractPolyDataGeometry> extracter =
+        vtkSmartPointer<vtkExtractPolyDataGeometry>::New();
     extracter->SetInput(dataset);
     extracter->SetImplicitFunction(this->SliceImplicitPlane);
     extracter->Update();
     mapper->SetInput( extracter->GetOutput() );
-    extracter->Delete();
     }
   // i.e. if we cut a volume
   else
     {
     if ( intersection )
       {
-      vtkCutter* cutter = vtkCutter::New();
+      vtkSmartPointer<vtkCutter> cutter =
+          vtkSmartPointer<vtkCutter>::New();
       cutter->SetInput(dataset);
       cutter->SetCutFunction(this->SliceImplicitPlane);
       mapper->SetInput( cutter->GetOutput() );
-      cutter->Delete();
       }
     else
       {

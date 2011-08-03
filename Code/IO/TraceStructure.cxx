@@ -337,22 +337,18 @@ TraceStructure::ReleaseData() const
 {
   if ( this->ActorXY )
     {
-    this->ActorXY->GetMapper()->Delete();
     this->ActorXY->Delete();
     }
   if ( this->ActorXZ )
     {
-    this->ActorXZ->GetMapper()->Delete();
     this->ActorXZ->Delete();
     }
   if ( this->ActorYZ )
     {
-    this->ActorYZ->GetMapper()->Delete();
     this->ActorYZ->Delete();
     }
   if ( this->ActorXYZ )
     {
-    this->ActorXYZ->GetMapper()->Delete();
     this->ActorXYZ->Delete();
     }
   if ( this->Nodes )
