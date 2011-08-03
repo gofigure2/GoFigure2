@@ -1984,3 +1984,21 @@ UpdateTableWidgetAndContainersForGivenTimePoint(
 
 }
 //--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+QGoPrintDatabase::
+SetMaxNumberOfTraces(const unsigned int& iThreshold)
+{
+  this->m_MaxNumberOfTraces = iThreshold;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+unsigned int
+QGoPrintDatabase::
+GetMaxNumberOfTraces()
+{
+  return this->m_MaxNumberOfTraces;
+}
+//--------------------------------------------------------------------------

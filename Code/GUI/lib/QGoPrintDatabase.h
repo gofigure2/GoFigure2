@@ -275,6 +275,20 @@ public:
   std::list<unsigned int> UpdateTableWidgetAndContainersForGivenTimePoint(
           const unsigned int& iNewTimePoint);
 
+  /**
+    \brief Set the threshold (number of traces) above which, only 3 time points
+    will be loaded in memory
+    \param[in] iTreshold Number of traces above which we will only load 3 time
+               points in memory
+    */
+  void SetMaxNumberOfTraces(const unsigned int& iThreshold);
+
+  /**
+    \brief Get the threshold (number of traces) above which, only 3 time points
+    will be loaded in memory
+    */
+  unsigned int GetMaxNumberOfTraces();
+
 public slots:
   void DeleteBookmarks();
 
