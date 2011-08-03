@@ -98,7 +98,7 @@ public:
   /** \brief Create the QTableWidgetChild,get the columns names and the
  * values stored in the database, display them in the QTableWidgetChild
  * and fill the info for the contours and meshes*/
-  void FillTableFromDatabase();
+  void FillTableFromDatabase( const unsigned int& iTreshold);
 
   /** \brief Return a vector of all the contours for the given timepoint*/
   std::vector< ContourMeshStructure > GetContoursForAGivenTimepoint(
@@ -274,20 +274,6 @@ public:
     */
   std::list<unsigned int> UpdateTableWidgetAndContainersForGivenTimePoint(
           const unsigned int& iNewTimePoint);
-
-  /**
-    \brief Set the threshold (number of traces) above which, only 3 time points
-    will be loaded in memory
-    \param[in] iTreshold Number of traces above which we will only load 3 time
-               points in memory
-    */
-  void SetMaxNumberOfTraces(const unsigned int& iThreshold);
-
-  /**
-    \brief Get the threshold (number of traces) above which, only 3 time points
-    will be loaded in memory
-    */
-  unsigned int GetMaxNumberOfTraces();
 
 public slots:
   void DeleteBookmarks();
@@ -904,11 +890,7 @@ protected slots:
 
   //**********************End TraceSettingsWidget slots // related****************
 private:
-  void ReadSettings();
-  void WriteSettings();
-
   std::list<unsigned int> m_VisibleTimePoints;
-  unsigned int m_MaxNumberOfTraces;
   Q_DISABLE_COPY(QGoPrintDatabase);
 };
 

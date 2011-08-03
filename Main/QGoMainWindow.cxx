@@ -88,7 +88,8 @@
 //--------------------------------------------------------------------------
 QGoMainWindow::QGoMainWindow(QWidget *iParent, Qt::WindowFlags iFlags) :
   QMainWindow(iParent, iFlags), m_ViewToolBar(NULL), m_ModeToolBar(NULL),
-  m_TracesToolBar(NULL), m_TraceSettingsToolBar(NULL)
+  m_TracesToolBar(NULL), m_TraceSettingsToolBar(NULL),
+  m_MaxNumberOfTraces(5000)
 {
   QString title("<*)0|00|0>< ~~ <*)0|00|0><     GoFigure    ><0|00|0(*> ~~ ><0|00|0(*>");
 
@@ -763,7 +764,7 @@ QGoMainWindow::CreateNewTabFor3DwtImage(
                                                 m_DBWizard->GetImagingSessionID(),
                                                 ImgSessionName);
 
-    w3t->m_DataBaseTables->FillTableFromDatabase();
+    w3t->m_DataBaseTables->FillTableFromDatabase(this->m_MaxNumberOfTraces);
     w3t->setWindowTitle( QString::fromStdString(ImgSessionName) );
     // **********************
     }
@@ -1346,6 +1347,15 @@ void QGoMainWindow::ReadSettings()
 
   //  settings.setValue("vsplitterSizes", vSplitter->saveState());
   settings.endGroup();
+
+  settings.beginGroup("MemoryManagement");
+  unsigned int maxNumberOfTraces =
+      settings.value("MaxNumberOfTraces").toUInt();
+  if(maxNumberOfTraces)
+    {
+    this->m_MaxNumberOfTraces = maxNumberOfTraces;
+    }
+  settings.endGroup();
 }
 
 //--------------------------------------------------------------------------------
@@ -1364,6 +1374,9 @@ void QGoMainWindow::WriteSettings()
   settings.setValue( "state", saveState() );
   settings.endGroup();
   settings.setValue("DatabaseSetUp", this->m_DatabaseSetUp);
+  settings.beginGroup("MemoryManagement");
+  settings.setValue("MaxNumberOfTraces", this->m_MaxNumberOfTraces);
+  settings.endGroup();
 }
 
 //-------------------------------------------------------------------------

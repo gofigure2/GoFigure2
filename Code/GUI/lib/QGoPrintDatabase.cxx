@@ -82,12 +82,9 @@ QGoPrintDatabase::QGoPrintDatabase(QWidget *iParent) :
   m_DatabaseConnector(NULL),
   m_IsDatabaseUsed(false),
   m_ReeditMode(false),
-  m_MeshGenerationMode(false),
-  m_MaxNumberOfTraces(5000)
+  m_MeshGenerationMode(false)
 { 
   this->SetUpUi();
-
-  this->ReadSettings();
 
   this->m_CellTypeManager = new QGoDBCellTypeManager(this);
 
@@ -114,8 +111,6 @@ QGoPrintDatabase::QGoPrintDatabase(QWidget *iParent) :
 //--------------------------------------------------------------------------
 QGoPrintDatabase::~QGoPrintDatabase()
 {
-  this->WriteSettings();
-
   if ( m_SelectedTimePoint )
     {
     delete m_SelectedTimePoint;
@@ -222,7 +217,7 @@ void QGoPrintDatabase::CloseDBConnection()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoPrintDatabase::FillTableFromDatabase()
+void QGoPrintDatabase::FillTableFromDatabase(const unsigned int& iThreshold)
 {
   OpenDBConnection();
   // Get number of meshes to be loaded
@@ -233,7 +228,7 @@ void QGoPrintDatabase::FillTableFromDatabase()
 
   // if there are more than 5 thousands meshes, only load 3 time points in
   // memory
-  if(nbOfTraces > m_MaxNumberOfTraces)
+  if(nbOfTraces > iThreshold)
     {
     this->m_VisibleTimePoints.resize(3);
     this->GetContentAndDisplayAllTracesInfoFor3TPs(this->m_DatabaseConnector);
@@ -1987,53 +1982,5 @@ UpdateTableWidgetAndContainersForGivenTimePoint(
   std::list<unsigned int> listToAdd(0);
   return listToAdd;
 
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-void
-QGoPrintDatabase::
-SetMaxNumberOfTraces(const unsigned int& iThreshold)
-{
-  this->m_MaxNumberOfTraces = iThreshold;
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-unsigned int
-QGoPrintDatabase::
-GetMaxNumberOfTraces()
-{
-  return this->m_MaxNumberOfTraces;
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-void
-QGoPrintDatabase::
-ReadSettings()
-{
-  QSettings settings;
-  settings.beginGroup("PrintDatabaseSettings");
-  unsigned int maxNumberOfTraces =
-      settings.value("MaxNumberOfTraces").toUInt();
-  if(maxNumberOfTraces)
-    {
-    this->m_MaxNumberOfTraces = maxNumberOfTraces;
-    }
-  settings.endGroup();
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-void
-QGoPrintDatabase::
-WriteSettings()
-{
-  QSettings settings;
-
-  settings.beginGroup("PrintDatabaseSettings");
-  settings.setValue( "MaxNumberOfTraces", this->m_MaxNumberOfTraces);
-  settings.endGroup();
 }
 //--------------------------------------------------------------------------
