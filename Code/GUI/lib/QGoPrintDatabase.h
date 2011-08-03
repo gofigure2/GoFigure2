@@ -904,6 +904,9 @@ protected slots:
 
   //**********************End TraceSettingsWidget slots // related****************
 private:
+  void ReadSettings();
+  void WriteSettings();
+
   std::list<unsigned int> m_VisibleTimePoints;
   unsigned int m_MaxNumberOfTraces;
   Q_DISABLE_COPY(QGoPrintDatabase);

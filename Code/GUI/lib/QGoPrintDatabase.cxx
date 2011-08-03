@@ -44,6 +44,7 @@
 #include <QCloseEvent>
 #include <QPixmap>
 #include <QStatusBar>
+#include <QSettings>
 
 #include <iostream>
 
@@ -86,6 +87,8 @@ QGoPrintDatabase::QGoPrintDatabase(QWidget *iParent) :
 { 
   this->SetUpUi();
 
+  this->ReadSettings();
+
   this->m_CellTypeManager = new QGoDBCellTypeManager(this);
 
   this->m_SubCellTypeManager = new QGoDBSubCellTypeManager(this);
@@ -111,6 +114,8 @@ QGoPrintDatabase::QGoPrintDatabase(QWidget *iParent) :
 //--------------------------------------------------------------------------
 QGoPrintDatabase::~QGoPrintDatabase()
 {
+  this->WriteSettings();
+
   if ( m_SelectedTimePoint )
     {
     delete m_SelectedTimePoint;
@@ -2000,5 +2005,35 @@ QGoPrintDatabase::
 GetMaxNumberOfTraces()
 {
   return this->m_MaxNumberOfTraces;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+QGoPrintDatabase::
+ReadSettings()
+{
+  QSettings settings;
+  settings.beginGroup("PrintDatabaseSettings");
+  unsigned int maxNumberOfTraces =
+      settings.value("MaxNumberOfTraces").toUInt();
+  if(maxNumberOfTraces)
+    {
+    this->m_MaxNumberOfTraces = maxNumberOfTraces;
+    }
+  settings.endGroup();
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+QGoPrintDatabase::
+WriteSettings()
+{
+  QSettings settings;
+
+  settings.beginGroup("PrintDatabaseSettings");
+  settings.setValue( "MaxNumberOfTraces", this->m_MaxNumberOfTraces);
+  settings.endGroup();
 }
 //--------------------------------------------------------------------------
