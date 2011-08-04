@@ -132,6 +132,7 @@ void QGoTabElementBase::CreateModeActions(QActionGroup *group)
 
   // Create/initialize the default action
   QAction *DefaultAction = new QAction(tr("Default"), this);
+  DefaultAction->setShortcut( tr("Ctrl+D", "Default Mode"));
 
   DefaultAction->setCheckable(true);
   DefaultAction->setChecked(true);

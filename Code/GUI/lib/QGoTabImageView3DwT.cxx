@@ -1128,6 +1128,7 @@ void QGoTabImageView3DwT::CreateModeActions()
 
   QAction *MeshSegmentationAction =
     m_MeshSegmentationDockWidget->toggleViewAction();
+    MeshSegmentationAction->setShortcut( tr("Ctrl+M", "Mesh Segmentation Mode"));
 
   group->addAction(MeshSegmentationAction);
 

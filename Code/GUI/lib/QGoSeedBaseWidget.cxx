@@ -55,7 +55,7 @@ QGoSeedBaseWidget::QGoSeedBaseWidget(QWidget *iParent, int iSampling) : QWidget(
                     this, SIGNAL( Channel(int) ) );
 
   // shortcut to the "Apply" button
-  (void)new QShortcut( QKeySequence( tr("X", "Apply") ), this, SIGNAL( Apply() ) );
+  (void)new QShortcut( QKeySequence( tr("Ctrl+A", "Apply") ), this, SIGNAL( Apply() ) );
 
   // About the sampling button...
   if ( iSampling == 2 )
