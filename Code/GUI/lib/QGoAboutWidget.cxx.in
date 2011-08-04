@@ -111,14 +111,21 @@ QString QGoAboutWidget::GetContributors()
 {
   QString authors( tr("Authors:\n\n") );
 
-  authors.append(" * 2008 ~ A. Gelas\n");
-  authors.append(" * 2008 ~ L. Souhait\n");
-  authors.append(" * 2008 ~ K. Mosaliganti\n");
-  authors.append(" * 2009 ~ N. Rannou\n");
-  authors.append(" * 2010 ~ A. Perrot-Audet\n");
-  authors.append(" * 2010 ~ E. Schwab\n");
-  authors.append(" * 2007-2009 ~ A. Gouaillard\n");
-  authors.append(" * 2006 ~ S. G. Megason\n");
+  authors.append(" * 2008 ~ Arnaud Gelas\n");
+  authors.append(" * 2008 ~ Lydie Souhait\n");
+  authors.append(" * 2009 ~ Nicolas Rannou\n");
+  authors.append(" * 2008 ~ Kishore Mosaliganti\n");
+  authors.append(" * 2010 ~ Evan Schwab\n");
+  authors.append(" * 2006 ~ Sean G. Megason\n");
+  authors.append(" ------- \n" );
+  authors.append(" * 2010 ~ Antonin Perrot-Audet\n");
+  authors.append(" * 2007-09 ~ Alexandre Gouaillard\n\n");
+
+  QString contributors( tr("Contributors:\n\n") );
+  contributors.append(" * Mathieu Malaterre (Debian Packaging)\n" );
+  contributors.append(" * Ankur Sinha (Fedora Packaging)\n" );
+
+  authors.append( contributors );
 
   return authors;
 }
