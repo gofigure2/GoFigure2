@@ -325,7 +325,11 @@ getVisibleImages()
 
   while(it!=m_MegaImageContainer.get< Visibility >().end())
     {
-    blendedImage->AddInput(colorImage(it->Image, it->LUT));
+    vtkSmartPointer<vtkImageData> temp = colorImage(it->Image, it->LUT);
+    vtkSmartPointer<vtkImageData> image = vtkSmartPointer<vtkImageData>::New();
+    image->DeepCopy(temp);
+    temp = NULL;
+    blendedImage->AddInput(image);
     ++i;
     ++it;
     }
@@ -350,6 +354,8 @@ getVisibleImages()
     scale->ReleaseDataFlagOn();
     scale->SetNumberOfThreads(VTK_MAX_THREADS);
     scale->Update();
+
+    blendedImage = NULL;
 
     return scale->GetOutput();
     }
