@@ -1,0 +1,28 @@
+Please send this file to the following address:
+gofigure2-developers@lists.sourceforge.net
+---------------------------------------------------------------------------
+
+Version: @{GOFIGURE2_VERSION}
+OS: @{OS}
+
+
+Package
+-------
+# if linux, provide the type of distribution (e.g. Ubuntu, Fedora, etc.)
+
+
+
+
+Description:
+------------
+# Try to provide as much information as possible to repeat the bug
+
+
+
+
+Severity:
+---------
+# Defect / Minor / Major / Critical
+
+
+

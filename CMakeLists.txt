@@ -51,6 +51,21 @@ IF( WIN32 )
     ENDIF( NOT CYGWIN )
   ENDIF( NOT BORLAND )
 ENDIF( WIN32 )
+#-----------------------------------------------------------------------
+
+IF( WIN32 )
+  SET( OS "Windows" )
+ELSE()
+  IF ( APPLE )
+    SET( OS "Mac OS X" )
+  ELSE()
+    SET( OS "Linux" )
+ENDIF()
+
+CONFIGURE_FILE( ${GOFIGURE2_SOURCE_DIR}/Resources/BugEntry.txt.in
+ ${GOFIGURE2_BINARY_DIR}/BugEntry.txt
+ @ONLY
+)
 
 #-----------------------------------------------------------------------
 # Export and Install configuration
