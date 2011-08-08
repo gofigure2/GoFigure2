@@ -1906,7 +1906,7 @@ UpdateTableWidgetAndContainersForGivenTimePoint(
 {
   this->OpenDBConnection();
 
-  if(this->m_VisibleTimePoints.size() == 3)
+  if(this->m_VisibleTimePoints.size() <= 3)
     {
     // list to be removed
     std::list<unsigned int> listToRemove;
