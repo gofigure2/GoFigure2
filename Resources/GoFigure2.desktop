@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=GoFigure2
+GenericName=Data Viewer
+Comment=Visualizing, processing and analysis of bioimage data sets
+Type=Application
+Terminal=false
+Icon=GoFigure2
+Categories=Education;Math;Science;
+Exec=gofigure
+
