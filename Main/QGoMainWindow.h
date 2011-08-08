@@ -299,6 +299,7 @@ private:
   QString strippedName(const QString & fullFileName);
 
 private:
+  unsigned int m_MaxNumberOfTraces;
   Q_DISABLE_COPY(QGoMainWindow);
 };
 #endif

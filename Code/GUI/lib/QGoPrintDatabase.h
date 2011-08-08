@@ -98,7 +98,7 @@ public:
   /** \brief Create the QTableWidgetChild,get the columns names and the
  * values stored in the database, display them in the QTableWidgetChild
  * and fill the info for the contours and meshes*/
-  void FillTableFromDatabase();
+  void FillTableFromDatabase( const unsigned int& iTreshold);
 
   /** \brief Return a vector of all the contours for the given timepoint*/
   std::vector< ContourMeshStructure > GetContoursForAGivenTimepoint(
@@ -265,6 +265,15 @@ public:
   return true.
   */
   bool NeedTraceSettingsToolBarVisible();
+
+  /**
+    \brief Update the table widget and the visualization container contents
+    based on the given time point and the previous visible time points.
+    It erases actors and remove them from the visualization.
+    It doesn't create actors after adding polydata to container.
+    */
+  std::list<unsigned int> UpdateTableWidgetAndContainersForGivenTimePoint(
+          const unsigned int& iNewTimePoint);
 
 public slots:
   void DeleteBookmarks();
@@ -436,6 +445,14 @@ protected:
   the info from the database
   */
   void GetContentAndDisplayAllTracesInfo(vtkMySQLDatabase *iDatabaseConnector);
+
+  void GetContentAndDisplayAllTracesInfoFor3TPs(vtkMySQLDatabase *iDatabaseConnector);
+
+  void AddTracesForSelectedTimePoints(
+  vtkMySQLDatabase *iDatabaseConnector, std::list<unsigned int> iListTimePoints);
+
+  void RemoveTracesFromListTimePoints(
+  vtkMySQLDatabase *iDatabaseConnector, std::list<unsigned int> iListTimePoints);
 
   /**
   \brief get the RGB Alpha values from the iTraceRow and set a QColor with them
@@ -873,6 +890,7 @@ protected slots:
 
   //**********************End TraceSettingsWidget slots // related****************
 private:
+  std::list<unsigned int> m_VisibleTimePoints;
   Q_DISABLE_COPY(QGoPrintDatabase);
 };
 

@@ -684,11 +684,12 @@ int GoDBTableWidgetContainer::GetIndexInsideRowContainer(std::string iInfoName)
 //--------------------------------------------------------------------------
 GoDBTableWidgetContainer::TWContainerType
 GoDBTableWidgetContainer::GetContainerLoadedWithAllFromDB(
-  vtkMySQLDatabase *iDatabaseConnector)
+  vtkMySQLDatabase *iDatabaseConnector, std::list<unsigned int> iListTPs)
 {
   this->ClearRowContainerValues();
   this->FillRowContainerWithDBValues( iDatabaseConnector,
-                                      "ImagingsessionID", ConvertToString< unsigned int >(this->m_ImgSessionID) );
+                                      "ImagingsessionID", ConvertToString< unsigned int >(this->m_ImgSessionID),
+                                      iListTPs);
   return this->m_RowContainer;
 }
 
@@ -710,7 +711,8 @@ GoDBTableWidgetContainer::GetContainerForOneSpecificTrace(
 //--------------------------------------------------------------------------
 void GoDBTableWidgetContainer::FillRowContainerWithDBValues(
   vtkMySQLDatabase *iDatabaseConnector,
-  std::string iRestrictionName, std::string iRestrictionValue)
+  std::string iRestrictionName, std::string iRestrictionValue, 
+  std::list<unsigned int> iListTimePoints)
 {
   /*first, get the right parts of the first query:
   all the fields except the ones where table.field are already in the query:*/
@@ -719,24 +721,50 @@ void GoDBTableWidgetContainer::FillRowContainerWithDBValues(
   std::vector< std::string > SelectFirstFields =
     this->GetQueryStringForSelectFieldsTables(false);
 
-  //then, get the results of the first query:
-  std::vector< std::vector< std::string > > ResultsFirstQuery = GetValuesFromSeveralTables(
-      iDatabaseConnector, this->m_TracesName, SelectFirstFields, iRestrictionName,
-      iRestrictionValue, JoinFirstTablesOnTraceTable, true);
-
-  //fill the row container with the results of the first query:
-  this->FillRowContainer(ResultsFirstQuery, SelectFirstFields);
-
   //Get the right parts of the second query (with only the remaining fields):
   std::vector< std::string > JoinSecondTablesOnTraceTable =
     this->GetQueryStringForTraceJoinedTables(true);
   std::vector< std::string > SelectSecondFields =
     this->GetQueryStringForSelectFieldsTables(true);
 
-  //then, get the results of the second query:
-  std::vector< std::vector< std::string > > ResultsSecondQuery = GetValuesFromSeveralTables(
+  std::vector< std::vector< std::string > > ResultsFirstQuery;
+  std::vector< std::vector< std::string > > ResultsSecondQuery;
+
+  //then, get the results of the 2 queries:
+  if (iListTimePoints.empty())
+    {
+    ResultsFirstQuery = GetValuesFromSeveralTables(
+        iDatabaseConnector, this->m_TracesName, SelectFirstFields, iRestrictionName,
+        iRestrictionValue, JoinFirstTablesOnTraceTable, true);
+
+    ResultsSecondQuery = GetValuesFromSeveralTables(
       iDatabaseConnector, this->m_TracesName, SelectSecondFields, iRestrictionName,
       iRestrictionValue, JoinSecondTablesOnTraceTable, false);
+    }
+  else
+    {
+    std::vector<FieldWithValue> OrConditions;
+    std::list<unsigned int>::iterator iter = iListTimePoints.begin();
+    while (iter != iListTimePoints.end() )
+      {
+      FieldWithValue temp;
+      temp.Field = "coordinate.TCoord";
+      unsigned int Tp = *iter;
+      temp.Value = ConvertToString<unsigned int>(Tp);
+      OrConditions.push_back(temp);
+      ++iter;
+      }
+    ResultsFirstQuery = GetValuesFromSeveralTables(
+        iDatabaseConnector, this->m_TracesName, SelectFirstFields, iRestrictionName,
+        iRestrictionValue, JoinFirstTablesOnTraceTable, true, OrConditions);
+
+    ResultsSecondQuery = GetValuesFromSeveralTables(
+      iDatabaseConnector, this->m_TracesName, SelectSecondFields, iRestrictionName,
+      iRestrictionValue, JoinSecondTablesOnTraceTable, false, OrConditions);
+    }
+
+  //fill the row container with the results of the first query:
+  this->FillRowContainer(ResultsFirstQuery, SelectFirstFields);
 
   //fill the row container with the results of the second query:
   this->FillRowContainer(ResultsSecondQuery, SelectSecondFields);

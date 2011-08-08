@@ -88,7 +88,8 @@
 //--------------------------------------------------------------------------
 QGoMainWindow::QGoMainWindow(QWidget *iParent, Qt::WindowFlags iFlags) :
   QMainWindow(iParent, iFlags), m_ViewToolBar(NULL), m_ModeToolBar(NULL),
-  m_TracesToolBar(NULL), m_TraceSettingsToolBar(NULL)
+  m_TracesToolBar(NULL), m_TraceSettingsToolBar(NULL),
+  m_MaxNumberOfTraces(5000)
 {
   QString title("<*)0|00|0>< ~~ <*)0|00|0><     GoFigure    ><0|00|0(*> ~~ ><0|00|0(*>");
 
@@ -402,8 +403,10 @@ void QGoMainWindow::DisplayFilesfromDB(std::string iFirst_Filename)
   QObject::connect( w3t, SIGNAL( UpdateBookmarkOpenActions(std::vector< QAction * > ) ),
                     this->m_TabManager, SLOT( UpdateBookmarkMenu(std::vector< QAction * > ) ) );
 
-  // Load all contours and only display the ones from the first time point
+  // Load all traces
   LoadAllTracesFromDatabaseManager(TimePoint);
+  // Show contour/mesh for given T point
+  w3t->ShowTraces(TimePoint);
 
   this->menuBookmarks->setEnabled(true);
   //this->addToolBar(w3t->GetTraceSettingsToolBar() );
@@ -433,46 +436,16 @@ QGoMainWindow::LoadAllTracesFromDatabaseManager(const int & iT)
 void
 QGoMainWindow::LoadContoursFromDatabase(const int & iT)
 {
-  /// \note let's keep for the time being iT parameter in the case where
-  /// we would only load traces for a given time point (that could be usefule
-  /// somehow).
-  (void)iT;
-
   QGoTabImageView3DwT *w3t =
     dynamic_cast< QGoTabImageView3DwT * >( this->CentralTabWidget->currentWidget() );
 
   if ( w3t )
     {
-    ContourContainer *temp = w3t->GetContourContainer();
-
-    if ( temp )
-      {
-      // let's iterate on the container with increasing TraceID
-      ContourContainer::MultiIndexContainerType::index< TraceID >::type::iterator
-        contour_list_it = temp->m_Container.get< TraceID >().begin();
-
-      ContourContainer::MultiIndexContainerType::index< TraceID >::type::iterator
-        contour_list_end = temp->m_Container.get< TraceID >().end();
-
-      size_t nb_contours = temp->m_Container.get< TraceID >().size();
-
-      QProgressDialog progress( "Loading Contours...", QString(), 0, nb_contours );
-
-      size_t i = 0;
-
-      // we don't need here to save this contour in the database,
-      // since they have just been extracted from it!
-      while ( contour_list_it != contour_list_end )
-        {
-        w3t->AddContourFromNodes< TraceID >( contour_list_it );
-
-        progress.setValue( i );
-
-        ++i;
-        ++contour_list_it;
-        }
-      progress.setValue( nb_contours );
-      }
+    std::list<unsigned int> timePoints;
+    timePoints.push_back(iT);
+    timePoints.push_back(iT+1);
+    timePoints.push_back(iT+2);
+    w3t->CreateContoursActorsFromVisuContainer(timePoints);
     }
 }
 
@@ -482,66 +455,16 @@ QGoMainWindow::LoadContoursFromDatabase(const int & iT)
 void
 QGoMainWindow::LoadMeshesFromDatabase(const int & iT)
 {
-  /// \note let's keep for the time being iT parameter in the case where
-  /// we would only load traces for a given time point (that could be usefule
-  /// somehow).
-  (void)iT;
-
   QGoTabImageView3DwT *w3t =
     dynamic_cast< QGoTabImageView3DwT * >( this->CentralTabWidget->currentWidget() );
 
   if ( w3t )
     {
-    MeshContainer *temp =  w3t->GetMeshContainer();
-    TrackContainer *trackContainer =  w3t->GetTrackContainer();
-    if ( temp )
-      {
-      // let's iterate on the container with increasing TraceID
-      MeshContainer::MultiIndexContainerType::index< TraceID >::type::iterator
-        mesh_list_it = temp->m_Container.get< TraceID >().begin();
-
-      MeshContainer::MultiIndexContainerType::index< TraceID >::type::iterator
-        mesh_list_end = temp->m_Container.get< TraceID >().end();
-
-      size_t nb_meshes = temp->m_Container.get< TraceID >().size();
-
-      QProgressDialog progress( "Loading Meshes...", QString(), 0, nb_meshes );
-
-      size_t i = 0;
-
-      // we don't need here to save this contour in the database,
-      // since they have just been extracted from it!
-      while ( mesh_list_it != mesh_list_end )
-        {
-        // note here it only makes sense when the trace is a mesh (for now)
-
-        if ( mesh_list_it->Nodes )
-          {
-          GoFigureMeshAttributes attributes =
-            w3t->ComputeMeshAttributes(
-              mesh_list_it->Nodes, // mesh
-              false, // do not need to compute intensity based measure
-              mesh_list_it->TCoord
-              );
-          w3t->m_DataBaseTables->PrintVolumeAreaForMesh(
-            &attributes, mesh_list_it->TraceID);
-
-          // update track average volume
-          if(trackContainer)
-            {
-            trackContainer->AddVolume(mesh_list_it->CollectionID, attributes.m_Volume);
-            }
-          }
-        w3t->AddMeshFromNodes< TraceID >(mesh_list_it);
-
-        progress.setValue( i );
-
-        ++i;
-        ++mesh_list_it;
-        }
-
-      progress.setValue( nb_meshes );
-      }
+    std::list<unsigned int> timePoints;
+    timePoints.push_back(iT);
+    timePoints.push_back(iT+1);
+    timePoints.push_back(iT+2);
+    w3t->CreateMeshesActorsFromVisuContainer(timePoints);
     }
 }
 
@@ -841,7 +764,7 @@ QGoMainWindow::CreateNewTabFor3DwtImage(
                                                 m_DBWizard->GetImagingSessionID(),
                                                 ImgSessionName);
 
-    w3t->m_DataBaseTables->FillTableFromDatabase();
+    w3t->m_DataBaseTables->FillTableFromDatabase(this->m_MaxNumberOfTraces);
     w3t->setWindowTitle( QString::fromStdString(ImgSessionName) );
     // **********************
     }
@@ -1424,6 +1347,15 @@ void QGoMainWindow::ReadSettings()
 
   //  settings.setValue("vsplitterSizes", vSplitter->saveState());
   settings.endGroup();
+
+  settings.beginGroup("MemoryManagement");
+  unsigned int maxNumberOfTraces =
+      settings.value("MaxNumberOfTraces").toUInt();
+  if(maxNumberOfTraces)
+    {
+    this->m_MaxNumberOfTraces = maxNumberOfTraces;
+    }
+  settings.endGroup();
 }
 
 //--------------------------------------------------------------------------------
@@ -1442,6 +1374,9 @@ void QGoMainWindow::WriteSettings()
   settings.setValue( "state", saveState() );
   settings.endGroup();
   settings.setValue("DatabaseSetUp", this->m_DatabaseSetUp);
+  settings.beginGroup("MemoryManagement");
+  settings.setValue("MaxNumberOfTraces", this->m_MaxNumberOfTraces);
+  settings.endGroup();
 }
 
 //-------------------------------------------------------------------------

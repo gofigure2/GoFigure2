@@ -44,6 +44,7 @@
 #include <QCloseEvent>
 #include <QPixmap>
 #include <QStatusBar>
+#include <QSettings>
 
 #include <iostream>
 
@@ -216,10 +217,28 @@ void QGoPrintDatabase::CloseDBConnection()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoPrintDatabase::FillTableFromDatabase()
+void QGoPrintDatabase::FillTableFromDatabase(const unsigned int& iThreshold)
 {
   OpenDBConnection();
-  this->GetContentAndDisplayAllTracesInfo(this->m_DatabaseConnector);
+  // Get number of meshes to be loaded
+  int nbOfTraces = NumberOfElementForGivenImagingSessionAndTrace(
+          this->m_DatabaseConnector,
+          this->m_ImgSessionID,
+          "mesh");
+
+  // if there are more than 5 thousands meshes, only load 3 time points in
+  // memory
+  if(nbOfTraces > iThreshold)
+    {
+    this->m_VisibleTimePoints.resize(3);
+    this->GetContentAndDisplayAllTracesInfoFor3TPs(this->m_DatabaseConnector);
+    }
+  else
+    {
+    this->m_VisibleTimePoints.resize(0);
+    this->GetContentAndDisplayAllTracesInfo(this->m_DatabaseConnector);
+    }
+
   CloseDBConnection();
 
   QString title = QString("Table for: %1 ").arg( m_ImgSessionName.c_str() );
@@ -1164,6 +1183,53 @@ void QGoPrintDatabase::GetContentAndDisplayAllTracesInfo(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+
+void QGoPrintDatabase::GetContentAndDisplayAllTracesInfoFor3TPs(
+  vtkMySQLDatabase *iDatabaseConnector)
+{
+  m_VisibleTimePoints.clear();
+
+  if(*this->m_SelectedTimePoint>0)
+    {
+    m_VisibleTimePoints.push_back(*this->m_SelectedTimePoint-1);
+    }
+  m_VisibleTimePoints.push_back(*this->m_SelectedTimePoint);
+  m_VisibleTimePoints.push_back(*this->m_SelectedTimePoint+1);
+  this->m_ContoursManager->
+    DisplayInfoAndLoadVisuContainerForAllContoursForSpecificTPs(iDatabaseConnector,
+    m_VisibleTimePoints);
+  this->m_MeshesManager->
+    DisplayInfoAndLoadVisuContainerForAllMeshesForSpecificTPs(iDatabaseConnector,
+    m_VisibleTimePoints);
+
+  this->m_TracksManager->DisplayInfoAndLoadVisuContainerForAllTracks(iDatabaseConnector);
+  this->m_LineagesManager->DisplayInfoAndLoadVisuContainerForAllLineages(iDatabaseConnector);
+}
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoPrintDatabase::AddTracesForSelectedTimePoints(
+  vtkMySQLDatabase *iDatabaseConnector, std::list<unsigned int> iListTimePoints)
+{
+
+}
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoPrintDatabase::RemoveTracesFromListTimePoints(
+  vtkMySQLDatabase *iDatabaseConnector, std::list<unsigned int> iListTimePoints)
+{
+  this->m_ContoursManager->RemoveTracesFromTWAndContainerForVisuForSpecificTPs(
+    iDatabaseConnector, iListTimePoints);
+  this->m_MeshesManager->RemoveTracesFromTWAndContainerForVisuForSpecificTPs(
+    iDatabaseConnector, iListTimePoints);
+}
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 void QGoPrintDatabase::CreateContextMenu(const QPoint & iPos)
 {
   QMenu *ContextMenu = new QMenu;
@@ -1892,3 +1958,91 @@ void QGoPrintDatabase::ShowHideTraceSettingsFromContextMenu(bool isVisible)
     }
    return !this->m_TraceSettingsVisible;
  }
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+std::list<unsigned int>
+QGoPrintDatabase::
+UpdateTableWidgetAndContainersForGivenTimePoint(
+        const unsigned int& iNewTimePoint)
+{
+  this->OpenDBConnection();
+
+  if(this->m_VisibleTimePoints.size() <= 3)
+    {
+    // list to be removed
+    std::list<unsigned int> listToRemove;
+    listToRemove = m_VisibleTimePoints;
+    // iterator
+    std::list<unsigned int>::iterator it_listToRemove = listToRemove.begin();
+
+    // list to be added
+    std::list<unsigned int> listToAdd;
+    if(iNewTimePoint>0)
+      {
+      listToAdd.push_back(iNewTimePoint-1);
+      }
+    listToAdd.push_back(iNewTimePoint);
+    listToAdd.push_back(iNewTimePoint+1);
+    // iterator
+    std::list<unsigned int>::iterator it_listToAdd = listToAdd.begin();
+    m_VisibleTimePoints = listToAdd;
+
+    // list common t points
+    std::list<unsigned int> listCommonT;
+    while(it_listToRemove != listToRemove.end())
+      {
+      while(it_listToAdd != listToAdd.end())
+        {
+        if(*it_listToRemove == *it_listToAdd)
+          {
+          /**
+            \todo check if we can do it properly
+          // remove elements from a list while iterating on it doesn't sound safe
+          // that's why we use listCommonT
+          // To be checked
+            */
+          listCommonT.push_back(*it_listToRemove);
+          }
+        ++it_listToAdd;
+        }
+      it_listToAdd = listToAdd.begin();
+      ++it_listToRemove;
+      }
+
+    // remove common t points
+    // iterator
+    std::list<unsigned int>::iterator it_listCommonT = listCommonT.begin();
+    while(it_listCommonT != listCommonT.end())
+      {
+      listToRemove.remove(*it_listCommonT);
+      listToAdd.remove(*it_listCommonT);
+      ++it_listCommonT;
+      }
+
+    // remove time points
+    this->m_ContoursManager->CleanTWAndContainerForGivenTimePoint(
+      this->m_DatabaseConnector, listToRemove);
+    this->m_MeshesManager->CleanTWAndContainerForGivenTimePoint(
+      this->m_DatabaseConnector, listToRemove);
+
+
+    // add time points
+    this->m_ContoursManager->
+      DisplayInfoAndLoadVisuContainerForAllContoursForSpecificTPs(
+      this->m_DatabaseConnector,
+      listToAdd);
+    this->m_MeshesManager->
+      DisplayInfoAndLoadVisuContainerForAllMeshesForSpecificTPs(
+      this->m_DatabaseConnector,
+      listToAdd);
+
+    this->CloseDBConnection();
+    return listToAdd;
+  }
+
+  std::list<unsigned int> listToAdd(0);
+  return listToAdd;
+
+}
+//--------------------------------------------------------------------------

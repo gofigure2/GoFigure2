@@ -245,6 +245,7 @@ colorImage(vtkSmartPointer<vtkImageData> iImage,
   coloredImage->SetInput( iImage );
   coloredImage->SetOutputFormatToRGB();
   coloredImage->SetNumberOfThreads(VTK_MAX_THREADS);
+  coloredImage->ReleaseDataFlagOn();
   coloredImage->Update();
 
   return coloredImage->GetOutput();
@@ -314,6 +315,7 @@ getVisibleImages()
       vtkSmartPointer<vtkImageBlend>::New();
   blendedImage->RemoveAllInputs();
   blendedImage->SetBlendModeToCompound();
+  blendedImage->ReleaseDataFlagOn();
   blendedImage->SetNumberOfThreads(VTK_MAX_THREADS);
 
   GoMegaImageStructureMultiIndexContainer::index<Visibility>::type::iterator it =
@@ -321,17 +323,17 @@ getVisibleImages()
 
   vtkIdType i(0);
 
-  std::cout << __FILE__ << " start coloring " << std::endl;
-
   while(it!=m_MegaImageContainer.get< Visibility >().end())
     {
-    blendedImage->AddInput(colorImage(it->Image, it->LUT));
+    vtkSmartPointer<vtkImageData> temp = colorImage(it->Image, it->LUT);
+    vtkSmartPointer<vtkImageData> image = vtkSmartPointer<vtkImageData>::New();
+    image->DeepCopy(temp);
+    temp = NULL;
+    blendedImage->AddInput(image);
     ++i;
     ++it;
     }
   blendedImage->Update();
-
-  std::cout << __FILE__ << " finish coloring " << std::endl;
 
   double rangeR[2];
   blendedImage->GetOutput()->GetPointData()->GetScalars()->GetRange(rangeR, 0);
@@ -342,17 +344,23 @@ getVisibleImages()
 
   double range = std::max(rangeB[1], std::max(rangeR[1], rangeG[1]));
 
-  vtkSmartPointer<vtkImageShiftScale> scale =
-      vtkSmartPointer<vtkImageShiftScale>::New();
-  scale->SetInput(blendedImage->GetOutput());
-  scale->SetScale(255/range);
-  scale->SetOutputScalarTypeToUnsignedChar();
-  scale->SetNumberOfThreads(VTK_MAX_THREADS);
-  scale->Update();
+  if(range)
+    {
+    vtkSmartPointer<vtkImageShiftScale> scale =
+        vtkSmartPointer<vtkImageShiftScale>::New();
+    scale->SetInput(blendedImage->GetOutput());
+    scale->SetScale(255/range);
+    scale->SetOutputScalarTypeToUnsignedChar();
+    scale->ReleaseDataFlagOn();
+    scale->SetNumberOfThreads(VTK_MAX_THREADS);
+    scale->Update();
 
-  std::cout << __FILE__ << " finish rescaling" << std::endl;
+    blendedImage = NULL;
 
-  return scale->GetOutput();
+    return scale->GetOutput();
+    }
+
+  return blendedImage->GetOutput();
 }
 //--------------------------------------------------------------------------
 

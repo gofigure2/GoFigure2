@@ -127,6 +127,16 @@ void QGoDBLineageManager::DisplayInfoForAllTraces(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+void QGoDBLineageManager::DisplayInfoForTracesForSpecificTPs(
+    vtkMySQLDatabase *iDatabaseConnector, std::list<unsigned int> iListTPs)
+{
+  (void) iListTPs;
+  this->DisplayInfoForAllTraces(iDatabaseConnector);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+
 void QGoDBLineageManager::DisplayInfoAndLoadVisuContainerForAllLineages(
   vtkMySQLDatabase *iDatabaseConnector)
 {
@@ -165,7 +175,7 @@ void QGoDBLineageManager::InsertLineageInTW(vtkMySQLDatabase *iDatabaseConnector
                                                     iTraceID);
 
     //this->m_Table->setSortingEnabled(false);
-    this->m_Table->InsertNewRow(RowContainer,
+    this->m_Table->InsertOnlyOneNewRow(RowContainer,
                                 this->m_TWContainer->GetIndexForGroupColor(this->m_TraceName),
                                 this->m_TWContainer->GetIndexForGroupColor(this->m_CollectionName),
                                 this->m_TraceName, this->m_CollectionName, Qt::Unchecked);

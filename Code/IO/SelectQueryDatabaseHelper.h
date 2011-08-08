@@ -427,6 +427,12 @@ std::vector< std::vector< std::string > > GetValuesFromSeveralTables(
   std::vector< std::string > SelectFields, std::vector< std::string > WhereAndConditions,
   std::vector< std::string > JoinTablesOnTraceTable, bool Distinct);
 
+std::vector< std::vector< std::string > > GetValuesFromSeveralTables(
+  vtkMySQLDatabase *DatabaseConnector, std::string MainTable,
+  std::vector< std::string > SelectFields, std::string field,
+  std::string value, std::vector< std::string > JoinTablesOnTraceTable, bool Distinct,
+  std::vector<FieldWithValue> iWhereOrConditions);
+
 //query: SELECT where condition1 UNION SELECT where condition1 and condition2
 QGOIO_EXPORT
 std::vector< std::string > GetSamefieldFromTwoTables(vtkMySQLDatabase *DatabaseConnector,
@@ -653,5 +659,17 @@ std::list<unsigned int> GetListValuesFromTwoTablesAndCondition(
   std::string iTableOne, std::string iTableTwo,std::string iColumn,
   FieldWithValue iJoinCondition,std::string iField,
   std::vector<std::string> iVectorValues, FieldWithValue iAndCondition);
+
+QGOIO_EXPORT
+int NumberOfElementForGivenImagingSessionAndTrace(
+  vtkMySQLDatabase *DatabaseConnector,
+  unsigned int iImagingSession, std::string iTrace);
+
+/*
+QGOIO_EXPORT
+int NumberOfTimePointsForGivenImagingSession(
+        vtkMySQLDatabase *DatabaseConnector,
+        unsigned int iImagingSession);
+        */
 
 #endif

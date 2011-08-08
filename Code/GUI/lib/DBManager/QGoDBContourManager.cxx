@@ -92,6 +92,58 @@ void QGoDBContourManager::DisplayInfoAndLoadVisuContainerForAllContours(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+void QGoDBContourManager::DisplayInfoAndLoadVisuContainerForAllContoursForSpecificTPs(
+  vtkMySQLDatabase *iDatabaseConnector, std::list<unsigned int> iListTPs)
+{
+  this->DisplayInfoAndLoadVisuContainerWithAllTracesForSpecificTPs< ContourMeshContainer >
+    (iDatabaseConnector, this->m_ContourContainerInfoForVisu, iListTPs);
+}
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+ void QGoDBContourManager::AddInfoInTWAndVisuContainerForContoursForSpecificTPs(
+    vtkMySQLDatabase *iDatabaseConnector, std::list<unsigned int> iListTPs)
+ {
+   //this->AddInfoInTWAndContainerForVisuForSpecificTPs< ContourMeshContainer >
+   //  (iDatabaseConnector, this->m_ContourContainerInfoForVisu, iListTPs);
+
+   this->AddInfoForContoursInTWForSpecificTPs(iDatabaseConnector, iListTPs);
+   std::list<unsigned int> ListIDs = 
+      this->m_CollectionOfTraces->GetTraceIDsBelongingToListTimePoints(
+        iDatabaseConnector,  iListTPs);
+    std::list<ContourMeshContainer::MultiIndexContainerElementType> list_of_traces =
+      this->m_CollectionOfTraces->
+      GetListStructureFromDB<ContourMeshContainer::MultiIndexContainerElementType>(
+      iDatabaseConnector, this->m_ImgSessionID, ListIDs);
+    /** \todo Nico: implement a method that get list_of_traces as argument and as this list
+    of structure in the container for visu */
+ }
+
+ //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoDBContourManager::AddInfoForContoursInTWForSpecificTPs(vtkMySQLDatabase *iDatabaseConnector, 
+    std::list<unsigned int> iListTPs)
+{
+  int IndexShowColumn = this->m_TWContainer->GetIndexShowColumn();
+
+  /*this->AddInfoForTracesInTWForSpecificTPsTemplate<GoDBTWContainerForContourMesh>(
+    this->m_TWContainer,
+    iDatabaseConnector, Qt::Unchecked, IndexShowColumn );*/
+  //load the container with the traces infos for the TW for the TimePoints contained
+    //in iListTPs:
+    TWContainerType RowContainer =
+      this->m_TWContainer->GetContainerLoadedWithAllFromDB(iDatabaseConnector, iListTPs);
+    this->m_Table->InsertNewRows(RowContainer,
+                                 this->m_TWContainer->GetIndexForGroupColor(this->m_TraceName),
+                                 this->m_TWContainer->GetIndexForGroupColor(this->m_CollectionName),
+                                 this->m_TraceName, this->m_CollectionName,Qt::Unchecked);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+
 void QGoDBContourManager::DisplayInfoForAllTraces(
   vtkMySQLDatabase *iDatabaseConnector)
 
@@ -100,6 +152,18 @@ void QGoDBContourManager::DisplayInfoForAllTraces(
 
   this->DisplayInfoForAllTracesTemplate< GoDBTWContainerForContourMesh >(
     this->m_TWContainer, iDatabaseConnector, Qt::Unchecked, IndexShowColumn);
+}
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoDBContourManager::DisplayInfoForTracesForSpecificTPs(
+  vtkMySQLDatabase *iDatabaseConnector, std::list<unsigned int> iListTPs)
+{
+  int IndexShowColumn = this->m_TWContainer->GetIndexShowColumn();
+  this->DisplayInfoForTracesForSpecificTPsTemplate< GoDBTWContainerForContourMesh >(
+    this->m_TWContainer, iDatabaseConnector, Qt::Unchecked, iListTPs,
+    IndexShowColumn);
 }
 
 //-------------------------------------------------------------------------
@@ -120,6 +184,17 @@ void QGoDBContourManager::DisplayInfoForExistingTrace(
 {
   this->DisplayInfoForExistingTraceTemplate< GoDBTWContainerForContourMesh >(
     this->m_TWContainer, iDatabaseConnector, iTraceID);
+}
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoDBContourManager::RemoveTracesFromTWAndContainerForVisuForSpecificTPs(
+                                                    vtkMySQLDatabase *iDatabaseConnector,
+                                                    std::list<unsigned int> iListTPs)
+{
+  this->RemoveTracesFromTWAndContainerForVisuForSpecificTPsTemplate< ContourMeshContainer >
+    (iDatabaseConnector, this->m_ContourContainerInfoForVisu, iListTPs);
 }
 
 //-------------------------------------------------------------------------
@@ -389,3 +464,15 @@ bool QGoDBContourManager::AreCheckedContoursFromCurrentTimepoint()
     }
   return true;
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoDBContourManager::
+CleanTWAndContainerForGivenTimePoint(vtkMySQLDatabase *iDatabaseConnector,
+                                     const std::list<unsigned int>& iTimePoints)
+{
+  this->RemoveTracesFromTWAndContainerForVisuForSpecificTPsTemplate<ContourContainer>(
+          iDatabaseConnector, this->m_ContourContainerInfoForVisu, iTimePoints);
+}
+//-------------------------------------------------------------------------

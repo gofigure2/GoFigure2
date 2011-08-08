@@ -598,6 +598,89 @@ std::vector< std::vector< std::string > > GetValuesFromSeveralTables(
 //------------------------------------------------------------------------------
 std::vector< std::vector< std::string > > GetValuesFromSeveralTables(
   vtkMySQLDatabase *DatabaseConnector, std::string MainTable,
+  std::vector< std::string > SelectFields, std::string field,
+  std::string value, std::vector< std::string > JoinTablesOnTraceTable, bool Distinct,
+  std::vector<FieldWithValue> iWhereOrConditions)
+{
+  std::vector< std::vector< std::string > > Results;
+  vtkSQLQuery *                             query = DatabaseConnector->GetQueryInstance();
+
+  std::stringstream Querystream;
+  Querystream << "SELECT ";
+  if ( Distinct )
+    {
+    Querystream << "DISTINCT ";
+    }
+  unsigned int i;
+  for ( i = 0; i < SelectFields.size() - 1; i++ )
+    {
+    Querystream << SelectFields[i];
+    Querystream << ",";
+    }
+  Querystream << SelectFields[i];
+  Querystream << " FROM ";
+  Querystream << MainTable;
+  unsigned int j = 0;
+  while ( j < JoinTablesOnTraceTable.size() )
+    {
+    Querystream << " LEFT JOIN ";
+    Querystream << JoinTablesOnTraceTable[j];
+    Querystream << " ON ";
+    Querystream << JoinTablesOnTraceTable[j + 1];
+    Querystream << " ";
+    j = j + 2;
+    }
+  Querystream << "WHERE ( ";
+  Querystream << MainTable;
+  Querystream << ".";
+  Querystream << field;
+  Querystream << " = ";
+  Querystream << value;
+  Querystream << " AND (";
+  unsigned int k = 0;
+  while ( k < iWhereOrConditions.size() -1)
+    {
+    Querystream << iWhereOrConditions[k].Field;
+    Querystream << " = ";
+    Querystream << iWhereOrConditions[k].Value;
+    Querystream << " OR ";
+    k = k + 1;
+    }
+  Querystream << iWhereOrConditions[k].Field;
+  Querystream << " = ";
+  Querystream << iWhereOrConditions[k].Value;
+  Querystream << ") );";
+
+  query->SetQuery( Querystream.str().c_str() );
+  if ( !query->Execute() )
+    {
+    itkGenericExceptionMacro(
+      << "return info Contours query failed"
+      << query->GetLastErrorText() );
+    DatabaseConnector->Close();
+    DatabaseConnector->Delete();
+    query->Delete();
+    return Results;
+    }
+  while ( query->NextRow() )
+    {
+    std::vector< std::string > ResultsForOneRow;
+    for ( int k = 0; k < query->GetNumberOfFields(); k++ )
+      {
+      ResultsForOneRow.push_back( query->DataValue(k).ToString() );
+      }
+    Results.push_back(ResultsForOneRow);
+    }
+
+  query->Delete();
+
+  return Results;
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::vector< std::vector< std::string > > GetValuesFromSeveralTables(
+  vtkMySQLDatabase *DatabaseConnector, std::string MainTable,
   std::vector< std::string > SelectFields, std::vector< std::string > WhereAndConditions,
   std::vector< std::string > JoinTablesOnTraceTable, bool Distinct)
 {
@@ -675,6 +758,7 @@ std::vector< std::vector< std::string > > GetValuesFromSeveralTables(
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
+
 std::vector< std::string > GetSamefieldFromTwoTables(
   vtkMySQLDatabase *DatabaseConnector, std::string iTableOne,
   std::string iTableTwo, std::string iColumn, std::string iField,
@@ -1453,7 +1537,54 @@ std::list< double * > GetCenterBoundingBoxes(vtkMySQLDatabase *DatabaseConnector
     }
   return Results;
 }
-
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
+int NumberOfElementForGivenImagingSessionAndTrace(
+  vtkMySQLDatabase *DatabaseConnector,
+  unsigned int iImagingSession, std::string iTrace)
+{
+  std::string What = "COUNT(*)";
+  std::string Where = iTrace;
+  std::string Condition = "ImagingSessionID = ";
+  std::stringstream s;
+  s << iImagingSession;
+  Condition += s.str();
+
+  std::string QueryString = SelectGeneralQueryConditions(What,Where,Condition);
+
+  return ExecuteSelectQueryOneValue< int >(DatabaseConnector,
+                                                    QueryString);
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+/*int NumberOfTimePointsForGivenImagingSession(
+        vtkMySQLDatabase *DatabaseConnector,
+        unsigned int iImagingSession)
+{
+  FieldWithValue CoordMaxCondition =
+      { "CoordIDMax",
+        "CoordID",
+        "=" };
+
+  std::string What = GetLeftJoinTwoTables("imagingsession",
+                                          "coordinate",
+                                          CoordMaxCondition);
+  /*
+  std::string What = "COUNT(*)";
+  std::string Where = iTrace;
+  std::string Condition = "ImagingSessionID = ";
+  std::stringstream s;
+  s << iImagingSession;
+  Condition += s.str();
+
+  std::string QueryString = SelectGeneralQueryConditions(What,Where,Condition);
+*/
+/*
+  return ExecuteSelectQueryOneValue< int >(DatabaseConnector,
+                                                    QueryString);
+}
+
+//------------------------------------------------------------------------------
+*/

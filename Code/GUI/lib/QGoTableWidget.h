@@ -62,9 +62,6 @@ public:
 
   typedef GoDBTableWidgetContainer::TWContainerType TWContainerType;
 
-  /** \todo Lydie: check the code redondancies between DisplayContent,
-  InsertNewRow and UpdateRow*/
-
   /** \todo Lydie: check if code reduction with a class member variable Tracename
   and a method to return TraceNameID from TraceName*/
 
@@ -84,7 +81,7 @@ public:
   \param[in] iIndexShowColumn index of the show column in the TW Container(
   for contour and mesh)
   */
-  void DisplayContent(TWContainerType iTWRowContainer,
+  void DisplayInitialContent(TWContainerType iTWRowContainer,
                       std::vector< int > iIndexColorTraceRowContainer,
                       std::vector< int > iIndexColorCollectionRowContainer,
                       std::string iTraceName, std::string iCollectionName,
@@ -92,6 +89,11 @@ public:
                       Qt::CheckState iState,
                       int iIndexShowColumn = 0);
 
+  void InsertNewRows(TWContainerType iTWRowContainer,
+                    std::vector< int > iIndexColorTraceRowContainer,
+                    std::vector< int > iIndexColorCollectionRowContainer,
+                    std::string iTraceName, std::string iCollectionName,
+                    Qt::CheckState iVisible = Qt::Checked);
   /**
   \brief Insert a new row and fill the cells with the data
   contained in the RowContainer
@@ -104,7 +106,7 @@ public:
   \param[in] iTraceName name of the trace
   \param[in] iCollectionName name of the collection
  */
-  void InsertNewRow(TWContainerType iTWRowContainer,
+  void InsertOnlyOneNewRow(TWContainerType iTWRowContainer,
                     std::vector< int > iIndexColorTraceRowContainer,
                     std::vector< int > iIndexColorCollectionRowContainer,
                     std::string iTraceName, std::string iCollectionName,
@@ -128,6 +130,9 @@ public:
                  std::vector< int > iIndexColorCollectionRowContainer,
                  std::string iTraceName, std::string iCollectionName,
                  int iTraceID);
+
+
+  void DeleteRowsWithSpecificTimePoints(QStringList iListTPs);
 
   /**
   \brief delete the rows previously checked by the user
@@ -225,6 +230,9 @@ public:
 
   QString GetValue(unsigned int iTraceID, std::string iTraceName,
                std::string iColumn);
+
+  void DeleteRowsAndColumns();
+
 
 public slots:
 
@@ -374,16 +382,7 @@ protected:
   \param[in] iNbOfRows number of rows for which to put a checkbox
   \param[in] iStartedRow index of the first row where to put a checkbox
   */
-  void SetSelectedColumn(unsigned int iNbOfRows, unsigned int iStartedRow);
-
-  /**
-  \brief Put checkboxes and icons in the column "Show"
-  \param[in] iNbOfRows number of rows for which to put a checkbox and an icon
-  \param[in] iStartedRow index of the first row where to put a checkbox and an icon
-  \param[in] iListState list of states to which the checkboxes need to be set
-  */
-  void SetVisibleColumn(unsigned int iNbOfRows, unsigned int iStartedRow,
-  std::vector<std::string> iListState);
+  void SetSelectedColumn(unsigned int iIndexRow);
 
   /**
   \brief Put checkboxes and icons in the column "Show"
@@ -391,8 +390,7 @@ protected:
   \param[in] iStartedRow index of the first row where to put a checkbox and an icon
   \param[in] iState state to which the checkboxes need to be set
   */
-  void SetVisibleColumn( unsigned int iNbOfRows,
-                         unsigned int iStartedRow,
+  void SetVisibleColumn( unsigned int iIndexRow,
                          Qt::CheckState iState = Qt::Checked);
 
   /**
@@ -406,8 +404,10 @@ protected:
   \param[in] iStartRow index of the first row where to display the color
   */
   void SetColorForTable(TWContainerType iTWRowContainer,
+                        unsigned int iIndexTWRowContainer,
                         std::vector< int > iIndexColorRowContainer,
-                        std::string iNameGroupColor, unsigned int iStartRow);
+                        std::string iNameGroupColor,
+                        unsigned int iIndexRowTW);
 
   QStringList recordHeaderNamesOrder();
 
@@ -419,6 +419,20 @@ protected:
   \return true if the value needs to be displayed, false if not
   */
   bool CheckValueToDisplayData(std::string iValue, std::string iHeaderCol);
+
+  void InsertNewRow(TWContainerType iTWRowContainer,
+                    unsigned int iIndexTWRowContainer,
+                    std::vector< int > iIndexColorTraceRowContainer,
+                    std::vector< int > iIndexColorCollectionRowContainer,
+                    std::string iTraceName, std::string iCollectionName,
+                    Qt::CheckState iVisible = Qt::Checked);
+
+  void DisplayDataForOneRow(TWContainerType iTWRowContainer,
+                            unsigned int iIndexTWRowContainer,
+                            unsigned int iIndexTWRow,
+                            std::vector< int > iIndexColorTraceRowContainer,
+                            std::vector< int > iIndexColorCollectionRowContainer,
+                            std::string iTraceName, std::string iCollectionName);
 
 protected slots:
   /**

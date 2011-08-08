@@ -909,20 +909,13 @@ vtkViewImage2D::AddDataSet(vtkPolyData *dataset,
     return NULL;
     }
 
-  vtkSmartPointer< vtkPolyDataMapper > mapper =
-    vtkSmartPointer< vtkPolyDataMapper >::New();
+  vtkSmartPointer<vtkPolyDataMapper> mapper =
+      vtkSmartPointer<vtkPolyDataMapper>::New();
   mapper->SetScalarVisibility(iDataVisibility);
   mapper->ImmediateModeRenderingOn();
 
-  vtkActor *                                    actor = vtkActor::New();
-  vtkSmartPointer< vtkPlaneCutter >             cutter = 
-    vtkSmartPointer< vtkPlaneCutter >::New();
-  vtkSmartPointer< vtkExtractPolyDataGeometry > extracter =
-    vtkSmartPointer< vtkExtractPolyDataGeometry >::New();
-
   // check if input data is 2D
   double *bounds = dataset->GetBounds();
-
   //  get normal
   double *normal = this->SliceImplicitPlane->GetNormal();
 
@@ -931,6 +924,8 @@ vtkViewImage2D::AddDataSet(vtkPolyData *dataset,
        || ( ( bounds[2] == bounds[3] ) && ( normal[2] == 0 ) && ( normal[0] == 0 ) )
        || ( ( bounds[4] == bounds[5] ) && ( normal[0] == 0 ) && ( normal[1] == 0 ) ) )
     {
+    vtkSmartPointer<vtkExtractPolyDataGeometry> extracter =
+        vtkSmartPointer<vtkExtractPolyDataGeometry>::New();
     extracter->SetInput(dataset);
     extracter->SetImplicitFunction(this->SliceImplicitPlane);
     extracter->Update();
@@ -941,19 +936,19 @@ vtkViewImage2D::AddDataSet(vtkPolyData *dataset,
     {
     if ( intersection )
       {
+      vtkSmartPointer<vtkPlaneCutter> cutter =
+          vtkSmartPointer<vtkPlaneCutter>::New();
       cutter->SetInput(dataset);
       cutter->SetCutFunction(this->SliceImplicitPlane);
-      //cutter->Update();
       mapper->SetInput( cutter->GetOutput() );
       }
     else
       {
-      //std::cout << "else" << std::endl;
       mapper->SetInput(dataset);
       }
     }
 
-  //mapper->Update();
+  vtkActor * actor = vtkActor::New();
   actor->SetMapper(mapper);
 
   if ( property )
@@ -964,17 +959,6 @@ vtkViewImage2D::AddDataSet(vtkPolyData *dataset,
   actor->GetProperty()->SetLineWidth(this->IntersectionLineWidth);
 
   this->Renderer->AddViewProp(actor);
-
-  /*if(     ( bounds[0] != bounds[1] )
-      &&  ( bounds[2] != bounds[3] )
-      &&  ( bounds[4] != bounds[5] ))
-  {
-  //  std::cout << "extract actors..." << std::endl;
-  ExtractActors(dataset, XY);
-  ExtractActors(dataset, XZ);
-  ExtractActors(dataset, YZ);
-  }*/
-
 
   return actor;
 }
