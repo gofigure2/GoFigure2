@@ -521,6 +521,8 @@ template <class TResultsQuery>
 TResultsQuery ExecuteSelectQuery(vtkMySQLDatabase *iDatabaseConnector,
                                               std::string iQuery)
 {
+  std::cout << "execute query:" << iQuery << std::endl;
+
   vtkSQLQuery *query = iDatabaseConnector->GetQueryInstance();
 
   TResultsQuery oResults;

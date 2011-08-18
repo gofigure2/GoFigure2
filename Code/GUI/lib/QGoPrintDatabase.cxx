@@ -1968,7 +1968,7 @@ UpdateTableWidgetAndContainersForGivenTimePoint(
 {
   this->OpenDBConnection();
 
-  if(this->m_VisibleTimePoints.size() <= 3)
+  if(this->m_VisibleTimePoints.size() == 3)
     {
     // list to be removed
     std::list<unsigned int> listToRemove;
@@ -2021,21 +2021,27 @@ UpdateTableWidgetAndContainersForGivenTimePoint(
       }
 
     // remove time points
-    this->m_ContoursManager->CleanTWAndContainerForGivenTimePoint(
-      this->m_DatabaseConnector, listToRemove);
-    this->m_MeshesManager->CleanTWAndContainerForGivenTimePoint(
-      this->m_DatabaseConnector, listToRemove);
+    if(listToRemove.size() > 0)
+      {
+      this->m_ContoursManager->CleanTWAndContainerForGivenTimePoint(
+        this->m_DatabaseConnector, listToRemove);
+      this->m_MeshesManager->CleanTWAndContainerForGivenTimePoint(
+        this->m_DatabaseConnector, listToRemove);
+      }
 
 
     // add time points
-    this->m_ContoursManager->
-      DisplayInfoAndLoadVisuContainerForAllContoursForSpecificTPs(
-      this->m_DatabaseConnector,
-      listToAdd);
-    this->m_MeshesManager->
-      DisplayInfoAndLoadVisuContainerForAllMeshesForSpecificTPs(
-      this->m_DatabaseConnector,
-      listToAdd);
+    if(listToAdd.size() > 0)
+      {
+      this->m_ContoursManager->
+        DisplayInfoAndLoadVisuContainerForAllContoursForSpecificTPs(
+        this->m_DatabaseConnector,
+        listToAdd);
+      this->m_MeshesManager->
+        DisplayInfoAndLoadVisuContainerForAllMeshesForSpecificTPs(
+        this->m_DatabaseConnector,
+        listToAdd);
+      }
 
     this->CloseDBConnection();
     return listToAdd;
