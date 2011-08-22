@@ -36,6 +36,8 @@
 
 #include "QGoFilterSemiAutoBase.h"
 
+#include "QGoContourSemiAutoWatershedWidget.h"
+
 #include "QGoGUILibConfigure.h"
 
 /**
@@ -55,6 +57,8 @@ public:
   /** \brief Destructor */
   ~QGoFilterWatershed();
 
+  void SetMaxThreshold(const int& iThreshold);
+
   virtual vtkPolyData * Apply();
 
   virtual void ConnectSignals(int iFilterNumber);
@@ -65,6 +69,8 @@ public:
   double m_CorrTresh;
   double m_Alpha;
   double m_Beta;
+
+  QGoContourSemiAutoWatershedWidget* m_Widget;
 
 public slots:
   void setTreshMin(int);
