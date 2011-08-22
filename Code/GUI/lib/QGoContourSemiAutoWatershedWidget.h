@@ -50,11 +50,12 @@ class QGoContourSemiAutoWatershedWidget:
   protected Ui::WatershedWidget
 {
   Q_OBJECT
+
 public:
   explicit QGoContourSemiAutoWatershedWidget(QWidget *iParent = 0);
   ~QGoContourSemiAutoWatershedWidget();
 
-  //QVBoxLayout *gridLayout2;
+  void SetMaxThreshold(const int& iThreshold);
 
   signals:
     /*

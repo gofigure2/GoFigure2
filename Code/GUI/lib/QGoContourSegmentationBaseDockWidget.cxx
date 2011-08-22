@@ -244,3 +244,13 @@ QGoContourSegmentationBaseDockWidget::Initialize()
 {
   m_ContourManualSegmentation->GenerateContourRepresentationProperties(true);
 }
+//---------------------------------------------------------------------------//
+
+//---------------------------------------------------------------------------//
+void
+QGoContourSegmentationBaseDockWidget::
+SetMaxThreshold(const int& iThreshold)
+{
+  // nothing to do, no algorithm require it yet
+}
+//---------------------------------------------------------------------------//

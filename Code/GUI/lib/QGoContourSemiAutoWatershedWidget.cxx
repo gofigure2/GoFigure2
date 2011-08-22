@@ -65,3 +65,13 @@ QGoContourSemiAutoWatershedWidget::
 }
 
 //---------------------------------------------------------------------------//
+
+//---------------------------------------------------------------------------//
+void
+QGoContourSemiAutoWatershedWidget::
+SetMaxThreshold(const int& iThreshold)
+{
+  this->tresholdMinSpinBox->setMaximum(iThreshold);
+  //this->tresholdMaxSpinBox->setMaximum(iThreshold);
+}
+//---------------------------------------------------------------------------//
