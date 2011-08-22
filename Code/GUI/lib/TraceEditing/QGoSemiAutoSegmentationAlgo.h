@@ -74,6 +74,7 @@ protected:
   */
   virtual void SetAlgoWidget(QWidget* iParent = 0);
 
+
   /**
   \brief delete the different parameters
   */

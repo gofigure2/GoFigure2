@@ -67,12 +67,13 @@ class QGoAlgoParameter< int >
   public:
     typedef QSpinBox RepresentationType;
     QGoAlgoParameter<int>(std::string iParamName,
-      bool iAdvParam, int iMin, int iMax, int iDefaultValue = 0)
+      bool iAdvParam, int iMin, int iMax,
+      int iDefaultValue = 0, int iDefaultStep= 1)
     {
     m_ParamName = iParamName;
     m_Box = new RepresentationType;
     m_AdvParam = iAdvParam;
-    SetRangeValues(iMin, iMax, iDefaultValue);
+    SetRangeValues(iMin, iMax, iDefaultValue, iDefaultStep);
     };
 
     ~QGoAlgoParameter<int>()
@@ -94,9 +95,10 @@ class QGoAlgoParameter< int >
 
   protected:
 
-    void SetRangeValues(int iMin, int iMax, int iDefaultValue)
+    void SetRangeValues(int iMin, int iMax, int iDefaultValue, int iDefaultStep)
     {
       m_Box->setRange(iMin, iMax);
+      m_Box->setSingleStep(iDefaultStep);
       if (iDefaultValue != 0)
         {
         m_Box->setValue(iDefaultValue);
@@ -114,12 +116,12 @@ class QGoAlgoParameter< double >
     typedef QDoubleSpinBox RepresentationType;
     QGoAlgoParameter<double>(std::string iParamName,
       bool iAdvParam, double iMin, double iMax, 
-      int iNbDecimal, double iDefaultValue = 0)
+      int iNbDecimal, double iDefaultValue = 0, double iDefaultStep = 0.1)
       {
       m_ParamName = iParamName;
       m_Box = new RepresentationType;
       m_AdvParam = iAdvParam;
-      SetRangeValues(iMin, iMax, iNbDecimal, iDefaultValue);
+      SetRangeValues(iMin, iMax, iNbDecimal, iDefaultValue, iDefaultStep);
       };
 
     ~QGoAlgoParameter<double>()
@@ -142,10 +144,11 @@ class QGoAlgoParameter< double >
   protected:
 
     void SetRangeValues(double iMin, double iMax, 
-      int iNbDecimal, double iDefaultValue)
+      int iNbDecimal, double iDefaultValue, double iDefaultStep)
     {
       m_Box->setRange(iMin, iMax);
       m_Box->setDecimals(iNbDecimal);
+      m_Box->setSingleStep(iDefaultStep);
       if (iDefaultValue != 0)
         {
         m_Box->setValue(iDefaultValue);

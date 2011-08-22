@@ -398,6 +398,8 @@ public:
    **/
   unsigned int getNumberOfVisibleChannels();
 
+  int getMaxThreshold();
+
 protected:
   /*
    * \brief Color an image given the original image and a lookuptable (LUT)
@@ -417,6 +419,7 @@ protected:
   unsigned int m_BoundsChannel[2];
   int          m_Extent[6];
   unsigned int m_TimeInterval;
+  int          m_MaxThreshold;
   //--------------------
 
   // Doppler view parameters
@@ -447,6 +450,7 @@ private:
       this->m_Extent[4] = rhs.m_Extent[4];
       this->m_Extent[5] = rhs.m_Extent[5];
       this->m_TimeInterval = rhs.m_TimeInterval;
+      this->m_MaxThreshold = rhs.m_MaxThreshold;
       this->m_DopplerMode = rhs.m_DopplerMode;
       this->m_DopplerStep = rhs.m_DopplerStep;
       this->m_DopplerTime = rhs.m_DopplerTime;

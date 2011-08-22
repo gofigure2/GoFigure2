@@ -36,8 +36,10 @@
 
 
 QGoMeshWaterShedAlgo::
-QGoMeshWaterShedAlgo(std::vector< vtkPoints* >* iSeeds, QWidget* iParent)
-  :QGoWaterShedAlgo(iSeeds, iParent)
+QGoMeshWaterShedAlgo(std::vector< vtkPoints* >* iSeeds,
+                     int iMaxThreshold,
+                     QWidget* iParent)
+  :QGoWaterShedAlgo(iSeeds, iMaxThreshold, iParent)
 {
 }
 //-------------------------------------------------------------------------
