@@ -89,7 +89,7 @@ initTimePoint(const unsigned int& iTime)
         m_MegaImageReader->GetOutput(numberOfChannels);
 
     //
-    int type = image->GetScalarType();
+    int type = image->GetScalarSize();
     m_MaxThreshold = pow(2, 8*type) - 1;
 
     // Get Color

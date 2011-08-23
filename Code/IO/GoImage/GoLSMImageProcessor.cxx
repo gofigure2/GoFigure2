@@ -94,7 +94,7 @@ initTimePoint(const unsigned int& iTime)
    // get image
     vtkSmartPointer<vtkImageData> image = reader->GetOutput();
 
-    int type = image->GetScalarType();
+    int type = image->GetScalarSize();
     m_MaxThreshold = pow(2, 8*type) - 1;
 
     // Get Color
