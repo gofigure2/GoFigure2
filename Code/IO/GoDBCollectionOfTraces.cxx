@@ -107,8 +107,16 @@ void GoDBCollectionOfTraces::DeleteTracesInDB(std::list< unsigned int > TracesTo
     {
     unsigned int ID = *iter;
 
+    // if the trace is a mesh, we should delete its intensity as well
+    if(m_TracesName.compare("mesh") == 0)
+      {
+      // delete the related intensity table
+      DeleteRow(DatabaseConnector, "intensity" , m_TracesIDName,
+                ConvertToString< unsigned int >(ID));
+      }
+
     DeleteRow( DatabaseConnector, m_TracesName, m_TracesIDName,
-      ConvertToString< unsigned int >(ID) );
+               ConvertToString< unsigned int >(ID) );
     ++iter;
     }
 }
