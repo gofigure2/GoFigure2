@@ -69,6 +69,8 @@
 
 #include <vtkObjectFactory.h>
 #include <vtkRenderWindowInteractor.h>
+#include "vtkRenderer.h"
+#include "vtkProperty.h"
 #include "vtkViewImage3DCommand.h"
 
 #include <vtkProp.h>
@@ -230,6 +232,107 @@ vtkInteractorStyleImage3D::OnMiddleButtonUp()
       this->Superclass::OnMiddleButtonUp();
       break;
     }
+}
+//----------------------------------------------------------------------------
+void
+vtkInteractorStyleImage3D::OnChar()
+{
+  vtkRenderWindowInteractor *rwi = this->Interactor;
+
+  if ( ( rwi->GetKeyCode() == 'w' ) || ( rwi->GetKeyCode() == 'W' ) )
+      {
+      vtkActorCollection *ac;
+      vtkActor *anActor, *aPart;
+      vtkAssemblyPath *path;
+      this->FindPokedRenderer(rwi->GetEventPosition()[0],
+                              rwi->GetEventPosition()[1]);
+      if(this->CurrentRenderer!=0)
+        {
+        ac = this->CurrentRenderer->GetActors();
+        vtkCollectionSimpleIterator ait;
+        for (ac->InitTraversal(ait); (anActor = ac->GetNextActor(ait)); )
+          {
+          for (anActor->InitPathTraversal(); (path=anActor->GetNextPath()); )
+            {
+
+            // make sure we don't modify the planes actors
+            if ( path != NULL )
+              {
+              std::vector< vtkActor * >::iterator it2 = m_PlanesActors.begin();
+              while(it2!=m_PlanesActors.end())
+                {
+                if(path && dynamic_cast<vtkProp*>(*it2) == path->GetLastNode()->GetViewProp())
+                  {
+                  path = NULL;
+                  }
+                ++it2;
+                }
+              }
+
+            // go on if target is not a plane
+            if(path)
+              {
+              aPart=static_cast<vtkActor *>(path->GetLastNode()->GetViewProp());
+              aPart->GetProperty()->SetRepresentationToWireframe();
+              }
+            }
+          }
+        }
+      else
+        {
+        vtkWarningMacro(<<"no current renderer on the interactor style.");
+        }
+      rwi->Render();
+      return;
+      }
+  else if ( ( rwi->GetKeyCode() == 's' ) || ( rwi->GetKeyCode() == 'S' ) )
+      {
+      vtkActorCollection *ac;
+      vtkActor *anActor, *aPart;
+      vtkAssemblyPath *path;
+      this->FindPokedRenderer(rwi->GetEventPosition()[0],
+                              rwi->GetEventPosition()[1]);
+      if(this->CurrentRenderer!=0)
+        {
+        ac = this->CurrentRenderer->GetActors();
+        vtkCollectionSimpleIterator ait;
+        for (ac->InitTraversal(ait); (anActor = ac->GetNextActor(ait)); )
+          {
+          for (anActor->InitPathTraversal(); (path=anActor->GetNextPath()); )
+            {
+
+            // make sure we don't modify the planes actors
+            if ( path != NULL )
+              {
+              std::vector< vtkActor * >::iterator it2 = m_PlanesActors.begin();
+              while(it2!=m_PlanesActors.end())
+                {
+                if(path && dynamic_cast<vtkProp*>(*it2) == path->GetLastNode()->GetViewProp())
+                  {
+                  path = NULL;
+                  }
+                ++it2;
+                }
+              }
+
+            // go on if target is not a plane
+            if(path)
+              {
+              aPart=static_cast<vtkActor *>(path->GetLastNode()->GetViewProp());
+              aPart->GetProperty()->SetRepresentationToSurface();
+              }
+            }
+          }
+        }
+      else
+        {
+        vtkWarningMacro(<<"no current renderer on the interactor style.");
+        }
+      rwi->Render();
+      return;
+      }
+
+  this->Superclass::OnChar();
 }
 
 //----------------------------------------------------------------------------
