@@ -120,11 +120,11 @@ private:
 
   void OpenDBConnection();
 
-  void SaveInfoInDatabase();
+  bool SaveInfoInDatabase();
 
   /** \brief fill m_importFileInfoList from the filenames of the images and
   m_HeaderFileInfo from the header file*/
-  void ImportInfoFromMegacapture(QString newfilename);
+  bool ImportInfoFromMegacapture(QString newfilename);
 
   QLabel *        textNewImgSessionName;
   QLineEdit *     lineNewImgSessionName;
