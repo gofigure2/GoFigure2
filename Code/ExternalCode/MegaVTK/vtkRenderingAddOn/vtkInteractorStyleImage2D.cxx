@@ -602,6 +602,7 @@ void
 vtkInteractorStyleImage2D::SynchronizeViews( bool iSynchronize)
 {
   m_SynchronizeViews = iSynchronize;
+}
 
 //----------------------------------------------------------------------------
 void

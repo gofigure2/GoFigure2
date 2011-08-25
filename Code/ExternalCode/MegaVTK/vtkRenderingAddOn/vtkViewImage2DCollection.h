@@ -375,6 +375,7 @@ public:
 
   /**
    * \brief Get the plane actors
+   */
   std::vector< vtkActor * > GetPlanesActors();
 
 protected:

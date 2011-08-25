@@ -364,20 +364,6 @@ vtkViewImage2DCollection::SetSplinePlaneActorsVisibility(bool iVisibility)
 //----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
-void vtkViewImage2DCollection::SyncAddDataSet(vtkDataSet *dataset, vtkProperty *property)
-{
-  this->InitTraversal();
-  vtkViewImage2D *item = this->GetNextItem();
-  while ( item )
-    {
-    item->AddDataSet (dataset, property);
-    item = this->GetNextItem();
-    }
-}
-
-//----------------------------------------------------------------------------
-
-//----------------------------------------------------------------------------
 void vtkViewImage2DCollection::SyncResetCamera(void)
 {
   this->InitTraversal();
