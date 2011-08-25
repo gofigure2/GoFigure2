@@ -120,6 +120,8 @@ public:
 
   virtual void OnMiddleButtonUp();
 
+  virtual void OnChar();
+
   /**
    * \brief Store the actor which is pointed by the cursor into "m_CurrentProp"
    */
