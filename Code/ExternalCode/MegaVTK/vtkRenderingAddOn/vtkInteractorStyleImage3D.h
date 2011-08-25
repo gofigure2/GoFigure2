@@ -71,6 +71,10 @@
 #include <vtkInteractorStyleTrackballCamera.h>
 #include "MegaVTK2Configure.h"
 
+#include "vtkActor.h"
+#include "vtkProp.h"
+#include <vector>
+
 class vtkProp;
 
 /**
@@ -167,6 +171,8 @@ public:
     */
   void EnablePickMode();
 
+  void SetPlanesActors( std::vector< vtkActor * > iBounds);
+
 protected:
   vtkInteractorStyleImage3D();
   ~vtkInteractorStyleImage3D();
@@ -180,6 +186,8 @@ private:
   vtkProp *    m_CurrentProp;
   unsigned int m_Mode;
   bool         m_State;
+
+  std::vector< vtkActor * > m_PlanesActors;
 };
 
 #endif
