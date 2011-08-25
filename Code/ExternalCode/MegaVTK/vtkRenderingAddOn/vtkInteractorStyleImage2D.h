@@ -71,6 +71,10 @@
 #include <vtkInteractorStyleImage.h>
 #include "MegaVTK2Configure.h"
 
+#include "vtkActor.h"
+#include "vtkProp.h"
+#include <vector>
+
 #define VTKIS_SLICE_MOVE  5051
 
 /**
@@ -171,6 +175,8 @@ public:
    */
   vtkProp * GetCurrentProp();
 
+  void SetPlanesActors( std::vector< vtkActor * > iBounds);
+
 protected:
   vtkInteractorStyleImage2D();
   ~vtkInteractorStyleImage2D();
@@ -186,6 +192,7 @@ private:
 
   unsigned int m_Mode;
   bool         m_LeftButtonDown;
+  std::vector< vtkActor * > m_PlanesActors;
 };
 
 #endif

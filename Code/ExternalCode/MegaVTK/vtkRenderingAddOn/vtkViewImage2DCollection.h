@@ -74,7 +74,7 @@
 #include "vtkViewImage2D.h"
 #include "MegaVTK2Configure.h"
 
-#include <vtkstd/vector>
+#include <vector>
 
 /**
    This macro can be useful as we frequently set
@@ -371,6 +371,8 @@ public:
    */
   void EnableContourPickingMode();
 
+  std::vector< vtkActor * > GetPlanesActors();
+
 protected:
 
   vtkViewImage2DCollection();
@@ -379,7 +381,7 @@ protected:
   vtkViewImage2DCollectionCommand *Command;
   vtkRenderWindow *                ExtraRenderWindow;
 
-  vtkstd::vector< vtkActor * > SlicePlaneActors;
+  std::vector< vtkActor * > PlanesActors;
 
   unsigned int LinkSliceMove;
   unsigned int LinkColorWindowLevel;

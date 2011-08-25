@@ -78,6 +78,7 @@
 #include <vtkRenderer.h>
 #include "vtkViewImage2DCommand.h"
 
+
 vtkCxxRevisionMacro (vtkInteractorStyleImage2D, "$Revision: 490 $");
 vtkStandardNewMacro (vtkInteractorStyleImage2D);
 
@@ -534,6 +535,21 @@ vtkInteractorStyleImage2D::HighlightCurrentActor()
                    0.0, this->CurrentRenderer);
       path = picker->GetPath();
       }
+
+    // check if item does does not belong to phantom[]
+    if ( path != NULL )
+      {
+      std::vector< vtkActor * >::iterator it2 = m_PlanesActors.begin();
+      while(it2!=m_PlanesActors.end())
+        {
+        if(path && dynamic_cast<vtkProp*>(*it2) == path->GetFirstNode()->GetViewProp())
+          {
+          path = NULL;
+          }
+        ++it2;
+        }
+      }
+
     if ( path == NULL )
       {
       this->HighlightProp(NULL);
@@ -580,3 +596,11 @@ vtkInteractorStyleImage2D::SetPickMode()
   this->m_Mode = InteractionTypeContourPicking;
   this->Superclass::StartPick();
 }
+//----------------------------------------------------------------------------
+void
+vtkInteractorStyleImage2D::
+SetPlanesActors( std::vector< vtkActor * > iBounds)
+{
+  this->m_PlanesActors= iBounds;
+}
+//----------------------------------------------------------------------------
