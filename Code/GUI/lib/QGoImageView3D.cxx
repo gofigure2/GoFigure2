@@ -779,7 +779,9 @@ QGoImageView3D::SetSliceViewXY(const int & iSlice)
       viewer->SetSlice(iSlice);
       viewer->Render();
       this->m_Pool->SyncRender(viewer);
-      emit SliceViewXYChanged(iSlice);
+
+      // move slider and emit signal
+      MoveSliderXY();
       }
     }
 }
@@ -809,7 +811,9 @@ QGoImageView3D::SetSliceViewXZ(const int & iSlice)
       viewer->SetSlice(iSlice);
       viewer->Render();
       this->m_Pool->SyncRender(viewer);
-      emit SliceViewXZChanged(iSlice);
+
+      // move slider and emit signal
+      MoveSliderXZ();
       }
     }
 }
@@ -839,7 +843,9 @@ QGoImageView3D::SetSliceViewYZ(const int & iSlice)
       viewer->SetSlice(iSlice);
       viewer->Render();
       this->m_Pool->SyncRender(viewer);
-      emit SliceViewYZChanged(iSlice);
+
+      // move slider and emit signal
+      MoveSliderYZ();
       }
     }
 }
