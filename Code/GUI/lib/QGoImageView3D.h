@@ -269,7 +269,6 @@ protected:
   bool m_Initialized;
 
   bool m_ShowCube;
-  bool m_SynchronizeViews;
 
   vtkOrientedBoxWidget *  m_BoxWidget;
   vtkImplicitPlaneWidget *m_PlaneWidget;

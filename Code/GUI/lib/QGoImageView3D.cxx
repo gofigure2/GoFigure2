@@ -88,7 +88,6 @@ QGoImageView3D::QGoImageView3D(QWidget *iParent) :
   m_FirstRender(true),
   m_Initialized(false),
   m_ShowCube(true),
-  m_SynchronizeViews(true),
   m_BoxWidget(0),
   m_PlaneWidget(0)
 {
@@ -785,14 +784,10 @@ QGoImageView3D::SetSliceViewXY(const int & iSlice)
       vtkViewImage2D *viewer = this->m_Pool->GetItem(0);
       viewer->SetSlice(iSlice);
       viewer->Render();
-      // synchronize views
-      if(m_SynchronizeViews)
-        {
-        this->m_Pool->SyncRender(viewer);
+      this->m_Pool->SyncRender(viewer);
 
-        // move slider and emit signal
-        MoveSliderXY();
-        }
+      // move slider and emit signal
+      MoveSliderXY();
       }
     }
 }
@@ -821,14 +816,10 @@ QGoImageView3D::SetSliceViewXZ(const int & iSlice)
       vtkViewImage2D *viewer = this->m_Pool->GetItem(1);
       viewer->SetSlice(iSlice);
       viewer->Render();
-      // synchronize views
-      if(m_SynchronizeViews)
-        {
-        this->m_Pool->SyncRender(viewer);
+      this->m_Pool->SyncRender(viewer);
         
-        // move slider and emit signal
-        MoveSliderXZ();
-        }
+      // move slider and emit signal
+      MoveSliderXZ();
       }
     }
 }
@@ -857,14 +848,10 @@ QGoImageView3D::SetSliceViewYZ(const int & iSlice)
       vtkViewImage2D *viewer = this->m_Pool->GetItem(2);
       viewer->SetSlice(iSlice);
       viewer->Render();
-      // synchronize views
-      if(m_SynchronizeViews)
-        {
-        this->m_Pool->SyncRender(viewer);
+      this->m_Pool->SyncRender(viewer);
         
-        // move slider and emit signal
-        MoveSliderYZ();
-        }
+      // move slider and emit signal
+      MoveSliderYZ();
       }
     }
 }
@@ -891,10 +878,7 @@ QGoImageView3D::MoveSliderXY()
     if ( s != this->SliderXY->value() )
       {
       this->SliderXY->setValue(s);
-      if(m_SynchronizeViews)
-        {
-        emit SliceViewXYChanged(s);
-        }
+      emit SliceViewXYChanged(s);
       }
     }
 }
@@ -912,10 +896,7 @@ QGoImageView3D::MoveSliderXZ()
     if ( s != this->SliderXZ->value() )
       {
       this->SliderXZ->setValue(s);
-      if(m_SynchronizeViews)
-        {
-        emit SliceViewXZChanged(s);
-        }
+      emit SliceViewXZChanged(s);
       }
     }
 }
@@ -933,10 +914,7 @@ QGoImageView3D::MoveSliderYZ()
     if ( s != this->SliderYZ->value() )
       {
       this->SliderYZ->setValue(s);
-      if(m_SynchronizeViews)
-        {
-        emit SliceViewYZChanged(s);
-        }
+      emit SliceViewYZChanged(s);
       }
     }
 }
@@ -1383,7 +1361,4 @@ QGoImageView3D::SynchronizeViews( bool iSynchronize)
     m_Pool->SynchronizeViews( iSynchronize );
     viewer->SynchronizeViews( iSynchronize );
     }
-
-  // update variable
-  m_SynchronizeViews = iSynchronize;
 }
