@@ -1,20 +1,34 @@
+#
+#  This file is configured by GoFigure2, to load
+#  GoFigure2's settings for an external project.
+#
+
 # To be completed!
-set( VTK_DIR "@VTK_DIR@" )
-set( ITK_DIR "@ITK_DIR@" )
-set( BOOST_DIR "@Boost_INCLUDE_DIRS@" )
 
-set( BUILD_SHARED_LIBS "@BUILD_SHARED_LIBS@" )
-
-set( GOFIGURE2_SOURCE_DIR "@GOFIGURE2_SOURCE_DIR@" )
-
+#################
+# GoFigure2
+#################
 set( GOFIGURE2_MAJOR_VERSION "@GOFIGURE2_MAJOR_VERSION@" )
 set( GOFIGURE2_MINOR_VERSION "@GOFIGURE2_MINOR_VERSION@" )
 set( GOFIGURE2_WC_REVISION "@GOFIGURE2_WC_REVISION@" )
-
 set( GOFIGURE2_VERSION "@GOFIGURE2_VERSION@" )
+
+# source code
+set( GOFIGURE2_SOURCE_DIR "@GOFIGURE2_SOURCE_DIR@" )
+
+# build information
+set( BUILD_SHARED_LIBS "@BUILD_SHARED_LIBS@" )
+# debug/release?
 
 # Add include directories needed to use gofigure2.
 include_directories( BEFORE "@GOFIGURE2_INCLUDE_DIRS@" )
 
 # Add link directories needed to use gofigure2.
 link_directories( "@GOFIGURE2_LIBRARY_DIRS@" )
+
+#####################
+# External libraries
+#####################
+set( VTK_DIR "@VTK_DIR@" )
+set( ITK_DIR "@ITK_DIR@" )
+set( BOOST_DIR "@Boost_INCLUDE_DIRS@" )
