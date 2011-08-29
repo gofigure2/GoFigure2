@@ -29,6 +29,31 @@ link_directories( "@GOFIGURE2_LIBRARY_DIRS@" )
 #####################
 # External libraries
 #####################
+
+######
+# The Visualization Toolkit
+######
+# source
 set( VTK_DIR "@VTK_DIR@" )
+# version?
+
+######
+# The Insight Toolkit
+######
+# source
 set( ITK_DIR "@ITK_DIR@" )
+# version?
+
+######
+# QT
+######
+# source
+# version
+
+######
+# BOOST
+######
+# source
 set( BOOST_DIR "@Boost_INCLUDE_DIRS@" )
+# version
+
