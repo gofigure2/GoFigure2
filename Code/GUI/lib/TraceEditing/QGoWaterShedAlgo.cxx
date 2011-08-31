@@ -34,9 +34,13 @@
 #include "QGoWaterShedAlgo.h"
 
 
-QGoWaterShedAlgo::QGoWaterShedAlgo(std::vector< vtkPoints* >* iSeeds, QWidget* iParent)
+// need param: max threshold
+QGoWaterShedAlgo::QGoWaterShedAlgo(std::vector< vtkPoints* >* iSeeds,
+                                   int iMaxThreshold,
+                                   QWidget* iParent)
   :QGoSemiAutoSegmentationAlgo(iSeeds,iParent)
 {
+  m_MaxThreshold = iMaxThreshold;
   this->SetAlgoWidget(iParent);
 }
 //-------------------------------------------------------------------------
@@ -64,19 +68,19 @@ void QGoWaterShedAlgo::SetAlgoWidget(QWidget* iParent)
   this->m_AlgoWidget =
     new QGoAlgorithmWidget("WaterShed", iParent);
 
-  m_ThresMin = new QGoAlgoParameter<int>("Thres.Min.", true, 0, 999, 10);
+  m_ThresMin = new QGoAlgoParameter<int>("Background below",true, 0, m_MaxThreshold, 10);
   this->m_AlgoWidget->AddParameter(m_ThresMin);
 
-  m_ThresMax = new QGoAlgoParameter<int>("Thres.Max.", true, 0, 999, 30);
+  m_ThresMax = new QGoAlgoParameter<int>("Nuclei above", true, 0, m_MaxThreshold, 30);
   this->m_AlgoWidget->AddParameter(m_ThresMax);
 
-  m_CorrThres = new QGoAlgoParameter<double>("Corr.Thres.", true, 0, 99.99, 2, 0.5);
+  m_CorrThres = new QGoAlgoParameter<double>("Gaussian Shape Similarity", true, 0, 1, 2, 0.5, 0.01);
   this->m_AlgoWidget->AddParameter(m_CorrThres);
 
-  m_Alpha = new QGoAlgoParameter<double>("Alpha", true, 0, 99.99, 2, 1.5);
+  m_Alpha = new QGoAlgoParameter<double>("Scaling", true, 0, 10, 2, 1.5, 0.1);
   this->m_AlgoWidget->AddParameter(m_Alpha);
 
-  m_Beta = new QGoAlgoParameter<double>("Beta", true, 0, 99.99, 2, 3);
+  m_Beta = new QGoAlgoParameter<double>("Slope", true, 0, 10, 2, 3, 0.1);
   this->m_AlgoWidget->AddParameter(m_Beta);
 
   QGoSemiAutoSegmentationAlgo::SetAlgoWidget();

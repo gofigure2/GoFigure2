@@ -88,6 +88,10 @@ initTimePoint(const unsigned int& iTime)
     vtkSmartPointer<vtkImageData> image =
         m_MegaImageReader->GetOutput(numberOfChannels);
 
+    //
+    int type = image->GetScalarSize();
+    m_MaxThreshold = pow(2, 8*type) - 1;
+
     // Get Color
     std::vector<std::vector<int> >channelColor =
         m_MegaImageReader->GetChannelColor();

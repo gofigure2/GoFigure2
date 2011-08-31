@@ -224,10 +224,10 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
 
   CreateBookmarkActions();
 
-	//CreateModeActions(); in setmegacapture/LSM files now
-	//CreateTracesActions();
+  //CreateModeActions(); in setmegacapture/LSM files now
+  //CreateTracesActions();
 
-	ReadSettings();
+  ReadSettings();
 
   m_DockWidgetList.push_back(
     std::pair< QGoDockWidgetStatus *, QDockWidget * >(

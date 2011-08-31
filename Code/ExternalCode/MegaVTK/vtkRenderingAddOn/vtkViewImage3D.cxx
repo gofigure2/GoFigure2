@@ -806,3 +806,9 @@ vtkViewImage3D::ComputeDistancesToSquare(vtkPlanes *planes)
 }
 
 //----------------------------------------------------------------------------
+std::vector< vtkActor * >
+vtkViewImage3D::
+GetPlanesActors()
+{
+  return this->BoundsActor;
+}

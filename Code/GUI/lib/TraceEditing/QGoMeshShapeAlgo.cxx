@@ -57,9 +57,6 @@ std::vector<vtkPolyData*> QGoMeshShapeAlgo::ApplyAlgo(
   bool iIsInvertedOn)
 {
   QGoFilterShape ShapeFilter;
-
-  std::cout << __FILE__ << " NOT WORKING" << std::endl;
-  std::cout << "Problem in ApplyFilter3D: it does not use iChannel" << std::endl;
   std::vector<vtkPolyData*> NewMeshes =
     ShapeFilter.ApplyFilter3D(m_Radius->GetValue(),
     this->m_Seeds, this->m_Shape->Getvalue(), iImages, 0);

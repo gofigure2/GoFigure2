@@ -36,7 +36,10 @@
 
 #include <iostream>
 #include <fstream>
+#include <iomanip>
+#include <sstream>
 
+/*****************************************************************************/
 MegaCaptureHeaderReader::MegaCaptureHeaderReader(const std::string & iFileName) :
   m_FileName(iFileName)
 {
@@ -50,12 +53,16 @@ MegaCaptureHeaderReader::MegaCaptureHeaderReader(const std::string & iFileName) 
   m_ChannelDepth = 0;
   m_ChannelColor.resize(0);
 }
+/*****************************************************************************/
 
+/*****************************************************************************/
 MegaCaptureHeaderReader::
 ~MegaCaptureHeaderReader()
 {
 }
+/*****************************************************************************/
 
+/*****************************************************************************/
 void MegaCaptureHeaderReader::SetFileName(const std::string & iFileName)
 {
   if ( iFileName.empty() )
@@ -68,7 +75,9 @@ void MegaCaptureHeaderReader::SetFileName(const std::string & iFileName)
     m_FileName = iFileName;
     }
 }
+/*****************************************************************************/
 
+/*****************************************************************************/
 void MegaCaptureHeaderReader::Read()
 {
   std::string   line;
@@ -76,30 +85,47 @@ void MegaCaptureHeaderReader::Read()
 
   if ( ifs.is_open() )
     {
+    /**
+      * \todo Nicolas- shoudln't we read it too
+      */
     // Skip the 5 first lines, i.e.
     // MegaCapture
     // <ImageSessionData>
     // Version 3.0
     // ExperimentTitle
     // ExperimentDescription
+    int lineNumber(0);
     for ( int i = 0; i < 5; i++ )
       {
       getline(ifs, line);
-//       std::cout <<i <<" * "<<line <<std::endl;
+      ++lineNumber;
       }
 
     std::string word;
-    ifs >> word >> m_TimeInterval; //>>endofline;
-//     std::cout <<word <<" "<<m_TimeInterval <<std::endl;
+    ifs >> word >> m_TimeInterval;
+    CheckKeyWord(word, "TimeInterval", lineNumber);
+
+    /**
+      * \todo Nicolas- shoudln't we read Objective too
+      */
     getline(ifs, line);   // to get '\n'
     getline(ifs, line);   // Objective Plan-Apochromat 20x/0.8 M27
+    ++lineNumber;
 
     ifs >> word >> m_VoxelSizeX;
+    CheckKeyWord(word, "VoxelSizeX", lineNumber);
     ifs >> word >> m_VoxelSizeY;
+    CheckKeyWord(word, "VoxelSizeY", lineNumber);
     ifs >> word >> m_VoxelSizeZ;
+    CheckKeyWord(word, "VoxelSizeZ", lineNumber);
     ifs >> word >> m_DimensionX;
+    CheckKeyWord(word, "DimensionX", lineNumber);
     ifs >> word >> m_DimensionY;
+    CheckKeyWord(word, "DimensionY", lineNumber);
 
+    /**
+      * \todo Nicolas- shoudln't we read it too
+      */
     // DimensionPL 1
     // DimensionCO 2
     // DimensionRO 2
@@ -109,22 +135,32 @@ void MegaCaptureHeaderReader::Read()
     // DimensionTM 2
     // DimensionZS 4
 
-    for ( int i = 0; i < 9; i++ )
+    getline(ifs, line); // to get '\n'
+    for ( int i = 0; i < 8; i++ )
       {
       getline(ifs, line);
+      ++lineNumber;
       }
 
     ifs >> word  >> m_NumberOfChannels;
+    CheckKeyWord(word, "DimensionCH", lineNumber);
 
     m_ChannelColor.resize(m_NumberOfChannels);
     unsigned long color;
     for ( unsigned int i = 0; i < m_NumberOfChannels; i++ )
       {
       ifs >> word >> color;
+      std::ostringstream channelColor;
+      channelColor << "ChannelColor" << std::setw(2) << std::setfill('0') << i;
+      CheckKeyWord(word, channelColor.str(), lineNumber);
       m_ChannelColor[i] = ConvertUnsignedLongColorToRGBIntColor(color);
       }
     ifs >> word >> m_ChannelDepth;
+    CheckKeyWord(word, "ChannelDepth", lineNumber);
 
+    /**
+      * \todo Nicolas- Reading date from here might not be a good solution
+      */
     // FileType  TIF
     // </ImageSessionData>
     // <Image>
@@ -146,7 +182,6 @@ void MegaCaptureHeaderReader::Read()
   else
     {
     std::cerr << "Unable to open file" << std::endl;
-    return;
     }
 }
 
@@ -165,3 +200,21 @@ std::vector< int > MegaCaptureHeaderReader::ConvertUnsignedLongColorToRGBIntColo
 //   std::string oDate;
 //   oDate = iDate.substr( );
 // }
+/*****************************************************************************/
+
+/*****************************************************************************/
+bool
+MegaCaptureHeaderReader::
+CheckKeyWord(std::string iWord, std::string iCompare, int& iLineNumber)
+{
+  ++iLineNumber;
+  if(iWord.compare(iCompare) != 0)
+    {
+    std::cerr << ">> ERROR: *" << iCompare << "* keyword should on the line *"
+              << iLineNumber << "* of your .meg file"<< std::endl;
+    throw std::string("Corrupted header file");
+
+    return false;
+    }
+  return true;
+}

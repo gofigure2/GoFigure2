@@ -55,7 +55,9 @@ and GoFigure
 class QGoMeshWaterShedAlgo: public QGoWaterShedAlgo
 {
 public:
-  QGoMeshWaterShedAlgo(std::vector< vtkPoints* >* iSeeds, QWidget* iParent = 0);
+  QGoMeshWaterShedAlgo(std::vector< vtkPoints* >* iSeeds,
+                       int iMaxThreshold,
+                       QWidget* iParent = 0);
   ~QGoMeshWaterShedAlgo();
 
   std::vector<vtkPolyData*> ApplyAlgo(

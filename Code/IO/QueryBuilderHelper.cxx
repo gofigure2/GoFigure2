@@ -243,8 +243,10 @@ std::string GetConditions(std::vector< FieldWithValue > iConditions,
 
   oConditions << "(";
   unsigned int i;
+  // why -1??
   for ( i = 0; i < iConditions.size() - 1; i++ )
     {
+    
     oConditions << iConditions[i].Field;
     oConditions << iConditions[i].Operator;
     oConditions << " '";

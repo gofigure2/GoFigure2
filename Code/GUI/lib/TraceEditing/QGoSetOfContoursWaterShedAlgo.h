@@ -70,7 +70,9 @@ and GoFigure
 class QGoSetOfContoursWaterShedAlgo: public QGoWaterShedAlgo
 {
 public:
-  QGoSetOfContoursWaterShedAlgo(std::vector< vtkPoints* >* iSeeds, QWidget* iParent = 0);
+  QGoSetOfContoursWaterShedAlgo(std::vector< vtkPoints* >* iSeeds,
+                                int iMaxThreshold,
+                                QWidget* iParent = 0);
   ~QGoSetOfContoursWaterShedAlgo();
 
   // should not be virutal pure since we dont implement it....

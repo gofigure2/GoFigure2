@@ -53,7 +53,9 @@ and GoFigure
 class QGoWaterShedAlgo: public QGoSemiAutoSegmentationAlgo
 {
 public:
-  QGoWaterShedAlgo(std::vector< vtkPoints* >* iSeeds, QWidget* iParent = 0);
+  QGoWaterShedAlgo(std::vector< vtkPoints* >* iSeeds,
+                   int iMaxThreshold = 0,
+                   QWidget* iParent = 0);
   ~QGoWaterShedAlgo();
 
   virtual std::vector<vtkPolyData*> ApplyAlgo(
@@ -69,7 +71,9 @@ protected:
   QGoAlgoParameter<double>*       m_Alpha;
   QGoAlgoParameter<double>*       m_Beta;
 
-  virtual void SetAlgoWidget(QWidget* iParent = 0);
+  int                             m_MaxThreshold;
+
+  virtual void SetAlgoWidget(QWidget* iParent);
 
   void DeleteParameters();
 };

@@ -55,6 +55,7 @@
 
 //--------------------------------------------------------------------------
 GoImageProcessor::GoImageProcessor():m_Output(NULL),
+  m_MaxThreshold(0),
   m_DopplerMode(false), m_DopplerStep(1), m_DopplerChannel(0), m_DopplerSize(3)
 {
   m_BoundsTime[0] = 0;
@@ -349,7 +350,7 @@ getVisibleImages()
     vtkSmartPointer<vtkImageShiftScale> scale =
         vtkSmartPointer<vtkImageShiftScale>::New();
     scale->SetInput(blendedImage->GetOutput());
-    scale->SetScale(255/range);
+    scale->SetScale(m_MaxThreshold/range);
     scale->SetOutputScalarTypeToUnsignedChar();
     scale->ReleaseDataFlagOn();
     scale->SetNumberOfThreads(VTK_MAX_THREADS);
@@ -582,3 +583,13 @@ updatePoints(std::string iName, std::vector< std::map< unsigned int, unsigned in
     m_MegaImageContainer.get< Name >().modify( it , set_PointsRGBA(iVector));
     }
 }
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+int
+GoImageProcessor::
+getMaxThreshold()
+{
+  return m_MaxThreshold;
+}
+//--------------------------------------------------------------------------
