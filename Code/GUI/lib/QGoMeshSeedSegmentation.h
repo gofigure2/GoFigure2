@@ -74,6 +74,9 @@ public:
    * \brief Destructor
    */
   ~QGoMeshSeedSegmentation();
+
+  void SetMaxThreshold(const int& iThreshold);
+
 private:
   QGoFilterChanAndVese* m_LevelSetfilter;
   QGoFilterShape*       m_ShapeFilter;

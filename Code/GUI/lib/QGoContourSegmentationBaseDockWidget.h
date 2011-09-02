@@ -78,6 +78,8 @@ public:
 
   void SetNumberOfChannels(int iNumberOfChannels);
 
+  void SetMaxThreshold(const int& iThreshold);
+
   /**
    * \brief Get reedit mode. Provides a way to know if the reedit mode in on or of
    * \return true: reedit mode ON, false: reedit mode OFF

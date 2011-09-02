@@ -116,3 +116,13 @@ QGoMeshSeedSegmentation::
 }
 
 //--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+QGoMeshSeedSegmentation::
+SetMaxThreshold(const int& iThreshold)
+{
+  // set the max threshold for the watershed:
+  m_Watershed->SetMaxThreshold(iThreshold);
+}
+//--------------------------------------------------------------------------

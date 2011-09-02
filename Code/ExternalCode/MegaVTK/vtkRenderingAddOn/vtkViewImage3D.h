@@ -340,6 +340,8 @@ public:
    * */
   void ComputeDistancesToSquare(vtkPlanes *planes);
 
+  std::vector< vtkActor * > GetPlanesActors();
+
 protected:
 
   vtkViewImage3D();

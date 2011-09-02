@@ -76,7 +76,9 @@
 #include <vtkRenderWindow.h>
 #include <vtkCamera.h>
 #include <vtkRenderer.h>
+#include "vtkProperty.h"
 #include "vtkViewImage2DCommand.h"
+
 
 vtkCxxRevisionMacro (vtkInteractorStyleImage2D, "$Revision: 490 $");
 vtkStandardNewMacro (vtkInteractorStyleImage2D);
@@ -400,6 +402,98 @@ vtkInteractorStyleImage2D::OnChar()
     {
     this->InvokeEvent (vtkViewImage2DCommand::ResetViewerEvent, this);
     }
+  else if ( ( rwi->GetKeyCode() == 'w' ) || ( rwi->GetKeyCode() == 'W' ) )
+      {
+      vtkActorCollection *ac;
+      vtkActor *anActor, *aPart;
+      vtkAssemblyPath *path;
+      this->FindPokedRenderer(rwi->GetEventPosition()[0],
+                              rwi->GetEventPosition()[1]);
+      if(this->CurrentRenderer!=0)
+        {
+        ac = this->CurrentRenderer->GetActors();
+        vtkCollectionSimpleIterator ait;
+        for (ac->InitTraversal(ait); (anActor = ac->GetNextActor(ait)); )
+          {
+          for (anActor->InitPathTraversal(); (path=anActor->GetNextPath()); )
+            {
+
+            // make sure we don't modify the planes actors
+            if ( path != NULL )
+              {
+              std::vector< vtkActor * >::iterator it2 = m_PlanesActors.begin();
+              while(it2!=m_PlanesActors.end())
+                {
+                if(path && dynamic_cast<vtkProp*>(*it2) == path->GetLastNode()->GetViewProp())
+                  {
+                  path = NULL;
+                  }
+                ++it2;
+                }
+              }
+
+            // go on if target is not a plane
+            if(path)
+              {
+              aPart=static_cast<vtkActor *>(path->GetLastNode()->GetViewProp());
+              aPart->GetProperty()->SetRepresentationToWireframe();
+              }
+            }
+          }
+        }
+      else
+        {
+        vtkWarningMacro(<<"no current renderer on the interactor style.");
+        }
+      rwi->Render();
+      return;
+      }
+  else if ( ( rwi->GetKeyCode() == 's' ) || ( rwi->GetKeyCode() == 'S' ) )
+      {
+      vtkActorCollection *ac;
+      vtkActor *anActor, *aPart;
+      vtkAssemblyPath *path;
+      this->FindPokedRenderer(rwi->GetEventPosition()[0],
+                              rwi->GetEventPosition()[1]);
+      if(this->CurrentRenderer!=0)
+        {
+        ac = this->CurrentRenderer->GetActors();
+        vtkCollectionSimpleIterator ait;
+        for (ac->InitTraversal(ait); (anActor = ac->GetNextActor(ait)); )
+          {
+          for (anActor->InitPathTraversal(); (path=anActor->GetNextPath()); )
+            {
+
+            // make sure we don't modify the planes actors
+            if ( path != NULL )
+              {
+              std::vector< vtkActor * >::iterator it2 = m_PlanesActors.begin();
+              while(it2!=m_PlanesActors.end())
+                {
+                if(path && dynamic_cast<vtkProp*>(*it2) == path->GetLastNode()->GetViewProp())
+                  {
+                  path = NULL;
+                  }
+                ++it2;
+                }
+              }
+
+            // go on if target is not a plane
+            if(path)
+              {
+              aPart=static_cast<vtkActor *>(path->GetLastNode()->GetViewProp());
+              aPart->GetProperty()->SetRepresentationToSurface();
+              }
+            }
+          }
+        }
+      else
+        {
+        vtkWarningMacro(<<"no current renderer on the interactor style.");
+        }
+      rwi->Render();
+      return;
+      }
 
   this->Superclass::OnChar();
 }
@@ -534,6 +628,21 @@ vtkInteractorStyleImage2D::HighlightCurrentActor()
                    0.0, this->CurrentRenderer);
       path = picker->GetPath();
       }
+
+    // make sure we don't modify the planes actors
+    if ( path != NULL )
+      {
+      std::vector< vtkActor * >::iterator it2 = m_PlanesActors.begin();
+      while(it2!=m_PlanesActors.end())
+        {
+        if(path && dynamic_cast<vtkProp*>(*it2) == path->GetFirstNode()->GetViewProp())
+          {
+          path = NULL;
+          }
+        ++it2;
+        }
+      }
+
     if ( path == NULL )
       {
       this->HighlightProp(NULL);
@@ -580,3 +689,11 @@ vtkInteractorStyleImage2D::SetPickMode()
   this->m_Mode = InteractionTypeContourPicking;
   this->Superclass::StartPick();
 }
+//----------------------------------------------------------------------------
+void
+vtkInteractorStyleImage2D::
+SetPlanesActors( std::vector< vtkActor * > iBounds)
+{
+  this->m_PlanesActors= iBounds;
+}
+//----------------------------------------------------------------------------

@@ -1,20 +1,80 @@
+#
+#  This file is configured by GoFigure2, to load
+#  GoFigure2's settings for an external project.
+#
+
 # To be completed!
-set( VTK_DIR "@VTK_DIR@" )
-set( ITK_DIR "@ITK_DIR@" )
-set( BOOST_DIR "@Boost_INCLUDE_DIRS@" )
 
-set( BUILD_SHARED_LIBS "@BUILD_SHARED_LIBS@" )
+#################
+# GoFigure2
+#################
+set(GOFIGURE2_MAJOR_VERSION "@GOFIGURE2_MAJOR_VERSION@")
+set(GOFIGURE2_MINOR_VERSION "@GOFIGURE2_MINOR_VERSION@")
+set(GOFIGURE2_WC_REVISION "@GOFIGURE2_WC_REVISION@")
+set(GOFIGURE2_VERSION "@GOFIGURE2_VERSION@")
 
-set( GOFIGURE2_SOURCE_DIR "@GOFIGURE2_SOURCE_DIR@" )
+# source code
+set(GOFIGURE2_SOURCE_DIR "@GOFIGURE2_SOURCE_DIR@")
 
-set( GOFIGURE2_MAJOR_VERSION "@GOFIGURE2_MAJOR_VERSION@" )
-set( GOFIGURE2_MINOR_VERSION "@GOFIGURE2_MINOR_VERSION@" )
-set( GOFIGURE2_WC_REVISION "@GOFIGURE2_WC_REVISION@" )
-
-set( GOFIGURE2_VERSION "@GOFIGURE2_VERSION@" )
+# build information
+# would "LIBS_STYLE" make more sense?
+set(BUILD_SHARED_LIBS "@BUILD_SHARED_LIBS@")
+# debug/release?
 
 # Add include directories needed to use gofigure2.
-include_directories( BEFORE "@GOFIGURE2_INCLUDE_DIRS@" )
+include_directories(BEFORE "@GOFIGURE2_INCLUDE_DIRS@")
 
 # Add link directories needed to use gofigure2.
-link_directories( "@GOFIGURE2_LIBRARY_DIRS@" )
+link_directories("@GOFIGURE2_LIBRARY_DIRS@")
+
+#####################
+# External libraries
+#####################
+
+######
+# The Visualization Toolkit
+######
+# source
+set(VTK_DIR "@VTK_DIR@")
+# version
+set(VTK_MAJOR_VERSION "@VTK_MAJOR_VERSION@")
+set(VTK_MINOR_VERSION "@VTK_MINOR_VERSION@")
+
+######
+# The Insight Toolkit
+######
+# source
+set(ITK_DIR "@ITK_DIR@")
+# version
+set(ITK_VERSION_MAJOR "@ITK_VERSION_MAJOR@")
+set(ITK_VERSION_MINOR "@ITK_VERSION_MINOR@")
+
+######
+# QT
+######
+# source
+set(QT_QMAKE_EXECUTABLE "@QT_QMAKE_EXECUTABLE@")
+# version
+set(QT_VERSION_MAJOR "@QT_VERSION_MAJOR@")
+set(QT_VERSION_MINOR "@QT_VERSION_MINOR@")
+set(QT_VERSION_PATCH "@QT_VERSION_PATCH@")
+
+######
+# BOOST
+######
+# source
+set(BOOST_DIR "@Boost_INCLUDE_DIRS@")
+# version
+set(Boost_MAJOR_VERSION "@Boost_MAJOR_VERSION@")
+set(Boost_MINOR_VERSION "@Boost_MINOR_VERSION@")
+set(Boost_SUBMINOR_VERSION "@Boost_SUBMINOR_VERSION@")
+
+######
+# MySQL
+######
+# libs
+set(MYSQL_LIBRARIES "@MYSQL_LIBRARIES@")
+set(MYSQL_EXTRA_LIBRARIES "@MYSQL_EXTRA_LIBRARIES@")
+# includes
+set(MYSQL_INCLUDE_DIR "@MYSQL_INCLUDE_DIR@")
+#version
