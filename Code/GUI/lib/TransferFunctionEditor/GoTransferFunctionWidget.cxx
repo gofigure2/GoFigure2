@@ -83,8 +83,11 @@
 
 //-------------------------------------------------------------------------
 
-GoTransferFunctionWidget::GoTransferFunctionWidget(ShadeType type, QWidget *parent)
-    : QWidget(parent), m_shade_type(type), m_alpha_gradient(QLinearGradient(0, 0, 0, 0))
+GoTransferFunctionWidget::GoTransferFunctionWidget(ShadeType type,
+                                                   QColor iColor,
+                                                   QWidget *parent)
+    : QWidget(parent), m_shade_type(type), m_color(iColor),
+    m_alpha_gradient(QLinearGradient(0, 0, 0, 0))
 {
   // Checkers background
   if (m_shade_type == ARGBShade) {
@@ -118,42 +121,6 @@ GoTransferFunctionWidget::GoTransferFunctionWidget(ShadeType type, QWidget *pare
 QPolygonF GoTransferFunctionWidget::points() const
 {
   return m_hoverPoints->points();
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-uint GoTransferFunctionWidget::colorAt(int x)
-{
-  generateShade();
-
-  QPolygonF pts = m_hoverPoints->points();
-  for (int i=1; i < pts.size(); ++i) {
-      if (pts.at(i-1).x() <= x && pts.at(i).x() >= x) {
-          QLineF l(pts.at(i-1), pts.at(i));
-          l.setLength(l.length() * ((x - l.x1()) / l.dx()));
-          return m_shade.pixel(qRound(qMin(l.x2(), (qreal(m_shade.width() - 1)))),
-                               qRound(qMin(l.y2(), qreal(m_shade.height() - 1))));
-      }
-  }
-  return 0;
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void GoTransferFunctionWidget::setGradientStops(const QGradientStops &stops)
-{
-  if (m_shade_type == ARGBShade) {
-      m_alpha_gradient = QLinearGradient(0, 0, width(), 0);
-
-      for (int i=0; i<stops.size(); ++i) {
-          QColor c = stops.at(i).second;
-          m_alpha_gradient.setColorAt(stops.at(i).first, QColor(c.red(), c.green(), c.blue()));
-      }
-
-      m_shade = QImage();
-      generateShade();
-      update();
-  }
 }
 //-------------------------------------------------------------------------
 
@@ -210,12 +177,7 @@ void GoTransferFunctionWidget::generateShade()
           QLinearGradient shade(0, 0, 0, height());
           shade.setColorAt(1, Qt::black);
 
-          if (m_shade_type == RedShade)
-              shade.setColorAt(0, Qt::red);
-          else if (m_shade_type == GreenShade)
-              shade.setColorAt(0, Qt::green);
-          else
-              shade.setColorAt(0, Qt::blue);
+          shade.setColorAt(0, m_color);
 
           QPainter p(&m_shade);
           p.fillRect(rect(), shade);

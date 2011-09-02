@@ -92,7 +92,8 @@ class GoTransferFunctionEditorWidget : public QWidget
 {
   Q_OBJECT
 public:
-  GoTransferFunctionEditorWidget(QWidget *parent, QString iChannel);
+  GoTransferFunctionEditorWidget(QWidget *parent, QString iChannel,
+                                 const std::vector<double>& iColor);
 
   void setGradientStops(const QGradientStops &stops);
 
@@ -123,7 +124,6 @@ public slots:
   void updateOpacityTF();
 
 signals:
-  void gradientStopsChanged(const QGradientStops &stops);
 
   void updateVisualization();
   void updatePoints(QString,
@@ -132,8 +132,6 @@ signals:
 private:
 
   bool eventFilter(QObject *object, QEvent *event);
-
-  void changeAlphaGradients();
 
   void computeMapFromPoints(
     std::map< unsigned int, unsigned int>& iMap, const QPolygonF& iPoints);

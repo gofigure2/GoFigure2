@@ -92,12 +92,13 @@ public:
         RedShade,
         GreenShade,
         BlueShade,
+        ColorShade,
         ARGBShade
     };
 
-    GoTransferFunctionWidget(ShadeType type, QWidget *parent);
-
-    void setGradientStops(const QGradientStops &stops);
+    GoTransferFunctionWidget(ShadeType type,
+                             QColor iColor,
+                             QWidget *parent);
 
     void paintEvent(QPaintEvent *e);
 
@@ -105,8 +106,6 @@ public:
     QPolygonF points() const;
 
     HoverPoints *hoverPoints() const { return m_hoverPoints; }
-
-    uint colorAt(int x);
 
     void AddPoints(const QPolygonF& iPoints);
 
@@ -123,10 +122,10 @@ private:
     void generateShade();
 
     ShadeType m_shade_type;
+    QColor m_color;
     QImage m_shade;
     HoverPoints *m_hoverPoints;
     QLinearGradient m_alpha_gradient;
-
     QVector<qreal> m_Histogram;
 };
 
