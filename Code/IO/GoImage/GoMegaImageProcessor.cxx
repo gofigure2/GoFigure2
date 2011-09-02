@@ -116,8 +116,7 @@ initTimePoint(const unsigned int& iTime)
     vtkSmartPointer<vtkLookupTable> lut = createLUT(color[0],
                                                     color[1],
                                                     color[2],
-                                                    color[3],
-                                                    image->GetScalarRange());
+                                                    color[3]);
 
     // create name...
     std::stringstream channelName;
@@ -226,8 +225,7 @@ setDoppler(const unsigned int& iTime, const unsigned int& iPrevious)
     vtkSmartPointer<vtkLookupTable> lut = createLUT(color[0],
                                                     color[1],
                                                     color[2],
-                                                    color[3],
-                                                    image->GetScalarRange());
+                                                    color[3]);
 
     // channel name
     std::stringstream channelName;

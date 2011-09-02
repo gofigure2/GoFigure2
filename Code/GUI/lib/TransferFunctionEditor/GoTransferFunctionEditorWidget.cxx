@@ -111,19 +111,6 @@ GoTransferFunctionEditorWidget::GoTransferFunctionEditorWidget(QWidget *parent,
   vbox->setMargin(1);
 
   m_red_shade = new GoTransferFunctionWidget(
-        GoTransferFunctionWidget::ColorShade,
-        m_Color,
-        this);
-  m_green_shade = new GoTransferFunctionWidget(
-        GoTransferFunctionWidget::ColorShade,
-        m_Color,
-        this);
-  m_blue_shade = new GoTransferFunctionWidget(
-        GoTransferFunctionWidget::ColorShade,
-        m_Color,
-        this);
-  m_alpha_shade = new GoTransferFunctionWidget(
-        GoTransferFunctionWidget::ARGBShade,
         m_Color,
         this);
 
@@ -133,7 +120,6 @@ GoTransferFunctionEditorWidget::GoTransferFunctionEditorWidget(QWidget *parent,
 
   QPushButton *presetLUTPushButton = new QPushButton("Preset LUT", this);
   presetLUTPushButton->setEnabled(false);
-
 
   QHBoxLayout *lutLayout = new QHBoxLayout;
   QPushButton *saveLUTPushButton = new QPushButton("Save LUT", this);
@@ -148,33 +134,55 @@ GoTransferFunctionEditorWidget::GoTransferFunctionEditorWidget(QWidget *parent,
   layout->addWidget(okPushButton);
   layout->addWidget(resetLUTPushButton);
 
-  QHBoxLayout *nameLayout = new QHBoxLayout;
   QLabel* channelName = new QLabel("Channel:");
   QLabel* channelNameText = new QLabel(iChannel);
+  QHBoxLayout *nameLayout = new QHBoxLayout;
   nameLayout->addWidget(channelName);
   nameLayout->addWidget(channelNameText);
 
+  QLabel* gammaName = new QLabel("Gamma:");
+  QSlider* gammaSlider = new QSlider(this);
+  gammaSlider->setOrientation(Qt::Horizontal);
+  QHBoxLayout *gammaLayout = new QHBoxLayout;
+  gammaLayout->addWidget(gammaName);
+  gammaLayout->addWidget(gammaSlider);
+
+  QLabel* minName = new QLabel("Min:");
+  QSlider* minSlider = new QSlider(this);
+  minSlider->setOrientation(Qt::Horizontal);
+  QLabel* maxName = new QLabel("Max:");
+  QSlider* maxSlider = new QSlider(this);
+  maxSlider->setOrientation(Qt::Horizontal);
+  QHBoxLayout *posLayout = new QHBoxLayout;
+  posLayout->addWidget(minName);
+  posLayout->addWidget(minSlider);
+  posLayout->addWidget(maxName);
+  posLayout->addWidget(maxSlider);
+
+  QCheckBox* tfCB = new QCheckBox("Show TF");
+  QCheckBox* tfoCB = new QCheckBox("Show TF Opacity");
+  QCheckBox* histoCB = new QCheckBox("Show Log Histogram");
+
   vbox->addLayout(nameLayout);
   vbox->addWidget(m_red_shade);
-  vbox->addWidget(m_green_shade);
-  vbox->addWidget(m_blue_shade);
-  vbox->addWidget(m_alpha_shade);
+  vbox->addLayout(gammaLayout);
+  vbox->addLayout(posLayout);
+  vbox->addWidget(tfCB);
+  vbox->addWidget(tfoCB);
+  vbox->addWidget(histoCB);
   vbox->addLayout(lutLayout);
   vbox->addWidget(presetLUTPushButton);
   vbox->addLayout(layout);
 
   connect(m_red_shade, SIGNAL(colorsChanged()), this, SLOT(pointsUpdated()));
-  connect(m_green_shade, SIGNAL(colorsChanged()), this, SLOT(pointsUpdated()));
-  connect(m_blue_shade, SIGNAL(colorsChanged()), this, SLOT(pointsUpdated()));
-  connect(m_alpha_shade, SIGNAL(colorsChanged()), this, SLOT(pointsUpdated()));
-  connect(m_alpha_shade, SIGNAL(colorsChanged()), this, SLOT(updateOpacityTF()));
+  connect(m_red_shade, SIGNAL(colorsChanged()), this, SLOT(updateOpacityTF()));
 
   connect(okPushButton, SIGNAL(released()), this, SLOT(close()));
-  connect(okPushButton, SIGNAL(released()), this, SLOT(savePoints()));
+  /*connect(okPushButton, SIGNAL(released()), this, SLOT(savePoints()));
 
   connect(resetLUTPushButton, SIGNAL(pressed()), this, SLOT(resetLUT()));
   connect(saveLUTPushButton, SIGNAL(pressed()), this, SLOT(saveLUT()));
-  connect(loadLUTPushButton, SIGNAL(pressed()), this, SLOT(readLUT()));
+  connect(loadLUTPushButton, SIGNAL(pressed()), this, SLOT(readLUT()));*/
   // useless...?
   connect(presetLUTPushButton, SIGNAL(pressed()), this, SLOT(presetLUT()));
 
@@ -194,10 +202,10 @@ inline static bool x_less_than(const QPointF &p1, const QPointF &p2)
 //-------------------------------------------------------------------------
 void GoTransferFunctionEditorWidget::pointsUpdated()
 {
- // update the LUT
   if(m_LUT)
     {
-    m_alpha_shade->UpdateLookupTable(m_LUT);
+    // update the LUT
+    m_red_shade->UpdateLookupTable(m_LUT);
     // send signal to update the visualization
     emit updateVisualization();
     }
@@ -219,27 +227,10 @@ void
 GoTransferFunctionEditorWidget::
 AddPoints( const std::vector< std::map< unsigned int, unsigned int> >& iRGBA)
 {
-
-
   //red
   QPolygonF redPoints;
   computePointsFromMap(iRGBA[0], redPoints);
   m_red_shade->AddPoints(redPoints);
-
-  // green
-  QPolygonF greenPoints;
-  computePointsFromMap(iRGBA[1], greenPoints);
-  m_green_shade->AddPoints(greenPoints);
-
-  // blue
-  QPolygonF bluePoints;
-  computePointsFromMap(iRGBA[2], bluePoints);
-  m_blue_shade->AddPoints(bluePoints);
-
-  // alpha
-  QPolygonF alphaPoints;
-  computePointsFromMap(iRGBA[3], alphaPoints);
-  m_alpha_shade->AddPoints(alphaPoints);
 
   // update histogram and alpha gradient
   pointsUpdated();
@@ -308,9 +299,6 @@ AddHistogram(vtkImageAccumulate* iHistogram)
     }
 
   m_red_shade->SetHistogram(histo);
-  m_green_shade->SetHistogram(histo);
-  m_blue_shade->SetHistogram(histo);
-  m_alpha_shade->SetHistogram(histo);
 }
 //-------------------------------------------------------------------------
 
@@ -368,12 +356,9 @@ void
 GoTransferFunctionEditorWidget::
 resetLUT()
 {
-  m_red_shade->Reset(m_Color.redF());
-  m_green_shade->Reset(m_Color.greenF());
-  m_blue_shade->Reset(m_Color.blueF());
-  m_alpha_shade->Reset(m_Color.alphaF());
+  m_red_shade->Reset();
 
-  // update gradient and transfer function
+  // update transfer function
   pointsUpdated();
 
   //update opacity TF
@@ -392,18 +377,6 @@ savePoints()
   // RED ------------------------------
   QPolygonF redPoints = m_red_shade->points();
   computeMapFromPoints(pointsVector[0], redPoints);
-
-  // GREEN ------------------------------
-  QPolygonF greenPoints = m_green_shade->points();
-  computeMapFromPoints(pointsVector[1], greenPoints);
-
-  // BLUE ------------------------------
-  QPolygonF bluePoints = m_blue_shade->points();
-  computeMapFromPoints(pointsVector[2], bluePoints);
-
-  // BLUE ------------------------------
-  QPolygonF alphaPoints = m_alpha_shade->points();
-  computeMapFromPoints(pointsVector[3], alphaPoints);
 
   emit updatePoints(m_Channel, pointsVector);
 }
@@ -457,7 +430,7 @@ void
 GoTransferFunctionEditorWidget::
 saveLUT()
 {
-  QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"));
+  /*QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"));
   //qDebug() << "filename: " << fileName;
   QFile file(fileName);
   file.open(QIODevice::WriteOnly | QIODevice::Text);
@@ -482,9 +455,9 @@ saveLUT()
   // ALPHA ------------------------------
   out <<"<ALPHA> ";
   WriteLUTComponent(m_alpha_shade, out);
-  out <<"</ALPHA>\n";
+  out <<"</O>\n";
 
-  file.close();
+  file.close();*/
 }
 //-------------------------------------------------------------------------
 
@@ -512,7 +485,7 @@ void
 GoTransferFunctionEditorWidget::
 readLUT()
 {
-  QString fileName = QFileDialog::getOpenFileName(this, tr("Save File"));
+  /*QString fileName = QFileDialog::getOpenFileName(this, tr("Save File"));
   //qDebug() << "filename: " << fileName;
   QFile file(fileName);
   file.open(QIODevice::ReadOnly | QIODevice::Text);
@@ -529,7 +502,7 @@ readLUT()
   file.close();
 
   // update histogram and alpha gradient
-  pointsUpdated();
+  pointsUpdated();*/
 }
 //-------------------------------------------------------------------------
 
@@ -538,7 +511,7 @@ void
 GoTransferFunctionEditorWidget::
 ReadLUTComponent(GoTransferFunctionWidget* iTFWidget, QTextStream& iStream, const QString& iBalise)
 {
-  qreal width = m_red_shade->width();
+  /*qreal width = m_red_shade->width();
   qreal height = m_red_shade->height();
 
   QString x,y;
@@ -559,7 +532,7 @@ ReadLUTComponent(GoTransferFunctionWidget* iTFWidget, QTextStream& iStream, cons
       break;
       }
 
-    }
+    }*/
 }
 //-------------------------------------------------------------------------
 
@@ -571,16 +544,16 @@ updateOpacityTF()
   // all shades have same width and height
   qreal width = m_red_shade->width();
   qreal height = m_red_shade->height();
-  int numberOfPoints = m_alpha_shade->points().size();
+  int numberOfPoints = m_red_shade->points().size();
 
   m_OpacityTF->Initialize();
 
   for(int i=0; i<numberOfPoints; ++i)
     {
     // x 0 to 255
-    double x = (m_alpha_shade->points().at(i).x())*255/width;
+    double x = (m_red_shade->points().at(i).x())*255/width;
     // y 0 to 1
-    double y = (1-(m_alpha_shade->points().at(i).y())/height);
+    double y = (1-(m_red_shade->points().at(i).y())/height);
     m_OpacityTF->AddPoint(x, y);
     }
   m_OpacityTF->Modified();

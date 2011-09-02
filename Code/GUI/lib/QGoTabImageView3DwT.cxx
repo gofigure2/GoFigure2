@@ -3346,14 +3346,14 @@ openTransferFunctionEditor(QString iName)
   // show editor - to have consistent geomerty to add the points
   editor->show();
   // add points
-  /*editor->AddPoints(m_ImageProcessor->getRGBA(iName.toStdString()));
+  editor->AddPoints(m_ImageProcessor->getRGBA(iName.toStdString()));
   // add LUT
   editor->AddLookupTable(m_ImageProcessor->getLookuptable(iName.toStdString()));
   // add Opacity TF
   editor->AddOpacityTransferFunction(
         m_ImageProcessor->getOpacityTransferFunction(iName.toStdString()));
   // add histogram - should not recalculate all the time...
-  editor->AddHistogram(m_ImageProcessor->getHistogram(iName.toStdString()));*/
+  editor->AddHistogram(m_ImageProcessor->getHistogram(iName.toStdString()));
 }
 //-------------------------------------------------------------------------
 

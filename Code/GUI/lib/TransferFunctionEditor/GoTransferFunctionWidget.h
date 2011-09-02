@@ -88,16 +88,8 @@ class GoTransferFunctionWidget : public QWidget
 {
     Q_OBJECT
 public:
-    enum ShadeType {
-        RedShade,
-        GreenShade,
-        BlueShade,
-        ColorShade,
-        ARGBShade
-    };
 
-    GoTransferFunctionWidget(ShadeType type,
-                             QColor iColor,
+    GoTransferFunctionWidget(QColor iColor,
                              QWidget *parent);
 
     void paintEvent(QPaintEvent *e);
@@ -113,7 +105,7 @@ public:
 
     void SetHistogram(QVector<qreal> iHistogram);
 
-    void Reset(const qreal& iValue);
+    void Reset();
 
 signals:
     void colorsChanged();
@@ -121,7 +113,6 @@ signals:
 private:
     void generateShade();
 
-    ShadeType m_shade_type;
     QColor m_color;
     QImage m_shade;
     HoverPoints *m_hoverPoints;

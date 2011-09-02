@@ -187,14 +187,12 @@ public:
    * \param[in] iGreen green value
    * \param[in] iBlue blue value
    * \param[in] iAlpha alpha value
-   * \param[in] iRange scalar range
    * \return new LUT
    **/
   vtkSmartPointer<vtkLookupTable> createLUT(const double& iRed,
                                             const double& iGreen,
                                             const double& iBlue,
-                                            const double& iAlpha,
-                                            const double* iRange);
+                                            const double& iAlpha);
 
   /**
    * \brief get LUT from channel name. Useful for the Transfer function editor.

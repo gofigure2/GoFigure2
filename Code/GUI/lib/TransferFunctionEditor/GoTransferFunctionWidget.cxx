@@ -83,30 +83,13 @@
 
 //-------------------------------------------------------------------------
 
-GoTransferFunctionWidget::GoTransferFunctionWidget(ShadeType type,
-                                                   QColor iColor,
+GoTransferFunctionWidget::GoTransferFunctionWidget(QColor iColor,
                                                    QWidget *parent)
-    : QWidget(parent), m_shade_type(type), m_color(iColor),
+    : QWidget(parent), m_color(iColor),
     m_alpha_gradient(QLinearGradient(0, 0, 0, 0))
 {
-  // Checkers background
-  if (m_shade_type == ARGBShade) {
-      QPixmap pm(20, 20);
-      QPainter pmp(&pm);
-      pmp.fillRect(0, 0, 10, 10, Qt::lightGray);
-      pmp.fillRect(10, 10, 10, 10, Qt::lightGray);
-      pmp.fillRect(0, 10, 10, 10, Qt::darkGray);
-      pmp.fillRect(10, 0, 10, 10, Qt::darkGray);
-      pmp.end();
-      QPalette pal = palette();
-      pal.setBrush(backgroundRole(), QBrush(pm));
-      setAutoFillBackground(true);
-      setPalette(pal);
 
-  } else {
-      setAttribute(Qt::WA_NoBackground);
-
-  }
+  setAttribute(Qt::WA_NoBackground);
 
   m_hoverPoints = new HoverPoints(this, HoverPoints::CircleShape);
   m_hoverPoints->setConnectionType(HoverPoints::LineConnection);
@@ -157,32 +140,17 @@ void GoTransferFunctionWidget::paintEvent(QPaintEvent *)
 //-------------------------------------------------------------------------
 void GoTransferFunctionWidget::generateShade()
 {
-  if (m_shade.isNull() || m_shade.size() != size()) {
+  if (m_shade.isNull() || m_shade.size() != size())
+    {
+    m_shade = QImage(size(), QImage::Format_RGB32);
+    QLinearGradient shade(0, 0, 0, height());
+    shade.setColorAt(1, Qt::black);
 
-      if (m_shade_type == ARGBShade) {
-          m_shade = QImage(size(), QImage::Format_ARGB32_Premultiplied);
-          m_shade.fill(0);
+    shade.setColorAt(0, m_color);
 
-          QPainter p(&m_shade);
-          p.fillRect(rect(), m_alpha_gradient);
-
-          p.setCompositionMode(QPainter::CompositionMode_DestinationIn);
-          QLinearGradient fade(0, 0, 0, height());
-          fade.setColorAt(0, QColor(0, 0, 0, 255));
-          fade.setColorAt(1, QColor(0, 0, 0, 0));
-          p.fillRect(rect(), fade);
-
-      } else {
-          m_shade = QImage(size(), QImage::Format_RGB32);
-          QLinearGradient shade(0, 0, 0, height());
-          shade.setColorAt(1, Qt::black);
-
-          shade.setColorAt(0, m_color);
-
-          QPainter p(&m_shade);
-          p.fillRect(rect(), shade);
-      }
-  }
+    QPainter p(&m_shade);
+    p.fillRect(rect(), shade);
+    }
 }
 //-------------------------------------------------------------------------
 
@@ -224,11 +192,11 @@ SetHistogram(QVector<qreal> iHistogram)
 //-------------------------------------------------------------------------
 void
 GoTransferFunctionWidget::
-Reset(const qreal& iValue)
+Reset()
 {
 QPolygonF points;
 points << QPointF(0, height())
-       << QPointF(width(),(height())*(1-iValue));
+       << QPointF(width(),(height()));
 m_hoverPoints->setPoints(points);
 m_hoverPoints->setPointLock(0, HoverPoints::LockToLeft);
 m_hoverPoints->setPointLock(1, HoverPoints::LockToRight);

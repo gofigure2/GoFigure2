@@ -109,7 +109,7 @@ GoImageProcessor::
 vtkSmartPointer<vtkLookupTable>
 GoImageProcessor::
 createLUT(const double& iRed, const double& iGreen, const double& iBlue,
-          const double& iAlpha, const double* iRange)
+          const double& iAlpha)
 {
   vtkSmartPointer<vtkLookupTable> lut = vtkSmartPointer<vtkLookupTable>::New();
   double* HSV = vtkMath::RGBToHSV(iRed,iGreen,iBlue);
@@ -117,8 +117,16 @@ createLUT(const double& iRed, const double& iGreen, const double& iBlue,
   lut->SetHueRange(HSV[0], HSV[0]);
   lut->SetSaturationRange(1, 1);
   lut->SetValueRange(0, 1);
-  lut->SetRange(const_cast<double*>(iRange));
+  lut->SetNumberOfTableValues(m_MaxThreshold);
+  double* range = new double[2];
+  range[0] = 0;
+  range[1] = m_MaxThreshold;
+  lut->SetRange(range);
+
   lut->Build();
+
+  delete range;
+
   return lut;
 }
 //--------------------------------------------------------------------------
