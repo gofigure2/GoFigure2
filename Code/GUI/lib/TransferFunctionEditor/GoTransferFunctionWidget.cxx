@@ -90,6 +90,11 @@ GoTransferFunctionWidget::GoTransferFunctionWidget(QColor iColor,
 
   setAttribute(Qt::WA_NoBackground);
 
+  // gamma TF
+  m_gammaPoints = new HoverPoints(this, HoverPoints::RectangleShape);
+  m_gammaPoints->setConnectionType(HoverPoints::LineConnection);
+
+  // opacity TF
   m_hoverPoints = new HoverPoints(this, HoverPoints::CircleShape);
   m_hoverPoints->setConnectionType(HoverPoints::LineConnection);
 

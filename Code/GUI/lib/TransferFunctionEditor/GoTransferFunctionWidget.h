@@ -117,6 +117,7 @@ private:
     QColor m_color;
     QImage m_shade;
     HoverPoints *m_hoverPoints;
+    HoverPoints *m_gammaPoints;
     QLinearGradient m_alpha_gradient;
     QVector<qreal> m_Histogram;
 };
