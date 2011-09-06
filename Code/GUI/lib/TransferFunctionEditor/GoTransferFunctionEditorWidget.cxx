@@ -161,7 +161,7 @@ GoTransferFunctionEditorWidget::GoTransferFunctionEditorWidget(QWidget *parent,
 
   QCheckBox* tfCB = new QCheckBox("Show TF");
   tfCB->setChecked(true);
-  tfCB->setEnabled(false);
+  connect(tfCB, SIGNAL(clicked(bool)), m_red_shade, SIGNAL(enableGammaPoints(bool)));
 
   QCheckBox* tfoCB = new QCheckBox("Show TF Opacity");
   tfoCB->setChecked(true);
