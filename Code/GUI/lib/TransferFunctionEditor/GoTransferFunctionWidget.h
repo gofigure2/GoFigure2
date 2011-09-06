@@ -109,6 +109,7 @@ public:
 
 signals:
     void colorsChanged();
+    void enableHoverPoints(bool);
 
 private:
     void generateShade();

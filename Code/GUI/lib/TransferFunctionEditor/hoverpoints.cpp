@@ -309,6 +309,12 @@ bool HoverPoints::eventFilter(QObject *object, QEvent *event)
 
 void HoverPoints::paintPoints()
 {
+  // don't paint points if not enabled
+  if(!m_enabled)
+    {
+    return;
+    }
+
     QPainter p;
 #ifdef QT_OPENGL_SUPPORT
     ArthurFrame *af = qobject_cast<ArthurFrame *>(m_widget);

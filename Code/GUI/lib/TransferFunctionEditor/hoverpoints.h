@@ -140,7 +140,6 @@ public:
 
 public slots:
     void setEnabled(bool enabled);
-    void setDisabled(bool disabled) { setEnabled(!disabled); }
 
 signals:
     void pointsChanged(const QPolygonF &points);

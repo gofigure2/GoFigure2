@@ -160,8 +160,16 @@ GoTransferFunctionEditorWidget::GoTransferFunctionEditorWidget(QWidget *parent,
   posLayout->addWidget(maxSlider);
 
   QCheckBox* tfCB = new QCheckBox("Show TF");
+  tfCB->setChecked(true);
+  tfCB->setEnabled(false);
+
   QCheckBox* tfoCB = new QCheckBox("Show TF Opacity");
+  tfoCB->setChecked(true);
+  connect(tfoCB, SIGNAL(clicked(bool)), m_red_shade, SIGNAL(enableHoverPoints(bool)));
+
   QCheckBox* histoCB = new QCheckBox("Show Log Histogram");
+  histoCB->setChecked(true);
+  histoCB->setEnabled(false);
 
   vbox->addLayout(nameLayout);
   vbox->addWidget(m_red_shade);

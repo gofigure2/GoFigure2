@@ -39,7 +39,6 @@
 **
 ****************************************************************************/
 
-
 /*=========================================================================
  Modifications were made by the GoFigure Dev. Team.
  while at Megason Lab, Systems biology, Harvard Medical school, 2009-11
@@ -96,6 +95,7 @@ GoTransferFunctionWidget::GoTransferFunctionWidget(QColor iColor,
 
   setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
 
+  connect(this, SIGNAL(enableHoverPoints(bool)), m_hoverPoints, SLOT(setEnabled(bool)));
   connect(m_hoverPoints, SIGNAL(pointsChanged(QPolygonF)), this, SIGNAL(colorsChanged()));
 }
 //-------------------------------------------------------------------------
