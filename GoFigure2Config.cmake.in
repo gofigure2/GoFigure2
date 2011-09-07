@@ -3,8 +3,6 @@
 #  GoFigure2's settings for an external project.
 #
 
-# To be completed!
-
 #################
 # GoFigure2
 #################
@@ -19,7 +17,7 @@ set(GOFIGURE2_SOURCE_DIR "@GOFIGURE2_SOURCE_DIR@")
 # build information
 # would "LIBS_STYLE" make more sense?
 set(BUILD_SHARED_LIBS "@BUILD_SHARED_LIBS@")
-# debug/release?
+set(LIBS_STYLE "@LIBS_STYLE@")
 
 # Add include directories needed to use gofigure2.
 include_directories(BEFORE "@GOFIGURE2_INCLUDE_DIRS@")
@@ -77,4 +75,9 @@ set(MYSQL_LIBRARIES "@MYSQL_LIBRARIES@")
 set(MYSQL_EXTRA_LIBRARIES "@MYSQL_EXTRA_LIBRARIES@")
 # includes
 set(MYSQL_INCLUDE_DIR "@MYSQL_INCLUDE_DIR@")
-#version
+
+#######
+# Video
+#######
+set(ENABLE_VIDEO_RECORD_FFMPEG "@ENABLE_VIDEO_RECORD_FFMPEG@")
+set(ENABLE_VIDEO_RECORD_AVI "@ENABLE_VIDEO_RECORD_AVI@")

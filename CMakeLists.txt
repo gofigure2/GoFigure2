@@ -462,10 +462,16 @@ IF( VTK_FOUND )
     INCLUDE( GoFigure2IncludeDirectories.cmake )
 
     CONFIGURE_FILE(
-      "${CMAKE_CURRENT_SOURCE_DIR}/UseGoFigure2.cmake.in"
-      "${CMAKE_CURRENT_BINARY_DIR}/UseGoFigure2.cmake"
+      "${CMAKE_CURRENT_SOURCE_DIR}/GoFigure2Config.cmake.in"
+      "${CMAKE_CURRENT_BINARY_DIR}/GoFigure2Config.cmake"
       @ONLY
       )
+
+#    INSTALL(
+#      FILES ${CMAKE_CURRENT_BINARY_DIR}/GoFigure2Config.cmake
+#      DESTINATION
+#      COMPONENT Development
+#      )
 
     #-----------------------------------------------------------------------
     # PACKAGE With CPack
