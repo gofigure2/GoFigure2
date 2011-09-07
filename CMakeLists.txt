@@ -101,6 +101,11 @@ IF( NOT GOFIGURE2_INSTALL_LICENSE_DIR )
   SET( GOFIGURE2_INSTALL_LICENSE_DIR "share/doc/gofigure2/Licenses" )
 ENDIF( NOT GOFIGURE2_INSTALL_LICENSE_DIR )
 
+IF( NOT GOFIGURE2_INSTALL_BUGENTRY_DIR )
+  SET( GOFIGURE2_INSTALL_BUGENTRY_DIR "share/doc/gofigure2/BugReport" )
+ENDIF( NOT GOFIGURE2_INSTALL_BUGENTRY_DIR )
+
+
 #---------------------------------------------------------------------------
 # Define CMAKE_whatever_OUTPUT_DIRECTORY
 #---------------------------------------------------------------------------

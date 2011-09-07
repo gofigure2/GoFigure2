@@ -106,6 +106,8 @@ private slots:
 
   void on_actionDeveloper_mailing_list_triggered();
 
+  void on_actionReport_a_bug_triggered();
+
   void on_actionUse_DataBase_triggered();
 
   void openFilesfromDB();

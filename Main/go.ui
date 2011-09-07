@@ -59,7 +59,7 @@
      <x>0</x>
      <y>0</y>
      <width>1434</width>
-     <height>23</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -119,9 +119,11 @@
     <addaction name="actionAbout_Qt"/>
     <addaction name="separator"/>
     <addaction name="actionGoFigure2_Website"/>
+    <addaction name="actionCheck_For_Updates"/>
+    <addaction name="separator"/>
+    <addaction name="actionReport_a_bug"/>
     <addaction name="actionUser_mailing_list"/>
     <addaction name="actionDeveloper_mailing_list"/>
-    <addaction name="actionCheck_For_Updates"/>
    </widget>
    <widget class="QMenu" name="menuView">
     <property name="enabled">
@@ -482,6 +484,11 @@
   <action name="actionCheck_For_Updates">
    <property name="text">
     <string>Check For Updates</string>
+   </property>
+  </action>
+  <action name="actionReport_a_bug">
+   <property name="text">
+    <string>Report a bug...</string>
    </property>
   </action>
  </widget>

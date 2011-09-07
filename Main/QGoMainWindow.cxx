@@ -924,6 +924,43 @@ void QGoMainWindow::on_actionUser_mailing_list_triggered()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+void QGoMainWindow::on_actionReport_a_bug_triggered()
+{
+  QString url( "mailto:gofigure2-developers@lists.sourceforge.net?subject=Bug Report&body=" );
+
+  QString app_dir = QCoreApplication::applicationDirPath();
+  QDir    temp = QDir(app_dir);
+
+  temp.cdUp();
+  QString app_up_dir = temp.path();
+  temp.cdUp();
+  QString app_up_up_dir = temp.path();
+
+  QStringList search_dir(app_dir + "/BugReport");
+
+  search_dir << app_up_dir + "/BugReport";
+  search_dir << app_up_dir + "/share/doc/gofigure2/BugReport";
+
+  QDir::setSearchPaths("BugEntry", search_dir);
+
+  QString Filename("BugEntry.txt");
+
+  QFile file(Filename);
+
+  file.open(QIODevice::ReadOnly);
+
+  QTextStream textStream( & file);
+
+  QString text = textStream.readAll();
+
+  url.append( text );
+
+  QDesktopServices::openUrl( QUrl( url ) );
+}
+
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
 void QGoMainWindow::on_actionDeveloper_mailing_list_triggered()
 {
   QDesktopServices::openUrl( QUrl("mailto:gofigure2-developers@lists.sourceforge.net?subject=About GoFigure2") );
