@@ -124,7 +124,6 @@ createLUT(const double& iRed, const double& iGreen, const double& iBlue,
   lut->SetRange(range);
 
   lut->Build();
-
   delete range;
 
   return lut;

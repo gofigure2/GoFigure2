@@ -275,6 +275,14 @@ GoTransferFunctionEditorWidget::
 AddLookupTable(vtkLookupTable* iLUT)
 {
   m_LUT = iLUT;
+
+/*  //red
+  QPolygonF redPoints;
+  computePointsFromMap(iRGBA[0], redPoints);
+  m_red_shade->AddPoints(redPoints);
+
+  // update histogram and alpha gradient
+  pointsUpdated();*/
 }
 //-------------------------------------------------------------------------
 
