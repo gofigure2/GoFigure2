@@ -62,6 +62,7 @@
 #include <QFileInfo>
 #include <QDir>
 #include <QScrollArea>
+#include <QTextStream>
 
 // Qt Dialog Box
 #include "QGoLsmToMegaExportDialog.h"
