@@ -55,12 +55,13 @@ ENDIF( WIN32 )
 
 IF( WIN32 )
   SET( OS "Windows" )
-ELSE()
+ELSE( WIN32 )
   IF ( APPLE )
     SET( OS "Mac OS X" )
-  ELSE()
+  ELSE( APPLE )
     SET( OS "Linux" )
-ENDIF()
+  ENDIF( APPLE )
+ENDIF( WIN32 )
 
 CONFIGURE_FILE( ${GOFIGURE2_SOURCE_DIR}/Resources/BugEntry.txt.in
  ${GOFIGURE2_BINARY_DIR}/BugEntry.txt
