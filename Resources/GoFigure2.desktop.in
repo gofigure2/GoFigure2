@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Terminal=false
+Version=0.8.2
+Name=GoFigure2
+GenericName=Data Viewer
+Comment=Visualization and Analysis of 3D+t bio-images
+TryExec=gofigure
+Exec=gofigure &
+Categories=Education;Science;DataVisualization;ImageProcessing;MedicalSoftware
+Icon=gofigure2
+MimeType=application/x-gofigure2;

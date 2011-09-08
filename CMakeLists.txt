@@ -473,6 +473,12 @@ IF( VTK_FOUND )
 #      COMPONENT Development
 #      )
 
+    CONFIGURE_FILE(
+      "${CMAKE_CURRENT_SOURCE_DIR}/Resources/GoFigure2.desktop.in"
+      "${CMAKE_CURRENT_BINARY_DIR}/GoFigure2.desktop"
+      @ONLY
+      )
+
     #-----------------------------------------------------------------------
     # PACKAGE With CPack
     #-----------------------------------------------------------------------
