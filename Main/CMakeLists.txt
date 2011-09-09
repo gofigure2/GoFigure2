@@ -283,6 +283,51 @@ ELSE( UNIX AND NOT APPLE )
     ENDIF( APPLE )
   ENDIF( WIN32 )
 ENDIF( UNIX AND NOT APPLE )
+
+#-----------------------------------------------------
+# Here Let's take care of the bug entry files
+# copying them into the build's folder
+# and during the installation process
+FILE( GLOB
+  GOFIGURE2_BUG_ENTRY_FILE
+  "${GOFIGURE2_SOURCE_DIR}/Resources/BugEntry.txt"
+  )
+
+IF( UNIX AND NOT APPLE )
+  ADD_CUSTOM_COMMAND( TARGET gofigure POST_BUILD
+    COMMENT "Copying bug entry file..."
+    COMMAND mkdir ARGS -p
+      ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/BugReport
+    COMMAND cp ARGS -rf
+      ${GOFIGURE2_SOURCE_DIR}/Resources/BugEntry.txt
+      ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/BugReport
+  )
+ELSE( UNIX AND NOT APPLE )
+  IF( WIN32 )
+    FILE( TO_NATIVE_PATH ${GOFIGURE2_SOURCE_DIR} GOFIGURE2_SRC_DIR_WIN )
+    FILE( TO_NATIVE_PATH ${CMAKE_RUNTIME_OUTPUT_DIRECTORY} OUTPUT_DIR_WIN )
+
+    ADD_CUSTOM_COMMAND( TARGET gofigure POST_BUILD
+      COMMENT "Copying bug entry file..."
+      COMMAND if not exist \"${OUTPUT_DIR_WIN}\\BugReport\"
+        mkdir \"${OUTPUT_DIR_WIN}\\BugReport\"
+      COMMAND xcopy ARGS /Y
+        \"${GOFIGURE2_SRC_DIR_WIN}\\Resources\\BugEntry.txt\"
+        \"${OUTPUT_DIR_WIN}\\BugReport\\\"
+     )
+  ELSE( WIN32 )
+    IF( APPLE )
+      ADD_CUSTOM_COMMAND( TARGET gofigure POST_BUILD
+        COMMENT "Copying bug entry files..."
+        COMMAND mkdir ARGS -p
+          ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${plugin_dest_dir}/BugReport
+        COMMAND cp ARGS -rf
+          ${GOFIGURE2_SOURCE_DIR}/Resources/BugEntry.txt
+          ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${plugin_dest_dir}/Resources
+        )
+    ENDIF( APPLE )
+  ENDIF( WIN32 )
+ENDIF( UNIX AND NOT APPLE )
 #-----------------------------------------------------
 
 IF( WIN32 OR APPLE )
@@ -337,13 +382,24 @@ IF( APPLE )
     " COMPONENT Runtime
     )
 
+  # licence
   INSTALL( FILES ${GOFIGURE2_LICENSE_FILES}
     DESTINATION ${plugin_dest_dir}/Licenses
     COMPONENT Runtime
     )
+  # bug entry
+  INSTALL( FILES ${GOFIGURE2_BUG_ENTRY_FILE}
+    DESTINATION ${plugin_dest_dir}/BugEntry
+    COMPONENT Runtime
+    )
+
 ELSE( APPLE )
   INSTALL( FILES ${GOFIGURE2_LICENSE_FILES}
     DESTINATION ${GOFIGURE2_INSTALL_LICENSE_DIR}
+    COMPONENT Runtime
+    )
+  INSTALL( FILES ${GOFIGURE2_BUG_ENTRY_FILE}
+    DESTINATION ${GOFIGURE2_INSTALL_BUGENTRY_DIR}
     COMPONENT Runtime
     )
 ENDIF( APPLE )

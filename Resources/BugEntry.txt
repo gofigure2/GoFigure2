@@ -1,5 +1,7 @@
+Please send this email at: gofigure2-developers@lists.sourceforge.net
+
 >>> IMPORTANT: a precise description of the steps to reproduce the bug is primordial.
->>> IMPORTANT: if the bug is non-trivial to reproduce or if it doesn't always occur, please let us know and try to describe it from your best.
+>>> IMPORTANT: if the bug is non-trivial or if it doesn't always occur, please let us know and try to describe it.
 >>> IMPORTANT: let us know if the dataset you are using is public. Many bugs result from a corrupted dataset.
 
 ------------------------------------------

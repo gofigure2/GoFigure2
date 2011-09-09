@@ -63,6 +63,7 @@
 #include <QDir>
 #include <QScrollArea>
 #include <QTextStream>
+#include <QDebug>
 
 // Qt Dialog Box
 #include "QGoLsmToMegaExportDialog.h"
@@ -938,15 +939,12 @@ void QGoMainWindow::on_actionReport_a_bug_triggered()
   QString app_up_up_dir = temp.path();
 
   QStringList search_dir(app_dir + "/BugReport");
-
   search_dir << app_up_dir + "/BugReport";
   search_dir << app_up_dir + "/share/doc/gofigure2/BugReport";
 
-  QDir::setSearchPaths("BugEntry", search_dir);
+  QDir::setSearchPaths("BugEntryPath", search_dir);
 
-  QString Filename("BugEntry.txt");
-
-  QFile file(Filename);
+  QFile file("BugEntryPath:BugEntry.txt");
 
   file.open(QIODevice::ReadOnly);
 

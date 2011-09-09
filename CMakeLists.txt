@@ -63,10 +63,11 @@ ELSE( WIN32 )
   ENDIF( APPLE )
 ENDIF( WIN32 )
 
-CONFIGURE_FILE( ${GOFIGURE2_SOURCE_DIR}/Resources/BugEntry.txt.in
- ${GOFIGURE2_BINARY_DIR}/BugEntry.txt
- @ONLY
-)
+
+#CONFIGURE_FILE( ${GOFIGURE2_SOURCE_DIR}/Resources/BugEntry.txt.in
+# ${GOFIGURE2_BINARY_DIR}/BugEntry.txt
+# @ONLY
+#)
 
 #-----------------------------------------------------------------------
 # Export and Install configuration
