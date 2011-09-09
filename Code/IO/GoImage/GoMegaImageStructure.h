@@ -85,11 +85,17 @@ struct QGOIO_EXPORT GoMegaImageStructure
     // vector might not be the best....
     // to be clean, only need 1 vector
     RGBA.resize(4);
-    for(int i = 0; i<4; ++i)
+    for(int i = 0; i<3; ++i)
       {
-      RGBA[i][0] = 0;
-      RGBA[i][255] = Color[i];
+      for( int j = 0; j<256; ++j)
+        {
+        RGBA[i][j] = j;
+        }
       }
+
+    // alpha, modified by user on clicks
+    RGBA[3][0] = 0;
+    RGBA[3][255] = Color[3];
 
     //temp
     OpacityTF = vtkSmartPointer<vtkPiecewiseFunction>::New();

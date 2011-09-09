@@ -150,11 +150,15 @@ GoTransferFunctionEditorWidget::GoTransferFunctionEditorWidget(QWidget *parent,
   QLabel* minName = new QLabel("Min:");
   QSlider* minSlider = new QSlider(this);
   minSlider->setOrientation(Qt::Horizontal);
+  minSlider->setMaximum(255);
+  minSlider->setValue(0);
   connect(minSlider, SIGNAL(valueChanged(int)), this, SLOT(minValueChanged(int)));
 
   QLabel* maxName = new QLabel("Max:");
   QSlider* maxSlider = new QSlider(this);
   maxSlider->setOrientation(Qt::Horizontal);
+  maxSlider->setMaximum(255);
+  maxSlider->setValue(255);
   connect(maxSlider, SIGNAL(valueChanged(int)), this, SLOT(maxValueChanged(int)));
 
   QHBoxLayout *posLayout = new QHBoxLayout;
@@ -245,9 +249,10 @@ AddPoints( const std::vector< std::map< unsigned int, unsigned int> >& iRGBA)
   computePointsFromMap(iRGBA[0], redPoints);
   m_red_shade->AddGammaPoints(redPoints);
 
+  QPolygonF alphaPoints;
   // add alpha points
-  computePointsFromMap(iRGBA[3], redPoints);
-  m_red_shade->AddPoints(redPoints);
+  computePointsFromMap(iRGBA[3], alphaPoints);
+  m_red_shade->AddPoints(alphaPoints);
 
   // update histogram and alpha gradient
   pointsUpdated();
