@@ -136,6 +136,8 @@ signals:
 
 private:
 
+  void UpdateGammaCurve();
+
   bool eventFilter(QObject *object, QEvent *event);
 
   void computeMapFromPoints(
