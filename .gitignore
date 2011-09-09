@@ -3,6 +3,9 @@
 #BUILD directory
 BUILD/
 
+# bug entry
+/Resources/BugEntry.txt
+
 #KDevelop
 *.kdev4
 

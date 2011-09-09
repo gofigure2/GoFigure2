@@ -63,11 +63,11 @@ ELSE( WIN32 )
   ENDIF( APPLE )
 ENDIF( WIN32 )
 
-
-#CONFIGURE_FILE( ${GOFIGURE2_SOURCE_DIR}/Resources/BugEntry.txt.in
-# ${GOFIGURE2_BINARY_DIR}/BugEntry.txt
-# @ONLY
-#)
+# requiered to file the VERSION and OS automatically
+CONFIGURE_FILE( ${GOFIGURE2_SOURCE_DIR}/Resources/BugEntry.txt.in
+ ${GOFIGURE2_SOURCE_DIR}/Resources/BugEntry.txt
+ @ONLY
+)
 
 #-----------------------------------------------------------------------
 # Export and Install configuration
@@ -78,6 +78,7 @@ ENDIF( WIN32 )
 # GOFIGURE2_INSTALL_LIB_DIR          - library dir (libs)
 # GOFIGURE2_INSTALL_DOC_DIR          - documentation dir
 # GOFIGURE2_INSTALL_LICENSE_DIR      - licenses dir
+# GOFIGURE2_INSTALL_BUGENTRY_DIR     - bug report dir
 #-----------------------------------------------------------------------
 IF( NOT GOFIGURE2_INSTALL_BUNDLE_DIR )
   SET( GOFIGURE2_INSTALL_BUNDLE_DIR "." )
