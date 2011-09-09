@@ -144,7 +144,7 @@ GoTransferFunctionEditorWidget::GoTransferFunctionEditorWidget(QWidget *parent,
   m_GammaSlider = new QSlider(this);
   m_GammaSlider->setOrientation(Qt::Horizontal);
   m_GammaSlider->setMaximum(5000);
-  m_GammaSlider->setMinimum(1);
+  m_GammaSlider->setMinimum(50);
   m_GammaSlider->setValue(500);
   connect(m_GammaSlider, SIGNAL(valueChanged(int)), this, SLOT(gammaValueChanged(int)));
 
@@ -635,12 +635,12 @@ UpdateGammaCurve()
     iPoints << QPointF((qreal)(i)*width/255, height);
     }
 
-  qDebug() << "BETWEEN: " << m_MinSlider->value() << " and " << m_MaxSlider->value();
-  qDebug() << "WIDTH: " << width << " HEIGHT " << height;
   // points affected with gamma correction, in the window
   for(int i=m_MinSlider->value(); i<m_MaxSlider->value(); ++i)
     {
-    qreal temp_height = height*(1-(qreal)(pow((qreal)i/(m_MaxSlider->value() - m_MinSlider->value()), (qreal)m_GammaSlider->value()/500))-(qreal)m_MinSlider->value()/255);
+    qreal input = ((qreal)i - (qreal)m_MinSlider->value())/(((qreal)m_MaxSlider->value()-(qreal)m_MinSlider->value()));
+    qreal power = (qreal)(pow(input, (qreal)m_GammaSlider->value()/500));
+    qreal temp_height = height*(1-power);
   if(temp_height<0)
     {
     iPoints << QPointF((qreal)(i)*width/255,0);
