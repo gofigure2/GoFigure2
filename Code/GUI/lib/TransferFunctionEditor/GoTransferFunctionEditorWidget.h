@@ -113,6 +113,10 @@ public:
 public slots:
   void pointsUpdated();
 
+  // sliders
+  void minValueChanged(int);
+  void maxValueChanged(int);
+
   // LUT
   void presetLUT();
   void resetLUT();

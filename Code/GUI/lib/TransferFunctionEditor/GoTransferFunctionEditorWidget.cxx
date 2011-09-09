@@ -150,9 +150,13 @@ GoTransferFunctionEditorWidget::GoTransferFunctionEditorWidget(QWidget *parent,
   QLabel* minName = new QLabel("Min:");
   QSlider* minSlider = new QSlider(this);
   minSlider->setOrientation(Qt::Horizontal);
+  connect(minSlider, SIGNAL(valueChanged(int)), this, SLOT(minValueChanged(int)));
+
   QLabel* maxName = new QLabel("Max:");
   QSlider* maxSlider = new QSlider(this);
   maxSlider->setOrientation(Qt::Horizontal);
+  connect(maxSlider, SIGNAL(valueChanged(int)), this, SLOT(maxValueChanged(int)));
+
   QHBoxLayout *posLayout = new QHBoxLayout;
   posLayout->addWidget(minName);
   posLayout->addWidget(minSlider);
@@ -570,4 +574,22 @@ updateOpacityTF()
     m_OpacityTF->AddPoint(x, y);
     }
   m_OpacityTF->Modified();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+GoTransferFunctionEditorWidget::
+minValueChanged(int iValue)
+{
+  qDebug() << "min value changed: " << iValue;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+GoTransferFunctionEditorWidget::
+maxValueChanged(int iValue)
+{
+  qDebug() << "max value changed: " << iValue;
 }
