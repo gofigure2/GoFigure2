@@ -107,6 +107,7 @@ public:
     void SetHistogram(QVector<qreal> iHistogram);
 
     void Reset();
+    void UpdateGamma( QPolygonF& iPoints);
 
 signals:
     void colorsChanged();

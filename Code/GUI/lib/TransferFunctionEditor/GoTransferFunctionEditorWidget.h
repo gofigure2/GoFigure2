@@ -114,6 +114,7 @@ public slots:
   void pointsUpdated();
 
   // sliders
+  void gammaValueChanged(int);
   void minValueChanged(int);
   void maxValueChanged(int);
 
@@ -149,9 +150,11 @@ private:
                         const QString& iBalise);
 
   GoTransferFunctionWidget *m_red_shade;
-  GoTransferFunctionWidget *m_green_shade;
-  GoTransferFunctionWidget *m_blue_shade;
   GoTransferFunctionWidget *m_alpha_shade;
+
+  QSlider* m_GammaSlider;
+  QSlider* m_MinSlider;
+  QSlider* m_MaxSlider;
 
   QColor                    m_Color;
   QString                   m_Channel;

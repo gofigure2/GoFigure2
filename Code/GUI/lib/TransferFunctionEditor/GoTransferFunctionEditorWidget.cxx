@@ -141,31 +141,36 @@ GoTransferFunctionEditorWidget::GoTransferFunctionEditorWidget(QWidget *parent,
   nameLayout->addWidget(channelNameText);
 
   QLabel* gammaName = new QLabel("Gamma:");
-  QSlider* gammaSlider = new QSlider(this);
-  gammaSlider->setOrientation(Qt::Horizontal);
+  m_GammaSlider = new QSlider(this);
+  m_GammaSlider->setOrientation(Qt::Horizontal);
+  m_GammaSlider->setMaximum(1000);
+  m_GammaSlider->setMinimum(0);
+  m_GammaSlider->setValue(500);
+  connect(m_GammaSlider, SIGNAL(valueChanged(int)), this, SLOT(gammaValueChanged(int)));
+
   QHBoxLayout *gammaLayout = new QHBoxLayout;
   gammaLayout->addWidget(gammaName);
-  gammaLayout->addWidget(gammaSlider);
+  gammaLayout->addWidget(m_GammaSlider);
 
   QLabel* minName = new QLabel("Min:");
-  QSlider* minSlider = new QSlider(this);
-  minSlider->setOrientation(Qt::Horizontal);
-  minSlider->setMaximum(255);
-  minSlider->setValue(0);
-  connect(minSlider, SIGNAL(valueChanged(int)), this, SLOT(minValueChanged(int)));
+  m_MinSlider = new QSlider(this);
+  m_MinSlider->setOrientation(Qt::Horizontal);
+  m_MinSlider->setMaximum(255);
+  m_MinSlider->setValue(20);
+  connect(m_MinSlider, SIGNAL(valueChanged(int)), this, SLOT(minValueChanged(int)));
 
   QLabel* maxName = new QLabel("Max:");
-  QSlider* maxSlider = new QSlider(this);
-  maxSlider->setOrientation(Qt::Horizontal);
-  maxSlider->setMaximum(255);
-  maxSlider->setValue(255);
-  connect(maxSlider, SIGNAL(valueChanged(int)), this, SLOT(maxValueChanged(int)));
+  m_MaxSlider = new QSlider(this);
+  m_MaxSlider->setOrientation(Qt::Horizontal);
+  m_MaxSlider->setMaximum(255);
+  m_MaxSlider->setValue(230);
+  connect(m_MaxSlider, SIGNAL(valueChanged(int)), this, SLOT(maxValueChanged(int)));
 
   QHBoxLayout *posLayout = new QHBoxLayout;
   posLayout->addWidget(minName);
-  posLayout->addWidget(minSlider);
+  posLayout->addWidget(m_MinSlider);
   posLayout->addWidget(maxName);
-  posLayout->addWidget(maxSlider);
+  posLayout->addWidget(m_MaxSlider);
 
   QCheckBox* tfCB = new QCheckBox("Show TF");
   tfCB->setChecked(true);
@@ -579,6 +584,54 @@ updateOpacityTF()
     m_OpacityTF->AddPoint(x, y);
     }
   m_OpacityTF->Modified();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+GoTransferFunctionEditorWidget::
+gammaValueChanged(int iValue)
+{
+  qDebug() << "gamma value changed: " << iValue;
+
+  qreal width = m_red_shade->width();
+  qreal height = m_red_shade->height();
+  QPolygonF iPoints;
+
+  // before window
+  for(int i=0; i<m_MinSlider->value(); ++i)
+    {
+    iPoints << QPointF((qreal)(i)*width/255, height);
+    }
+
+  qDebug() << "BETWEEN: " << m_MinSlider->value() << " and " << m_MaxSlider->value();
+  qDebug() << "WIDTH: " << width << " HEIGHT " << height;
+  // points affected with gamma correction, in the window
+  for(int i=m_MinSlider->value(); i<m_MaxSlider->value(); ++i)
+    {
+    qreal temp_height = height*(1-(qreal)(pow(i/255, (qreal)500/i)/(255)));
+
+    if(temp_height<0)
+      {
+      iPoints << QPointF((qreal)(i)*width/255,0);
+      }
+    else
+      {
+      iPoints << QPointF((qreal)(i)*width/255,temp_height);
+      }
+    }
+
+  // after window
+  for(int i=m_MaxSlider->value(); i<256; ++i)
+    {
+    iPoints << QPointF((qreal)(i)*width/255, 0);
+    }
+
+  //qDebug() << iPoints;
+  m_red_shade->UpdateGamma(iPoints);
+
+  // update transfer function
+  //pointsUpdated();
 }
 //-------------------------------------------------------------------------
 

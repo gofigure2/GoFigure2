@@ -212,6 +212,7 @@ void
 GoTransferFunctionWidget::
 Reset()
 {
+// reset alpha
 QPolygonF points;
 points << QPointF(0, height())
        << QPointF(width(),(height()));
@@ -219,6 +220,22 @@ m_hoverPoints->setPoints(points);
 m_hoverPoints->setPointLock(0, HoverPoints::LockToLeft);
 m_hoverPoints->setPointLock(1, HoverPoints::LockToRight);
 m_hoverPoints->setSortType(HoverPoints::XSort);
+
+update();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+GoTransferFunctionWidget::
+UpdateGamma( QPolygonF& iPoints)
+{
+m_gammaPoints->setPoints(iPoints);
+m_gammaPoints->setPointLock(0, HoverPoints::LockToLeft);
+m_gammaPoints->setPointLock(1, HoverPoints::LockToRight);
+m_gammaPoints->setSortType(HoverPoints::XSort);
+
+// reset gamma
 
 update();
 }
