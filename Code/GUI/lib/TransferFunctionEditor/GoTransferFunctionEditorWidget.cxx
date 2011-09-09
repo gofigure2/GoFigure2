@@ -237,7 +237,12 @@ AddPoints( const std::vector< std::map< unsigned int, unsigned int> >& iRGBA)
 {
   //red
   QPolygonF redPoints;
+  // add gamma points
   computePointsFromMap(iRGBA[0], redPoints);
+  m_red_shade->AddGammaPoints(redPoints);
+
+  // add alpha points
+  computePointsFromMap(iRGBA[3], redPoints);
   m_red_shade->AddPoints(redPoints);
 
   // update histogram and alpha gradient
@@ -275,14 +280,6 @@ GoTransferFunctionEditorWidget::
 AddLookupTable(vtkLookupTable* iLUT)
 {
   m_LUT = iLUT;
-
-/*  //red
-  QPolygonF redPoints;
-  computePointsFromMap(iRGBA[0], redPoints);
-  m_red_shade->AddPoints(redPoints);
-
-  // update histogram and alpha gradient
-  pointsUpdated();*/
 }
 //-------------------------------------------------------------------------
 

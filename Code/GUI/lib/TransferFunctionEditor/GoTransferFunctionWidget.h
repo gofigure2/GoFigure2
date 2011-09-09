@@ -100,6 +100,7 @@ public:
     HoverPoints *hoverPoints() const { return m_hoverPoints; }
 
     void AddPoints(const QPolygonF& iPoints);
+    void AddGammaPoints(const QPolygonF& iPoints);
 
     void UpdateLookupTable(vtkLookupTable* iLUT);
 

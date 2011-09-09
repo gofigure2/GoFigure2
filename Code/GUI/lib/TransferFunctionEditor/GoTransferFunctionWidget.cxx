@@ -175,6 +175,18 @@ AddPoints(const QPolygonF& iPoints)
 //-------------------------------------------------------------------------
 void
 GoTransferFunctionWidget::
+AddGammaPoints(const QPolygonF& iPoints)
+{
+  m_gammaPoints->setPoints(iPoints);
+  m_gammaPoints->setPointLock(0, HoverPoints::LockToLeft);
+  m_gammaPoints->setPointLock(iPoints.size()-1, HoverPoints::LockToRight);
+  m_gammaPoints->setSortType(HoverPoints::XSort);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+GoTransferFunctionWidget::
 UpdateLookupTable(vtkLookupTable* iLUT)
 {
   for(int i=0; i<iLUT->GetNumberOfTableValues();++i)

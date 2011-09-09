@@ -115,11 +115,14 @@ void HoverPoints::setEnabled(bool enabled)
 
 bool HoverPoints::eventFilter(QObject *object, QEvent *event)
 {
-    if (object == m_widget && m_enabled) {
+    if (object == m_widget) {
         switch (event->type()) {
 
         case QEvent::MouseButtonPress:
         {
+            if(m_shape != CircleShape || !m_enabled)
+              break;
+
             if (!m_fingerPointMapping.isEmpty())
                 return true;
             QMouseEvent *me = (QMouseEvent *) event;
@@ -128,10 +131,7 @@ bool HoverPoints::eventFilter(QObject *object, QEvent *event)
             int index = -1;
             for (int i=0; i<m_points.size(); ++i) {
                 QPainterPath path;
-                if (m_shape == CircleShape)
-                    path.addEllipse(pointBoundingRect(i));
-                else
-                    path.addRect(pointBoundingRect(i));
+                path.addEllipse(pointBoundingRect(i));
 
                 if (path.contains(clickPos)) {
                     index = i;
@@ -183,12 +183,20 @@ bool HoverPoints::eventFilter(QObject *object, QEvent *event)
         break;
 
         case QEvent::MouseButtonRelease:
+
+            if(m_shape != CircleShape || !m_enabled)
+              break;
+
             if (!m_fingerPointMapping.isEmpty())
                 return true;
             m_currentIndex = -1;
             break;
 
         case QEvent::MouseMove:
+
+            if(m_shape != CircleShape || !m_enabled)
+              break;
+
             if (!m_fingerPointMapping.isEmpty())
                 return true;
             if (m_currentIndex >= 0)
@@ -197,6 +205,9 @@ bool HoverPoints::eventFilter(QObject *object, QEvent *event)
         case QEvent::TouchBegin:
         case QEvent::TouchUpdate:
             {
+                if(m_shape != CircleShape || !m_enabled)
+                  break;
+
                 const QTouchEvent *const touchEvent = static_cast<const QTouchEvent*>(event);
                 const QList<QTouchEvent::TouchPoint> points = touchEvent->touchPoints();
                 const qreal pointSize = qMax(m_pointSize.width(), m_pointSize.height());
@@ -261,6 +272,10 @@ bool HoverPoints::eventFilter(QObject *object, QEvent *event)
             }
             break;
         case QEvent::TouchEnd:
+
+            if(m_shape != CircleShape || !m_enabled)
+              break;
+
             if (m_fingerPointMapping.isEmpty()) {
                 event->ignore();
                 return false;
@@ -268,6 +283,8 @@ bool HoverPoints::eventFilter(QObject *object, QEvent *event)
             return true;
             break;
 
+        // even if !enable, we should update the position of the points on
+        // resize event
         case QEvent::Resize:
         {
             QResizeEvent *e = (QResizeEvent *) event;
@@ -279,13 +296,13 @@ bool HoverPoints::eventFilter(QObject *object, QEvent *event)
                 QPointF p = m_points[i];
                 movePoint(i, QPointF(p.x() * stretch_x, p.y() * stretch_y), false);
             }
-
-            //firePointChange();
             break;
         }
 
         case QEvent::Paint:
         {
+            if(!m_enabled)
+              break;
             QWidget *that_widget = m_widget;
             m_widget = 0;
             QApplication::sendEvent(object, event);
@@ -309,7 +326,7 @@ bool HoverPoints::eventFilter(QObject *object, QEvent *event)
 
 void HoverPoints::paintPoints()
 {
-  // don't paint points if not enabled
+  // don't paint anything if not enabled
   if(!m_enabled)
     {
     return;
@@ -352,12 +369,12 @@ void HoverPoints::paintPoints()
     p.setPen(m_pointPen);
     p.setBrush(m_pointBrush);
 
+    if(m_shape != CircleShape)
+      return;
+
     for (int i=0; i<m_points.size(); ++i) {
         QRectF bounds = pointBoundingRect(i);
-        if (m_shape == CircleShape)
-            p.drawEllipse(bounds);
-        else
-            p.drawRect(bounds);
+        p.drawEllipse(bounds);
     }
 }
 
