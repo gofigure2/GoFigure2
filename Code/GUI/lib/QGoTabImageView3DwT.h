@@ -255,7 +255,7 @@ signals:
   void StartContourSegmentation(vtkPoints *iPoints);
 
 public slots:
-  void SetTimePoint(const int &);
+  void SetTimePoint(int);
 
   void TakeSnapshot();
 
@@ -267,25 +267,25 @@ public slots:
   void SetRendererWindow(int);
 #endif /* ENABLEVIDEORECORD */
 
-  QString SnapshotViewXY( const GoFigure::FileType & iType,
-                          const QString & iBaseName = QString("snapshot-xy-") );
+  QString SnapshotViewXY( GoFigure::FileType iType,
+                          QString iBaseName = QString("snapshot-xy-") );
 
-  QString SnapshotViewXZ( const GoFigure::FileType & iType,
-                         const QString & iBaseName = QString("snapshot-xz-") );
+  QString SnapshotViewXZ( GoFigure::FileType iType,
+                          QString BaseName = QString("snapshot-xz-") );
 
-  QString SnapshotViewYZ( const GoFigure::FileType & iType,
-                         const QString & iBaseName = QString("snapshot-yz-") );
+  QString SnapshotViewYZ( GoFigure::FileType iType,
+                          QString iBaseName = QString("snapshot-yz-") );
 
-  QString SnapshotViewXYZ( const GoFigure::FileType & iType,
-                           const QString & iBaseName = QString("snapshot-xyz-") );
+  QString SnapshotViewXYZ( GoFigure::FileType iType,
+                           QString iBaseName = QString("snapshot-xyz-") );
 
-  void SetSliceViewXY(const int &);
+  void SetSliceViewXY(int );
 
-  void SetSliceViewXZ(const int &);
+  void SetSliceViewXZ(int );
 
-  void SetSliceViewYZ(const int &);
+  void SetSliceViewYZ(int );
 
-  void SetFullScreenView(const int & iS);
+  void SetFullScreenView(int iS);
 
   void Quadview();
 
@@ -325,7 +325,7 @@ public slots:
   \todo to be renamed */
   void  SaveAndVisuMeshFromSegmentation(vtkPolyData *iView, int iTCoord);
 
-  void ReEditContour(const unsigned int & iId);
+  void ReEditContour(unsigned int iId);
 
   void HighlightXY();
 

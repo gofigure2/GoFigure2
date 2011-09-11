@@ -1907,7 +1907,7 @@ QGoTabImageView3DwT::SetTimePointWithLSMReaders()
 
 //-------------------------------------------------------------------------
 void
-QGoTabImageView3DwT::SetTimePoint(const int & iTimePoint)
+QGoTabImageView3DwT::SetTimePoint(int iTimePoint)
 {
   if ( iTimePoint == m_TCoord )
     {
@@ -2004,8 +2004,8 @@ QGoTabImageView3DwT::ChangeLookupTable()
 //-------------------------------------------------------------------------
 QString
 QGoTabImageView3DwT::SnapshotViewXY(
-  const GoFigure::FileType & iType,
-  const QString & iBaseName)
+  GoFigure::FileType iType,
+  QString iBaseName)
 {
   return m_ImageView->SnapshotViewXY(iType, iBaseName);
 }
@@ -2015,8 +2015,8 @@ QGoTabImageView3DwT::SnapshotViewXY(
 //-------------------------------------------------------------------------
 QString
 QGoTabImageView3DwT::SnapshotViewXZ(
-  const GoFigure::FileType & iType,
-  const QString & iBaseName)
+  GoFigure::FileType & iType,
+  QString & iBaseName)
 {
   return m_ImageView->SnapshotViewXZ(iType, iBaseName);
 }
@@ -2026,8 +2026,8 @@ QGoTabImageView3DwT::SnapshotViewXZ(
 //-------------------------------------------------------------------------
 QString
 QGoTabImageView3DwT::SnapshotViewYZ(
-  const GoFigure::FileType & iType,
-  const QString & iBaseName)
+  GoFigure::FileType & iType,
+  QString & iBaseName)
 {
   return m_ImageView->SnapshotViewYZ(iType, iBaseName);
 }
@@ -2037,8 +2037,8 @@ QGoTabImageView3DwT::SnapshotViewYZ(
 //-------------------------------------------------------------------------
 QString
 QGoTabImageView3DwT::SnapshotViewXYZ(
-  const GoFigure::FileType & iType,
-  const QString & iBaseName)
+  GoFigure::FileType & iType,
+  QString & iBaseName)
 {
   return m_ImageView->SnapshotViewXYZ(iType, iBaseName);
 }
@@ -2047,7 +2047,7 @@ QGoTabImageView3DwT::SnapshotViewXYZ(
 
 //-------------------------------------------------------------------------
 void
-QGoTabImageView3DwT::SetSliceViewXY(const int & iS)
+QGoTabImageView3DwT::SetSliceViewXY(int & iS)
 {
   m_ImageView->SetSliceViewXY(iS);
 }
@@ -2056,7 +2056,7 @@ QGoTabImageView3DwT::SetSliceViewXY(const int & iS)
 
 //-------------------------------------------------------------------------
 void
-QGoTabImageView3DwT::SetSliceViewXZ(const int & iS)
+QGoTabImageView3DwT::SetSliceViewXZ(int & iS)
 {
   m_ImageView->SetSliceViewXZ(iS);
 }
@@ -2065,7 +2065,7 @@ QGoTabImageView3DwT::SetSliceViewXZ(const int & iS)
 
 //-------------------------------------------------------------------------
 void
-QGoTabImageView3DwT::SetSliceViewYZ(const int & iS)
+QGoTabImageView3DwT::SetSliceViewYZ(int & iS)
 {
   m_ImageView->SetSliceViewYZ(iS);
 }
@@ -2074,7 +2074,7 @@ QGoTabImageView3DwT::SetSliceViewYZ(const int & iS)
 
 //-------------------------------------------------------------------------
 void
-QGoTabImageView3DwT::SetFullScreenView(const int & iS)
+QGoTabImageView3DwT::SetFullScreenView(int & iS)
 {
   m_ImageView->SetFullScreenView(iS);
 }
