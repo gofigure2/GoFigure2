@@ -936,12 +936,18 @@ void QGoMainWindow::on_actionReport_a_bug_triggered()
   temp.cdUp();
   QString app_up_dir = temp.path();
   temp.cdUp();
-  QString app_up_up_dir = temp.path();
+  temp.cdUp();
+  QString app_up_up_up_dir = temp.path();
 
+  // linux without install
   QStringList search_dir(app_dir + "/Resources");
+  // on windows without install
   search_dir << app_up_dir + "/Resources";
+  // linux with install
   search_dir << app_up_dir + "/share/doc/gofigure2/Resources";
-
+  // on mac without install
+  search_dir << app_up_up_up_dir + "/Resources";
+ 
   QDir::setSearchPaths("BugEntryPath", search_dir);
 
   QFile file("BugEntryPath:BugEntry.txt");
