@@ -187,14 +187,55 @@ AddGammaPoints(const QPolygonF& iPoints)
 //-------------------------------------------------------------------------
 void
 GoTransferFunctionWidget::
-UpdateLookupTable(vtkLookupTable* iLUT)
+UpdateLookupTable(vtkLookupTable* iLUT, qreal iGamma, qreal iMin, qreal iMax)
 {
-  for(int i=0; i<iLUT->GetNumberOfTableValues();++i)
+  QPolygonF iPoints;
+  int numTableValues = iLUT->GetNumberOfTableValues();
+  qreal width = this->width();
+  qreal height = this->height();
+
+  // before window
+  for(int i=0; i<iMin; ++i)
     {
-    QColor color(m_shade.pixel(i*(m_shade.width()-1)/iLUT->GetNumberOfTableValues(), 0));
+    iPoints << QPointF((qreal)(i)*width/255, height);
+
+    QColor color(m_shade.pixel(i*(m_shade.width()-1)/numTableValues, height));
     iLUT->SetTableValue(i, color.redF(), color.greenF(), color.blueF());
-    iLUT->Modified();
     }
+
+  // points affected with gamma correction, in the window
+  for(int i=iMin; i<iMax; ++i)
+    {
+    qreal input = ((qreal)i - iMin)/((iMax-iMin));
+    qreal power = (qreal)(pow(input, iGamma/500));
+    qreal temp_height = height*(1-power);
+    if(temp_height<0)
+      {
+      break;
+      }
+    else
+      {
+      iPoints << QPointF((qreal)(i)*width/255,temp_height);
+
+      QColor color(m_shade.pixel(i*(m_shade.width()-1)/numTableValues, temp_height));
+      iLUT->SetTableValue(i, color.redF(), color.greenF(), color.blueF());
+      }
+  }
+
+  // after window
+  for(int i=iMax; i<256; ++i)
+    {
+    iPoints << QPointF((qreal)(i)*width/255, 0);
+
+    QColor color(m_shade.pixel(i*(m_shade.width()-1)/numTableValues, 0));
+    iLUT->SetTableValue(i, color.redF(), color.greenF(), color.blueF());
+    }
+
+  // update LUT to modify visualization
+  iLUT->Modified();
+
+  // print new curve
+  UpdateGamma(iPoints);
 }
 //-------------------------------------------------------------------------
 

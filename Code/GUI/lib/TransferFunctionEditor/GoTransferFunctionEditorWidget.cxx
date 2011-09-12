@@ -226,7 +226,10 @@ void GoTransferFunctionEditorWidget::pointsUpdated()
   if(m_LUT)
     {
     // update the LUT
-    m_red_shade->UpdateLookupTable(m_LUT);
+    m_red_shade->UpdateLookupTable(m_LUT,
+                                   (qreal)m_GammaSlider->value(),
+                                   (qreal)m_MinSlider->value(),
+                                   (qreal)m_MaxSlider->value());
     // send signal to update the visualization
     emit updateVisualization();
     }
@@ -594,7 +597,8 @@ gammaValueChanged(int iValue)
 {
   qDebug() << "gamma value changed: " << iValue;
 
-  UpdateGammaCurve();
+  // update transfer function
+  pointsUpdated();
 }
 //-------------------------------------------------------------------------
 
@@ -605,7 +609,8 @@ minValueChanged(int iValue)
 {
   qDebug() << "min value changed: " << iValue;
 
-  UpdateGammaCurve();
+  // update transfer function
+  pointsUpdated();
 }
 //-------------------------------------------------------------------------
 
@@ -616,50 +621,7 @@ maxValueChanged(int iValue)
 {
   qDebug() << "max value changed: " << iValue;
 
-  UpdateGammaCurve();
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-GoTransferFunctionEditorWidget::
-UpdateGammaCurve()
-{
-  qreal width = m_red_shade->width();
-  qreal height = m_red_shade->height();
-  QPolygonF iPoints;
-
-  // before window
-  for(int i=0; i<m_MinSlider->value(); ++i)
-    {
-    iPoints << QPointF((qreal)(i)*width/255, height);
-    }
-
-  // points affected with gamma correction, in the window
-  for(int i=m_MinSlider->value(); i<m_MaxSlider->value(); ++i)
-    {
-    qreal input = ((qreal)i - (qreal)m_MinSlider->value())/(((qreal)m_MaxSlider->value()-(qreal)m_MinSlider->value()));
-    qreal power = (qreal)(pow(input, (qreal)m_GammaSlider->value()/500));
-    qreal temp_height = height*(1-power);
-  if(temp_height<0)
-    {
-    iPoints << QPointF((qreal)(i)*width/255,0);
-    }
-  else
-    {
-    iPoints << QPointF((qreal)(i)*width/255,temp_height);
-    }
-  }
-
-  // after window
-  for(int i=m_MaxSlider->value(); i<256; ++i)
-    {
-    iPoints << QPointF((qreal)(i)*width/255, 0);
-    }
-
-  //qDebug() << iPoints;
-  m_red_shade->UpdateGamma(iPoints);
-
   // update transfer function
-  //pointsUpdated();
+  pointsUpdated();
 }
+//-------------------------------------------------------------------------

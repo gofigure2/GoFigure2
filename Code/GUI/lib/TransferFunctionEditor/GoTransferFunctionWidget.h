@@ -102,7 +102,8 @@ public:
     void AddPoints(const QPolygonF& iPoints);
     void AddGammaPoints(const QPolygonF& iPoints);
 
-    void UpdateLookupTable(vtkLookupTable* iLUT);
+    void UpdateLookupTable(vtkLookupTable* iLUT,
+                           qreal iGamma, qreal iMin, qreal iMax);
 
     void SetHistogram(QVector<qreal> iHistogram);
 
