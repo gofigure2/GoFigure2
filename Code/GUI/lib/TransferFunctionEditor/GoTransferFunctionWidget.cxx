@@ -199,7 +199,7 @@ UpdateLookupTable(vtkLookupTable* iLUT, qreal iGamma, qreal iMin, qreal iMax)
     {
     iPoints << QPointF((qreal)(i)*width/255, height);
 
-    QColor color(m_shade.pixel(i*(m_shade.width()-1)/numTableValues, height));
+    QColor color(m_shade.pixel(i*(width-1)/numTableValues, height));
     iLUT->SetTableValue(i, color.redF(), color.greenF(), color.blueF());
     }
 
@@ -217,7 +217,7 @@ UpdateLookupTable(vtkLookupTable* iLUT, qreal iGamma, qreal iMin, qreal iMax)
       {
       iPoints << QPointF((qreal)(i)*width/255,temp_height);
 
-      QColor color(m_shade.pixel(i*(m_shade.width()-1)/numTableValues, temp_height));
+      QColor color(m_shade.pixel(i*(width-1)/numTableValues, temp_height));
       iLUT->SetTableValue(i, color.redF(), color.greenF(), color.blueF());
       }
   }
@@ -227,7 +227,7 @@ UpdateLookupTable(vtkLookupTable* iLUT, qreal iGamma, qreal iMin, qreal iMax)
     {
     iPoints << QPointF((qreal)(i)*width/255, 0);
 
-    QColor color(m_shade.pixel(i*(m_shade.width()-1)/numTableValues, 0));
+    QColor color(m_shade.pixel(i*(width-1)/numTableValues, 0));
     iLUT->SetTableValue(i, color.redF(), color.greenF(), color.blueF());
     }
 

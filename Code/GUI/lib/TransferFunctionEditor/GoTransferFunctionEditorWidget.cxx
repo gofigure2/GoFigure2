@@ -82,6 +82,7 @@
 
 //qt
 #include "hoverpoints.h"
+#include <QSpacerItem>
 
 //vtk
 #include "vtkLookupTable.h"
@@ -185,7 +186,18 @@ GoTransferFunctionEditorWidget::GoTransferFunctionEditorWidget(QWidget *parent,
   histoCB->setEnabled(false);
 
   vbox->addLayout(nameLayout);
+
+  QSpacerItem* spacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Minimum);
+  vbox->addItem(spacer);
+  vbox->addWidget(m_MaxSlider);
   vbox->addWidget(m_red_shade);
+  vbox->addWidget(m_MinSlider);
+
+  QSpacerItem* spacer2 = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Minimum);
+  vbox->addItem(spacer2);
+
+
+
   vbox->addLayout(gammaLayout);
   vbox->addLayout(posLayout);
   vbox->addWidget(tfCB);
