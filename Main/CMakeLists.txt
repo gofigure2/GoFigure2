@@ -240,95 +240,6 @@ INSTALL( TARGETS gofigure
   )
 
 #-----------------------------------------------------
-# Here Let's take care of License files
-# copying them into the build's folder
-# and during the installation process
-FILE( GLOB
-  GOFIGURE2_LICENSE_FILES
-  "${GOFIGURE2_SOURCE_DIR}/Licenses/*.txt"
-  )
-
-IF( UNIX AND NOT APPLE )
-  ADD_CUSTOM_COMMAND( TARGET gofigure POST_BUILD
-    COMMENT "Copying License files..."
-    COMMAND mkdir ARGS -p
-      ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Licenses
-    COMMAND cp ARGS -rf
-      ${GOFIGURE2_SOURCE_DIR}/Licenses/*.txt
-      ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Licenses
-  )
-ELSE( UNIX AND NOT APPLE )
-  IF( WIN32 )
-    FILE( TO_NATIVE_PATH ${GOFIGURE2_SOURCE_DIR} GOFIGURE2_SRC_DIR_WIN )
-    FILE( TO_NATIVE_PATH ${CMAKE_RUNTIME_OUTPUT_DIRECTORY} OUTPUT_DIR_WIN )
-
-    ADD_CUSTOM_COMMAND( TARGET gofigure POST_BUILD
-      COMMENT "Copying License files..."
-      COMMAND if not exist \"${OUTPUT_DIR_WIN}\\Licenses\"
-        mkdir \"${OUTPUT_DIR_WIN}\\Licenses\"
-      COMMAND xcopy ARGS /Y
-        \"${GOFIGURE2_SRC_DIR_WIN}\\Licenses\\*.txt\"
-        \"${OUTPUT_DIR_WIN}\\Licenses\\\"
-     )
-  ELSE( WIN32 )
-    IF( APPLE )
-      ADD_CUSTOM_COMMAND( TARGET gofigure POST_BUILD
-        COMMENT "Copying License files..."
-        COMMAND mkdir ARGS -p
-          ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${plugin_dest_dir}/Licenses
-        COMMAND cp ARGS -rf
-          ${GOFIGURE2_SOURCE_DIR}/Licenses/*.txt
-          ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${plugin_dest_dir}/Licenses
-        )
-    ENDIF( APPLE )
-  ENDIF( WIN32 )
-ENDIF( UNIX AND NOT APPLE )
-
-#-----------------------------------------------------
-# Here Let's take care of the bug entry files
-# copying them into the build's folder
-# and during the installation process
-FILE( GLOB
-  GOFIGURE2_BUG_ENTRY_FILE
-  "${GOFIGURE2_SOURCE_DIR}/Resources/BugEntry.txt"
-  )
-
-IF( UNIX AND NOT APPLE )
-  ADD_CUSTOM_COMMAND( TARGET gofigure POST_BUILD
-    COMMENT "Copying bug entry file..."
-    COMMAND mkdir ARGS -p
-      ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/BugReport
-    COMMAND cp ARGS -rf
-      ${GOFIGURE2_SOURCE_DIR}/Resources/BugEntry.txt
-      ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/BugReport
-  )
-ELSE( UNIX AND NOT APPLE )
-  IF( WIN32 )
-    FILE( TO_NATIVE_PATH ${GOFIGURE2_SOURCE_DIR} GOFIGURE2_SRC_DIR_WIN )
-    FILE( TO_NATIVE_PATH ${CMAKE_RUNTIME_OUTPUT_DIRECTORY} OUTPUT_DIR_WIN )
-
-    ADD_CUSTOM_COMMAND( TARGET gofigure POST_BUILD
-      COMMENT "Copying bug entry file..."
-      COMMAND if not exist \"${OUTPUT_DIR_WIN}\\BugReport\"
-        mkdir \"${OUTPUT_DIR_WIN}\\BugReport\"
-      COMMAND xcopy ARGS /Y
-        \"${GOFIGURE2_SRC_DIR_WIN}\\Resources\\BugEntry.txt\"
-        \"${OUTPUT_DIR_WIN}\\BugReport\\\"
-     )
-  ELSE( WIN32 )
-    IF( APPLE )
-      ADD_CUSTOM_COMMAND( TARGET gofigure POST_BUILD
-        COMMENT "Copying bug entry files..."
-        COMMAND mkdir ARGS -p
-          ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${plugin_dest_dir}/BugReport
-        COMMAND cp ARGS -rf
-          ${GOFIGURE2_SOURCE_DIR}/Resources/BugEntry.txt
-          ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${plugin_dest_dir}/Resources
-        )
-    ENDIF( APPLE )
-  ENDIF( WIN32 )
-ENDIF( UNIX AND NOT APPLE )
-#-----------------------------------------------------
 
 IF( WIN32 OR APPLE )
   SET( USE_BUNDLE_UTILITIES TRUE )
@@ -373,6 +284,18 @@ IF( USE_BUNDLE_UTILITIES )
   )
 ENDIF( USE_BUNDLE_UTILITIES )
 
+#-----------------------------------------------------
+# Here Let's take care of License and Resoources files
+FILE( GLOB
+  GOFIGURE2_LICENSE_FILES
+  "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Licenses/*.txt"
+  )
+
+FILE( GLOB
+  GOFIGURE2_RESOURCES_FILE
+  "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Resources/*.txt"
+  )
+
 IF( APPLE )
   #---------------------------------------------------------------------------
   # install a qt.conf file
@@ -381,15 +304,14 @@ IF( APPLE )
     file( WRITE \"\${CMAKE_INSTALL_PREFIX}/${GOFIGURE2_INSTALL_BUNDLE_DIR}/${qtconf_dest_dir}/qt.conf\" \"\")
     " COMPONENT Runtime
     )
-
-  # licence
+  # licencehi
   INSTALL( FILES ${GOFIGURE2_LICENSE_FILES}
     DESTINATION ${plugin_dest_dir}/Licenses
     COMPONENT Runtime
     )
-  # bug entry
-  INSTALL( FILES ${GOFIGURE2_BUG_ENTRY_FILE}
-    DESTINATION ${plugin_dest_dir}/BugEntry
+  # resources files
+  INSTALL( FILES ${GOFIGURE2_RESOURCES_FILE}
+    DESTINATION ${plugin_dest_dir}/Resources
     COMPONENT Runtime
     )
 
@@ -398,8 +320,8 @@ ELSE( APPLE )
     DESTINATION ${GOFIGURE2_INSTALL_LICENSE_DIR}
     COMPONENT Runtime
     )
-  INSTALL( FILES ${GOFIGURE2_BUG_ENTRY_FILE}
-    DESTINATION ${GOFIGURE2_INSTALL_BUGENTRY_DIR}
+  INSTALL( FILES ${GOFIGURE2_RESOURCES_FILE}
+    DESTINATION ${GOFIGURE2_INSTALL_RESOURCSES_DIR}
     COMPONENT Runtime
     )
 ENDIF( APPLE )

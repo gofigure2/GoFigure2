@@ -938,9 +938,9 @@ void QGoMainWindow::on_actionReport_a_bug_triggered()
   temp.cdUp();
   QString app_up_up_dir = temp.path();
 
-  QStringList search_dir(app_dir + "/BugReport");
-  search_dir << app_up_dir + "/BugReport";
-  search_dir << app_up_dir + "/share/doc/gofigure2/BugReport";
+  QStringList search_dir(app_dir + "/Resources");
+  search_dir << app_up_dir + "/Resources";
+  search_dir << app_up_dir + "/share/doc/gofigure2/Resources";
 
   QDir::setSearchPaths("BugEntryPath", search_dir);
 

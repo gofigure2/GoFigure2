@@ -51,23 +51,6 @@ IF( WIN32 )
     ENDIF( NOT CYGWIN )
   ENDIF( NOT BORLAND )
 ENDIF( WIN32 )
-#-----------------------------------------------------------------------
-
-IF( WIN32 )
-  SET( OS "Windows" )
-ELSE( WIN32 )
-  IF ( APPLE )
-    SET( OS "Mac OS X" )
-  ELSE( APPLE )
-    SET( OS "Linux" )
-  ENDIF( APPLE )
-ENDIF( WIN32 )
-
-# requiered to file the VERSION and OS automatically
-CONFIGURE_FILE( ${GOFIGURE2_SOURCE_DIR}/Resources/BugEntry.txt.in
- ${GOFIGURE2_SOURCE_DIR}/Resources/BugEntry.txt
- @ONLY
-)
 
 #-----------------------------------------------------------------------
 # Export and Install configuration
@@ -78,7 +61,7 @@ CONFIGURE_FILE( ${GOFIGURE2_SOURCE_DIR}/Resources/BugEntry.txt.in
 # GOFIGURE2_INSTALL_LIB_DIR          - library dir (libs)
 # GOFIGURE2_INSTALL_DOC_DIR          - documentation dir
 # GOFIGURE2_INSTALL_LICENSE_DIR      - licenses dir
-# GOFIGURE2_INSTALL_BUGENTRY_DIR     - bug report dir
+# GOFIGURE2_INSTALL_RESOURCSES_DIR   - resources dir
 #-----------------------------------------------------------------------
 IF( NOT GOFIGURE2_INSTALL_BUNDLE_DIR )
   SET( GOFIGURE2_INSTALL_BUNDLE_DIR "." )
@@ -104,10 +87,9 @@ IF( NOT GOFIGURE2_INSTALL_LICENSE_DIR )
   SET( GOFIGURE2_INSTALL_LICENSE_DIR "share/doc/gofigure2/Licenses" )
 ENDIF( NOT GOFIGURE2_INSTALL_LICENSE_DIR )
 
-IF( NOT GOFIGURE2_INSTALL_BUGENTRY_DIR )
-  SET( GOFIGURE2_INSTALL_BUGENTRY_DIR "share/doc/gofigure2/BugReport" )
-ENDIF( NOT GOFIGURE2_INSTALL_BUGENTRY_DIR )
-
+IF( NOT GOFIGURE2_INSTALL_RESOURCSES_DIR )
+  SET( GOFIGURE2_INSTALL_RESOURCSES_DIR "share/doc/gofigure2/Resources" )
+ENDIF( NOT GOFIGURE2_INSTALL_RESOURCSES_DIR )
 
 #---------------------------------------------------------------------------
 # Define CMAKE_whatever_OUTPUT_DIRECTORY
@@ -139,6 +121,36 @@ ENDIF()
 
 
 SET( GOFIGURE2_LIBRARY_DIRS ${CMAKE_LIBRARY_OUTPUT_DIRECTORY} )
+
+
+#---------------------------------------------------------------------------
+# Export files (body of emails, etc...)
+#---------------------------------------------------------------------------
+# define useful variables
+IF( WIN32 )
+  SET( OS "Windows" )
+ELSE( WIN32 )
+  IF ( APPLE )
+    SET( OS "Mac OS X" )
+  ELSE( APPLE )
+    SET( OS "Linux" )
+  ENDIF( APPLE )
+ENDIF( WIN32 )
+
+# Licences
+file(MAKE_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Licenses)
+
+file(COPY        ${GOFIGURE2_SOURCE_DIR}/Licenses/
+     DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Licenses)
+
+# Resources
+file(MAKE_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Resources)
+
+CONFIGURE_FILE( ${GOFIGURE2_SOURCE_DIR}/Resources/BugEntry.txt.in
+ ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Resources/BugEntry.txt
+ @ONLY
+)
+
 #---------------------------------------------------------------------------
 # Define TESTING_DATA_PATH
 #---------------------------------------------------------------------------
