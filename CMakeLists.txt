@@ -467,11 +467,19 @@ IF( VTK_FOUND )
       @ONLY
       )
 
-#    INSTALL(
-#      FILES ${CMAKE_CURRENT_BINARY_DIR}/GoFigure2Config.cmake
-#      DESTINATION
-#      COMPONENT Development
-#      )
+    INSTALL(
+      FILES ${CMAKE_CURRENT_BINARY_DIR}/GoFigure2Config.cmake
+      DESTINATION ${GOFIGURE2_INSTALL_LIB_DIR}
+      COMPONENT Development
+      )
+
+    IF( UNIX AND NOT APPLE )
+      CONFIGURE_FILE(
+        "${CMAKE_CURRENT_SOURCE_DIR}/Resources/GoFigure2.desktop.in"
+        "${CMAKE_CURRENT_BINARY_DIR}/GoFigure2.desktop"
+        @ONLY
+        )
+    ENDIF()
 
     #-----------------------------------------------------------------------
     # PACKAGE With CPack
