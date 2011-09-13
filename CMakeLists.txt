@@ -88,6 +88,7 @@ ELSE( SUPERBUILD )
   # GOFIGURE2_INSTALL_LIB_DIR          - library dir (libs)
   # GOFIGURE2_INSTALL_DOC_DIR          - documentation dir
   # GOFIGURE2_INSTALL_LICENSE_DIR      - licenses dir
+  # GOFIGURE2_INSTALL_RESOURCE_DIR     - resources dir
   #-----------------------------------------------------------------------
 
   IF( NOT GOFIGURE2_INSTALL_BUNDLE_DIR )
@@ -114,7 +115,11 @@ ELSE( SUPERBUILD )
     SET( GOFIGURE2_INSTALL_LICENSE_DIR "share/doc/gofigure2/Licenses" )
   ENDIF( NOT GOFIGURE2_INSTALL_LICENSE_DIR )
 
-  #---------------------------------------------------------------------------
+  IF( NOT GOFIGURE2_INSTALL_RESOURCE_DIR )
+    SET( GOFIGURE2_INSTALL_RESOURCE_DIR "share/doc/gofigure2/Resources" )
+  ENDIF( NOT GOFIGURE2_INSTALL_RESOURCE_DIR )
+  
+#---------------------------------------------------------------------------
   # Define CMAKE_whatever_OUTPUT_DIRECTORY
   #---------------------------------------------------------------------------
   # all target executables will be
@@ -136,7 +141,35 @@ ELSE( SUPERBUILD )
   )
   SET( GOFIGURE2_LIBRARY_DIRS ${GOFIGURE2_BINARY_DIR}/lib )
 
-  #---------------------------------------------------------------------------
+#---------------------------------------------------------------------------
+# Export files (body of emails, etc...)
+#---------------------------------------------------------------------------
+# define useful variables
+IF( WIN32 )
+  SET( OS "Windows" )
+ELSE( WIN32 )
+  IF ( APPLE )
+    SET( OS "Mac OS X" )
+  ELSE( APPLE )
+    SET( OS "Linux" )
+  ENDIF( APPLE )
+ENDIF( WIN32 )
+
+# Licences
+file(MAKE_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Licenses)
+
+file(COPY        ${GOFIGURE2_SOURCE_DIR}/Licenses/
+     DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Licenses)
+
+# Resources
+file(MAKE_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Resources)
+
+CONFIGURE_FILE( ${GOFIGURE2_SOURCE_DIR}/Resources/BugEntry.txt.in
+ ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Resources/BugEntry.txt
+ @ONLY
+)
+
+#---------------------------------------------------------------------------
   # Define TESTING_DATA_PATH
   #---------------------------------------------------------------------------
   SET( TESTING_DATA_PATH

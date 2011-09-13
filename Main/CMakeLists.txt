@@ -238,52 +238,6 @@ INSTALL( TARGETS gofigure
   BUNDLE  DESTINATION ${GOFIGURE2_INSTALL_BUNDLE_DIR} COMPONENT Runtime
   )
 
-#-----------------------------------------------------
-# Here Let's take care of License files
-# copying them into the build's folder
-# and during the installation process
-FILE( GLOB
-  GOFIGURE2_LICENSE_FILES
-  "${GOFIGURE2_SOURCE_DIR}/Licenses/*.txt"
-  )
-
-IF( UNIX AND NOT APPLE )
-  ADD_CUSTOM_COMMAND( TARGET gofigure POST_BUILD
-    COMMENT "Copying License files..."
-    COMMAND mkdir ARGS -p
-      ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Licenses
-    COMMAND cp ARGS -rf
-      ${GOFIGURE2_SOURCE_DIR}/Licenses/*.txt
-      ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Licenses
-  )
-ELSE( UNIX AND NOT APPLE )
-  IF( WIN32 )
-    FILE( TO_NATIVE_PATH ${GOFIGURE2_SOURCE_DIR} GOFIGURE2_SRC_DIR_WIN )
-    FILE( TO_NATIVE_PATH ${CMAKE_RUNTIME_OUTPUT_DIRECTORY} OUTPUT_DIR_WIN )
-
-    ADD_CUSTOM_COMMAND( TARGET gofigure POST_BUILD
-      COMMENT "Copying License files..."
-      COMMAND if not exist \"${OUTPUT_DIR_WIN}\\Licenses\"
-        mkdir \"${OUTPUT_DIR_WIN}\\Licenses\"
-      COMMAND xcopy ARGS /Y
-        \"${GOFIGURE2_SRC_DIR_WIN}\\Licenses\\*.txt\"
-        \"${OUTPUT_DIR_WIN}\\Licenses\\\"
-     )
-  ELSE( WIN32 )
-    IF( APPLE )
-      ADD_CUSTOM_COMMAND( TARGET gofigure POST_BUILD
-        COMMENT "Copying License files..."
-        COMMAND mkdir ARGS -p
-          ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${plugin_dest_dir}/Licenses
-        COMMAND cp ARGS -rf
-          ${GOFIGURE2_SOURCE_DIR}/Licenses/*.txt
-          ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${plugin_dest_dir}/Licenses
-        )
-    ENDIF( APPLE )
-  ENDIF( WIN32 )
-ENDIF( UNIX AND NOT APPLE )
-#-----------------------------------------------------
-
 #---------------------------------------------------------------------------
 # Use BundleUtilities to get all other dependencies for the application to
 # work. It takes a bundle or executable along with possible plugins and
@@ -316,6 +270,23 @@ INSTALL( CODE "
   "
   COMPONENT Runtime )
 
+#-----------------------------------------------------
+# Here Let's take care of License files
+# copying them into the build's folder
+# and during the installation process
+FILE( GLOB
+  GOFIGURE2_LICENSE_FILES
+  "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Licenses/*.txt"
+  )
+
+FILE( GLOB
+  GOFIGURE2_RESOURCES_FILES
+  "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Resources/*.txt"
+  )
+
+#-----------------------------------------------------
+
+
 IF( APPLE )
   #---------------------------------------------------------------------------
   # install a qt.conf file
@@ -329,11 +300,23 @@ IF( APPLE )
     DESTINATION ${plugin_dest_dir}/Licenses
     COMPONENT Runtime
     )
+
+ INSTALL( FILES ${GOFIGURE2_RESOURCES_FILES}
+    DESTINATION ${plugin_dest_dir}/Resources
+    COMPONENT Runtime
+    )
+
 ELSE( APPLE )
   INSTALL( FILES ${GOFIGURE2_LICENSE_FILES}
     DESTINATION ${GOFIGURE2_INSTALL_LICENSE_DIR}
     COMPONENT Runtime
     )
+
+  INSTALL( FILES ${GOFIGURE2_RESOURCES_FILES}
+    DESTINATION ${GOFIGURE2_INSTALL_RESOURCE_DIR}
+    COMPONENT Runtime
+    )
+
 ENDIF( APPLE )
 
 FILE( GLOB __source_file_h "${CMAKE_CURRENT_SOURCE_DIR}/*.h" )
