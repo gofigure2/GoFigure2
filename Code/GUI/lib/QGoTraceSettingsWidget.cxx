@@ -289,9 +289,10 @@ void
 QGoTraceSettingsWidget::SetCellTypeComboBox(
   QHBoxLayout* iCellLayout)
 {
+  /*  this->m_ChoseCellType = new QGoComboBox("Add a new celltype...",
+                                          this, "Delete a celltype...");*/
   QString Tooltip(tr("Celltype that will be applied to your new meshes") );
-  this->m_ChoseCellType = new QGoComboBox("Add a new celltype...",
-                                          this, "Delete a celltype...");
+  this->m_ChoseCellType = new QGoComboBox("Add a new celltype...", this);
   this->m_ChoseCellType->setToolTip(Tooltip);
 
   QHBoxLayout *HLayoutForCellType = new QHBoxLayout;
@@ -326,8 +327,7 @@ QGoTraceSettingsWidget::SetSubCellTypeComboBox(
   QHBoxLayout* iSubCellLayout)
 {
   QString Tooltip(tr("SubCellulartype that will be applied to your new meshes") );
-  this->m_ChoseSubCellType = new QGoComboBox("Add a new subcelltype...", this,
-                                             "Delete a subcelltype...");
+  this->m_ChoseSubCellType = new QGoComboBox("Add a new subcelltype...", this);
   this->m_ChoseSubCellType->setToolTip(Tooltip);
   this->m_LabelSubCellType = new QLabel(tr("SubCellType:"), this);
   this->m_LabelSubCellType->setToolTip(Tooltip);
