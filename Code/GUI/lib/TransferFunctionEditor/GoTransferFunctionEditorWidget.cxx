@@ -158,6 +158,7 @@ GoTransferFunctionEditorWidget::GoTransferFunctionEditorWidget(QWidget *parent,
   m_MinSlider->setOrientation(Qt::Horizontal);
   m_MinSlider->setMaximum(255);
   m_MinSlider->setValue(20);
+  m_MinSlider->setStyleSheet("QSlider::add-page:horizontal {background: blue;} QSlider::sub-page:vertical {background: white;}");
   connect(m_MinSlider, SIGNAL(valueChanged(int)), this, SLOT(minValueChanged(int)));
 
   QLabel* maxName = new QLabel("Max:");
@@ -165,6 +166,7 @@ GoTransferFunctionEditorWidget::GoTransferFunctionEditorWidget(QWidget *parent,
   m_MaxSlider->setOrientation(Qt::Horizontal);
   m_MaxSlider->setMaximum(255);
   m_MaxSlider->setValue(230);
+  m_MaxSlider->setStyleSheet("QSlider::add-page:horizontal {background: white;} QSlider::sub-page:vertical {background: blue;}");
   connect(m_MaxSlider, SIGNAL(valueChanged(int)), this, SLOT(maxValueChanged(int)));
 
   QHBoxLayout *posLayout = new QHBoxLayout;
@@ -189,6 +191,7 @@ GoTransferFunctionEditorWidget::GoTransferFunctionEditorWidget(QWidget *parent,
 
   QSpacerItem* spacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Minimum);
   vbox->addItem(spacer);
+
   vbox->addWidget(m_MaxSlider);
   vbox->addWidget(m_red_shade);
   vbox->addWidget(m_MinSlider);
