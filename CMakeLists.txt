@@ -320,9 +320,15 @@ ELSE( SUPERBUILD )
   INCLUDE( GoFigure2IncludeDirectories.cmake )
 
   CONFIGURE_FILE(
-    "${CMAKE_CURRENT_SOURCE_DIR}/UseGoFigure2.cmake.in"
-    "${CMAKE_CURRENT_BINARY_DIR}/UseGoFigure2.cmake"
+    "${CMAKE_CURRENT_SOURCE_DIR}/GoFigure2Config.cmake.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/GoFigure2Config.cmake"
     @ONLY
+  )
+
+  INSTALL(
+    FILES ${CMAKE_CURRENT_BINARY_DIR}/GoFigure2Config.cmake
+    DESTINATION ${GOFIGURE2_INSTALL_LIB_DIR}
+    COMPONENT Development
   )
 
   #-----------------------------------------------------------------------
