@@ -1,7 +1,7 @@
 [Desktop Entry]
 Type=Application
 Terminal=false
-Version=0.8.2
+Version=@GOFIGURE2_VERSION@
 Name=GoFigure2
 GenericName=Data Viewer
 Comment=Visualization and Analysis of 3D+t bio-images
