@@ -331,6 +331,20 @@ ELSE( SUPERBUILD )
     COMPONENT Development
   )
 
+  IF( UNIX AND NOT APPLE )
+    CONFIGURE_FILE(
+      "${CMAKE_CURRENT_SOURCE_DIR}/Resources/GoFigure2.desktop.in"
+      "${CMAKE_CURRENT_BINARY_DIR}/GoFigure2.desktop"
+      @ONLY
+      )
+
+    INSTALL(
+      FILES ${CMAKE_CURRENT_BINARY_DIR}/GoFigure2.desktop
+      DESTINATION ${GOFIGURE2_INSTALL_BIN_DIR}
+      @ONLY
+      )
+  ENDIF()
+
   #-----------------------------------------------------------------------
   # PACKAGE With CPack
   #-----------------------------------------------------------------------
