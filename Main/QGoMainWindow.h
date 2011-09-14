@@ -102,6 +102,8 @@ private slots:
 
   void on_actionGoFigure2_Website_triggered();
 
+  void on_actionReport_a_bug_triggered();
+  
   void on_actionUser_mailing_list_triggered();
 
   void on_actionDeveloper_mailing_list_triggered();
