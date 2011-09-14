@@ -374,7 +374,6 @@ CONFIGURE_FILE( ${GOFIGURE2_SOURCE_DIR}/Resources/BugEntry.txt.in
     INSTALL(
       FILES ${CMAKE_CURRENT_BINARY_DIR}/GoFigure2.desktop
       DESTINATION ${GOFIGURE2_INSTALL_BIN_DIR}
-      @ONLY
       )
   ENDIF()
 
