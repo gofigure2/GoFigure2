@@ -1,5 +1,5 @@
 #----------------------------------------------------------
-FIND_PACKAGE( Qt4 4.5 REQUIRED QtCore QtGui )
+FIND_PACKAGE( Qt4 REQUIRED QtCore QtGui )
   IF( QT4_FOUND )
 
   #----------------------------------------------------------
