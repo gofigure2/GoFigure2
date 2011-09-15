@@ -18,6 +18,7 @@ ExternalProject_Add(${proj}
   CMAKE_GENERATOR ${gen}
   CMAKE_ARGS
     ${ep_common_args}
+    -DBUILD_SHARED_LIBS:BOOL=ON
     -DITK_INSTALL_LIB_DIR:PATH=${GOFIGURE2_INSTALL_LIB_DIR}
      # should change soon
     -DITK_USE_REVIEW:INTERNAL=ON
