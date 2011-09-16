@@ -34,7 +34,7 @@
 #ifndef __QGoMeshSplitDanielssonDistanceAlgo_h
 #define __QGoMeshSplitDanielssonDistanceAlgo_h
 
-#include "QGoSegmentationAlgo.h"
+#include "QGoSplitDanielssonDistanceAlgo.h"
 #include "QGoAlgorithmWidget.h"
 #include "QGoAlgoParameter.h"
 #include "QGoGUILibConfigure.h"
@@ -50,21 +50,17 @@ class GoImageProcessor;
 \brief class to be the interface between the QGoMeshSplitDanielssonDistanceAlgo algo for meshes
 and GoFigure
 */
-class QGoMeshSplitDanielssonDistanceAlgo: public QGoSegmentationAlgo
+class QGoMeshSplitDanielssonDistanceAlgo: public QGoSplitDanielssonDistanceAlgo
 {
 public:
-  QGoMeshSplitDanielssonDistanceAlgo(QWidget *iParent = 0);
+  QGoMeshSplitDanielssonDistanceAlgo(std::vector< vtkPoints* >* iSeeds,
+                                     QWidget *iParent = 0);
   ~QGoMeshSplitDanielssonDistanceAlgo();
 
   std::vector<vtkPolyData*> ApplyAlgo(
-    vtkPoints* iSeeds,
     GoImageProcessor* iImages,
     std::string iChannel,
-    bool iIsInvertedOn = false); // IsInvertedOn: most probably to be removed
-
-protected:  
-  void SetAlgoWidget(QWidget* iParent = 0);
-  void DeleteParameters();
+    bool iIsInvertedOn);
 };
 
 #endif

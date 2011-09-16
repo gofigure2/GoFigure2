@@ -112,6 +112,7 @@ SET( QGoGUILIB_SRC
   TraceEditing/QGoSetOfContoursLevelSetAlgo.cxx
   TraceEditing/QGoLevelSetAlgo.cxx
   TraceEditing/QGoShapeAlgo.cxx
+  TraceEditing/QGoSplitDanielssonDistanceAlgo.cxx
   TraceEditing/QGoSetOfContoursShapeAlgo.cxx
   TraceEditing/QGoSemiAutoSegmentationAlgo.cxx
   TraceEditing/QGoFilterSemiAutoBase.cxx
@@ -256,6 +257,7 @@ SET( QGoGUILIB_HDRS
   TraceEditing/QGoFilterChanAndVese.h
   TraceEditing/QGoFilterShape.h
   TraceEditing/QGoFilterWatershed.h
+  TraceEditing/QGoFilterWatershed.h
   TraceEditing/QGoTraceEditingWidget.h
   TraceEditing/QGoModesManagerWidget.h
   TraceEditing/QGoAlgorithmsManagerWidget.h
@@ -386,13 +388,13 @@ ADD_LIBRARY( QGoGui
 )
 
 SET( QGoGUI_LIBS
+  ${ITK_LIBRARIES}
   QVTK
   QGoIO
   GoFilters
   vtkRenderingAddOn2
   PoissonReconstruction
   ctk
-  ${ITK_LIBRARIES}
   )
 
 TARGET_LINK_LIBRARIES( QGoGui

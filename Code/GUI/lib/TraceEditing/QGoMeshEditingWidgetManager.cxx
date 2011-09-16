@@ -177,7 +177,8 @@ void QGoMeshEditingWidgetManager::SetSplitMergeMode(QWidget* iParent)
     new QGoAlgorithmsManagerWidget("Split", iParent);
   this->m_TraceEditingWidget->AddMode(SplitAlgoWidget, true);
 
-  m_DanielAlgo = new QGoMeshSplitDanielssonDistanceAlgo(iParent);
+  m_DanielAlgo = new QGoMeshSplitDanielssonDistanceAlgo(this->m_Seeds,
+                                                        iParent);
   QGoAlgorithmWidget * DanielWidget = m_DanielAlgo->GetAlgoWidget();
   SplitAlgoWidget->AddMethod(DanielWidget );
 

@@ -36,9 +36,10 @@
 #include "itkvtkMeshSplitterDanielssonDistanceImageFilter.h"
 #include "GoImageProcessor.h"
 
-QGoMeshSplitDanielssonDistanceAlgo::QGoMeshSplitDanielssonDistanceAlgo(QWidget* iParent)
+QGoMeshSplitDanielssonDistanceAlgo::QGoMeshSplitDanielssonDistanceAlgo(std::vector< vtkPoints* >* iSeeds, QWidget* iParent)
+    :QGoSplitDanielssonDistanceAlgo(iSeeds, iParent)
 {
-  this->SetAlgoWidget(iParent);
+
 }
 //-------------------------------------------------------------------------
 
@@ -49,26 +50,12 @@ QGoMeshSplitDanielssonDistanceAlgo::~QGoMeshSplitDanielssonDistanceAlgo()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoMeshSplitDanielssonDistanceAlgo::DeleteParameters()
-{
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void QGoMeshSplitDanielssonDistanceAlgo::SetAlgoWidget(QWidget* iParent)
-{
-  this->m_AlgoWidget =
-    new QGoAlgorithmWidget("Danielsson", iParent);
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
 std::vector<vtkPolyData*> QGoMeshSplitDanielssonDistanceAlgo::ApplyAlgo(
-  GoImageProcessor* iImages,
+    GoImageProcessor* iImages,
     std::string iChannel, 
     bool iIsInvertedOn)
 {
-  size_t nb_ch = iImages->size();
+  size_t nb_ch = iImages->getNumberOfChannels();
 
   const unsigned int Dimension = 3;
   typedef unsigned char PixelType;
@@ -94,13 +81,16 @@ std::vector<vtkPolyData*> QGoMeshSplitDanielssonDistanceAlgo::ApplyAlgo(
   ImageType::PointType itk_pt;
   double vtk_pt[3];
 
-  for( vtkIdType i = 0; i < iSeeds->GetNumberOfPoints(); i++ )
+  for( vtkIdType id = 0; id < this->m_Seeds->size(); id++ )
     {
-    iSeeds->GetPoint( i, vtk_pt );
-    itk_pt[0] = vtk_pt[0];
-    itk_pt[1] = vtk_pt[1];
-    itk_pt[2] = vtk_pt[2];
-    seeds->SetPoint( i, itk_pt );
+    for ( int i = 0; i < (*this->m_Seeds)[id]->GetNumberOfPoints(); i++ )
+      {
+      (*this->m_Seeds)[id]->GetPoint( i, vtk_pt );
+      itk_pt[0] = vtk_pt[0];
+      itk_pt[1] = vtk_pt[1];
+      itk_pt[2] = vtk_pt[2];
+      seeds->SetPoint( i, itk_pt );
+      }
     }
 
   filter->SetSeeds( seeds );
