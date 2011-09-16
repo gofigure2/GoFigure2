@@ -72,5 +72,6 @@ protected:
   std::string m_FileName;
   std::vector< int > ConvertUnsignedLongColorToRGBIntColor(
     const unsigned long & iColor);
+  bool CheckKeyWord(std::string iWord, std::string iCompare, int& iLineNumber);
 };
 #endif

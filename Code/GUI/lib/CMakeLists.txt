@@ -18,102 +18,114 @@ CONFIGURE_FILE( ${CMAKE_CURRENT_SOURCE_DIR}/QGoNetworkUtilities.cxx.in
   ${CMAKE_CURRENT_BINARY_DIR}/QGoNetworkUtilities.cxx @ONLY IMMEDIATE )
 
 SET( QGoGUILIB_SRC
-  VisualizationTraceContainers/ContourContainer.cxx
-  VisualizationTraceContainers/MeshContainer.cxx
-  VisualizationTraceContainers/ContourMeshContainer.cxx
-  VisualizationTraceContainers/TrackContainer.cxx
-  Wizard/QGoConnectServerPage.cxx
-  Wizard/QGoCreateImgSessionPage.cxx
   QGoImageView.cxx
   QGoImageView2D.cxx
   QGoImageView3D.cxx
+  QGoPrintDatabase.cxx
   QGoImageInfo.cxx
   QGoLUTDialog.cxx
-  QGoManualSegmentationSettingsDialog.cxx
-  Wizard/QGoOpenCreateImgSessionPage.cxx
-  Wizard/QGoOpenCreateProjectPage.cxx
-  QGoPrintDatabase.cxx
+  TraceEditing/QGoManualSegmentationSettingsDialog.cxx
   QGoTabElementBase.cxx
   QGoTabImageView2D.cxx
   QGoTabImageView3D.cxx
   QGoTabImageView3DwT.cxx
-  QGoTabImageView4D.cxx
   QGoTabImageViewElementBase.cxx
   QGoTabImageViewNDBase.cxx
   QGoNavigationDockWidget.cxx
-  Wizard/QGoWizardDB.cxx
   QSplitterChild.cxx
   QGoTableWidget.cxx
   SnapshotHelper.cxx
   QGoCreateMeshDialog.cxx
   QGoLsmToMegaExportDialog.cxx
   ConversionLsmToMegaThread.cxx
-  QGoDBBookmarkManager.cxx
   QTextEditChild.cxx
   QGoNameDescriptionInputDialog.cxx
   QGoDockWidgetStatus.cxx
   QGoDeleteFromListDialog.cxx
-  QGoDBNameDescEntityManager.cxx
-  QGoDBCellTypeManager.cxx
-  QGoDBSubCellTypeManager.cxx
-  QGoDBColorManager.cxx
-  QGoTraceSettingsDockWidget.cxx
   QGoTraceSettingsWidget.cxx
-  Wizard/QGoDBInitializationWizard.cxx
-  Wizard/QGoDBInitCreateUserPage.cxx
-  Wizard/QGoDBInitCreateAuthorsPage.cxx
-  Wizard/QGoDBInitCreateMicroscopePage.cxx
   QGoColorComboBox.cxx
   QGoSelectedColorComboBox.cxx
   QGoCollectionColorComboBox.cxx
   QGoComboBox.cxx
-  QGoDBTraceManager.cxx
-  QGoDBContourManager.cxx
-  QGoDBMeshManager.cxx
-  QGoDBTrackManager.cxx
   QGoColorCodingDialog.cxx
+  QGoDockWidget.cxx
+  QGoToolBarStatus.cxx
 
-  # base segmentation widgets
-  QGoContourSegmentationBaseDockWidget.cxx
-  QGoMeshSegmentationBaseDockWidget.cxx
-
-  #--manual segmentation--
-  QGoContourManualSegmentation.cxx
-  QGoContourManualSegmentationWidget.cxx
-
-  #--seed segmentation--
-  QGoSeedSegmentationBase.cxx
-    QGoContourSeedSegmentation.cxx
-    QGoMeshSeedSegmentation.cxx
-  QGoSeedBaseWidget.cxx
-    QGoContourSemiAutoLevelsetWidget.cxx
-    QGoContourSemiAutoShapeWidget.cxx
-    QGoContourSemiAutoWatershedWidget.cxx
-  QGoFilterSemiAutoBase.cxx
-    TraceEditing/QGoFilterChanAndVese.cxx
-    TraceEditing/QGoFilterShape.cxx
-    TraceEditing/QGoFilterWatershed.cxx
+  # trace containers
+  VisualizationTraceContainers/ContourContainer.cxx
+  VisualizationTraceContainers/MeshContainer.cxx
+  VisualizationTraceContainers/ContourMeshContainer.cxx
+  VisualizationTraceContainers/TrackContainer.cxx
+  VisualizationTraceContainers/LineageContainer.cxx
+  
+  # Wizard
+  Wizard/QGoDBInitializationWizard.cxx
+  Wizard/QGoDBInitCreateUserPage.cxx
+  Wizard/QGoDBInitCreateAuthorsPage.cxx
+  Wizard/QGoDBInitCreateMicroscopePage.cxx
+  Wizard/QGoOpenCreateImgSessionPage.cxx
+  Wizard/QGoOpenCreateProjectPage.cxx
+  Wizard/QGoConnectServerPage.cxx
+  Wizard/QGoCreateImgSessionPage.cxx
+  Wizard/QGoWizardDB.cxx
+ 
+  # DB Managers
+  DBManager/QGoDBTraceManager.cxx
+  DBManager/QGoDBContourManager.cxx
+  DBManager/QGoDBMeshManager.cxx
+  DBManager/QGoDBTrackManager.cxx
+  DBManager/QGoDBLineageManager.cxx
+  DBManager/QGoDBNameDescEntityManager.cxx
+  DBManager/QGoDBCellTypeManager.cxx
+  DBManager/QGoDBSubCellTypeManager.cxx
+  DBManager/QGoDBColorManager.cxx
+  DBManager/QGoDBBookmarkManager.cxx
 
   # for the tracks
-  QGoTrackDockWidget.cxx
+  QGoTrackViewDockWidget.cxx
   QGoTrackEditingWidget.cxx
 
-  # for the trace editing widget
+  #for the lineages
+  QGoLineageViewDockWidget.cxx
+
+  #--manual segmentation--
+  TraceEditing/QGoContourManualSegmentation.cxx
+  TraceEditing/QGoContourManualSegmentationWidget.cxx
+  TraceEditing/QGoFilterChanAndVese.cxx
+  TraceEditing/QGoFilterShape.cxx
+  TraceEditing/QGoFilterWatershed.cxx
   TraceEditing/QGoTraceEditingWidget.cxx
   TraceEditing/QGoModesManagerWidget.cxx
   TraceEditing/QGoAlgorithmsManagerWidget.cxx
   TraceEditing/QGoAlgorithmWidget.cxx
   TraceEditing/QGoMeshEditingWidgetManager.cxx
-  TraceEditing/QGoMeshAlgo.cxx
+  TraceEditing/QGoContourEditingWidgetManager.cxx
+  TraceEditing/QGoTraceEditingWidgetManager.cxx
+  TraceEditing/QGoSegmentationAlgo.cxx
+  TraceEditing/QGoContourLevelSetAlgo.cxx
   TraceEditing/QGoMeshLevelSetAlgo.cxx
   TraceEditing/QGoMeshShapeAlgo.cxx
   TraceEditing/QGoMeshWaterShedAlgo.cxx
   TraceEditing/QGoMeshSplitDanielssonDistanceAlgo.cxx
+  TraceEditing/QGoWaterShedAlgo.cxx
+  TraceEditing/QGoSetOfContoursWaterShedAlgo.cxx
+  TraceEditing/QGoSetOfContoursLevelSetAlgo.cxx
+  TraceEditing/QGoLevelSetAlgo.cxx
+  TraceEditing/QGoShapeAlgo.cxx
+  TraceEditing/QGoSetOfContoursShapeAlgo.cxx
+  TraceEditing/QGoSemiAutoSegmentationAlgo.cxx
+  TraceEditing/QGoFilterSemiAutoBase.cxx
+
+  # transfer function widget
+  TransferFunctionEditor/GoTransferFunctionEditorWidget.cxx
+  TransferFunctionEditor/GoTransferFunctionWidget.cxx
+  TransferFunctionEditor/hoverpoints.cpp
+
+  # lineage viewer
+  LineageViewer/QGoLineageViewerWidget.cxx
 
   ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoAboutWidget.cxx
   ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoNetworkUtilities.cxx
-
-  ${GOFIGURE2_FILTER_SOURCES}
 )
 
 SET_SOURCE_FILES_PROPERTIES(
@@ -122,7 +134,7 @@ SET_SOURCE_FILES_PROPERTIES(
   QGoTabImageViewElementBase.cxx
   QGoImageView.cxx
   QGoFilterSemiAutoBase.cxx
-  QGoDBTraceManager.cxx
+  DBManager/QGoDBTraceManager.cxx
   QGoDBNameDescEntityManager.cxx
   QGoColorComboBox.cxx
   ABSTRACT
@@ -167,94 +179,101 @@ ENDIF( ENABLE_VIDEO_RECORD_AVI )
 #---------------------------------------------------------------------------
 
 SET( QGoGUILIB_HDRS
-  VisualizationTraceContainers/ContourContainer.h
-  VisualizationTraceContainers/MeshContainer.h
-  VisualizationTraceContainers/ContourMeshContainer.h
-  VisualizationTraceContainers/TrackContainer.h
-  Wizard/QGoConnectServerPage.h
-  Wizard/QGoCreateImgSessionPage.h
   QGoImageView.h
   QGoImageView2D.h
   QGoImageView3D.h
   QGoImageInfo.h
   QGoLUTDialog.h
-  QGoManualSegmentationSettingsDialog.h
-  Wizard/QGoOpenCreateImgSessionPage.h
-  Wizard/QGoOpenCreateProjectPage.h
+  TraceEditing/QGoManualSegmentationSettingsDialog.h
   QGoPrintDatabase.h
   QGoTabElementBase.h
   QGoTabImageView2D.h
   QGoTabImageView3D.h
   QGoTabImageView3DwT.h
-  QGoTabImageView4D.h
   QGoTabImageViewElementBase.h
   QGoTabImageViewNDBase.h
   QGoNavigationDockWidget.h
-  Wizard/QGoWizardDB.h
   QSplitterChild.h
   QGoTableWidget.h
   QGoCreateMeshDialog.h
   QGoLsmToMegaExportDialog.h
   ConversionLsmToMegaThread.h
-  QGoDBBookmarkManager.h
   QTextEditChild.h
   QGoNameDescriptionInputDialog.h
   QGoDockWidgetStatus.h
   QGoDeleteFromListDialog.h
-  QGoDBNameDescEntityManager.h
-  QGoDBCellTypeManager.h
-  QGoDBSubCellTypeManager.h
-  QGoDBColorManager.h
-  QGoTraceSettingsDockWidget.h
   QGoTraceSettingsWidget.h
   QGoAboutWidget.h
-  Wizard/QGoDBInitializationWizard.h
-  Wizard/QGoDBInitCreateUserPage.h
-  Wizard/QGoDBInitCreateAuthorsPage.h
-  Wizard/QGoDBInitCreateMicroscopePage.h
   QGoNetworkUtilities.h
   QGoColorComboBox.h
   QGoSelectedColorComboBox.h
   QGoCollectionColorComboBox.h
   QGoComboBox.h
-  QGoDBTraceManager.h
-  QGoDBContourManager.h
-  QGoDBMeshManager.h
-  QGoDBTrackManager.h
   QGoColorCodingDialog.h
+  QGoDockWidget.h
+  QGoToolBarStatus.h
 
-  # base segmentation widgets
-  QGoContourSegmentationBaseDockWidget.h
-  QGoMeshSegmentationBaseDockWidget.h
+  # Trace containers
+  VisualizationTraceContainers/ContourContainer.h
+  VisualizationTraceContainers/MeshContainer.h
+  VisualizationTraceContainers/ContourMeshContainer.h
+  VisualizationTraceContainers/TrackContainer.h
+  VisualizationTraceContainers/LineageContainer.h
 
-  #--manual segmentation--
-  QGoContourManualSegmentation.h
-  QGoContourManualSegmentationWidget.h
+  # Wizard
+  Wizard/QGoConnectServerPage.h
+  Wizard/QGoCreateImgSessionPage.h
+  Wizard/QGoOpenCreateImgSessionPage.h
+  Wizard/QGoOpenCreateProjectPage.h
+  Wizard/QGoWizardDB.h
+  Wizard/QGoDBInitializationWizard.h
+  Wizard/QGoDBInitCreateUserPage.h
+  Wizard/QGoDBInitCreateAuthorsPage.h
+  Wizard/QGoDBInitCreateMicroscopePage.h
 
-  #--seed segmentation--
-  QGoSeedSegmentationBase.h
-    QGoContourSeedSegmentation.h
-    QGoMeshSeedSegmentation.h
-  QGoSeedBaseWidget.h
-    QGoContourSemiAutoLevelsetWidget.h
-    QGoContourSemiAutoShapeWidget.h
-    QGoContourSemiAutoWatershedWidget.h
-  QGoFilterSemiAutoBase.h
-    TraceEditing/QGoFilterChanAndVese.h
-    TraceEditing/QGoFilterShape.h
-    TraceEditing/QGoFilterWatershed.h
+  # DB Manager
+  DBManager/QGoDBBookmarkManager.h
+  DBManager/QGoDBNameDescEntityManager.h
+  DBManager/QGoDBCellTypeManager.h
+  DBManager/QGoDBSubCellTypeManager.h
+  DBManager/QGoDBColorManager.h
+  DBManager/QGoDBTraceManager.h
+  DBManager/QGoDBContourManager.h
+  DBManager/QGoDBMeshManager.h
+  DBManager/QGoDBTrackManager.h
+  DBManager/QGoDBLineageManager.h
 
   # for the tracks
-  QGoTrackDockWidget.h
+  QGoTrackViewDockWidget.h
   QGoTrackEditingWidget.h
 
-  # for the trace editing widget
+  # for the lineages:
+  QGoLineageViewDockWidget.h
+  
+  #--manual segmentation--
+  TraceEditing/QGoContourManualSegmentation.h
+  TraceEditing/QGoContourManualSegmentationWidget.h
+  TraceEditing/QGoFilterChanAndVese.h
+  TraceEditing/QGoFilterShape.h
+  TraceEditing/QGoFilterWatershed.h
   TraceEditing/QGoTraceEditingWidget.h
   TraceEditing/QGoModesManagerWidget.h
   TraceEditing/QGoAlgorithmsManagerWidget.h
   TraceEditing/QGoAlgorithmWidget.h
   TraceEditing/QGoMeshEditingWidgetManager.h
-  TraceEditing/QGoMeshAlgo.h
+  TraceEditing/QGoContourEditingWidgetManager.h
+  TraceEditing/QGoSegmentationAlgo.h
+  TraceEditing/QGoSemiAutoSegmentationAlgo.h
+  TraceEditing/QGoTraceEditingWidgetManager.h
+  TraceEditing/QGoFilterSemiAutoBase.h
+
+  # transfer function widget
+  TransferFunctionEditor/GoTransferFunctionEditorWidget.h
+  TransferFunctionEditor/GoTransferFunctionWidget.h
+  TransferFunctionEditor/hoverpoints.h
+
+  # lineage viewer
+  LineageViewer/QGoLineageViewerWidget.h
 )
 
 IF( BUILD_COMPARETOOL )
@@ -296,31 +315,22 @@ SET( QGoGUILIB_UI
   Resources/SegmentationDockWidgetBase.ui
 
 #segmentation widget
-  Resources/SegmentationSeedBaseWidget.ui
+  #Resources/SegmentationSeedBaseWidget.ui
 
 # manual contour segmentation dock widget
   Resources/ManualSegmentationSettingsDlg.ui
   Resources/ContourManualSegmentationWidget.ui
 
-# seed segmentation dock widgets
-  Resources/LevelsetWidget.ui
-  Resources/WatershedWidget.ui
-  Resources/ShapeWidget.ui
-
   # other
   Resources/NavigationDockWidget.ui
-  Resources/QGoPrintDatabase.ui
   Resources/LsmToMegaExportDialog.ui
   Resources/QNameDescriptionInputDialog.ui
-  Resources/QGoTraceSettingsWidget.ui
-
-  # seed segmentation dock widgets
-  Resources/LevelsetWidget.ui
-  Resources/WatershedWidget.ui
 
   # for tracks
-  Resources/TrackDockWidget.ui
   Resources/TrackEditingWidget.ui
+
+  # lineage viewer
+  LineageViewer/QGoLineageViewerWidget.ui
 )
 
 IF( BUILD_COMPARETOOL )
@@ -378,32 +388,12 @@ ADD_LIBRARY( QGoGui
 SET( QGoGUI_LIBS
   QVTK
   QGoIO
+  GoFilters
   vtkRenderingAddOn2
   PoissonReconstruction
   ctk
   ${ITK_LIBRARIES}
-  #ITKIO
-  #ITKCommon
-  #ITKBasicFilters
-  #ITKStatistics
   )
-
-IF( ( ITK_VERSION_MAJOR EQUAL 4 ) AND
-    ( ITK_VERSION_MINOR EQUAL 0 ) AND
-    ( ITK_VERSION_PATCH EQUAL 0 )
-    )
-
-  SET( QGoGUI_LIBS
-    ${QGoGUI_LIBS}
-    # ITKReview
-    ${ITK_LIBRARIES}
-    )
-
-ENDIF( ( ITK_VERSION_MAJOR EQUAL 4 ) AND
-    ( ITK_VERSION_MINOR EQUAL 0 ) AND
-    ( ITK_VERSION_PATCH EQUAL 0 )
-  )
-
 
 TARGET_LINK_LIBRARIES( QGoGui
   ${QGoGUI_LIBS}

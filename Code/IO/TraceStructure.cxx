@@ -226,7 +226,8 @@ TraceStructure::SetScalarData(const std::string & iName,
   if ( this->Nodes )
     {
     vtkIdType       NbOfPoints = this->Nodes->GetNumberOfPoints();
-    vtkDoubleArray *data = vtkDoubleArray::New();
+    vtkSmartPointer<vtkDoubleArray> data =
+        vtkSmartPointer<vtkDoubleArray>::New();
     data->SetNumberOfComponents(1);
     data->SetName( iName.c_str() );
 
@@ -301,25 +302,29 @@ TraceStructure::RenderWithOriginalColors() const
 
 //--------------------------------------------------------------------------
 void
-TraceStructure::SetLookupTable(vtkLookupTable *iLut) const
+TraceStructure::SetLookupTable(const vtkLookupTable *iLut) const
 {
   if ( iLut )
     {
     if ( this->ActorXY )
       {
-      this->ActorXY->GetMapper()->SetLookupTable(iLut);
+      this->ActorXY->GetMapper()->SetLookupTable(
+              const_cast<vtkLookupTable*>(iLut));
       }
     if ( this->ActorXZ )
       {
-      this->ActorXZ->GetMapper()->SetLookupTable(iLut);
+      this->ActorXZ->GetMapper()->SetLookupTable(
+              const_cast<vtkLookupTable*>(iLut));
       }
     if ( this->ActorYZ )
       {
-      this->ActorYZ->GetMapper()->SetLookupTable(iLut);
+      this->ActorYZ->GetMapper()->SetLookupTable(
+              const_cast<vtkLookupTable*>(iLut));
       }
     if ( this->ActorXYZ )
       {
-      this->ActorXYZ->GetMapper()->SetLookupTable(iLut);
+      this->ActorXYZ->GetMapper()->SetLookupTable(
+              const_cast<vtkLookupTable*>(iLut));
       }
     }
 }

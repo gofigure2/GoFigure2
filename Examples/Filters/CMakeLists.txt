@@ -2,8 +2,6 @@ ADD_EXECUTABLE( itkvtkPolyDatatoBinaryMaskImageFilterTest
   itkvtkPolyDatatoBinaryMaskImageFilterTest.cxx )
 
 TARGET_LINK_LIBRARIES( itkvtkPolyDatatoBinaryMaskImageFilterTest
-  #ITKIO
-  #ITKCommon
   ${ITK_LIBRARIES}
   vtkGraphics
   vtkHybrid
@@ -52,12 +50,24 @@ TARGET_LINK_LIBRARIES( ContourToMeshFilterTest
   PoissonReconstruction
   vtkHybrid
   vtkRenderingAddOn2
-  # ITKCommon
   ${ITK_LIBRARIES}
   )
 
 ADD_TEST( ContourToMeshFilterTest
  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/ContourToMeshFilterTest
+ 1
+ )
+
+ADD_EXECUTABLE( MeshToContourFilterTest
+  MeshToContourFilterTest.cxx
+  ${GOFIGURE2_SOURCE_DIR}/Code/Filters/Mesh/MeshToContourFilter.cxx
+  )
+TARGET_LINK_LIBRARIES( MeshToContourFilterTest
+  vtkHybrid
+  )
+
+ADD_TEST( MeshToContourFilterTest
+ ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/MeshToContourFilterTest
  1
  )
 

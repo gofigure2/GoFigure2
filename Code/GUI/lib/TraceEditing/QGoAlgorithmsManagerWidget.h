@@ -40,7 +40,9 @@
 #include <QStackedLayout>
 #include <QVBoxLayout>
 #include <QFormLayout>
+#include <QLabel>
 #include <QComboBox>
+#include <QCheckBox>
 #include "QGoAlgorithmWidget.h"
 
 /**
@@ -56,7 +58,11 @@ class QGoAlgorithmsManagerWidget:
   Q_OBJECT
 public:
   explicit QGoAlgorithmsManagerWidget(std::string iModeName,
-    std::vector<QString> iVectChannels, QStringList iListTime, QWidget *iParent = 0);
+    QWidget *iParent = 0,
+    std::vector<QString> iVectChannels = std::vector<QString>(),
+    QStringList iListTime = QStringList(),
+    bool iOnlyOneMethod = false,
+    bool NeedApplyResetButton = true);
   ~QGoAlgorithmsManagerWidget();
 
   /**
@@ -70,6 +76,12 @@ public:
   void AddMethod(QGoAlgorithmWidget* iAlgoWidget);
 
   /**
+  \brief add the widget in the stacked_widgets and hide the methodcombobox
+  as there will be only one method in this algomanagerwidget
+  */
+  void AddWidgetForOnlyOneMethod(QWidget* iWidget);
+
+  /**
   \brief set the current index in the combobox to iIndex and
   get the corresponding widget to display
   \param[in] iIndex index to be displayed as the current one
@@ -81,7 +93,8 @@ public:
 
   void SetTSliceForClassicView(QString iTimePoint);
 
-  void SetTSliceForDopplerView(QStringList iListTimePoints, int iIndexChannel);
+  void SetTSliceForDopplerView(
+    std::map<QString, QColor> iListTimePoints, int iIndexChannel);
 
   /**
   \brief return the name of the mode
@@ -99,15 +112,16 @@ public:
   /**
   \brief return the number of the selected channel
   */
-  int GetChannelNumber();
+  std::string GetCurrentImageName();
 
   int GetSelectedTimePoint();
 
-  void RemoveChannelAndTSlice();
+  bool IsInvertChecked();
 
 signals:
 
   void ResetClicked();
+  void InvertChecked(Qt::CheckState);
 
 protected:
   QVBoxLayout*                 m_VBoxLayout;
@@ -117,13 +131,18 @@ protected:
   QComboBox*                   m_ChannelComboBox;
   QComboBox*                   m_TimeComboBox;
   QStringList                  m_ListTimePoints;
+  QLabel*                      m_MethodLabel;
+  QCheckBox*                   m_InvertBox;
+
   /**
   \brief add the different widgets, buttons and fill the comboboxes
   for channel and timepoint
   \param[in] iListChannels list of the names of the channels
   \param[in] iListTime list of the timepoints
   */
-  void Initialize(std::vector<QString> iVectChannels, QStringList iListTime);
+  void Initialize(std::vector<QString> iVectChannels = std::vector<QString>(),
+    QStringList iListTime = QStringList(), bool iOnlyOneMethod = false,
+    bool NeedApplyResetButton = true);
 
  protected slots:
   /**

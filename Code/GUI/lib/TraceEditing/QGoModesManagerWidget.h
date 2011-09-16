@@ -47,7 +47,7 @@
  * \brief widget that manages the different modes for the TraceEditingWidget,
  has a combobox with the mode names and a corresponging stackedWidgets which
  display the right widget according to the mode selected in the combobox,
- has semiautomated and automated default modes
+ has semiautomatic and automatic default modes
 */
 class QGoModesManagerWidget:
   public QWidget
@@ -63,8 +63,11 @@ public:
   be added in the combobox.
   \param[in] iModeName name of the mode
   \param[in] iWidget widget that will be displayed when iModeName is selected
+  \param[in] ModeNeedSeeds if true, a signal will be emitted everytime the mode name appear
+  in the combobox
   */
-  void AddWidgetWithModeName (std::string iModeName, QWidget* iWidget= 0);
+  void AddWidgetWithModeName (std::string iModeName, QWidget* iWidget, 
+    bool ModeNeedSeeds);
 
   /**
   \brief add a QGoAlgorithmsManagerWidget and set the default index of this algo widget
@@ -73,37 +76,45 @@ public:
   \param[in] iDefaultIndex default index for the algo widget
   */
   void AddAlgoManagerWidget(QGoAlgorithmsManagerWidget* iAlgoManagerWidget, 
-    int iDefaultIndex = 0);
+    bool ModeNeedSeeds, int iDefaultIndex = 0);
 
   /**
   \brief add the iAlgoWidget directly in the QgoAlgomanager corresponding
-  to the Semi Automated mode
+  to the Semi Automatic mode
   \param[in] iAlgoWidget widget to be added for the parameters of the algo
   */
-  void AddAlgoWidgetForSemiAutomatedMode(QGoAlgorithmWidget* iAlgoWidget);
+  void AddAlgoWidgetForSemiAutomaticMode(QGoAlgorithmWidget* iAlgoWidget);
 
   /**
   \brief add the iAlgoWidget directly in the QgoAlgomanager corresponding
-  to the Automated mode
+  to the Automatic mode
   \param[in] iAlgoWidget widget to be added for the parameters of the algo
   */
-  void AddAlgoWidgetForAutomatedMode(QGoAlgorithmWidget* iAlgoWidget);
+  void AddAlgoWidgetForAutomaticMode(QGoAlgorithmWidget* iAlgoWidget);
 
   /**
   \brief create the "manual" mode and makes it correspond to the provided
   widget
   \param[in] iWidget widget to be added for the manual mode
   */
-  void AddWidgetForManualMode(QWidget* iWidget);
+  void AddWidgetForManualMode(QWidget* iWidget, 
+    QStringList iListTimePoint, bool ModeNeedSeeds);
 
   /**
   \brief return the number of the selected channel
   */
-  int GetChannelNumber();
+  std::string GetCurrentImageName();
   int GetSelectedTimePoint();
+  bool GetIsInvertedOn();
 
   void SetTSliceForClassicViewInAllAlgoModes(int iTimePoint);
-  void SetTSliceForDopplerViewInAllAlgoModes(QStringList iListTimePoint, int iChannelNumber);
+  void SetTSliceForDopplerViewInAllAlgoModes(
+    std::map<QString, QColor> iListTimePoints, int iChannelNumber);
+
+  /**
+  \brief return the mode name currently selected in the combobox
+  */
+  std::string GetCurrentModeName();
 
 public slots:
    /**
@@ -123,7 +134,9 @@ protected:
   QStackedWidget*             m_ModeWidgets;  
   QGoAlgorithmsManagerWidget* m_SemiAutoAlgoManagerWidget;
   QGoAlgorithmsManagerWidget* m_AutoAlgoManagerWidget;
+  QGoAlgorithmsManagerWidget* m_ManualModeManager;
   bool                        m_ModeAlreadyCleaned;
+  QStringList                 m_ModesWhoNeedSeeds;
 
   void Initialize(std::vector<QString> iVectChannels, QStringList iListTimePoints);
 

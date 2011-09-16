@@ -15,3 +15,6 @@ qtcreator-build/
 
 #OSX specifics
 .DS_Store
+
+*.orig
+

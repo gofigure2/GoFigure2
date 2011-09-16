@@ -34,41 +34,101 @@
 #ifndef __QGoMeshWaterShedAlgo_h
 #define __QGoMeshWaterShedAlgo_h
 
-#include "QGoMeshAlgo.h"
+#include "QGoWaterShedAlgo.h"
+#include "QGoFilterWatershed.h"
 #include "QGoAlgorithmWidget.h"
 #include "QGoAlgoParameter.h"
 #include "QGoGUILibConfigure.h"
 #include "vtkSmartPointer.h"
 #include "vtkPolyData.h"
 #include "vtkImageData.h"
+#include "vtkTransform.h"
+#include "vtkTransformPolyDataFilter.h"
 
+#include "GoImageProcessor.h"
 
 /**
 \class QGoMeshWaterShedAlgo
-\brief class to be the interface between the watershed algo for meshes 
+\brief class to be the interface between the watershed algo for meshes
 and GoFigure
 */
-class QGoMeshWaterShedAlgo: public QGoMeshAlgo
+class QGoMeshWaterShedAlgo: public QGoWaterShedAlgo
 {
 public:
-  QGoMeshWaterShedAlgo(QWidget* iParent = 0);
+  QGoMeshWaterShedAlgo(std::vector< vtkPoints* >* iSeeds,
+                       int iMaxThreshold,
+                       QWidget* iParent = 0);
   ~QGoMeshWaterShedAlgo();
 
   std::vector<vtkPolyData*> ApplyAlgo(
-    vtkPoints* iSeeds, std::vector<vtkSmartPointer< vtkImageData > >* iImages,
-    int iChannel);
+    GoImageProcessor* iImages,
+    std::string iChannel,
+    bool iIsInvertedOn = false);
 
 protected:
 
-  QGoAlgoParameter<double>*       m_Radius;
-  QGoAlgoParameter<int>*          m_ThresMin;
-  QGoAlgoParameter<int>*          m_ThresMax;
-  QGoAlgoParameter<double>*       m_CorrThres;
-  QGoAlgoParameter<double>*       m_Alpha;
-  QGoAlgoParameter<double>*       m_Beta;
+  template < class TPixel >
+            // note this will work only in 3D, so we can remove the template
+            // parameter on the image dimension
+             //unsigned int VImageDimension >
+  vtkPolyData * ApplyWaterShedFilter(
+    const std::vector<double>& iCenter,
+    typename itk::Image< TPixel, 3 >::Pointer iImages)
+    {
+    assert( iCenter.size() == 3);
 
-  
-  void SetAlgoWidget(QWidget* iParent = 0);
+    const unsigned int ImageDimension = 3;
+
+    typedef TPixel PixelType;
+
+    typedef itk::Image< PixelType, ImageDimension >  ImageType;
+    typedef typename ImageType::Pointer               ImagePointer;
+
+    // let's compute the bounds of the region of interest
+    double radius = this->m_Radius->GetValue();
+
+    std::vector< double > bounds( 2 * ImageDimension, 0. );
+    unsigned int k = 0;
+    for( unsigned int dim = 0; dim < ImageDimension; dim++ )
+      {
+      bounds[k++] = iCenter[dim] - 2. * radius;
+      bounds[k++] = iCenter[dim] + 2. * radius;
+      }
+
+    // then let's extract the Region of Interest
+    ImagePointer ITK_ROI_Image =
+        this->ITKExtractROI< PixelType, ImageDimension >( bounds, iImages );
+
+    // Compute the segmentation in 3D
+    QGoFilterWatershed Filter;
+    Filter.Apply3DFilter< PixelType >(
+          ITK_ROI_Image,
+          this->m_ThresMin->GetValue(),
+          this->m_ThresMax->GetValue(),
+          this->m_CorrThres->GetValue(),
+          this->m_Alpha->GetValue(),
+          this->m_Beta->GetValue());
+
+    typename QGoFilterWatershed::Output3DPointer
+        ItkOutPut = Filter.GetOutput3D();
+
+    // Here it would be better if the mesh extraction would be performed directly
+    // in ITK instead.
+    vtkImageData * FilterOutPutToVTK =
+        this->ConvertITK2VTK<
+          typename QGoFilterWatershed::OutputPixelType,
+          ImageDimension>( ItkOutPut );
+
+    // Nicolas- should be able to tune the parameter -0.5-
+    vtkPolyData* temp_output = this->ExtractPolyData(FilterOutPutToVTK, 0.5);
+    FilterOutPutToVTK->Delete();
+
+    // MIGHT LEAK! CHECK IT  IS DELETED!
+    vtkPolyData* mesh = vtkPolyData::New();
+    mesh->DeepCopy( temp_output );
+
+    return mesh;
+    }
 };
 
 #endif

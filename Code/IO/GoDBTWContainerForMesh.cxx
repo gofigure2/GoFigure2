@@ -422,12 +422,26 @@ void GoDBTWContainerForMesh::GetValuesForSurfaceVolume(
 //--------------------------------------------------------------------------
 GoDBTableWidgetContainer::TWContainerType
 GoDBTWContainerForMesh::GetContainerLoadedWithAllFromDB(
-  vtkMySQLDatabase *iDatabaseConnector)
+  vtkMySQLDatabase *iDatabaseConnector, std::list<unsigned int> iListTPs)
 {
-  GoDBTableWidgetContainer::GetContainerLoadedWithAllFromDB(iDatabaseConnector);
-  std::vector< std::string > VectMeshIDs = ListSpecificValuesForOneColumn(
-      iDatabaseConnector, "mesh", "MeshID", "ImagingSessionID",
-      ConvertToString< unsigned int >(this->m_ImgSessionID) );
+  GoDBTableWidgetContainer::GetContainerLoadedWithAllFromDB(iDatabaseConnector, iListTPs);
+  std::vector< std::string > VectMeshIDs;
+  if (iListTPs.empty() )
+    {
+    VectMeshIDs = ListSpecificValuesForOneColumn(
+        iDatabaseConnector, "mesh", "MeshID", "ImagingSessionID",
+        ConvertToString< unsigned int >(this->m_ImgSessionID) );
+    }
+  else
+    {
+    FieldWithValue joinCondition = {"CoordIDMin", "CoordID", "="};
+    FieldWithValue andCondition = {"ImagingSessionID", ConvertToString< unsigned int >(this->m_ImgSessionID), "="};
+    std::vector< std::string > VectorValues = ListUnsgIntToVectorString(iListTPs);
+      std::list<unsigned int> MeshIDs = GetListValuesFromTwoTablesAndCondition(
+      iDatabaseConnector, "mesh", "coordinate","MeshID", joinCondition,
+      "coordinate.TCoord", VectorValues, andCondition);
+    VectMeshIDs = ListUnsgIntToVectorString(MeshIDs);
+    }
 
   this->FillRowContainerForMeshValues(iDatabaseConnector, VectMeshIDs);
   return this->m_RowContainer;

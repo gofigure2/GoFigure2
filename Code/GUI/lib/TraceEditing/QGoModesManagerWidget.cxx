@@ -33,10 +33,11 @@
 =========================================================================*/
 #include "QGoModesManagerWidget.h"
 #include <QLabel>
+#include <QColor>
 
 QGoModesManagerWidget::QGoModesManagerWidget(std::vector<QString> iVectChannels, 
   QStringList iListTimePoints, QWidget *iParent)
-  :QWidget(iParent)
+  :QWidget(iParent), m_ManualModeManager(NULL)
 {
   this->Initialize(iVectChannels, iListTimePoints);
 }
@@ -71,14 +72,17 @@ void QGoModesManagerWidget::Initialize(std::vector<QString> iVectChannels,
 
   //add default modes:
   this->m_SemiAutoAlgoManagerWidget = new
-    QGoAlgorithmsManagerWidget("SemiAutomated",iVectChannels, 
-    iListTimePoints, this);
-  this->AddAlgoManagerWidget(this->m_SemiAutoAlgoManagerWidget);
+    QGoAlgorithmsManagerWidget("SemiAutomatic", this, iVectChannels, 
+    iListTimePoints);
+  this->AddAlgoManagerWidget(this->m_SemiAutoAlgoManagerWidget, true);
 
   this->m_AutoAlgoManagerWidget = new
-    QGoAlgorithmsManagerWidget("Automated",iVectChannels, 
-    iListTimePoints, this);
-  this->AddAlgoManagerWidget(this->m_AutoAlgoManagerWidget);
+    QGoAlgorithmsManagerWidget("Automatic",this, iVectChannels, 
+    iListTimePoints);
+  this->AddAlgoManagerWidget(this->m_AutoAlgoManagerWidget, false);
+
+  m_ModesWhoNeedSeeds.append("SemiAutomatic");
+  m_ModesWhoNeedSeeds.append("Automatic");
 
   QObject::connect(this->m_ModeComboBox, SIGNAL(activated(int)),
                    this, SLOT(SetTheRightMode(int)));
@@ -94,24 +98,30 @@ void QGoModesManagerWidget::Initialize(std::vector<QString> iVectChannels,
 
 //-------------------------------------------------------------------------
 void QGoModesManagerWidget::AddWidgetWithModeName(
-  std::string iModeName, QWidget* iWidget )
+  std::string iModeName, QWidget* iWidget, bool ModeNeedSeeds )
 {
   int Index = 0;
   if (iWidget != 0)
-  {
-  this->m_ModeWidgets->addWidget(iWidget);  
-  Index = this->m_ModeWidgets->indexOf(iWidget);
-  }
+    {
+    this->m_ModeWidgets->addWidget(iWidget);  
+    Index = this->m_ModeWidgets->indexOf(iWidget);
+    }
   this->m_ModeComboBox->insertItem(Index,iModeName.c_str());
+
+  if (ModeNeedSeeds)
+    {
+    this->m_ModesWhoNeedSeeds.append(iModeName.c_str() );
+    }
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void QGoModesManagerWidget::AddAlgoManagerWidget(
-    QGoAlgorithmsManagerWidget* iAlgoManagerWidget,int iDefaultIndex)
+    QGoAlgorithmsManagerWidget* iAlgoManagerWidget, bool ModeNeedSeeds,
+    int iDefaultIndex)
 {
   this->AddWidgetWithModeName(iAlgoManagerWidget->GetModeName(), 
-    iAlgoManagerWidget);
+    iAlgoManagerWidget, ModeNeedSeeds);
   iAlgoManagerWidget->SetCurrentIndex(iDefaultIndex);
 }
 //-------------------------------------------------------------------------
@@ -122,20 +132,20 @@ void QGoModesManagerWidget::CheckDefaultModes()
   if (!this->m_AutoAlgoManagerWidget->HasMethod())
     {
     this->m_ModeComboBox->removeItem(
-      this->m_ModeComboBox->findText("Automated") );
+      this->m_ModeComboBox->findText("Automatic") );
     this->m_ModeWidgets->removeWidget(this->m_AutoAlgoManagerWidget);
     }
    if (!this->m_SemiAutoAlgoManagerWidget->HasMethod())
     {
     this->m_ModeComboBox->removeItem(
-      this->m_ModeComboBox->findText("SemiAutomated") );
+      this->m_ModeComboBox->findText("SemiAutomatic") );
     this->m_ModeWidgets->removeWidget(this->m_SemiAutoAlgoManagerWidget);
     }
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoModesManagerWidget::AddAlgoWidgetForSemiAutomatedMode(
+void QGoModesManagerWidget::AddAlgoWidgetForSemiAutomaticMode(
   QGoAlgorithmWidget* iAlgoWidget)
 {
   this->m_SemiAutoAlgoManagerWidget->AddMethod(iAlgoWidget);
@@ -143,7 +153,7 @@ void QGoModesManagerWidget::AddAlgoWidgetForSemiAutomatedMode(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoModesManagerWidget::AddAlgoWidgetForAutomatedMode(
+void QGoModesManagerWidget::AddAlgoWidgetForAutomaticMode(
   QGoAlgorithmWidget* iAlgoWidget)
 {
   this->m_AutoAlgoManagerWidget->AddMethod(iAlgoWidget);
@@ -151,19 +161,24 @@ void QGoModesManagerWidget::AddAlgoWidgetForAutomatedMode(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoModesManagerWidget::AddWidgetForManualMode(QWidget* iWidget)
+void QGoModesManagerWidget::AddWidgetForManualMode(QWidget* iWidget, 
+  QStringList iListTimePoint, bool ModeNeedSeeds)
 {
-  this->AddWidgetWithModeName("Manual", iWidget);
+  std::vector<QString> Channels = std::vector<QString>();
+  this->m_ManualModeManager = new QGoAlgorithmsManagerWidget(
+    "Manual",this, Channels, iListTimePoint, true, false);
+  this->m_ManualModeManager->AddWidgetForOnlyOneMethod(iWidget);
+  this->AddAlgoManagerWidget(this->m_ManualModeManager, ModeNeedSeeds);
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-int QGoModesManagerWidget::GetChannelNumber()
+std::string QGoModesManagerWidget::GetCurrentImageName()
 {
   QGoAlgorithmsManagerWidget* CurrentWidget =  
     dynamic_cast<QGoAlgorithmsManagerWidget*>
       (this->m_ModeWidgets->currentWidget());
-  return CurrentWidget->GetChannelNumber();
+  return CurrentWidget->GetCurrentImageName();
 }
 //-------------------------------------------------------------------------
 
@@ -174,6 +189,16 @@ int QGoModesManagerWidget::GetSelectedTimePoint()
     dynamic_cast<QGoAlgorithmsManagerWidget*>
       (this->m_ModeWidgets->currentWidget());
   return CurrentWidget->GetSelectedTimePoint();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+bool QGoModesManagerWidget::GetIsInvertedOn()
+{
+  QGoAlgorithmsManagerWidget* CurrentWidget =  
+    dynamic_cast<QGoAlgorithmsManagerWidget*>
+      (this->m_ModeWidgets->currentWidget());
+  return CurrentWidget->IsInvertChecked();
 }
 //-------------------------------------------------------------------------
 
@@ -190,8 +215,9 @@ void QGoModesManagerWidget::SetTheRightMode(int iIndex)
     {
     this->m_ModeWidgets->setCurrentIndex(iIndex);
     }
-  if (this->m_ModeComboBox->currentText() == "Automated" || 
-    this->m_ModeComboBox->currentText() == "SemiAutomated")
+  
+  if (this->m_ModesWhoNeedSeeds.indexOf(
+        this->m_ModeComboBox->currentText() ) != -1)
     {
     emit SetSeedInteractorBehaviour(true);
     }
@@ -207,15 +233,32 @@ void QGoModesManagerWidget::SetTSliceForClassicViewInAllAlgoModes(int iTimePoint
 {
   this->m_AutoAlgoManagerWidget->SetTSliceForClassicView(tr("%1").arg(iTimePoint) );
   this->m_SemiAutoAlgoManagerWidget->SetTSliceForClassicView(tr("%1").arg(iTimePoint) );
+  if (this->m_ManualModeManager)
+    {
+    this->m_ManualModeManager->SetTSliceForClassicView(tr("%1").arg(iTimePoint) );
+    }
+ 
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void QGoModesManagerWidget::SetTSliceForDopplerViewInAllAlgoModes(
-  QStringList iListTimePoints, int iChannelNumber)
+  std::map<QString, QColor> iListTimePoints, int iChannelNumber)
 {
   this->m_AutoAlgoManagerWidget->SetTSliceForDopplerView(
     iListTimePoints, iChannelNumber);
   this->m_SemiAutoAlgoManagerWidget->SetTSliceForDopplerView(
     iListTimePoints, iChannelNumber);
+  if (this->m_ManualModeManager)
+    {
+    this->m_ManualModeManager->SetTSliceForDopplerView(
+      iListTimePoints, iChannelNumber);
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+ std::string QGoModesManagerWidget::GetCurrentModeName()
+{
+  return this->m_ModeComboBox->currentText().toStdString();
 }

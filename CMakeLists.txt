@@ -67,9 +67,9 @@ ELSE( SUPERBUILD )
   # GOFIGURE2_WC_REVISION and the date of the release
   SET( GOFIGURE2_MAJOR_VERSION "0" )
   SET( GOFIGURE2_MINOR_VERSION "8" )
-  SET( GOFIGURE2_WC_REVISION "1" )
+  SET( GOFIGURE2_WC_REVISION "2" )
 
-  SET( DATE "02/14/2011" )
+  SET( DATE "07/28/2011" )
 
   SET( GOFIGURE2_VERSION
     "${GOFIGURE2_MAJOR_VERSION}.${GOFIGURE2_MINOR_VERSION}.${GOFIGURE2_WC_REVISION}" )
@@ -88,6 +88,7 @@ ELSE( SUPERBUILD )
   # GOFIGURE2_INSTALL_LIB_DIR          - library dir (libs)
   # GOFIGURE2_INSTALL_DOC_DIR          - documentation dir
   # GOFIGURE2_INSTALL_LICENSE_DIR      - licenses dir
+  # GOFIGURE2_INSTALL_RESOURCE_DIR     - resources dir
   #-----------------------------------------------------------------------
 
   IF( NOT GOFIGURE2_INSTALL_BUNDLE_DIR )
@@ -114,7 +115,11 @@ ELSE( SUPERBUILD )
     SET( GOFIGURE2_INSTALL_LICENSE_DIR "share/doc/gofigure2/Licenses" )
   ENDIF( NOT GOFIGURE2_INSTALL_LICENSE_DIR )
 
-  #---------------------------------------------------------------------------
+  IF( NOT GOFIGURE2_INSTALL_RESOURCE_DIR )
+    SET( GOFIGURE2_INSTALL_RESOURCE_DIR "share/doc/gofigure2/Resources" )
+  ENDIF( NOT GOFIGURE2_INSTALL_RESOURCE_DIR )
+  
+#---------------------------------------------------------------------------
   # Define CMAKE_whatever_OUTPUT_DIRECTORY
   #---------------------------------------------------------------------------
   # all target executables will be
@@ -136,7 +141,35 @@ ELSE( SUPERBUILD )
   )
   SET( GOFIGURE2_LIBRARY_DIRS ${GOFIGURE2_BINARY_DIR}/lib )
 
-  #---------------------------------------------------------------------------
+#---------------------------------------------------------------------------
+# Export files (body of emails, etc...)
+#---------------------------------------------------------------------------
+# define useful variables
+IF( WIN32 )
+  SET( OS "Windows" )
+ELSE( WIN32 )
+  IF ( APPLE )
+    SET( OS "Mac OS X" )
+  ELSE( APPLE )
+    SET( OS "Linux" )
+  ENDIF( APPLE )
+ENDIF( WIN32 )
+
+# Licences
+file(MAKE_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Licenses)
+
+file(COPY        ${GOFIGURE2_SOURCE_DIR}/Licenses/
+     DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Licenses)
+
+# Resources
+file(MAKE_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Resources)
+
+CONFIGURE_FILE( ${GOFIGURE2_SOURCE_DIR}/Resources/BugEntry.txt.in
+ ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Resources/BugEntry.txt
+ @ONLY
+)
+
+#---------------------------------------------------------------------------
   # Define TESTING_DATA_PATH
   #---------------------------------------------------------------------------
   SET( TESTING_DATA_PATH
@@ -167,7 +200,6 @@ ELSE( SUPERBUILD )
   #----------------------------------------------------------
   # Then find ITK
   #### ITK ####
-
   INCLUDE( "${GOFIGURE2_SOURCE_DIR}/CMake/ConfigITK.cmake" )
 
   #----------------------------------------------------------
@@ -203,6 +235,10 @@ ELSE( SUPERBUILD )
     ${GOFIGURE2_BINARY_DIR}/Code/
     ${GOFIGURE2_SOURCE_DIR}/Code/IO/
     ${GOFIGURE2_BINARY_DIR}/Code/IO/
+    ${GOFIGURE2_SOURCE_DIR}/Code/IO/GoDBRow/
+    ${GOFIGURE2_BINARY_DIR}/Code/IO/GoDBRow/
+    ${GOFIGURE2_SOURCE_DIR}/Code/IO/GoImage/
+    ${GOFIGURE2_BINARY_DIR}/Code/IO/GoImage/
     ${GOFIGURE2_SOURCE_DIR}/Code/Filters/
     ${GOFIGURE2_BINARY_DIR}/Code/Filters/
     ${GOFIGURE2_SOURCE_DIR}/Code/Filters/Contour/
@@ -215,7 +251,9 @@ ELSE( SUPERBUILD )
     ${GOFIGURE2_SOURCE_DIR}/Code/GUI/lib/
     ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/
     ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/Resources/
-    ${GOFIGURE2_SOURCE_DIR}/Code/GUI/lib/SynchronizedViews/
+    ${GOFIGURE2_SOURCE_DIR}/Code/GUI/lib/DBManager/
+    ${GOFIGURE2_SOURCE_DIR}/Code/GUI/lib/DBManager/
+    ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/SynchronizedViews/
     ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/SynchronizedViews/
     ${GOFIGURE2_SOURCE_DIR}/Code/GUI/lib/VisualizationTraceContainers/
     ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/VisualizationTraceContainers/
@@ -225,6 +263,10 @@ ELSE( SUPERBUILD )
     ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/Wizard/
     ${GOFIGURE2_SOURCE_DIR}/Code/GUI/lib/TraceEditing/
     ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/TraceEditing/
+    ${GOFIGURE2_SOURCE_DIR}/Code/GUI/lib/TransferFunctionEditor/
+    ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/TransferFunctionEditor/
+    ${GOFIGURE2_SOURCE_DIR}/Code/GUI/lib/LineageViewer/
+    ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/LineageViewer/
     ${GOFIGURE2_SOURCE_DIR}/Interfaces/
     ${GOFIGURE2_BINARY_DIR}/Interfaces/
     ${GOFIGURE2_SOURCE_DIR}/Code/GUI/src/
@@ -311,10 +353,29 @@ ELSE( SUPERBUILD )
   INCLUDE( GoFigure2IncludeDirectories.cmake )
 
   CONFIGURE_FILE(
-    "${CMAKE_CURRENT_SOURCE_DIR}/UseGoFigure2.cmake.in"
-    "${CMAKE_CURRENT_BINARY_DIR}/UseGoFigure2.cmake"
+    "${CMAKE_CURRENT_SOURCE_DIR}/GoFigure2Config.cmake.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/GoFigure2Config.cmake"
     @ONLY
   )
+
+  INSTALL(
+    FILES ${CMAKE_CURRENT_BINARY_DIR}/GoFigure2Config.cmake
+    DESTINATION ${GOFIGURE2_INSTALL_LIB_DIR}
+    COMPONENT Development
+  )
+
+  IF( UNIX AND NOT APPLE )
+    CONFIGURE_FILE(
+      "${CMAKE_CURRENT_SOURCE_DIR}/Resources/GoFigure2.desktop.in"
+      "${CMAKE_CURRENT_BINARY_DIR}/GoFigure2.desktop"
+      @ONLY
+      )
+
+    INSTALL(
+      FILES ${CMAKE_CURRENT_BINARY_DIR}/GoFigure2.desktop
+      DESTINATION ${GOFIGURE2_INSTALL_BIN_DIR}
+      )
+  ENDIF()
 
   #-----------------------------------------------------------------------
   # PACKAGE With CPack

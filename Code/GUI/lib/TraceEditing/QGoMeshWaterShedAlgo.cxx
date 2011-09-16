@@ -35,65 +35,68 @@
 #include "QGoFilterWatershed.h"
 
 
-QGoMeshWaterShedAlgo::QGoMeshWaterShedAlgo(QWidget* iParent)
+QGoMeshWaterShedAlgo::
+QGoMeshWaterShedAlgo(std::vector< vtkPoints* >* iSeeds,
+                     int iMaxThreshold,
+                     QWidget* iParent)
+  :QGoWaterShedAlgo(iSeeds, iMaxThreshold, iParent)
 {
-  this->SetAlgoWidget(iParent);
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-QGoMeshWaterShedAlgo::~QGoMeshWaterShedAlgo()
+QGoMeshWaterShedAlgo::
+~QGoMeshWaterShedAlgo()
 {
-  delete m_Radius;
-  delete m_ThresMin;
-  delete m_ThresMax;
-  delete m_CorrThres;
-  delete m_Alpha;
-  delete m_Beta;
+  this->DeleteParameters();
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoMeshWaterShedAlgo::SetAlgoWidget(QWidget* iParent)
+std::vector<vtkPolyData*>
+QGoMeshWaterShedAlgo::
+ApplyAlgo(GoImageProcessor* iImages, std::string iChannel, bool iIsInvertedOn)
 {
-  this->m_AlgoWidget = 
-    new QGoAlgorithmWidget("WaterShed 3D", iParent);
+  std::vector<vtkPolyData*> oNewMeshes = std::vector<vtkPolyData*>();
 
-  m_Radius = new QGoAlgoParameter<double>("Radius", false, 0.1, 99.99, 2, 3);
-  this->m_AlgoWidget->AddParameter(m_Radius);
+  if ( this->m_Radius->GetValue() <= 0 )
+    {
+    std::cerr << "Radius should be > 0 " << std::endl;
+    return oNewMeshes;
+    }
 
-  m_ThresMin = new QGoAlgoParameter<int>("Thres.Min.", true, 0, 999, 10);
-  this->m_AlgoWidget->AddParameter(m_ThresMin);
+  double Center[3];
+  std::vector<double> CenterVect(3);
 
-  m_ThresMax = new QGoAlgoParameter<int>("Thres.Max.", true, 0, 999, 30);
-  this->m_AlgoWidget->AddParameter(m_ThresMax);
+  // LOOP  FOR EACH SEED
+  for( size_t id = 0; id < this->m_Seeds->size(); id++ )
+    {
+    for ( int i = 0; i < (*this->m_Seeds)[id]->GetNumberOfPoints(); i++ )
+      {
+      (*this->m_Seeds)[id]->GetPoint(i, Center);
 
-  m_CorrThres = new QGoAlgoParameter<double>("Corr.Thres.", true, 0, 99.99, 2, 0.5);
-  this->m_AlgoWidget->AddParameter(m_CorrThres);
+      CenterVect[0] = Center[0];
+      CenterVect[1] = Center[1];
+      CenterVect[2] = Center[2];
 
-  m_Alpha = new QGoAlgoParameter<double>("Alpha", true, 0, 99.99, 2, 1.5);
-  this->m_AlgoWidget->AddParameter(m_Alpha);
- 
-  m_Beta = new QGoAlgoParameter<double>("Beta", true, 0, 99.99, 2, 3);
-  this->m_AlgoWidget->AddParameter(m_Beta);
+      vtkPolyData* temp_output =
+          this->ApplyWaterShedFilter< unsigned char >(
+            CenterVect, //cente
+            iImages->getImageITK< unsigned char, 3>(iChannel, iIsInvertedOn)); //input raw image
+
+      if(temp_output->GetNumberOfCells() > 0)
+        {
+        oNewMeshes.push_back( temp_output );
+        }
+   /*   else
+        {
+        std::cout << "No polydata could be generated - check parameters"
+                  << std::endl;
+        temp_output->Delete();
+        }*/
+      }
+    }
+
+  return oNewMeshes;
 }
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-std::vector<vtkPolyData*> QGoMeshWaterShedAlgo::ApplyAlgo(
-  vtkPoints* iSeeds, std::vector<vtkSmartPointer< vtkImageData > >* iImages,
-    int iChannel)
-{
-  QGoFilterWatershed WatershedFilter;
-
-  std::vector<vtkPolyData*> NewMeshes = 
-    WatershedFilter.ApplyFilter3D(this->m_Radius->GetValue(), 
-    this->m_ThresMin->GetValue(), this->m_ThresMax->GetValue(), 
-    this->m_CorrThres->GetValue(),this->m_Alpha->GetValue(),this->m_Beta->GetValue(),  
-    iSeeds, iImages, iChannel);
- 
-  return NewMeshes;
-}
-//-------------------------------------------------------------------------
-
 //-------------------------------------------------------------------------

@@ -42,12 +42,6 @@
 #include "vtkDoubleArray.h"
 #include "vtkPointData.h"
 
-#include "vtkPolyDataMapper.h"
-#include "vtkActor.h"
-#include "vtkRenderer.h"
-#include "vtkRenderWindow.h"
-#include "vtkRenderWindowInteractor.h"
-
 #include <sstream>
 
 vtkCxxRevisionMacro(vtkPolyDataMySQLTrackReader, "$Revision$");

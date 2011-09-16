@@ -69,6 +69,8 @@
 
 #include <vtkObjectFactory.h>
 #include <vtkRenderWindowInteractor.h>
+#include "vtkRenderer.h"
+#include "vtkProperty.h"
 #include "vtkViewImage3DCommand.h"
 
 #include <vtkProp.h>
@@ -231,6 +233,107 @@ vtkInteractorStyleImage3D::OnMiddleButtonUp()
       break;
     }
 }
+//----------------------------------------------------------------------------
+void
+vtkInteractorStyleImage3D::OnChar()
+{
+  vtkRenderWindowInteractor *rwi = this->Interactor;
+
+  if ( ( rwi->GetKeyCode() == 'w' ) || ( rwi->GetKeyCode() == 'W' ) )
+      {
+      vtkActorCollection *ac;
+      vtkActor *anActor, *aPart;
+      vtkAssemblyPath *path;
+      this->FindPokedRenderer(rwi->GetEventPosition()[0],
+                              rwi->GetEventPosition()[1]);
+      if(this->CurrentRenderer!=0)
+        {
+        ac = this->CurrentRenderer->GetActors();
+        vtkCollectionSimpleIterator ait;
+        for (ac->InitTraversal(ait); (anActor = ac->GetNextActor(ait)); )
+          {
+          for (anActor->InitPathTraversal(); (path=anActor->GetNextPath()); )
+            {
+
+            // make sure we don't modify the planes actors
+            if ( path != NULL )
+              {
+              std::vector< vtkActor * >::iterator it2 = m_PlanesActors.begin();
+              while(it2!=m_PlanesActors.end())
+                {
+                if(path && dynamic_cast<vtkProp*>(*it2) == path->GetLastNode()->GetViewProp())
+                  {
+                  path = NULL;
+                  }
+                ++it2;
+                }
+              }
+
+            // go on if target is not a plane
+            if(path)
+              {
+              aPart=static_cast<vtkActor *>(path->GetLastNode()->GetViewProp());
+              aPart->GetProperty()->SetRepresentationToWireframe();
+              }
+            }
+          }
+        }
+      else
+        {
+        vtkWarningMacro(<<"no current renderer on the interactor style.");
+        }
+      rwi->Render();
+      return;
+      }
+  else if ( ( rwi->GetKeyCode() == 's' ) || ( rwi->GetKeyCode() == 'S' ) )
+      {
+      vtkActorCollection *ac;
+      vtkActor *anActor, *aPart;
+      vtkAssemblyPath *path;
+      this->FindPokedRenderer(rwi->GetEventPosition()[0],
+                              rwi->GetEventPosition()[1]);
+      if(this->CurrentRenderer!=0)
+        {
+        ac = this->CurrentRenderer->GetActors();
+        vtkCollectionSimpleIterator ait;
+        for (ac->InitTraversal(ait); (anActor = ac->GetNextActor(ait)); )
+          {
+          for (anActor->InitPathTraversal(); (path=anActor->GetNextPath()); )
+            {
+
+            // make sure we don't modify the planes actors
+            if ( path != NULL )
+              {
+              std::vector< vtkActor * >::iterator it2 = m_PlanesActors.begin();
+              while(it2!=m_PlanesActors.end())
+                {
+                if(path && dynamic_cast<vtkProp*>(*it2) == path->GetLastNode()->GetViewProp())
+                  {
+                  path = NULL;
+                  }
+                ++it2;
+                }
+              }
+
+            // go on if target is not a plane
+            if(path)
+              {
+              aPart=static_cast<vtkActor *>(path->GetLastNode()->GetViewProp());
+              aPart->GetProperty()->SetRepresentationToSurface();
+              }
+            }
+          }
+        }
+      else
+        {
+        vtkWarningMacro(<<"no current renderer on the interactor style.");
+        }
+      rwi->Render();
+      return;
+      }
+
+  this->Superclass::OnChar();
+}
 
 //----------------------------------------------------------------------------
 void
@@ -286,12 +389,28 @@ vtkInteractorStyleImage3D::HighlightCurrentActor()
     rwi->StartPickCallback();
     vtkAbstractPropPicker *picker =
       vtkAbstractPropPicker::SafeDownCast( rwi->GetPicker() );
+
     if ( picker != NULL )
       {
       picker->Pick(eventPos[0], eventPos[1],
                    0.0, this->CurrentRenderer);
       path = picker->GetPath();
       }
+
+    // check if item does does not belong to phantom[]
+    if ( path != NULL )
+      {
+      std::vector< vtkActor * >::iterator it2 = m_PlanesActors.begin();
+      while(it2!=m_PlanesActors.end())
+        {
+        if(path && dynamic_cast<vtkProp*>(*it2) == path->GetFirstNode()->GetViewProp())
+          {
+          path = NULL;
+          }
+        ++it2;
+        }
+      }
+
     if ( path == NULL )
       {
       this->HighlightProp(NULL);
@@ -299,18 +418,8 @@ vtkInteractorStyleImage3D::HighlightCurrentActor()
       }
     else
       {
-      /* // Check dimensionality
-       double* bounds = path->GetFirstNode()->GetViewProp()->GetBounds();
-       if (bounds[0] != bounds[1] && bounds[2] != bounds[3] && bounds[4] != bounds[5])
-         {*/
       this->HighlightProp( path->GetFirstNode()->GetViewProp() );
       this->PropPicked = 1;
-      /*}
-    else
-      {
-      this->HighlightProp(NULL);
-      this->PropPicked = 0;
-      }*/
       }
     rwi->EndPickCallback();
     }
@@ -348,3 +457,11 @@ vtkInteractorStyleImage3D::EnableDefaultMode()
   this->State = VTKIS_NONE;
   this->m_Mode = InteractionTypeDefault;
 }
+//----------------------------------------------------------------------------
+void
+vtkInteractorStyleImage3D::
+SetPlanesActors( std::vector< vtkActor * > iBounds)
+{
+  this->m_PlanesActors = iBounds;
+}
+//----------------------------------------------------------------------------

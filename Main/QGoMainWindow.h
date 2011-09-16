@@ -48,6 +48,7 @@
 #include "GoFigureGlobalDefinition.h"
 #include "QGoAboutWidget.h"
 #include "QGoDBInitializationWizard.h"
+#include "QGoTabImageView3DwT.h"
 
 class vtkImageData;
 
@@ -55,7 +56,6 @@ class vtkLSMReader;
 
 class QGoWizardDB;
 class QGoTabManager;
-class QGoTabImageView3DwT;
 class QGoTabImageView3D;
 class QGoTabImageView2D;
 class QGoTabElementBase;
@@ -102,6 +102,8 @@ private slots:
 
   void on_actionGoFigure2_Website_triggered();
 
+  void on_actionReport_a_bug_triggered();
+  
   void on_actionUser_mailing_list_triggered();
 
   void on_actionDeveloper_mailing_list_triggered();
@@ -210,7 +212,11 @@ private:
  * */
   void OpenLSMImage(const QString & iFile, const int & iTimePoint);
 
-  void SetupMenusFromTab(QGoTabElementBase *iT);
+  void SetupPluginsAndDockWidgetFromTab(QGoTabElementBase *iT);
+
+  void SetUpGeneralMenusToolBars(QGoTabElementBase *iT);
+
+  void SetUpMenusToolBarsFor3dwtImage(QGoTabImageView3DwT* iT);
 
   /** \brief get the file container and the header filename for one file
  * part of a megacapture imaging session
@@ -257,8 +263,10 @@ private:
   QDir                        m_PluginsDir;
   QStringList                 m_PluginFileNames;
   QGoTabManager *             m_TabManager;
-  QToolBar *                  m_ViewToolBar;
   QToolBar *                  m_ModeToolBar;
+  QToolBar *                  m_TracesToolBar;
+  QToolBar *                  m_TraceSettingsToolBar;
+  QToolBar *                  m_ViewToolBar;
   std::list< vtkLSMReader * > m_LSMReader;
   QGoWizardDB *               m_DBWizard;
   QGoAboutWidget *            m_AboutWidget;
@@ -293,6 +301,7 @@ private:
   QString strippedName(const QString & fullFileName);
 
 private:
+  unsigned int m_MaxNumberOfTraces;
   Q_DISABLE_COPY(QGoMainWindow);
 };
 #endif

@@ -34,7 +34,7 @@
 #ifndef __QGoMeshShapeAlgo_h
 #define __QGoMeshShapeAlgo_h
 
-#include "QGoMeshAlgo.h"
+#include "QGoShapeAlgo.h"
 #include "QGoAlgorithmWidget.h"
 #include "QGoAlgoParameter.h"
 #include "QGoGUILibConfigure.h"
@@ -42,28 +42,27 @@
 #include "vtkPolyData.h"
 #include "vtkImageData.h"
 
+class GoImageProcessor;
+
 
 /**
 \class QGoMeshShapeAlgo
-\brief class to be the interface between the shape algo for meshes 
+\brief class to be the interface between the shape algo for meshes
 and GoFigure
 */
-class QGoMeshShapeAlgo: public QGoMeshAlgo
+class QGoMeshShapeAlgo: public QGoShapeAlgo
 {
 public:
-  QGoMeshShapeAlgo(QWidget* iParent = 0);
+  QGoMeshShapeAlgo(std::vector< vtkPoints* >* iSeeds, QWidget* iParent = 0);
   ~QGoMeshShapeAlgo();
 
   std::vector<vtkPolyData*> ApplyAlgo(
-    vtkPoints* iSeeds, std::vector<vtkSmartPointer< vtkImageData > >* iImages,
-    int iChannel);
+    GoImageProcessor* iImages,
+    std::string iChannel,
+    bool iIsInvertedOn = false);
 
 protected:
 
-  QGoAlgoParameter<double>*       m_Radius;
-  QGoAlgoParameter<std::string>*  m_Shape;
-  
-  void SetAlgoWidget(QWidget* iParent = 0);
 };
 
 #endif

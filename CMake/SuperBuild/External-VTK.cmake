@@ -13,6 +13,7 @@ ExternalProject_Add(${proj}
   CMAKE_GENERATOR ${gen}
   CMAKE_ARGS
     ${ep_common_args}
+    -DBUILD_SHARED_LIBS:BOOL=ON
     -DVTK_DEBUG_LEAKS:BOOL=${USE_VTK_DEBUG_LEAKS}
     -DVTK_INSTALL_LIB_DIR:PATH=${GoFigure2_INSTALL_LIB_DIR}
     -DVTK_USE_QT:BOOL=ON

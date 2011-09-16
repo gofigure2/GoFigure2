@@ -35,52 +35,65 @@
 #include "QGoFilterChanAndVese.h"
 
 
-QGoMeshLevelSetAlgo::QGoMeshLevelSetAlgo(QWidget* iParent)
+QGoMeshLevelSetAlgo::
+QGoMeshLevelSetAlgo(std::vector< vtkPoints* >* iSeeds, QWidget* iParent)
+  :QGoLevelSetAlgo(iSeeds, iParent)
 {
-  this->SetAlgoWidget(iParent);
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 QGoMeshLevelSetAlgo::~QGoMeshLevelSetAlgo()
 {
-  delete m_Radius;
-  delete m_Curvature;
-  delete m_Iterations;
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void QGoMeshLevelSetAlgo::SetAlgoWidget(QWidget* iParent)
-{
-  this->m_AlgoWidget = 
-    new QGoAlgorithmWidget("LevelSet 3D", iParent);
-
-  m_Radius = new QGoAlgoParameter<double>("Radius", false, 0.1, 99.99, 2, 3);
-  this->m_AlgoWidget->AddParameter(m_Radius);
-
-  m_Curvature = new QGoAlgoParameter<int>("Curvature", true, 0, 1000, 20);
-  this->m_AlgoWidget->AddParameter(m_Curvature);
-
-  m_Iterations = new QGoAlgoParameter<int> ("Iterations", true, 0, 1000, 100);
-  this->m_AlgoWidget->AddParameter(m_Iterations);
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 std::vector<vtkPolyData*> QGoMeshLevelSetAlgo::ApplyAlgo(
-  vtkPoints* iSeeds, std::vector<vtkSmartPointer< vtkImageData > >* iImages,
-    int iChannel)
+  GoImageProcessor* iImages,
+    std::string iChannel, 
+    bool iIsInvertedOn)
 {
-  QGoFilterChanAndVese LevelSetFilter;
+  std::vector<vtkPolyData*> oNewMeshes = std::vector<vtkPolyData*>();
 
-  std::vector<vtkPolyData*> NewMeshes = 
-    LevelSetFilter.ApplyFilterLevelSet3D(m_Radius->GetValue(), 
-    iSeeds, m_Iterations->GetValue(),
-    m_Curvature->GetValue(), iImages, iChannel);
- 
-  return NewMeshes;
+  if ( this->m_Radius->GetValue() <= 0 )
+    {
+    std::cerr << "Radius should be > 0 " << std::endl;
+    return oNewMeshes;
+    }
+
+  double Center[3];
+  std::vector<double> CenterVect(3);
+
+  // LOOP  FOR EACH SEED
+  for( size_t id = 0; id < this->m_Seeds->size(); id++ )
+    {
+    for ( int i = 0; i < (*this->m_Seeds)[id]->GetNumberOfPoints(); i++ )
+      {
+      (*this->m_Seeds)[id]->GetPoint(i, Center);
+
+      CenterVect[0] = Center[0];
+      CenterVect[1] = Center[1];
+      CenterVect[2] = Center[2];
+
+      vtkPolyData* temp_output =
+          this->ApplyLevelSetFilter< unsigned char >(
+            CenterVect,
+            iImages->getImageITK< unsigned char, 3>(iChannel)); //input raw image
+
+      if(temp_output->GetNumberOfCells() > 0)
+        {
+        oNewMeshes.push_back( temp_output );
+        }
+      /*else
+        {
+        std::cout << "No polydata could be generated - check parameters"
+                  << std::endl;
+        temp_output->Delete();
+        }*/
+      }
+    }
+
+  return oNewMeshes;
 }
-//-------------------------------------------------------------------------
-
 //-------------------------------------------------------------------------

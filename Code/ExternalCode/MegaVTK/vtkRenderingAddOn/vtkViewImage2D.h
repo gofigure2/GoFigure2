@@ -71,6 +71,7 @@
 #include "vtkViewImage.h"
 #include "MegaVTK2Configure.h"
 
+#include <map>
 #include <list>
 
 #include "vtkTransform.h"
@@ -154,6 +155,12 @@ public:
     INTERACTOR_STYLE_RUBBER_ZOOM
     };
   //ETX
+
+  enum ORIENTATION {
+    XY = 0,
+    XZ = 1,
+    YZ = 2
+    };
 
   /**
    * \brief Get the polydata representing the Slice Plane
@@ -298,13 +305,6 @@ public:
    * \param[in] intersection Display projection or intersection of the dataset with the current slice
    * \param[in] iDataVisibility Visibility of the current actor
   */
-//   virtual vtkQuadricLODActor*
-  virtual vtkActor * AddDataSet(vtkDataSet *dataset,
-                                vtkProperty *property = NULL,
-                                const bool & intersection = true,
-                                const bool & iDataVisibility = false);
-
-  //virtual vtkQuadricLODActor*
   virtual vtkActor * AddDataSet(vtkPolyData *polydata,
                                 vtkProperty *property = NULL,
                                 const bool & intersection = true,
@@ -496,6 +496,8 @@ public:
       }
   }
 */
+  std::map<double, vtkActor *> ExtractActors(
+    vtkPolyData *iDataSet, ORIENTATION iOrientation);
 
 protected:
 

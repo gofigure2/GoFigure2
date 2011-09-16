@@ -38,10 +38,10 @@
 #include "vtkPolyData.h"
 #include "vtkActor.h"
 
-#include "vtkSmartPointer.h"
-
 #include "vtkDoubleArray.h"
 #include "vtkPointData.h"
+
+#include "vtkProperty.h"
 
 #include "vtkSphereSource.h"
 #include "vtkGlyph3D.h"
@@ -50,7 +50,7 @@
 #include "vtkMath.h"
 
 //--------------------------------------------------------------------------
-TrackStructure::TrackStructure() : TraceStructure()
+TrackStructure::TrackStructure() : TraceStructure(), m_AverageVolume(0)
 {
 }
 
@@ -58,7 +58,8 @@ TrackStructure::TrackStructure() : TraceStructure()
 
 //--------------------------------------------------------------------------
 TrackStructure::TrackStructure(const TrackStructure & iE) :
-  TraceStructure(iE), PointsMap(iE.PointsMap)
+  TraceStructure(iE), TreeNode(iE.TreeNode), PointsMap(iE.PointsMap),
+  m_AverageVolume(iE.m_AverageVolume)
 {
 }
 
@@ -123,13 +124,18 @@ TrackStructure::ReleaseData() const
     delete[] begin->second;
     ++begin;
     }
+
+  TrackStructure* structure = const_cast<TrackStructure*>(this);
+  structure->TreeNode.ReleaseData();
 }
 
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 void
-TrackStructure::UpdateTracksRepresentation(double iRadius, double iRadius2) const
+TrackStructure::
+UpdateTracksRepresentation(const double& iRadius,
+                           const double& iRadius2) const
 {
   vtkSmartPointer< vtkAppendPolyData > apd =
     vtkSmartPointer< vtkAppendPolyData >::New();
@@ -175,30 +181,28 @@ TrackStructure::UpdateTracksRepresentation(double iRadius, double iRadius2) cons
 GoFigureTrackAttributes
 TrackStructure::ComputeAttributes() const
 {
-  GoFigureTrackAttributes attributes;
+  GoFigureTrackAttributes oAttributes;
 
-  attributes.total_length = 0.;
-  attributes.distance = 0.;
-  attributes.avg_speed = 0.;
-  attributes.max_speed = 0.;
-  unsigned int t0, t1;
-  attributes.theta = 0.;
-  attributes.phi = 0.;
+  // check if there are no points in the map
+  if( PointsMap.empty() )
+    {
+    return oAttributes;
+    }
 
   PointsMapConstIterator it = this->PointsMap.begin();
 
-  // check if there are no points in the map
   if ( it == this->PointsMap.end() )
     {
-    return attributes;
+    return oAttributes;
     }
 
   unsigned int tmin = it->first;
-  t0 = tmin;
-  t1 = tmin;
+  unsigned int t0 = tmin;
+  unsigned int t1 = tmin;
   double *org = it->second;
   double *p = it->second;
   double *q = it->second; // if we only have one point in the map
+
   ++it;
 
   // reset the array
@@ -211,40 +215,152 @@ TrackStructure::ComputeAttributes() const
     {
     t1 = it->first;
     q = it->second;
-    attributes.distance = sqrt( vtkMath::Distance2BetweenPoints(p, q) );
-    attributes.total_length += attributes.distance;
-    attributes.max_speed = std::max( attributes.max_speed,
-                                     attributes.distance / ( static_cast< double >( t1 - t0 ) ) );
+    oAttributes.distance = sqrt( vtkMath::Distance2BetweenPoints(p, q) );
+    oAttributes.total_length += oAttributes.distance;
+    oAttributes.max_speed = std::max( oAttributes.max_speed,
+                                     oAttributes.distance / ( static_cast< double >( t1 - t0 ) ) );
 
-    double speed = attributes.distance / ( static_cast< double >( t1 - t0 ) );
+    double speed = oAttributes.distance / ( static_cast< double >( t1 - t0 ) );
     newArray->InsertNextValue(speed);
 
     p = q;
     t0 = t1;
+
     ++it;
     }
 
   if ( t1 == tmin )
     {
-    attributes.avg_speed = 0;
+    oAttributes.avg_speed = 0.;
     }
   else
     {
-    attributes.avg_speed = attributes.total_length
+    oAttributes.avg_speed = oAttributes.total_length
       / static_cast< double >( t1 - tmin );
     }
 
-  attributes.distance = sqrt( vtkMath::Distance2BetweenPoints(org, q) );
+  oAttributes.distance = sqrt( vtkMath::Distance2BetweenPoints(org, q) );
 
-  if ( attributes.distance )
+  if ( oAttributes.distance )
     {
-    attributes.theta = vtkMath::DegreesFromRadians( atan2( ( q[1] - org[1] ),
+    oAttributes.theta = vtkMath::DegreesFromRadians( atan2( ( q[1] - org[1] ),
                                                            ( q[0] - org[0] ) ) );
-    attributes.phi   = vtkMath::DegreesFromRadians( acos( ( q[2] - org[2] )
-                                                          / attributes.distance ) );
+    oAttributes.phi   = vtkMath::DegreesFromRadians( acos( ( q[2] - org[2] )
+                                                          / oAttributes.distance ) );
     }
 
-  return attributes;
+  oAttributes.avg_volume = this->m_AverageVolume/(PointsMap.size());
+
+  return oAttributes;
 }
 
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+TrackStructure::
+ModifyDivisionVisibility( const bool& iVisibility )
+{
+  /*
+   * \todo Nicolas- should we add/remove the actors from the view
+   */
+  this->TreeNode.Visible = iVisibility;
+  this->TreeNode.SetActorVisibility( iVisibility );
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+TrackStructure::
+ModifyDivisionHighlight( vtkProperty* iProperty, const bool& iHighlight )
+{
+  this->TreeNode.SetActorProperties(iProperty);
+  this->TreeNode.Highlighted = iHighlight;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+TrackStructure::
+ModifyDivisionColorData( const double* iColor )
+{
+this->TreeNode.rgba[0] = iColor[0];
+this->TreeNode.rgba[1] = iColor[1];
+this->TreeNode.rgba[2] = iColor[2];
+this->TreeNode.rgba[3] = iColor[3];
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+TrackStructure::
+ModifyDivisionColorActor( const double* iColor )
+{
+  this->TreeNode.ActorXY->GetProperty()->SetColor(const_cast<double*>(iColor));
+  this->TreeNode.ActorXZ->GetProperty()->SetColor(const_cast<double*>(iColor));
+  this->TreeNode.ActorYZ->GetProperty()->SetColor(const_cast<double*>(iColor));
+  this->TreeNode.ActorXYZ->GetProperty()->SetColor(const_cast<double*>(iColor));
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+TrackStructure::
+AddDivisionArray( vtkIntArray* iArray )
+{
+  /*
+   * \todo Nicolas-Shouldnt be necessary, missing IsLeaf update??
+   */
+  if(this->TreeNode.Nodes)
+    {
+    this->TreeNode.Nodes->GetPointData()->AddArray(iArray);
+    }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+TrackStructure::
+CreateDivisionNode( vtkPolyData* iNode)
+{
+  if( !this->TreeNode.Nodes )
+    {
+    this->TreeNode.Nodes = vtkPolyData::New();
+    }
+  this->TreeNode.Nodes->DeepCopy( iNode );
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+const bool
+TrackStructure::
+IsRoot() const
+{
+  return this->TreeNode.IsRoot();
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+const bool
+TrackStructure::
+IsLeaf() const
+{
+  return this->TreeNode.IsLeaf();
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+TrackStructure::
+AddVolume(const double& iVolume)
+{
+  m_AverageVolume += iVolume;
+
+  // useful for the track editing widget...
+  // temp solution?
+  if(m_AverageVolume < 0)
+    {
+    m_AverageVolume = 0;
+    }
+}
 //--------------------------------------------------------------------------

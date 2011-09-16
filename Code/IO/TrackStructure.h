@@ -38,13 +38,18 @@
 #include "TraceStructure.h"
 #include "QGoIOConfigure.h"
 
+#include "TreeNodeStructure.h"
+
 #include "GoFigureTrackAttributes.h"
 
+#include "vtkActor.h"
 #include <map>
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 #include "StructureHelper.h"
 #endif
+
+class vtkIntArray;
 
 /**
 \defgroup Track Track
@@ -55,10 +60,16 @@
  * \brief  Structure which represent a track, and used for
  * interaction between Visualization and TableWidget
  * \ingroup Track Trace
+ * \todo passe parameters by reference for performance
  */
 class QGOIO_EXPORT TrackStructure : public TraceStructure
 {
 public:
+
+  typedef TrackStructure Self;
+
+  // contains pointers + actor
+  TreeNodeStructure<Self> TreeNode;
 
   /**
    * Map containing all the polydata points ordered by time
@@ -108,6 +119,7 @@ public:
     os << "ActorYZ " << c.ActorYZ << std::endl;
     os << "ActorXYZ " << c.ActorXYZ << std::endl;
     os << "Nodes " << c.Nodes << std::endl;
+    os << "Average Volume " << c.m_AverageVolume << std::endl;
     os << "Map " << std::endl;
 
     std::map< unsigned int, double*>::const_iterator end = c.PointsMap.end();
@@ -130,10 +142,32 @@ public:
     return os;
   }
 
-  void UpdateTracksRepresentation( double iRadius, double iRadius2 ) const;
+  void UpdateTracksRepresentation( const double& iRadius,
+                                  const double& iRadius2 ) const;
 
   GoFigureTrackAttributes ComputeAttributes() const;
 
+  void ModifyDivisionVisibility( const bool& iVisibility );
+  void ModifyDivisionHighlight( vtkProperty* iProperty,
+                               const bool& iHighlight );
+
+  void ModifyDivisionColorData( const double* iColor );
+  // for the highlight
+  void ModifyDivisionColorActor( const double* iColor );
+
+  void AddDivisionArray( vtkIntArray* iArray );
+
+  void CreateDivisionNode( vtkPolyData* iNode);
+
+  const bool IsRoot() const;
+  const bool IsLeaf() const;
+
+  // Add volume to a track
+  // note that added volume can be < 0
+  void AddVolume(const double& iVolume);
+
+  // to be moved
+  double m_AverageVolume;
 };
 
 #endif

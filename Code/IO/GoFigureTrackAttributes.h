@@ -44,25 +44,45 @@
 \brief Track attributes to be displayed in the table widget
 */
 
-struct QGOIO_EXPORT GoFigureTrackAttributes {
-  // total distance (add each segment size) = deplacement
+struct QGOIO_EXPORT GoFigureTrackAttributes
+{
+  /**total distance (add each segment size) = deplacement */
   double total_length;
-  // average speed
+  /** average speed */
   double avg_speed;
-  // maximum speed
+  /** maximum speed */
   double max_speed;
-  // euclidian distance between first and last points
+  /** euclidian distance between first and last points */
   double distance;
-  // theta in spherical coordinate system
+  /** theta in spherical coordinate system */
   double theta;
-  // phi in spherical coordinate system
+  /** phi in spherical coordinate system */
   double phi;
+  /** average mesh volume over the track */
+  double avg_volume;
 
-  // Constructors
-  GoFigureTrackAttributes(){}
+  /** Constructors */
+  GoFigureTrackAttributes() : total_length( 0. ), avg_speed( 0. ),
+    max_speed( 0. ), distance( 0. ), theta( 0. ), phi( 0. ), avg_volume(0.)
+    {}
+
   GoFigureTrackAttributes(const GoFigureTrackAttributes & iE):
-  total_length(iE.total_length), avg_speed(iE.avg_speed),
-  max_speed(iE.max_speed), distance(iE.distance),
-  theta(iE.theta), phi(iE.phi){}
+    total_length(iE.total_length), avg_speed(iE.avg_speed),
+    max_speed(iE.max_speed), distance(iE.distance),
+    theta(iE.theta), phi(iE.phi), avg_volume(iE.avg_volume)
+  {}
+
+  GoFigureTrackAttributes& operator = ( GoFigureTrackAttributes & iE )
+    {
+    this->total_length = iE.total_length;
+    this->avg_speed = iE.avg_speed;
+    this->max_speed = iE.max_speed;
+    this->distance = iE.distance;
+    this->theta = iE.theta;
+    this->phi = iE.phi;
+    this->avg_volume = iE.avg_volume;
+
+    return *this;
+    }
 };
 #endif

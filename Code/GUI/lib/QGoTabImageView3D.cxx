@@ -114,7 +114,7 @@ QGoTabImageView3D::QGoTabImageView3D(QWidget *iParent) :
 
   CreateAllViewActions();
 
-  CreateModeActions();
+  //CreateModeActions();
 
   ReadSettings();
 }
@@ -340,12 +340,14 @@ void QGoTabImageView3D::CreateAllViewActions()
 
 //--------------------------------------------------------------------------
 //-------------------------------------------------------------------------
-void QGoTabImageView3D::CreateModeActions()
+void QGoTabImageView3D::CreateModeToolBar(QMenu* iMenu, QToolBar* iToolBar)
 {
-  QActionGroup *group = new QActionGroup(this);
+  //QActionGroup *group = new QActionGroup(this);
 
   // Call superclass
-  QGoTabElementBase::CreateModeActions(group);
+  //QGoTabElementBase::CreateModeActions(group);
+  QGoTabElementBase::CreateModeToolBar(iMenu, iToolBar);
+  this->m_ToolBarList.push_back(this->m_ModeToolBar);
 }
 
 //--------------------------------------------------------------------------

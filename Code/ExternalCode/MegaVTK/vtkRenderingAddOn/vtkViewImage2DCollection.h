@@ -74,7 +74,7 @@
 #include "vtkViewImage2D.h"
 #include "MegaVTK2Configure.h"
 
-#include <vtkstd/vector>
+#include <vector>
 
 /**
    This macro can be useful as we frequently set
@@ -121,7 +121,6 @@ class vtkActor;
 class vtkDataSet;
 class vtkPolyData;
 class vtkProperty;
-class vtkProp3DCollection;
 class vtkDataSetCollection;
 class vtkMatrixToLinearTransform;
 class vtkViewImage2DCollectionCommand;
@@ -251,9 +250,6 @@ public:
   /// Description: Synchronize interpolate between views
   vtkSyncSetMacro (Interpolate, int, vtkViewImage2D);
 
-  /// Description: Synchronize dataset addition between views
-  virtual void SyncAddDataSet(vtkDataSet *dataset, vtkProperty *property = NULL);
-
   /// Description: Synchronize reset window level between views
   virtual void SyncResetWindowLevel(void);
 
@@ -377,6 +373,11 @@ public:
    */
   void SynchronizeViews( bool iSynchronize);
 
+  /**
+   * \brief Get the plane actors
+   */
+  std::vector< vtkActor * > GetPlanesActors();
+
 protected:
 
   vtkViewImage2DCollection();
@@ -385,7 +386,7 @@ protected:
   vtkViewImage2DCollectionCommand *Command;
   vtkRenderWindow *                ExtraRenderWindow;
 
-  vtkstd::vector< vtkActor * > SlicePlaneActors;
+  std::vector< vtkActor * > PlanesActors;
 
   unsigned int LinkSliceMove;
   unsigned int LinkColorWindowLevel;

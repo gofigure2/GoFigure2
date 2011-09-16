@@ -69,22 +69,24 @@ void QGoTraceEditingWidget::Initialize(std::vector<QString> iVectChannels,
 
 //-------------------------------------------------------------------------
 void QGoTraceEditingWidget::AddMode(
-  std::string iModeName, QWidget* iModeWidget)
+  std::string iModeName, QWidget* iModeWidget, bool ModeNeedSeeds)
 {
   QWidget* ModeWidget = new QWidget;
   if (iModeWidget != 0)
     {
     ModeWidget = iModeWidget;
     }
-  this->m_ModeEditingWidget->AddWidgetWithModeName(iModeName, ModeWidget); 
+  this->m_ModeEditingWidget->AddWidgetWithModeName(iModeName, ModeWidget, 
+    ModeNeedSeeds); 
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoTraceEditingWidget::AddMode(QGoAlgorithmsManagerWidget* iAlgoModeWidget)
+void QGoTraceEditingWidget::AddMode(QGoAlgorithmsManagerWidget* iAlgoModeWidget,
+  bool ModeNeedSeeds)
 {
   this->m_ModeEditingWidget->AddWidgetWithModeName(iAlgoModeWidget->GetModeName(),
-    iAlgoModeWidget);
+    iAlgoModeWidget, ModeNeedSeeds);
 }
 //-------------------------------------------------------------------------
 
@@ -115,32 +117,34 @@ void QGoTraceEditingWidget::SetANewModesManager(QGoModesManagerWidget* iModeWidg
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoTraceEditingWidget::AddAlgoWidgetForSemiAutomatedMode(
+void QGoTraceEditingWidget::AddAlgoWidgetForSemiAutomaticMode(
   QGoAlgorithmWidget* iAlgoWidget)
 {
-  this->m_ModeEditingWidget->AddAlgoWidgetForSemiAutomatedMode(iAlgoWidget);
+  this->m_ModeEditingWidget->AddAlgoWidgetForSemiAutomaticMode(iAlgoWidget);
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoTraceEditingWidget::AddAlgoWidgetForAutomatedMode(
+void QGoTraceEditingWidget::AddAlgoWidgetForAutomaticMode(
   QGoAlgorithmWidget* iAlgoWidget)
 {
-  this->m_ModeEditingWidget->AddAlgoWidgetForAutomatedMode(iAlgoWidget);
+  this->m_ModeEditingWidget->AddAlgoWidgetForAutomaticMode(iAlgoWidget);
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoTraceEditingWidget::AddWidgetForManualMode(QWidget* iWidget)
+void QGoTraceEditingWidget::AddWidgetForManualMode(QWidget* iWidget,
+  QStringList iListTimePoint, bool ModeNeedSeeds)
 {
-  this->m_ModeEditingWidget->AddWidgetForManualMode(iWidget);
+  this->m_ModeEditingWidget->AddWidgetForManualMode(iWidget,
+    iListTimePoint, ModeNeedSeeds);
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-int QGoTraceEditingWidget::GetChannelNumber()
+std::string QGoTraceEditingWidget::GetCurrentImageName()
 {
-  return this->m_ModeEditingWidget->GetChannelNumber();
+  return this->m_ModeEditingWidget->GetCurrentImageName();
 }
 //-------------------------------------------------------------------------
 
@@ -148,6 +152,13 @@ int QGoTraceEditingWidget::GetChannelNumber()
 int QGoTraceEditingWidget::GetSelectedTimePoint()
 {
   return this->m_ModeEditingWidget->GetSelectedTimePoint();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+bool QGoTraceEditingWidget::GetIsInvertedOn()
+{
+  return this->m_ModeEditingWidget->GetIsInvertedOn();
 }
 //-------------------------------------------------------------------------
 
@@ -173,9 +184,17 @@ int QGoTraceEditingWidget::GetSelectedTimePoint()
  //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
- void QGoTraceEditingWidget::SetTSliceForDopplerView(QStringList iListTimePoints,
+ void QGoTraceEditingWidget::SetTSliceForDopplerView(
+   std::map<QString, QColor> iListTimePoints,
    int iChannelNumber)
  {
    this->m_ModeEditingWidget->SetTSliceForDopplerViewInAllAlgoModes(
      iListTimePoints, iChannelNumber);
  }
+ //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+ std::string QGoTraceEditingWidget::GetCurrentModeName()
+{
+  return this->m_ModeEditingWidget->GetCurrentModeName();
+}

@@ -43,6 +43,8 @@
 #define ITK_LEAN_AND_MEAN
 #endif
 
+#include "GoFiltersConfigure.h"
+
 #include "itkImageToImageFilter.h"
 #include "itkGradientMagnitudeRecursiveGaussianImageFilter.h"
 #include "itkSigmoidImageFilter.h"
@@ -65,7 +67,7 @@
 namespace itk
 {
 template< class TFeatureImage, class TInputImage, class TSegmentImage >
-class ITK_EXPORT GradientWeightedDistanceImageFilter:
+class GOFILTERS_EXPORT GradientWeightedDistanceImageFilter:
   public ImageToImageFilter< TFeatureImage, TInputImage >
 {
 public:

@@ -60,9 +60,9 @@ public:
   \param[in] iModeName name of the mode corresponding to iModeWidget
   \param[in] iModeWidget Widget corresponding to iModeName
   */
-  void AddMode( std::string iModeName, QWidget* iModeWidget = 0);
+  void AddMode( std::string iModeName, QWidget* iModeWidget, bool ModeNeedSeeds);
 
-  void AddMode(QGoAlgorithmsManagerWidget* iAlgoModeWidget);
+  void AddMode(QGoAlgorithmsManagerWidget* iAlgoModeWidget, bool ModeNeedSeeds);
 
   /**
   \brief replace the existing m_ModeEditingWidget with iModeWidget: all the 
@@ -71,12 +71,16 @@ public:
   */
   void SetANewModesManager(QGoModesManagerWidget* iModeWidget);
 
-  void AddAlgoWidgetForSemiAutomatedMode(QGoAlgorithmWidget* iAlgoWidget);
-  void AddAlgoWidgetForAutomatedMode(QGoAlgorithmWidget* iAlgoWidget);
-  void AddWidgetForManualMode(QWidget* iWidget);
+  void AddAlgoWidgetForSemiAutomaticMode(QGoAlgorithmWidget* iAlgoWidget);
 
-  int GetChannelNumber();
+  void AddAlgoWidgetForAutomaticMode(QGoAlgorithmWidget* iAlgoWidget);
+
+  void AddWidgetForManualMode(QWidget* iWidget,
+    QStringList iListTimePoint, bool ModeNeedSeeds);
+
+  std::string GetCurrentImageName();
   int GetSelectedTimePoint();
+  bool GetIsInvertedOn();
  
   /**
   \brief check which mode is selected and if the seeds are needed or not and
@@ -85,7 +89,13 @@ public:
   void CheckTheCurrentMode(bool IsVisible);
 
   void SetTSliceForClassicView(int iTimePoint);
-  void SetTSliceForDopplerView(QStringList iListTimePoints, int iChannelNumber);
+  void SetTSliceForDopplerView(
+    std::map<QString, QColor> iListTimePoints, int iChannelNumber);
+
+  /**
+  \brief return the name of the current mode in the combobox
+  */
+  std::string GetCurrentModeName();
 
 signals:
   void SetSeedInteractorBehaviour(bool enable);

@@ -70,15 +70,7 @@
 <h2>ToolbarInteractionModes.sikuli</h2> <a href="ToolbarInteractionModes.zip">(Download this script)</a>
 </div>
 <pre class="sikuli-code">
-<span class="cmt">#will have to click trace and table to get right size for xyview images and navigation widget to see if things moved or not
-</span><span class="cmt">#import os
-</span><span class="cmt">#address = os.getcwd()
-</span><span class="cmt">#address = "/home/es1076/GITROOT/GoFigure2/Testing/Sikuli/gofigure2_images"
-</span>
-<span class="cmt">#address = address+"/gofigure2_images"
-</span>
-<span class="cmt">#setBundlePath(address)
-</span>Toolbar = (<span class="str">"default"</span>,<img src="ZoomIcon.png" />,<img src="PanIcon.png" />,<img src="ActorPickingIcon.png" />)
+Toolbar = (<span class="str">"default"</span>,<img src="ZoomIcon.png" />,<img src="PanIcon.png" />,<img src="ActorPickingIcon.png" />)
 
 
 Mouse = (<span class="str">"Left"</span>,<span class="str">"Right"</span>,<span class="str">"Middle"</span>,<span class="str">"Scroll"</span>)
@@ -94,10 +86,6 @@ pointy = [None]*<span class="dig">4</span>
         pointy[i] = Init_view[i].y+ int(round(<span class="dig">0.6</span>*(Init_view[i].h)))
         <span class="kw">print</span> pointx[i],pointy[i], <span class="str">"this is pointx and pointy"</span>
         <span class="kw">print</span> Init_view[i]
-        <span class="cmt">#Init_XZview = find(Pattern(ViewRegion[1]).similar(0.30))
-</span>        <span class="cmt">#Init_YZview = find(Pattern(ViewRegion[2]).similar(0.30))
-</span>        <span class="cmt">#Init_XYZview = find(Pattern(ViewRegion[3]).similar(0.30))
-</span>
 
 <span class="kw">for</span> mode <span class="kw">in</span> Toolbar:
 
@@ -105,10 +93,8 @@ pointy = [None]*<span class="dig">4</span>
                 <span class="skw">click</span>(mode)
 
         <span class="kw">for</span> j <span class="kw">in</span> range(<span class="dig">4</span>):
-                <span class="cmt">#pointx= 2*(Init_view[j].x+Init_view[j].h)/3
-</span>                <span class="cmt">#pointy= 2*(Init_view[j].y+Init_view[j].w)/3
-</span>                <span class="cmt">#print pointx, pointy
-</span>                <span class="cmt">#single left click
+
+                <span class="cmt">#single left click
 </span>                mouseMove(Location(pointx[j],pointy[j]))
                 view_withmouse = <span class="skw">capture</span>(Init_view[j].getRect())
                 <span class="skw">click</span>(Location(pointx[j],pointy[j]))
@@ -171,13 +157,12 @@ pointy = [None]*<span class="dig">4</span>
                                 mouseMove(Location(pointx[<span class="dig">0</span>],pointy[<span class="dig">0</span>]))
                                 <span class="skw">wait</span>(<span class="dig">3</span>)
                                 <span class="cmt">#assert xyz view rotated to the right by 10 degrees
-<<<<<<< HEAD
-</span>                                <span class="cmt">#assert exists(Pattern("1298594448537.png").similar(0.99))
-</span>
-=======
-</span>                                <span class="kw">assert</span> exists(Pattern(<img src="1298594448537.png" />).similar(<span class="dig">0.99</span>))
+</span>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
+                                <span class="cmt">#assert exists(Pattern("1298594448537.png").similar(0.99))
+</span>=======
+                                <span class="kw">assert</span> exists(Pattern(<img src="1298594448537.png" />).similar(<span class="dig">0.99</span>))
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; develop
 
->>>>>>> develop
 
                         <span class="kw">else</span>:
 

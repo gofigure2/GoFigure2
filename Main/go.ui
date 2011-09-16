@@ -59,7 +59,7 @@
      <x>0</x>
      <y>0</y>
      <width>1434</width>
-     <height>23</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -119,9 +119,11 @@
     <addaction name="actionAbout_Qt"/>
     <addaction name="separator"/>
     <addaction name="actionGoFigure2_Website"/>
+    <addaction name="actionCheck_For_Updates"/>
+    <addaction name="separator"/>
+    <addaction name="actionReport_a_bug"/>
     <addaction name="actionUser_mailing_list"/>
     <addaction name="actionDeveloper_mailing_list"/>
-    <addaction name="actionCheck_For_Updates"/>
    </widget>
    <widget class="QMenu" name="menuView">
     <property name="enabled">
@@ -202,7 +204,7 @@
   </widget>
   <widget class="QToolBar" name="FileToolBar">
    <property name="windowTitle">
-    <string>toolBar</string>
+    <string>Open Files</string>
    </property>
    <property name="iconSize">
     <size>
@@ -283,9 +285,6 @@
    <property name="text">
     <string>About</string>
    </property>
-   <property name="menuRole">
-    <enum>QAction::AboutRole</enum>
-   </property>
   </action>
   <action name="actionAbout_Qt">
    <property name="text">
@@ -320,6 +319,11 @@
   <action name="actionGoFigure2_Website">
    <property name="text">
     <string>GoFigure2 website</string>
+   </property>
+  </action>
+  <action name="actionReport_a_bug">
+   <property name="text">
+    <string>Report a bug</string>
    </property>
   </action>
   <action name="actionUser_mailing_list">

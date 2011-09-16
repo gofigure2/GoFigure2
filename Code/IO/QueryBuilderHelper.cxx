@@ -195,12 +195,17 @@ std::string SelectQueryStreamListConditions(std::string iTable,
                                             std::vector< std::string > iListAttributes,
                                             std::vector< FieldWithValue > iConditions,
                                             std::string iConditionConnector,
-                                            bool Distinct)
+                                            bool Distinct, std::string iOrderByColumnName)
 {
   std::string What = GetSelectedAttributes(iListAttributes);
-
-  return SelectQueryStreamListConditions(iTable, What, iConditions, iConditionConnector,
+  std::string oQueryString = SelectQueryStreamListConditions(iTable, What, iConditions, iConditionConnector,
                                          Distinct);
+  if (!iOrderByColumnName.empty())
+    {
+    oQueryString += AddOrderBy(iOrderByColumnName);
+    }
+
+  return oQueryString;
 }
 
 //------------------------------------------------------------------------------
@@ -238,8 +243,10 @@ std::string GetConditions(std::vector< FieldWithValue > iConditions,
 
   oConditions << "(";
   unsigned int i;
+  // why -1??
   for ( i = 0; i < iConditions.size() - 1; i++ )
     {
+    
     oConditions << iConditions[i].Field;
     oConditions << iConditions[i].Operator;
     oConditions << " '";
@@ -338,12 +345,19 @@ std::vector< std::string > VectorUnsgIntToVectorString(
 
 //-------------------------------------------------------------------------
 std::string GetLeftJoinTwoTables(std::string iTableOne, std::string iTableTwo,
-                                 FieldWithValue iOnCondition)
+                                 FieldWithValue iOnCondition, bool NonNULLRows)
 {
   std::stringstream oQueryStream;
 
   oQueryStream << iTableOne;
+  if (NonNULLRows)
+  {
+  oQueryStream << " JOIN ";
+  }
+  else
+  {
   oQueryStream << " LEFT JOIN ";
+  }
   oQueryStream << iTableTwo;
   oQueryStream << " ON ";
   oQueryStream << iTableOne;

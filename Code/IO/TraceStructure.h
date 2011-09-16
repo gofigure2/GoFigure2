@@ -35,6 +35,8 @@
 #ifndef TRACESTRUCTURE_H
 #define TRACESTRUCTURE_H
 
+#include "vtkSmartPointer.h"
+
 class vtkActor;
 class vtkPolyData;
 class vtkProperty;
@@ -162,7 +164,7 @@ public:
 
   /** \brief Set the lookup table
       \param[in] iLut */
-  void SetLookupTable( vtkLookupTable* iLut ) const;
+  void SetLookupTable( const vtkLookupTable* iLut ) const;
 
   virtual void ReleaseData() const;
 

@@ -132,7 +132,7 @@ TraceContainerBase< TContainer >::GetActorGivenTraceID(unsigned int iTraceID)
 //-------------------------------------------------------------------------
 template< class TContainer >
 bool
-TraceContainerBase< TContainer >::UpdateCurrentElementFromExistingOne(unsigned int iTraceID)
+TraceContainerBase< TContainer >::UpdateCurrentElementFromExistingOne(unsigned int iTraceID, bool iErase)
 {
   using boost::multi_index:: get;
 
@@ -146,7 +146,10 @@ TraceContainerBase< TContainer >::UpdateCurrentElementFromExistingOne(unsigned i
 
     // clean the container but don't erase the pointers since we still have the
     // adresses in the m_CurrentElement
-    m_Container.get< TraceID >().erase(it);
+    if(iErase)
+      {
+      m_Container.get< TraceID >().erase(it);
+      }
 
     return true;
     }
@@ -273,13 +276,11 @@ TraceContainerBase< TContainer >::UpdateElementHighlightingWithGivenTraceID(cons
   MultiIndexContainerTraceIDIterator
     it = m_Container.get< TraceID >().find(iId);
 
-  vtkProperty *temp_property = NULL;
-
   if ( it != m_Container.get< TraceID >().end() )
     {
+    vtkProperty *temp_property = vtkProperty::New();
     if ( it->Highlighted )
       {
-      temp_property = vtkProperty::New();
       temp_property->SetColor(it->rgba[0],
                               it->rgba[1],
                               it->rgba[2]);
@@ -288,26 +289,21 @@ TraceContainerBase< TContainer >::UpdateElementHighlightingWithGivenTraceID(cons
       }
     else
       {
-      temp_property = this->m_HighlightedProperty;
+      temp_property->DeepCopy(this->m_HighlightedProperty);
       }
 
     it->SetActorProperties(temp_property);
 
-    if ( it->Highlighted )
-      {
-      temp_property->Delete();
-      }
+    temp_property->Delete();
 
-    MultiIndexContainerElementType tempStructure(*it);
+    bool highlighted = !it->Highlighted;
+    
+    m_Container.get< TraceID >().
+        modify( it , change_highlighted<MultiIndexContainerElementType>(highlighted) );
 
-    tempStructure.Highlighted = !it->Highlighted;
+    assert ( m_ImageView );
 
-    m_Container.get< TraceID >().replace(it, tempStructure);
-
-    if ( m_ImageView )
-      {
-      m_ImageView->UpdateRenderWindows();
-      }
+    m_ImageView->UpdateRenderWindows();
 
     return true;
     }
@@ -329,8 +325,6 @@ TraceContainerBase< TContainer >::UpdateElementHighlightingWithGivenTraceIDsBase
     {
     MultiIndexContainerTraceIDIterator it;
 
-    vtkProperty *temp_property = NULL;
-
     QStringList::const_iterator constIterator = iList.begin();
 
     while ( constIterator != iList.end() )
@@ -339,9 +333,10 @@ TraceContainerBase< TContainer >::UpdateElementHighlightingWithGivenTraceIDsBase
 
       if ( it != m_Container.get< TraceID >().end() )
         {
+        vtkProperty *temp_property = vtkProperty::New();
+
         if ( !iCheck )
           {
-          temp_property = vtkProperty::New();
           temp_property->SetColor(it->rgba[0],
                                   it->rgba[1],
                                   it->rgba[2]);
@@ -350,30 +345,23 @@ TraceContainerBase< TContainer >::UpdateElementHighlightingWithGivenTraceIDsBase
           }
         else
           {
-          temp_property = this->m_HighlightedProperty;
+          temp_property->DeepCopy(this->m_HighlightedProperty);
           }
 
         it->SetActorProperties(temp_property);
+        temp_property->Delete();
 
-        if ( !iCheck )
-          {
-          temp_property->Delete();
-          }
+        bool highlight = iCheck;
 
-        MultiIndexContainerElementType tempStructure(*it);
-
-        tempStructure.Highlighted = iCheck;
-
-        m_Container.get< TraceID >().replace(it, tempStructure);
+        m_Container.get< TraceID >().
+            modify( it , change_highlighted<MultiIndexContainerElementType>(highlight) );
         }
-
       ++constIterator;
       }
 
-    if ( m_ImageView )
-      {
-      m_ImageView->UpdateRenderWindows();
-      }
+    assert ( m_ImageView );
+
+    m_ImageView->UpdateRenderWindows();
     }
 }
 
@@ -435,12 +423,9 @@ TraceContainerBase< TContainer >::UpdateElementVisibilityWithGivenTraceIDsBase(c
           }
 
         it->SetActorVisibility(visible);
-
-        MultiIndexContainerElementType tempStructure(*it);
-
-        tempStructure.Visible = visible;
-
-        m_Container.get< TraceID >().replace(it, tempStructure);
+        
+        m_Container.get< TraceID >().
+            modify( it , change_visible<MultiIndexContainerElementType>(visible) );
         }
 
       ++constIterator;
@@ -466,27 +451,12 @@ TraceContainerBase< TContainer >::UpdateAllHighlightedElementsWithGivenColor(QCo
   boost::tuples::tie(it0, it1) =
     m_Container.get< Highlighted >().equal_range(true);
 
-  double r(1.), g(1.), b(1.), a(1.);
-
-  if ( iColor.isValid() )
-    {
-    iColor.getRgbF(&r, &g, &b, &a);
-    }
-
   std::list< unsigned int > oList;
   while ( it0 != it1 )
     {
-    MultiIndexContainerElementType temp(*it0);
-
-    temp.rgba[0] = r;
-    temp.rgba[1] = g;
-    temp.rgba[2] = b;
-    temp.rgba[3] = a;
-
-    m_Container.get< Highlighted >().replace(it0, temp);
-
+    m_Container.get< Highlighted >().modify(it0,
+        change_color<MultiIndexContainerElementType>(iColor));
     oList.push_back(it0->TraceID);
-
     ++it0;
     }
 
@@ -531,6 +501,9 @@ TraceContainerBase< TContainer >::UpdateElementVisibilityWithGivenTraceID(const 
   typedef void ( QGoImageView3D::*ImageViewMember )(const int &, vtkActor *);
   ImageViewMember f;
 
+/*
+* \todo Nicolas-should be an assert
+*/
   if ( it != m_Container.get< TraceID >().end() )
     {
     if ( it->Visible )
@@ -563,17 +536,16 @@ TraceContainerBase< TContainer >::UpdateElementVisibilityWithGivenTraceID(const 
       }
 
     it->SetActorVisibility(!it->Visible);
+    
+    bool visible = !it->Visible;
+    
+    m_Container.get< TraceID >().
+        modify( it , change_visible<MultiIndexContainerElementType>(visible) );
 
-    MultiIndexContainerElementType tempStructure(*it);
+    assert ( m_ImageView );
 
-    tempStructure.Visible = !it->Visible;
+    m_ImageView->UpdateRenderWindows();
 
-    m_Container.get< TraceID >().replace(it, tempStructure);
-
-    if ( m_ImageView )
-      {
-      m_ImageView->UpdateRenderWindows();
-      }
     return true;
     }
 
@@ -932,7 +904,7 @@ TraceContainerBase< TContainer >::SetRandomColor(const std::string & iColumnName
 //-------------------------------------------------------------------------
 template< class TContainer >
 void
-TraceContainerBase< TContainer >::UpdateCurrentElementFromVisuBase(std::vector< vtkActor * > iActors,
+TraceContainerBase< TContainer >::UpdateCurrentElementFromVisuBase(std::vector< vtkActor * >& iActors,
                                                                    vtkPolyData *iNodes,
                                                                    const bool & iHighlighted,
                                                                    const bool & iVisible)

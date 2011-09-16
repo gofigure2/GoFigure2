@@ -60,31 +60,161 @@
 #include "QGoGUILibConfigure.h"
 #include <QString>
 
+#include "vtkMutableDirectedGraph.h"
+#include "GoFigureLineageAttributes.h"
+
+/**
+  \struct change_visible_division
+  \brief Change the visibility of a division with an unary function.
+  \sa TrackStructure
+  */
+//-----------------------------------------------------------------------------
+struct change_visible_division
+{
+  change_visible_division(const bool& iVisible):visible(iVisible){}
+
+  void operator()(TrackStructure& iStructure)
+  {
+    iStructure.ModifyDivisionVisibility(visible);
+  }
+
+private:
+  bool visible;
+};
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
+/**
+  \struct change_highlighted_division
+  \brief Change the highlight of a division with an unary function.
+  \sa TrackStructure
+  */
+struct change_highlighted_division
+{
+  change_highlighted_division(vtkProperty* iProperty, bool iHighlight):
+    property(iProperty),highlight(iHighlight){}
+
+  void operator()(TrackStructure& iStructure)
+  {
+    iStructure.ModifyDivisionHighlight(property,highlight);
+  }
+
+private:
+  vtkProperty* property;
+  bool highlight;
+};
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
+/**
+  \struct change_color_division
+  \brief Change the color of a division with an unary function.
+  \sa TrackStructure
+  */
+struct change_data_color_division
+{
+  change_data_color_division(const double* iColor):color(iColor){}
+
+  void operator()(TrackStructure& iStructure)
+  {
+    iStructure.ModifyDivisionColorData(color);
+  }
+
+private:
+  const double* color;
+};
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
+/**
+  \struct change_color_division
+  \brief Change the color of a division with an unary function.
+  \sa TrackStructure
+  */
+struct change_actor_color_division
+{
+  change_actor_color_division(const double* iColor):color(iColor){}
+
+  void operator()(TrackStructure& iStructure)
+  {
+    iStructure.ModifyDivisionColorActor(color);
+  }
+
+private:
+  const double* color;
+};
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
+/**
+  \struct add_array_division
+  \brief Add an array to a division with an unary function.
+  Useful for the color coding.
+  \sa TrackStructure
+  */
+struct add_array_division
+{
+  add_array_division(vtkIntArray* iArray):array(iArray){}
+
+  void operator()(TrackStructure& iStructure)
+  {
+    iStructure.AddDivisionArray(array);
+  }
+
+private:
+  vtkIntArray* array;
+};
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
+/**
+  \struct create_node_division
+  \brief Create a polydata for a division with an unary function.
+  Useful for the color coding.
+  \sa TrackStructure
+  */
+struct create_node_division
+{
+  create_node_division(vtkPolyData* iNode):node(iNode){}
+
+  void operator()(TrackStructure& iStructure)
+  {
+    iStructure.CreateDivisionNode(node);
+  }
+
+private:
+  vtkPolyData* node;
+};
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
+  /**
+  \struct add_avg_volume
+  \brief Create a polydata for a division with an unary function.
+  Useful for the color coding.
+  \sa TrackStructure
+  */
+struct add_volume
+{
+  add_volume(const double& iVolume):volume(iVolume){}
+
+  void operator()(TrackStructure& iStructure)
+  {
+    iStructure.AddVolume(volume);
+  }
+
+private:
+  double volume;
+};
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
+
 namespace boost
 {
 typedef multi_index::multi_index_container<
   TrackStructure,
   boost::multi_index::indexed_by<
-    boost::multi_index::hashed_non_unique<
-      boost::multi_index::tag< ActorXY >,
-      BOOST_MULTI_INDEX_MEMBER(TraceStructure, vtkActor *, ActorXY)
-    >,
-    boost::multi_index::hashed_non_unique<
-      boost::multi_index::tag< ActorXZ >,
-      BOOST_MULTI_INDEX_MEMBER(TraceStructure, vtkActor *, ActorXZ)
-    >,
-    boost::multi_index::hashed_non_unique<
-      boost::multi_index::tag< ActorYZ >,
-      BOOST_MULTI_INDEX_MEMBER(TraceStructure, vtkActor *, ActorYZ)
-    >,
-    boost::multi_index::hashed_non_unique<
-      boost::multi_index::tag< ActorXYZ >,
-      BOOST_MULTI_INDEX_MEMBER(TraceStructure, vtkActor *, ActorXYZ)
-    >,
-    boost::multi_index::hashed_non_unique<
-      boost::multi_index::tag< Nodes >,
-      BOOST_MULTI_INDEX_MEMBER(TraceStructure, vtkPolyData *, Nodes)
-    >,
     boost::multi_index::ordered_unique<
       boost::multi_index::tag< TraceID >,
       BOOST_MULTI_INDEX_MEMBER(TraceStructure, unsigned int, TraceID)
@@ -134,32 +264,7 @@ public:
                            QGoImageView3D *iView);
 
   /** \brief Destructor. */
-  ~TrackContainer();
-
-  /** \brief Update Current Element by providing all required information
-  from the visualization.
-  \param[in] iActors
-  \param[in] iNodes
-  \param[in] iHighlighted
-  \param[in] iVisible
-  \see TrackStructure
-  */
-  void UpdateCurrentElementFromVisu(std::vector< vtkActor * > iActors,
-                                    vtkPolyData *iNodes,
-                                    const bool & iHighlighted,
-                                    const bool & iVisible);
-
-
-  /*
-  \brief Remove all actors (elements) from the scene for a given time point
-  \param[in] iT
-  */
-  // void RemoveActorsWithGivenTimePoint(const unsigned int & iT);
-
-  /*
-    \brief Add all actors (elements) from the scene for a given time point
-  */
-  // void AddActorsWithGivenTimePoint(const unsigned int & iT);
+  virtual ~TrackContainer();
 
   //-------------------------------------------------------------------------
 
@@ -186,27 +291,12 @@ public:
   std::list< unsigned int > DeleteAllHighlightedElements();
 
   /**
-    \brief Delete a point from the current track.
-    \param[in] iTime time point to clear
-    \param[in] iReconstructPolyData should we reconstruct the polydata
-    \return true a point has been deleted
-    \return false no point has been deleted
-  */
-  bool DeletePointFromCurrentElement( unsigned int iTime,
-                                      bool iReconstructPolyData );
-  /**
     \brief Update the TrackStructure polydata according to the current map.
     \param[in] iTrackStructure Structure to be updated
     \return true if the polydata has been updated
     \return false if it hasn't (i.e. mesh without point)
   */
-  bool UpdateTrackStructurePolyData( const TrackStructure& iTrackStructure);
-
-  /**
-    \brief Update the current element actors from the visualization.
-    \param[in] iActors Vector container an actor pointer for each view
-  */
-  void UpdateCurrentElementActorsFromVisu(std::vector< vtkActor * > iActors);
+  bool UpdateTrackStructurePolyData(const TrackStructure& iTrackStructure);
 
   /**
     \brief Update the points strings of the tracks
@@ -224,19 +314,19 @@ public:
     \param[in] iTrackList List containing IDs of the track of interest
   */
   template< class TList >
-  void UpdateTracksStrings( const TList& iTrackList)
+  void UpdateTracksStrings(const TList& iTrackList)
     {
     typename TList::const_iterator it = iTrackList.begin();
     unsigned int temp = 0;
 
-    while( it != iTrackList.end() )
+    while(it!=iTrackList.end())
       {
-      temp = static_cast< unsigned int >( * it );
+      temp = static_cast< unsigned int >(*it);
       // update the current element
-      UpdateCurrentElementFromExistingOne( temp );
+      UpdateCurrentElementFromExistingOne(temp);
 
       // emit signal to get the meshes informations
-      emit NeedMeshesInfoForImportedTrack( temp );
+      emit NeedMeshesInfoForImportedTrack(temp);
 
       ++it;
       }
@@ -246,41 +336,22 @@ public:
    * \brief Update the current element map then polydata
    * \param[in] iMeshes meshes to be added in the map
    */
-  void UpdateCurrentElementMap( std::map< unsigned int, double* > iMeshes);
+  void ImportTrackInCurrentElement(std::map< unsigned int, double*>& iMeshes);
 
   /**
    * \brief Create new actors for the current polydata and update and visualize
    *  the current actors
+   * \param[in] iStructure Structure to be updated
+   * \note input paramter not cont sine it is modified in the method
    */
-  void CreateCurrentTrackActors();
+  void CreateTrackActors(TrackStructure& iStructure);
 
-  /**
-   * \brief Delete the points which are at the selected time point from the
-   * current element.
-   * \param[in] iTimeList List of the time points to be deleted.
+  /*
+   * \brief Remove the actors from the visualization if the track has less than 2 points.
+   * \param[in] iStructure Structure to be updated
+   * \note input paramter not cont sine it is modified in the method
    */
-  void DeleteListFromCurrentElement( const std::list<unsigned int>& iTimeList );
-
-  /**
-  \brief Delete a point from a track.
-  \param[in] iIterator trackstructure which will be modified
-  \param[in] iTime time point to clear
-  \param[in] iReconstructPolyData should we reconstruct the polydata
-  \return true if a point has been deleted
-  \return false no point has been deleted */
-  bool DeletePointFromElement(
-    MultiIndexContainerTraceIDIterator iIterator,
-    unsigned int iTime,
-    bool iReconstructPolyData );
-
-  /**
-  \brief Add traces (collections of contours / meshes) to a track, given their
-  bounding box.
-  \param[in] iTrackID track id
-  \param[in] iBoundingBox list of bounding boxes */
-  void UpdatePointsFromBBForGivenTrack(
-    unsigned int iTrackID,
-    std::list<std::vector<unsigned int> > iBoundingBox);
+  void UpdateTrackActors(TrackStructure& iStructure);
 
   /**
   \brief get the element with iTrackID into the current element, remove it from
@@ -289,60 +360,345 @@ public:
   \param[in] iTrackID  ID for the track to be updated
   \param[in] iListCenterBoundingBoxes list of the center of the bounding boxes
   for the meshes belonging to this track */
-  void UpdatePointsForATrack(unsigned int iTrackID,
-                             std::list< double*> iListCenterBoundingBoxes);
+  TrackStructure* UpdatePointsForATrack(const unsigned int& iTrackID,
+                             std::list< double*>& iListCenterBoundingBoxes);
 
   /**
   \brief Update highlighting property of one element given one actor.
   \param[in] iActor Actor of the element to be modified
   \return true if the element exists
-  \return false else */
-  template< class TActor >
-  bool UpdateElementHighlightingWithGivenActor(vtkActor *iActor)
+  \return false else
+  \note move to superclass
+  */
+  void UpdateElementHighlighting(const unsigned int& TraceId)
     {
-    unsigned TraceId;
     Qt::CheckState state;
-    bool oValue =
-        Superclass::UpdateElementHighlightingWithGivenActor< TActor >( iActor,
-                                                                 TraceId,
-                                                                 state );
-    if( oValue )
-      {
-      emit TracePicked(TraceId, state);
-      }
-    return oValue;
+    Superclass::UpdateElementHighlightingWithTraceID(TraceId,
+                                                     state);
+    emit TracePicked(TraceId, state);
     }
+
+  /*
+   * \brief Update the full lineage after picking a division
+   * 1-Pick actor
+   * 2-Get track ID
+   * 3-Get root track ID
+   * 4-Modify highlight
+   * \param[in] iTraceId ID of the track which owns the picked division
+   */
+  void UpdateCollectionHighlighting(const unsigned int& iTraceId);
+
+  /*
+   * \brief Convenience method to get an iterator to the root structure.
+   * Useful for the division picking.
+   */
+  void GetRootIterator(
+      MultiIndexContainerTraceIDIterator& iMotherIterator);
 
   /**
   \brief Update highlighting property of one element given one actor.
   \param[in] iActor Actor of the element to be modified
   \return true if the element exists
-  \return false else */
-  template< class TActor >
-  bool UpdateElementVisibilityWithGivenActor(
-      vtkActor *iActor )
+  \return false else
+  \note move to superclass*/
+  void UpdateElementVisibility(const unsigned int& iTraceID, const bool& iState)
     {
-    unsigned TraceId;
-    Qt::CheckState state;
-    bool oValue =
-        Superclass::UpdateElementVisibilityWithGivenActor< TActor >( iActor,
-                                                                 TraceId,
-                                                                 state );
-    if( oValue )
+    Superclass::UpdateElementVisibilityWithTraceID(iTraceID, iState);
+    if(iState)
       {
-      emit TraceVisibilityChanged(TraceId, state);
+      emit TraceVisibilityChanged(iTraceID, Qt::Checked );
+      return;
       }
-    return oValue;
+    emit TraceVisibilityChanged(iTraceID, Qt::Unchecked );
     }
 
-  void MergeTrack( const unsigned int& iId1, const unsigned int& iId2 );
+  /*
+   * \brief Merge given tracks
+   * \param[in] iId1 ID of the first track
+   * \param[in] iId2 ID of the second track
+   */
+  void MergeTrack(const unsigned int& iId1, const unsigned int& iId2);
 
-  std::map< unsigned int, std::pair< const double* , vtkPolyData*> >
-  GetHighlightedElementsTrackPolyData();
+  /*
+   * \brief Set time interval between each image.
+   * Useful to estimate the speed of a cell.
+   * \param[in] iTimeInterval time interval between 2 time points
+   */
+  void setTimeInterval(const int& iTimeInterval);
 
-  void setTimeInterval( int iTimeInterval);
-
+  /*
+   * \brief Get time interval between each image.
+   * Necessary to estimate the speed of a cell.
+   * \return time interval between 2 time points
+   */
   int getTimeInterval();
+
+  /*
+   * \brief Border type enum to define FIRST and LAST point for a better
+   * lisibility
+   */
+  enum BorderType { FIRST = 0, LAST = 1 };
+
+  /*
+   * \brief Convenience to get the position (x,y,z) of a border of a track.
+   * (first or last point).
+   * Used to create the divisions actors.
+   * \param[in] iTrackID track of interest
+   * \param[in] iBorder FIRST or LAST
+   * \return position of the first point (double* pointing to a double[3])
+   */
+  double* GetBorderOfTheTrack(const unsigned int& iTrackID,
+                              const BorderType& iBorder);
+
+  /*
+   * \brief Create divisions from a list of track ids.
+   * the list has the following format:
+   * motherID daughter1ID daughter2ID motherID daughter1ID ...
+   * \param[in] iListOfDivisions list of the track ids to create the divisions
+   */
+  void SetListOfDivisions(std::list<unsigned int>& iListOfDivisions);
+
+  /*
+   * \brief Create a division between 3 tracks.
+   * Assigns mother and child pointers. Create 4 actors (one for each view)
+   * for this division.
+   * \param[in] iMotherID ID of the mother of the division
+   * \param[in] iDaughter1ID ID of the daughter1 of the division
+   * \param[in] iDaughter2ID ID of the daughter2 of the division
+   * \param[in] iVisible visible = true
+   */
+  void AddDivision( const unsigned int& iMotherID,
+                    const unsigned int& iDaughter1ID,
+                    const unsigned int& iDaughter2ID,
+                    const bool& iVisible = true);
+
+  /*
+   * \brief Create 4 actors (one for each view)
+   * for this division.
+   * \param[in] iPolyData polydata representing the division
+   * \param[in] iVisible visibility of the polydata (defaut = true)
+   * \return vector of 4 actors (1 for each view) representing the division
+   */
+  std::vector<vtkActor* > CreateDivisionActor(vtkPolyData* iPolyData,
+                                              const bool& iVisible = true);
+
+  /*
+   * \brief Create Create a division from 3 track IDs.
+   * Updates the node in the structure.
+   * \param[in] iMother ID of the mother
+   */
+  void CreateDivisionPolydata(const unsigned int& iMother);
+
+  /*
+   * \brief get the tree below a given division
+   * \param[in] iTrackID division to start the search
+   * \return list containing all the track IDs
+   */
+  std::list<unsigned int> GetSubLineage(const unsigned int& iTrackID);
+  /*
+   * \brief Convenience method to go through the tree and get a SubLineage
+   *
+   * \param[in] it iterator to go through the lineage
+   * \param[in] iList list of tracks to be returned
+   */
+  void UpdateSubLineage(MultiIndexContainerTraceIDIterator it,
+                        std::list<unsigned int>& iList);
+
+  /**
+  \brief update the color and the divisions scalars of an all lineage which has
+  iTrackIDRoot as track root
+  */
+  GoFigureLineageAttributes UpdateDivisionsForALineage( unsigned int iTrackIDRoot, double* color);
+  /*
+   * \brief Update the lineage's divisions scalars given the track root ID
+   * \param[in] iTrackID track root ID
+   */
+  GoFigureLineageAttributes UpdateCollectionScalars(const unsigned int& iTrackID);
+  /*
+   * \brief Update the lineage's divisions scalars given the track root ID
+   * \param[in] iMotherIterator iterator to go through the lineage
+   * \param[in] iDepth depth or the structure referenced by the iterator
+   */
+  void UpdateDivisionScalar(
+      MultiIndexContainerTraceIDIterator& iMotherIterator,
+      const unsigned int& iDepth);
+
+  GoFigureLineageAttributes GetLineageAttributes(unsigned int iTrackRootID);
+
+  /*
+   * \brief Update the lineage's divisions color given the track root ID and
+   * a color
+   * \param[in] iTrackID track root ID
+   * \param[in] color color of the divisions
+   */
+  void UpdateCollectionColors(const unsigned int& iTrackID,
+                              const double* color);
+  /*
+   * \brief Update the lineage's divisions color given the track root ID and a color
+   * \param[in] iMotherIterator iterator to go through the lineage
+   * \param[in] color color of the divisions
+   */
+  void UpdateDivisionColor(
+      MultiIndexContainerTraceIDIterator& iMotherIterator,
+      const double* iColor);
+
+  /*
+   * \brief Update the lineage's divisions data color given the track root ID and
+   * a color
+   * \param[in] iTrackID track root ID
+   * \param[in] color color of the divisions
+   */
+  void UpdateCollectionColorsData(const unsigned int& iTrackID,
+                                  const double* color);
+  /*
+   * \brief Update the lineage's divisions data color given the track root ID and a color
+   * \param[in] iMotherIterator iterator to go through the lineage
+   * \param[in] color color of the divisions
+   */
+  void UpdateDivisionColorData(
+      MultiIndexContainerTraceIDIterator& iMotherIterator,
+      const double* iColor);
+
+  // compute statistics on the collection
+  /*
+   * \brief Get the max depth of the lineage
+   * \param[in] iTrackRootID id of the track root
+   * \return depth of the lineage
+   */
+  unsigned int GetCollectionMaxDepth(const unsigned int& iTrackRootID);
+  /*
+   * \brief Update the collection max depth
+   * \param[in] it iterator to go through the lineage
+   * \param[in] iDivisionDepth depth of the division
+   * \param[in] iLineageDepth depth of the lineage
+   * \note iLineageDepth should not be const
+   */
+  void UpdateCollectionMaxDepth(MultiIndexContainerTraceIDIterator& it,
+                                const unsigned int& iDivisionDepth,
+                                unsigned int& iLineageDepth);
+  /*
+   * \brief Get the min depth of the lineage
+   * \param[in] iTrackRootID id of the track root
+   * \return depth of the lineage
+   */
+  unsigned int GetCollectionMinDepth(const unsigned int& iTrackRootID );
+  /*
+   * \brief Update the collection min depth
+   * \param[in] it iterator to go through the lineage
+   * \param[in] iDivisionDepth depth of the division
+   * \param[in] iLineageDepth depth of the lineage
+   * \note iLineageDepth shouldnt be const
+   */
+  void UpdateCollectionMinDepth( MultiIndexContainerTraceIDIterator& it,
+                                 const unsigned int& iDivisionDepth,
+                                 unsigned int& iLineageDepth);
+  /*
+   * \brief Get the number of divisions of the lineage
+   * \param[in] iTrackRootID id of the track root
+   * \return depth of the lineage
+   */
+  unsigned int GetCollectionNumberOfDivisions(
+          const unsigned int& iTrackRootID);
+  /*
+   * \brief Update the collection number of divisions
+   * \param[in] it iterator to go through the lineage
+   * \param[in] iNumberOfDivisions number of divisions of the lineage
+   * \note iNumberOfDivisions shouldnt be const
+   */
+  void UpdateCollectionNumberOfDivisions(
+          MultiIndexContainerTraceIDIterator& it,
+          unsigned int& iNumberOfDivisions);
+  /*
+   * \brief Get the number of leaves of the lineage
+   * \param[in] iTrackRootID id of the track root
+   * \return depth of the lineage
+   */
+  unsigned int GetCollectionNumberOfLeaves(const unsigned int& iTrackRootID);
+  /*
+   * \brief Update the collection number of leaves
+   * \param[in] it iterator to go through the lineage
+   * \param[in] iNumberOfLeaves number of leaves of the lineage
+   * \note iNumberOfLeaves shouldnt be const
+   */
+  void UpdateCollectionNumberOfLeaves(MultiIndexContainerTraceIDIterator& it,
+      unsigned int& iNumberOfLeaves);
+
+  /*
+   * \brief Export a vtkMutableDirectedGraph from a given trackID root.
+   * \param[in] iTrackID track root ID for the lineage export.
+   * \return pointer to vtkMutableDirectedGraph. IMPORTANT: has to be deleted.
+   */
+  vtkMutableDirectedGraph* ExportLineage(const unsigned int& iTrackID);
+
+  /*
+   * \brief Color code lineages from the table widget
+   * \param[in] iColumnName selected column name
+   * \param[in] iValues pair track root id/value
+   */
+  void SetCollectionColorCode(const std::string& iColumnName,
+                              const std::map< unsigned int,
+                              std::string >& iValues);
+
+  /*
+   * \brief Randomly color code lineages from the table widget
+   * \param[in] iColumnName selected column name
+   * \param[in] iValues pair track root id/value
+   */
+  void SetDivisionRandomColor(const std::string & iColumnName,
+          const std::map< unsigned int, std::string >& iValues);
+
+  /*
+   * \brief Update whole tree for table widget color coding
+   * \param[in] it iterator to go through the lineage
+   * \param[in] iColumnName selected column name
+   * \param[in] iValue value of the current lineage
+   * \param[in|out] iMin to adjust the lookup table after modifying polydata scalars
+   * \param[in|out] iMax to adjust the lookup table after modifying polydata scalars
+   * \note iMin and iMax should not be constant
+   */
+  void UpdateDivisionScalarData(MultiIndexContainerTraceIDIterator& it,
+                                const std::string& iColumnName,
+                                const double& iValue,
+                                double& iMin,
+                                double& iMax);
+
+  /*
+   * \brief Set the scalar range for all the divisions
+   * \param[in] iMin min scalar
+   * \param[in] iMax max value
+   */
+  void SetScalarRangeForAllDivisions(const double& iMin, const double& iMax);
+
+  /*
+   * \brief Set the LUT for all the divisions
+   * \param[in] iLut the lookup table
+   */
+  void SetLookupTableForAllDivisionsColorCoding(const vtkLookupTable *iLut);
+
+  /*
+   * \brief Render all the divisions of all the lineages with the original
+   * lineage color
+   */
+  void RenderAllDivisionsWithOriginalColors();
+
+  /*
+   * \brief Go through the lineage and update the graph structure and
+   * informations.
+   * \param[in] it iterator to go through the lineage
+   * \param[in] iGraph graph to be modified
+   * \param[in] iPedrigree vertex ID - is unique
+   * \param[in] mother vertex ID of the mother - to create edges
+   * \param[in] iDepth depth of the node in the lineage - to compute stats
+   * \param[in] iDepthArray array to be modified to add information to the graph
+   * \param[in] iIDArray array to be modified to add information to the graph
+   */
+  void UpdateLineage(MultiIndexContainerTraceIDIterator& it,
+                     vtkMutableDirectedGraph* iGraph,
+                     unsigned int iPedrigree,
+                     vtkIdType mother,
+                     unsigned int iDepth,
+                     vtkDoubleArray* iDepthArray,
+                     vtkDoubleArray* iIDArray);
 
 signals:
   /** \brief When one track has been picked (highlighted) from the visualization */
@@ -351,12 +707,13 @@ signals:
   /** \brief When one track's visibility has been changed from the visualization */
   void TraceVisibilityChanged(unsigned int, Qt::CheckState);
 
-
-  /** \brief When a point is added to the track, update the database */
-  void CurrentTrackToSave();
-
   /** \brief When we want to import meshes into a track */
   void NeedMeshesInfoForImportedTrack(unsigned int);
+
+  /*
+   * \brief Send signal to tell to the lineage container which lineage to highlight
+   */
+  void UpdateLineageHighlightingFromTrackRootID(unsigned int);
 
 public slots:
 
@@ -365,45 +722,127 @@ public slots:
   new status.
   \param[in] iList list of TraceIDs
   \param[in] iCheck */
-  void UpdateElementHighlightingWithGivenTraceIDs( const QStringList& iList,
-                                                   const Qt::CheckState& iCheck );
+  virtual void UpdateElementHighlightingWithGivenTraceIDs(
+          const QStringList& iList, const Qt::CheckState& iCheck);
 
   /**
   \brief Change elements visibility property given a list of TraceIDs and the
   new status.
   \param[in] iList list of TraceIDs
   \param[in] iCheck */
-  void UpdateElementVisibilityWithGivenTraceIDs( const QStringList& iList,
-                                                 const Qt::CheckState& iCheck );
+  virtual void UpdateElementVisibilityWithGivenTraceIDs(
+          const QStringList& iList, const Qt::CheckState& iCheck);
 
   /**
-  \brief Color code the track by time.
-  \param[in] iColorCode Display Time Color Code (true) or Real Color (false) */
-  void ChangeColorCode( const char* iColorCode);
+  \brief Color code the track by an array
+  \param[in] iColorCode  name of the active array*/
+  void ChangeColorCode(const QString& iColorCode);
 
-  void UpdateTracksRepresentation( double iRadius,double iRadius2);
+  /**
+  \brief Color code the lineage by an array
+  \param[in] iColorCode name of the active array */
+  void ChangeDivisionsColorCode(const QString& iColorCode);
+
+  /*
+   * \brief Change the representation of a track, adding glyphs and tubes
+   * param[in] iRadius radius of the glyph
+   * param[in] iRadius2 radius of the tube
+   */
+  void UpdateTracksRepresentation(const double& iRadius,
+                                  const double& iRadius2);
+
+  /*
+   * \brief Highlight a collection given the track root ID
+   * param[in] iRootTrackID trackID root
+   * param[in] iHighlighted true (highlight) or false (real color)
+   */
+  void HighlightCollection(const unsigned int& iRootTrackID,
+                           const bool& iHighlighted);
+  /*
+   * \brief Update the collection highlight
+   * \param[in] it iterator to go through the lineage
+   * \param[in] iHighlighted highlight (true) or real color (false)
+   */
+  void UpdateCollectionHighlighted(MultiIndexContainerTraceIDIterator& it,
+                                   const bool& iHighlighted);
+/*
+ * \brief Change the highlight of the division belonging to the given structure.
+ * Structure is modified through unary function.
+ * \param[in] it iterator to the structure to be modified
+ * \param[in] iHighlight highlight (true) or real color (false)
+ */
+  int ModifyDivisionHighlight(MultiIndexContainerTraceIDIterator& it,
+                              const bool& iHighlight);
+
+  /*
+   * \brief Show/hide a collection given the track root ID
+   * param[in] iRootTrackID trackID root
+   * param[in] iVisibility true (show) or false (hide)
+   */
+  void ShowCollection(const unsigned int&, const bool&);
+  /*
+   * \brief Update the collection visibility
+   * \param[in] it iterator to go through the lineage
+   * \param[in] iVisibility show (true) or hide (false)
+   */
+  void UpdateCollectionVisibility(MultiIndexContainerTraceIDIterator& it,
+                                  const bool& iVisibility);
+  /*
+   * \brief Delete a collection given the track root ID
+   * param[in] iRootTrackID trackID root
+   */
+  void DeleteCollection(unsigned int);  /*
+   * \brief Update the collection delete
+   * \param[in] it iterator to go through the lineage
+   */
+  void UpdateCollectionDelete( MultiIndexContainerTraceIDIterator& it);
+
+  /*
+   * \brief Change the visibility of the division belonging to the given structure.
+   * Structure is modified through unary function.
+   * \param[in] it iterator to the structure to be modified
+   * \param[in] iVisibility show (true) or hide (false)
+   */
+  int ModifyDivisionVisibility(MultiIndexContainerTraceIDIterator& it,
+                               const bool& iVisibility );
+
+  /*
+   * \brief Delete the division belonging to the given track
+   * \param[in] iMotherID ID of the track which owns the division
+   */
+  void DeleteADivision(const unsigned int& iMotherID);
+
+  void AddVolume(const unsigned int& iTrackID, const double& iVolume);
 
 protected:
+  /*
+   \todo Nicolas why protected??
+   */
   /**
   \brief Recompute a polydata from a list of point (coordinates) for the
   current element. If the current element is a new track, then the polydata,
   actors are allocated and added in consequence.
   \param[in] iPoints list of points to generate the new polydata */
-  void RecomputeCurrentElementMap( std::list< double* > iPoints);
-
-  std::vector< vtkActor* > AddTrace( vtkPolyData* , vtkProperty* );
+  void RecomputeMap( TrackStructure* iStructure, std::list< double* >& iPoints);
 
   /** \brief Changes the scalars to be displayed and return the new range
    * \param[in] iArrayName Array to be displayed
    * \return Pointer to double[2] where [0] is the min scalar value and [1] is
    * the max scalar value. Pointer has to be deleted (delete[] pointer) */
-  double* setNodeScalars(const char *iArrayName);
+  double* setTrackNodeScalars(const QString& iArrayName);
+
+  /** \brief Changes the divisions scalars to be displayed and return the new range
+   * \param[in] iArrayName Array to be displayed
+   * \return Pointer to double[2] where [0] is the min scalar value and [1] is
+   * the max scalar value. Pointer has to be deleted (delete[] pointer) */
+  double* setDivisionNodeScalars(const QString& iArrayName);
 
   void ComputeSpeed();
 
 private:
   int m_TimeInterval;
-  QString m_ActiveScalars;
+  QString m_ActiveTrackScalars;
+  QString m_ActiveDivisionScalars;
 
   Q_DISABLE_COPY(TrackContainer);
 };

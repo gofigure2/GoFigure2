@@ -38,10 +38,15 @@
 #include <QVBoxLayout>
 #include <QShortcut>
 
+#include <QCheckBox>
+#include <QPushButton>
+
+#include <QtDebug>
+
 QGoNavigationDockWidget::
 QGoNavigationDockWidget( QWidget *iParent,
                          const GoFigure::TabDimensionType & iDim ) :
-  QDockWidget(iParent),
+  QGoDockWidget(iParent),
   m_Dimension(iDim)
 {
   this->setupUi(this);
@@ -49,7 +54,8 @@ QGoNavigationDockWidget( QWidget *iParent,
   Navigation.addPixmap(QPixmap( QString::fromUtf8(":/fig/navigation.png") ),
                        QIcon::Normal, QIcon::Off);
   //temp->setIcon(Navigation);
-  this->toggleViewAction()->setIcon(Navigation);
+  //this->toggleViewAction()->setIcon(Navigation);
+  this->m_ToggleAction->setIcon(Navigation);
 
   switch ( m_Dimension )
     {
@@ -63,8 +69,6 @@ QGoNavigationDockWidget( QWidget *iParent,
       this->ZSliceSpinBox->setVisible(false);
       this->TSliceLbl->setVisible(false);
       this->TSliceSpinBox->setVisible(false);
-
-      this->line->setVisible(false);
 
       break;
       }
@@ -105,14 +109,14 @@ QGoNavigationDockWidget( QWidget *iParent,
   QObject::connect( this->TSliceSpinBox, SIGNAL( valueChanged(int) ),
                     this, SIGNAL( TSliceChanged(int) ) );
 
-  QObject::connect( this->AllChannelsBtn, SIGNAL( toggled(bool) ),
-                    this, SIGNAL( ShowAllChannelsChanged(bool) ) );
-
-  QObject::connect( this->ChannelComboBox, SIGNAL( currentIndexChanged(int) ),
-                    this, SIGNAL( ShowOneChannelChanged(int) ) );
-
+  // doppler view specific widgets
+  this->channelLabel->hide();
+  this->channelName->hide();
   this->stepLabel->hide();
   this->step->hide();
+  this->tLabel->hide();
+  this->t->hide();
+
 }
 
 //-------------------------------------------------------------------------
@@ -158,55 +162,6 @@ void QGoNavigationDockWidget::SetTSlice(int iSlice)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void
-QGoNavigationDockWidget::SetNumberOfChannels(const unsigned int & iN)
-{
-  if ( iN < 2 )
-    {
-    this->line->setVisible(false);
-    this->AllChannelsBtn->setVisible(false);
-    this->OneChannelBtn->setVisible(false);
-    this->ChannelComboBox->setVisible(false);
-    }
-  else
-    {
-    this->line->setVisible(true);
-    this->AllChannelsBtn->setVisible(true);
-    this->OneChannelBtn->setVisible(true);
-    this->ChannelComboBox->setMaxCount(iN);
-    }
-}
-
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-QGoNavigationDockWidget::SetChannel(const unsigned int & i, const QString & iText)
-{
-  QString input;
-
-  if ( !iText.isEmpty() )
-    {
-    input = iText;
-    }
-  else
-    {
-    input = QString("Channel %1").arg(i);
-    }
-  this->ChannelComboBox->insertItem(i, input);
-}
-
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-QGoNavigationDockWidget::SetCurrentChannel(unsigned int iChannel)
-{
-  this->ChannelComboBox->setCurrentIndex(iChannel);
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
 void QGoNavigationDockWidget::SetXMinimumAndMaximum(const int & iMin, const int & iMax)
 {
   if( iMin != iMax )
@@ -215,7 +170,6 @@ void QGoNavigationDockWidget::SetXMinimumAndMaximum(const int & iMin, const int 
     this->XSliceSpinBox->setMaximum(iMax);
     this->XSliceSlider->setMinimum(iMin);
     this->XSliceSlider->setMaximum(iMax);
-    //this->MinXSlicelbl->setText(ConvertToString<int>(iMin).c_str());
     this->MinXSlicelbl->setText( tr("%1").arg(iMin) );
     this->MaxXSlicelbl->setText( tr("%1").arg(iMax) );
     }
@@ -295,10 +249,13 @@ void QGoNavigationDockWidget::SetTMinimumAndMaximum(const int & iMin, const int 
                       this, SIGNAL( ModeChanged(int) ) );
 
     QObject::connect( this->ModeComboBox, SIGNAL( activated(int) ),
-                      this, SLOT( StepVisibility(int) ) );
+                      this, SLOT( UpdateWidget(int) ) );
 
     QObject::connect( this->step, SIGNAL( valueChanged(int) ),
                       this, SIGNAL( StepChanged(int) ) );
+
+    QObject::connect( this->t, SIGNAL( valueChanged(int) ),
+                      this, SIGNAL( DopplerSizeChanged(int) ) );
 
 
     // shortcuts to move through time
@@ -309,40 +266,19 @@ void QGoNavigationDockWidget::SetTMinimumAndMaximum(const int & iMin, const int 
     }
   else
     {
-    this->line_2->hide();
     this->TSliceLbl->hide();
     this->TSliceSpinBox->hide();
     this->TSliceSlider->hide();
     this->MinTSlicelbl->hide();
     this->MaxTSlicelbl->hide();
     this->ModeComboBox->hide();
+    this->channelLabel->hide();
+    this->channelName->hide();
     this->stepLabel->hide();
     this->step->hide();
+    this->tLabel->hide();
+    this->t->hide();
     }
-}
-
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-int QGoNavigationDockWidget::GetCurrentChannel() const
-{
-  return this->ChannelComboBox->currentIndex();
-}
-
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-bool QGoNavigationDockWidget::ShowAllChannels() const
-{
-  return this->AllChannelsBtn->isChecked();
-}
-
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-QString QGoNavigationDockWidget::GetChannelName(const int & iIdx)
-{
-  return this->ChannelComboBox->itemText(iIdx);
 }
 
 //-------------------------------------------------------------------------
@@ -370,16 +306,162 @@ void QGoNavigationDockWidget::MoveToNextTimePoint()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoNavigationDockWidget::StepVisibility(int iStep)
+void QGoNavigationDockWidget::UpdateWidget(int iStep)
 {
   if ( iStep == 0 )
     {
-    this->step->hide();
+    this->channelLabel->hide();
+    this->channelName->hide();
     this->stepLabel->hide();
+    this->step->hide();
+    this->tLabel->hide();
+    this->t->hide();
     }
   else
     {
-    this->step->show();
+    this->channelLabel->show();
+    this->channelName->show();
     this->stepLabel->show();
+    this->step->show();
+    this->tLabel->show();
+    this->t->show();
     }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoNavigationDockWidget::
+AddChannel(const QString& iName, const QColor& iColor, const unsigned int& iNumber,
+           const bool& iChecked)
+{
+  // create check box + colored push button
+  QCheckBox *checkBox1 = new QCheckBox(iName, this);
+  checkBox1->setObjectName(iName);
+  checkBox1->setChecked(iChecked);
+  QPushButton *pushButton = new QPushButton(this);
+  pushButton->setObjectName(iName);
+  QString style = "background: rgb(%1, %2, %3);";
+  pushButton->setStyleSheet(
+        style.arg(iColor.red()).arg(iColor .green()).arg(iColor.blue()));
+ // pushButton->setStyleSheet("QPushButton { background: red } ");
+  QHBoxLayout *layout = new QHBoxLayout;
+  layout->addWidget(checkBox1);
+  layout->addWidget(pushButton);
+  // to be modified - 7
+  this->gridLayout_2->addLayout(layout, 7+iNumber, 0, 0);
+  //create signals connections
+  QObject::connect( checkBox1, SIGNAL( clicked(bool) ),
+                    this, SLOT( visibilityChanged(bool) ) );
+  QObject::connect( pushButton, SIGNAL( pressed() ),
+                    this, SLOT( changeColor() ) );
+
+  // vector of widget so we can remove it from layout efficiently
+  m_ListCheckBoxes.push_back(checkBox1);
+  m_ListPushButtons.push_back(pushButton);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoNavigationDockWidget::
+visibilityChanged(bool iVisibility)
+{
+  emit visibilityChanged(QObject::sender()->objectName(), iVisibility);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoNavigationDockWidget::
+VisibilityListChannels(const bool& iVisibility)
+{
+  QList<QCheckBox*>::iterator it = m_ListCheckBoxes.begin();
+  while(it != m_ListCheckBoxes.end())
+    {
+    (*it)->setVisible(iVisibility);
+    (*it)->setChecked(iVisibility);
+    ++it;
+    }
+
+  QList<QPushButton*>::iterator it2 = m_ListPushButtons.begin();
+  while(it2 != m_ListPushButtons.end())
+    {
+    (*it2)->setVisible(iVisibility);
+    ++it2;
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoNavigationDockWidget::
+AddDoppler(const QString& iName, const QColor& iColor, const unsigned int& iNumber,
+           const bool& iChecked)
+{
+  // create check box + colored push button
+  QCheckBox *checkBox1 = new QCheckBox(iName, this);
+  checkBox1->setObjectName(iName);
+  checkBox1->setChecked(iChecked);
+  QPushButton *pushButton = new QPushButton(this);
+  pushButton->setObjectName(iName);
+  QString style = "background: rgb(%1, %2, %3);";
+  pushButton->setStyleSheet(
+        style.arg(iColor.red()).arg(iColor .green()).arg(iColor.blue()));
+ // pushButton->setStyleSheet("QPushButton { background: red } ");
+  QHBoxLayout *layout = new QHBoxLayout;
+  layout->addWidget(checkBox1);
+  layout->addWidget(pushButton);
+  // to be modified - 7
+  this->gridLayout_2->addLayout(layout, 7+iNumber, 0, 0);
+  //create signals connections
+  QObject::connect( checkBox1, SIGNAL( clicked(bool) ),
+                    this, SLOT( visibilityChanged(bool) ) );
+  QObject::connect( pushButton, SIGNAL( pressed() ),
+                    this, SLOT( changeColor() ) );
+  // more signals for modify LUT
+
+  // vector of widget so we can remove it from layout efficiently
+  m_ListDoppler.push_back(checkBox1);
+  m_ListDoppler.push_back(pushButton);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoNavigationDockWidget::
+VisibilityListDoppler(const bool& iVisibility)
+{
+  QList<QWidget*>::iterator it = m_ListDoppler.begin();
+  while(it != m_ListDoppler.end())
+  {
+    (*it)->setVisible(iVisibility);
+    ++it;
+  }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoNavigationDockWidget::
+setChannelName(QString iChannelName)
+{
+  this->channelName->setText(iChannelName);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoNavigationDockWidget:: DeleteDopplerWidgets()
+{
+  qDeleteAll(m_ListDoppler.begin(), m_ListDoppler.end());
+  m_ListDoppler.clear();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoNavigationDockWidget:: changeColor()
+{
+  emit openTransferFunctionEditor(QObject::sender()->objectName());
 }

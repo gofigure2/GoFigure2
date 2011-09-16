@@ -78,16 +78,19 @@ GoDBTableWidgetContainer::GetColumnsInfoForTraceTable()
   temp.Clear();
 
   //Get the info for the CollectionID:
-  temp.InfoName   = this->m_CollectionIDName;
-  temp.ColumnNameDatabase = this->m_CollectionIDName;
-  temp.ColumnNameTableWidget = this->m_CollectionIDName;
-  temp.TableNameDatabase = this->m_TracesName;
-  temp.TableForeignKeyDatabase = this->m_CollectionIDName;
-  temp.TableKeyDatabase = this->m_CollectionIDName;
-  m_ColumnsInfos.push_back(temp);
-  PairTemp.first = temp;
-  m_RowContainer.push_back(PairTemp);
-  temp.Clear();
+  if (this->m_CollectionName != "None")
+    {
+    temp.InfoName   = this->m_CollectionIDName;
+    temp.ColumnNameDatabase = this->m_CollectionIDName;
+    temp.ColumnNameTableWidget = this->m_CollectionIDName;
+    temp.TableNameDatabase = this->m_TracesName;
+    temp.TableForeignKeyDatabase = this->m_CollectionIDName;
+    temp.TableKeyDatabase = this->m_CollectionIDName;
+    m_ColumnsInfos.push_back(temp);
+    PairTemp.first = temp;
+    m_RowContainer.push_back(PairTemp);
+    temp.Clear();
+    }
 
   //Get the info for the ColorID of the trace:
   //check if it is needed in the query ??
@@ -156,79 +159,83 @@ GoDBTableWidgetContainer::GetColumnsInfoForTraceTable()
   temp.Clear();
 
   //Get the info for the ColorID of the collection:
-  std::string ColorCollection = this->m_CollectionName;
-  ColorCollection += "Color";
-  temp.ColumnNameDatabase = "ColorID";
-  temp.TableNameDatabase = this->m_CollectionName;
-  temp.InfoName = ColorCollection;
-  temp.TableForeignKeyDatabase = this->m_CollectionIDName;
-  temp.TableKeyDatabase = this->m_CollectionIDName;
-  temp.SameFieldForDifferentValues = false;
-  m_ColumnsInfos.push_back(temp);
-  PairTemp.first = temp;
-  m_RowContainer.push_back(PairTemp);
-  temp.Clear();
+  if (this->m_CollectionName != "None")
+    {
+    std::string ColorCollection = this->m_CollectionName;
+    ColorCollection += "Color";
+    temp.ColumnNameDatabase = "ColorID";
+    temp.TableNameDatabase = this->m_CollectionName;
+    temp.InfoName = ColorCollection;
+    temp.TableForeignKeyDatabase = this->m_CollectionIDName;
+    temp.TableKeyDatabase = this->m_CollectionIDName;
+    temp.SameFieldForDifferentValues = false;
+    m_ColumnsInfos.push_back(temp);
+    PairTemp.first = temp;
+    m_RowContainer.push_back(PairTemp);
+    temp.Clear();
 
-  //Get the info for the Red value of the collection:
-  temp.ColumnNameDatabase = "Red";
-  temp.TableNameDatabase = "color";
-  OtherInfo = "RedFor";
-  OtherInfo += this->m_CollectionName;
-  temp.AccessFromTraceTableThroughWhichTable = this->m_CollectionName;
-  temp.InfoName = OtherInfo;
-  temp.TableForeignKeyDatabase = "ColorID";
-  temp.TableKeyDatabase = "ColorID";
-  temp.SameFieldForDifferentValues = true;
-  m_ColumnsInfos.push_back(temp);
-  PairTemp.first = temp;
-  m_RowContainer.push_back(PairTemp);
-  temp.Clear();
+    //Get the info for the Red value of the collection:
+    temp.ColumnNameDatabase = "Red";
+    temp.TableNameDatabase = "color";
+    OtherInfo = "RedFor";
+    OtherInfo += this->m_CollectionName;
+    temp.AccessFromTraceTableThroughWhichTable = this->m_CollectionName;
+    temp.InfoName = OtherInfo;
+    temp.TableForeignKeyDatabase = "ColorID";
+    temp.TableKeyDatabase = "ColorID";
+    temp.SameFieldForDifferentValues = true;
+    m_ColumnsInfos.push_back(temp);
+    PairTemp.first = temp;
+    m_RowContainer.push_back(PairTemp);
+    temp.Clear();
 
-  //Get the info for the Green value of the collection:
-  temp.ColumnNameDatabase = "Green";
-  temp.TableNameDatabase = "color";
-  OtherInfo = "GreenFor";
-  OtherInfo += this->m_CollectionName;
-  temp.AccessFromTraceTableThroughWhichTable = this->m_CollectionName;
-  temp.InfoName = OtherInfo;
-  temp.TableForeignKeyDatabase = "ColorID";
-  temp.TableKeyDatabase = "ColorID";
-  temp.SameFieldForDifferentValues = true;
-  m_ColumnsInfos.push_back(temp);
-  PairTemp.first = temp;
-  m_RowContainer.push_back(PairTemp);
-  temp.Clear();
+    //Get the info for the Green value of the collection:
+    temp.ColumnNameDatabase = "Green";
+    temp.TableNameDatabase = "color";
+    OtherInfo = "GreenFor";
+    OtherInfo += this->m_CollectionName;
+    temp.AccessFromTraceTableThroughWhichTable = this->m_CollectionName;
+    temp.InfoName = OtherInfo;
+    temp.TableForeignKeyDatabase = "ColorID";
+    temp.TableKeyDatabase = "ColorID";
+    temp.SameFieldForDifferentValues = true;
+    m_ColumnsInfos.push_back(temp);
+    PairTemp.first = temp;
+    m_RowContainer.push_back(PairTemp);
+    temp.Clear();
 
-  //Get the info for the Blue value of the collection:
-  temp.ColumnNameDatabase = "Blue";
-  temp.TableNameDatabase = "color";
-  OtherInfo = "BlueFor";
-  OtherInfo += this->m_CollectionName;
-  temp.AccessFromTraceTableThroughWhichTable = this->m_CollectionName;
-  temp.InfoName = OtherInfo;
-  temp.TableForeignKeyDatabase = "ColorID";
-  temp.TableKeyDatabase = "ColorID";
-  temp.SameFieldForDifferentValues = true;
-  m_ColumnsInfos.push_back(temp);
-  PairTemp.first = temp;
-  m_RowContainer.push_back(PairTemp);
-  temp.Clear();
+    //Get the info for the Blue value of the collection:
+    temp.ColumnNameDatabase = "Blue";
+    temp.TableNameDatabase = "color";
+    OtherInfo = "BlueFor";
+    OtherInfo += this->m_CollectionName;
+    temp.AccessFromTraceTableThroughWhichTable = this->m_CollectionName;
+    temp.InfoName = OtherInfo;
+    temp.TableForeignKeyDatabase = "ColorID";
+    temp.TableKeyDatabase = "ColorID";
+    temp.SameFieldForDifferentValues = true;
+    m_ColumnsInfos.push_back(temp);
+    PairTemp.first = temp;
+    m_RowContainer.push_back(PairTemp);
+    temp.Clear();
 
-  //Get the info for the Alpha value of the collection:
-  temp.ColumnNameDatabase = "Alpha";
-  temp.TableNameDatabase = "color";
-  OtherInfo = "AlphaFor";
-  OtherInfo += this->m_CollectionName;
-  temp.AccessFromTraceTableThroughWhichTable = this->m_CollectionName;
-  temp.InfoName = OtherInfo;
-  temp.TableForeignKeyDatabase = "ColorID";
-  temp.TableKeyDatabase = "ColorID";
-  temp.SameFieldForDifferentValues = true;
-  m_ColumnsInfos.push_back(temp);
-  PairTemp.first = temp;
-  m_RowContainer.push_back(PairTemp);
-  temp.Clear();
+    //Get the info for the Alpha value of the collection:
+    temp.ColumnNameDatabase = "Alpha";
+    temp.TableNameDatabase = "color";
+    OtherInfo = "AlphaFor";
+    OtherInfo += this->m_CollectionName;
+    temp.AccessFromTraceTableThroughWhichTable = this->m_CollectionName;
+    temp.InfoName = OtherInfo;
+    temp.TableForeignKeyDatabase = "ColorID";
+    temp.TableKeyDatabase = "ColorID";
+    temp.SameFieldForDifferentValues = true;
+    m_ColumnsInfos.push_back(temp);
+    PairTemp.first = temp;
+    m_RowContainer.push_back(PairTemp);
+    temp.Clear();
+    }
 
+  this->SetCommonInfoForTwoTracesTable();
   //Get the info for the PCoord:
   temp.InfoName = "PCoord";
   temp.ColumnNameDatabase = "PCoord";
@@ -398,7 +405,7 @@ GoDBTableWidgetContainer::GetColumnsInfoForTraceTable()
   m_RowContainer.push_back(PairTemp);
   temp.Clear();
 
-  this->SetCommonInfoForTwoTracesTable();
+  //this->SetCommonInfoForTwoTracesTable();
 
   return m_ColumnsInfos;
 }
@@ -677,11 +684,12 @@ int GoDBTableWidgetContainer::GetIndexInsideRowContainer(std::string iInfoName)
 //--------------------------------------------------------------------------
 GoDBTableWidgetContainer::TWContainerType
 GoDBTableWidgetContainer::GetContainerLoadedWithAllFromDB(
-  vtkMySQLDatabase *iDatabaseConnector)
+  vtkMySQLDatabase *iDatabaseConnector, std::list<unsigned int> iListTPs)
 {
   this->ClearRowContainerValues();
   this->FillRowContainerWithDBValues( iDatabaseConnector,
-                                      "ImagingsessionID", ConvertToString< unsigned int >(this->m_ImgSessionID) );
+                                      "ImagingsessionID", ConvertToString< unsigned int >(this->m_ImgSessionID),
+                                      iListTPs);
   return this->m_RowContainer;
 }
 
@@ -703,7 +711,8 @@ GoDBTableWidgetContainer::GetContainerForOneSpecificTrace(
 //--------------------------------------------------------------------------
 void GoDBTableWidgetContainer::FillRowContainerWithDBValues(
   vtkMySQLDatabase *iDatabaseConnector,
-  std::string iRestrictionName, std::string iRestrictionValue)
+  std::string iRestrictionName, std::string iRestrictionValue, 
+  std::list<unsigned int> iListTimePoints)
 {
   /*first, get the right parts of the first query:
   all the fields except the ones where table.field are already in the query:*/
@@ -712,24 +721,50 @@ void GoDBTableWidgetContainer::FillRowContainerWithDBValues(
   std::vector< std::string > SelectFirstFields =
     this->GetQueryStringForSelectFieldsTables(false);
 
-  //then, get the results of the first query:
-  std::vector< std::vector< std::string > > ResultsFirstQuery = GetValuesFromSeveralTables(
-      iDatabaseConnector, this->m_TracesName, SelectFirstFields, iRestrictionName,
-      iRestrictionValue, JoinFirstTablesOnTraceTable, true);
-
-  //fill the row container with the results of the first query:
-  this->FillRowContainer(ResultsFirstQuery, SelectFirstFields);
-
   //Get the right parts of the second query (with only the remaining fields):
   std::vector< std::string > JoinSecondTablesOnTraceTable =
     this->GetQueryStringForTraceJoinedTables(true);
   std::vector< std::string > SelectSecondFields =
     this->GetQueryStringForSelectFieldsTables(true);
 
-  //then, get the results of the second query:
-  std::vector< std::vector< std::string > > ResultsSecondQuery = GetValuesFromSeveralTables(
+  std::vector< std::vector< std::string > > ResultsFirstQuery;
+  std::vector< std::vector< std::string > > ResultsSecondQuery;
+
+  //then, get the results of the 2 queries:
+  if (iListTimePoints.empty())
+    {
+    ResultsFirstQuery = GetValuesFromSeveralTables(
+        iDatabaseConnector, this->m_TracesName, SelectFirstFields, iRestrictionName,
+        iRestrictionValue, JoinFirstTablesOnTraceTable, true);
+
+    ResultsSecondQuery = GetValuesFromSeveralTables(
       iDatabaseConnector, this->m_TracesName, SelectSecondFields, iRestrictionName,
       iRestrictionValue, JoinSecondTablesOnTraceTable, false);
+    }
+  else
+    {
+    std::vector<FieldWithValue> OrConditions;
+    std::list<unsigned int>::iterator iter = iListTimePoints.begin();
+    while (iter != iListTimePoints.end() )
+      {
+      FieldWithValue temp;
+      temp.Field = "coordinate.TCoord";
+      unsigned int Tp = *iter;
+      temp.Value = ConvertToString<unsigned int>(Tp);
+      OrConditions.push_back(temp);
+      ++iter;
+      }
+    ResultsFirstQuery = GetValuesFromSeveralTables(
+        iDatabaseConnector, this->m_TracesName, SelectFirstFields, iRestrictionName,
+        iRestrictionValue, JoinFirstTablesOnTraceTable, true, OrConditions);
+
+    ResultsSecondQuery = GetValuesFromSeveralTables(
+      iDatabaseConnector, this->m_TracesName, SelectSecondFields, iRestrictionName,
+      iRestrictionValue, JoinSecondTablesOnTraceTable, false, OrConditions);
+    }
+
+  //fill the row container with the results of the first query:
+  this->FillRowContainer(ResultsFirstQuery, SelectFirstFields);
 
   //fill the row container with the results of the second query:
   this->FillRowContainer(ResultsSecondQuery, SelectSecondFields);

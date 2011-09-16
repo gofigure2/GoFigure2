@@ -67,26 +67,6 @@ typedef multi_index::multi_index_container<
       boost::multi_index::tag< TCoord >,
       BOOST_MULTI_INDEX_MEMBER(ContourMeshStructure, unsigned int, TCoord)
     >,
-    boost::multi_index::hashed_non_unique<
-      boost::multi_index::tag< ActorXY >,
-      BOOST_MULTI_INDEX_MEMBER(TraceStructure, vtkActor *, ActorXY)
-    >,
-    boost::multi_index::hashed_non_unique<
-      boost::multi_index::tag< ActorXZ >,
-      BOOST_MULTI_INDEX_MEMBER(TraceStructure, vtkActor *, ActorXZ)
-    >,
-    boost::multi_index::hashed_non_unique<
-      boost::multi_index::tag< ActorYZ >,
-      BOOST_MULTI_INDEX_MEMBER(TraceStructure, vtkActor *, ActorYZ)
-    >,
-    boost::multi_index::hashed_non_unique<
-      boost::multi_index::tag< ActorXYZ >,
-      BOOST_MULTI_INDEX_MEMBER(TraceStructure, vtkActor *, ActorXYZ)
-    >,
-    boost::multi_index::hashed_non_unique<
-      boost::multi_index::tag< Nodes >,
-      BOOST_MULTI_INDEX_MEMBER(TraceStructure, vtkPolyData *, Nodes)
-    >,
     boost::multi_index::ordered_unique<
       boost::multi_index::tag< TraceID >,
       BOOST_MULTI_INDEX_MEMBER(TraceStructure, unsigned int, TraceID)
@@ -164,7 +144,7 @@ public:
   \param[in] iVisible
   \see ContourMeshStructure
   */
-  void UpdateCurrentElementFromVisu(std::vector< vtkActor * > iActors,
+  void UpdateCurrentElementFromVisu(std::vector< vtkActor * >& iActors,
                                     vtkPolyData *iNodes,
                                     const unsigned int & iT,
                                     const bool & iHighlighted,
@@ -253,43 +233,11 @@ public:
   \return true if the element exists
   \return false else
   */
-  template< class TActor >
-  bool UpdateElementHighlightingWithGivenActor(vtkActor *iActor)
+  void UpdateElementHighlighting(unsigned int TraceId)
     {
-    unsigned TraceId;
     Qt::CheckState state;
-    bool oValue =
-        Superclass::UpdateElementHighlightingWithGivenActor< TActor >( iActor,
-                                                                 TraceId,
-                                                                 state );
-    if( oValue )
-      {
-      emit TracePicked(TraceId, state);
-      }
-    return oValue;
-    }
-
-  /** \brief Update element Visibility property given one actor.
-  \tparam TActor either ActorXY, ActorXZ, ActorYZ, ActorXYZ depending on the view
-  \param[in] iActor provided actor
-  \return true if iActor is in the container
-  \return false else
-  */
-  template< class TActor >
-  bool UpdateElementVisibilityWithGivenActor(vtkActor *iActor)
-    {
-    unsigned TraceId;
-    Qt::CheckState state;
-    bool oValue =
-      Superclass::UpdateElementVisibilityWithGivenActor< TActor >( iActor,
-                                                                   TraceId,
-                                                                   state );
-    if( oValue )
-      {
-      emit TraceVisibilityChanged(TraceId, state);
-      }
-
-    return oValue;
+    Superclass::UpdateElementHighlightingWithTraceID(TraceId, state );
+    emit TracePicked(TraceId, state);
     }
 
   /**
@@ -299,47 +247,15 @@ public:
   \return true if the element exists
   \return false else
   */
-  template< class TActor >
-  bool UpdateElementVisibilityWithGivenActor(vtkActor *iActor, bool iState)
+  void UpdateElementVisibility(unsigned int iTraceID, bool iState)
     {
-    if ( iActor )
+    Superclass::UpdateElementVisibilityWithTraceID(iTraceID, iState);
+    if(iState)
       {
-      typedef typename MultiIndexContainerType::index< TActor >::type::iterator
-      IteratorType;
-      IteratorType it = m_Container.get< TActor >().find(iActor);
-
-      if ( it != m_Container.get< TActor >().end() )
-        {
-        if ( it->Visible != iState )
-          {
-          it->SetActorVisibility( iState );
-
-          ContourMeshStructure tempStructure(*it);
-          tempStructure.Visible = iState;
-
-          Qt::CheckState State;
-
-          // Note: it->Highlighted is the status before picking the actor
-          if ( iState )
-            {
-            State = Qt::Checked;
-            }
-          else
-            {
-            State = Qt::Unchecked;
-            }
-
-          m_Container.get< TActor >().replace(it, tempStructure);
-          //m_ImageView->UpdateRenderWindows();
-
-          emit TraceVisibilityChanged(it->TraceID, State);
-          }
-
-        return true;
-        }
+      emit TraceVisibilityChanged(iTraceID, Qt::Checked );
+      return;
       }
-
-    return false;
+    emit TraceVisibilityChanged(iTraceID, Qt::Unchecked );
     }
 
   //-------------------------------------------------------------------------
@@ -365,6 +281,16 @@ public:
   \return the list of TraceIDs of such elements
   */
   std::list< unsigned int > DeleteAllHighlightedElements();
+
+  /**
+  \brief Delete all elements from the container
+  */
+  void Clear();
+
+  /**
+  \brief Delete given elements from the container
+  */
+  void Clear( const std::list<unsigned int>& iTraceIDs);
 
    /**
     \return the traceIDs with TCoord = iTimePoint
@@ -434,11 +360,9 @@ public:
             }
           }
 
-        MultiIndexContainerElementType tempStructure(*it);
-        tempStructure.Visible = iVisibility;
-
-        using boost::multi_index::get;
-        m_Container.get< TIndex >().replace(it, tempStructure);
+        bool visible = iVisibility;
+        m_Container.get< TIndex >().
+            modify( it , change_visible<ContourMeshStructure>(visible) );
 
         Qt::CheckState State;
 

@@ -1,0 +1,28 @@
+Please send this email at: gofigure2-developers@lists.sourceforge.net
+
+>>> IMPORTANT: a precise description of the steps to reproduce the bug is primordial.
+>>> IMPORTANT: if the bug is non-trivial or if it doesn't always occur, please let us know and try to describe it.
+>>> IMPORTANT: let us know if the dataset you are using is public. Many bugs result from a corrupted dataset.
+
+------------------------------------------
+* System information:
+Version: @GOFIGURE2_VERSION@
+OS: @OS@
+Flavor:(ubuntu 10.04, xp sp2, lion, etc.)
+!!!!! write flavor here !!!!!
+
+------------------------------------------
+* severity: (Defect, Minor, Major, Critical)
+!!!!! write severity here !!!!!
+
+------------------------------------------
+* description:
+!!!!! describe the bug here !!!!!
+
+------------------------------------------
+* how to reproduce it:
+!!!!! describe steps here !!!!!
+!!!!! 1-click on this button to open this image !!!!!
+!!!!! 2-click on this button to do that !!!!!
+!!!!! 3-click on the image to do that !!!!!
+!!!!! 4- that happens.. !!!!!

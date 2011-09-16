@@ -34,6 +34,7 @@
 #include "QGoMeshSplitDanielssonDistanceAlgo.h"
 
 #include "itkvtkMeshSplitterDanielssonDistanceImageFilter.h"
+#include "GoImageProcessor.h"
 
 QGoMeshSplitDanielssonDistanceAlgo::QGoMeshSplitDanielssonDistanceAlgo(QWidget* iParent)
 {
@@ -44,7 +45,12 @@ QGoMeshSplitDanielssonDistanceAlgo::QGoMeshSplitDanielssonDistanceAlgo(QWidget* 
 //-------------------------------------------------------------------------
 QGoMeshSplitDanielssonDistanceAlgo::~QGoMeshSplitDanielssonDistanceAlgo()
 {
+}
+//-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
+void QGoMeshSplitDanielssonDistanceAlgo::DeleteParameters()
+{
 }
 //-------------------------------------------------------------------------
 
@@ -58,8 +64,9 @@ void QGoMeshSplitDanielssonDistanceAlgo::SetAlgoWidget(QWidget* iParent)
 
 //-------------------------------------------------------------------------
 std::vector<vtkPolyData*> QGoMeshSplitDanielssonDistanceAlgo::ApplyAlgo(
-  vtkPoints* iSeeds, std::vector<vtkSmartPointer< vtkImageData > >* iImages,
-    int iChannel)
+  GoImageProcessor* iImages,
+    std::string iChannel, 
+    bool iIsInvertedOn)
 {
   size_t nb_ch = iImages->size();
 

@@ -91,7 +91,6 @@
 // #include "vtkQuadricLODActor.h"
 #include "vtkActor.h"
 #include "vtkPolyDataMapper.h"
-#include "vtkProp3DCollection.h"
 #include "vtkDataSetCollection.h"
 #include "vtkPoints.h"
 #include "vtkIdList.h"
@@ -127,6 +126,17 @@ vtkViewImage2DCollection::vtkViewImage2DCollection() : ExtraRenderWindow(0)
 vtkViewImage2DCollection::~vtkViewImage2DCollection()
 {
   this->Command->Delete();
+
+  std::vector< vtkActor * >::iterator it = PlanesActors.begin();
+  std::vector< vtkActor * >::iterator tmp;
+  while(it!=PlanesActors.end())
+    {
+    // necessary trick on windows
+    tmp = it;
+    ++it;
+    (*tmp)->Delete();
+    }
+
 }
 
 //----------------------------------------------------------------------------
@@ -215,12 +225,9 @@ void vtkViewImage2DCollection::Initialize()
       {
 //       vtkQuadricLODActor* temp =
       vtkActor *temp =  this->GetItem(j)->AddDataSet(
-          static_cast< vtkDataSet * >( this->GetItem(i)->GetSlicePlane() ),
-          plane_property, ( i != j ), true);
+          this->GetItem(i)->GetSlicePlane(), plane_property, ( i != j ), true);
       //store all slice actors
-      this->SlicePlaneActors.push_back(temp);
-      /// \todo Check if delete makes sense here
-      temp->Delete();
+      this->PlanesActors.push_back(temp);
       }
     }
 }
@@ -344,27 +351,13 @@ void
 vtkViewImage2DCollection::SetSplinePlaneActorsVisibility(bool iVisibility)
 {
   // vtkstd::vector<vtkQuadricLODActor*>::iterator
-  vtkstd::vector< vtkActor * >::iterator SlicePlaneActorsIterator =
-    SlicePlaneActors.begin();
+  std::vector< vtkActor * >::iterator PlanesActorsIterator =
+    PlanesActors.begin();
 
-  while ( SlicePlaneActorsIterator != SlicePlaneActors.end() )
+  while ( PlanesActorsIterator != PlanesActors.end() )
     {
-    ( *SlicePlaneActorsIterator )->SetVisibility(iVisibility);
-    ++SlicePlaneActorsIterator;
-    }
-}
-
-//----------------------------------------------------------------------------
-
-//----------------------------------------------------------------------------
-void vtkViewImage2DCollection::SyncAddDataSet(vtkDataSet *dataset, vtkProperty *property)
-{
-  this->InitTraversal();
-  vtkViewImage2D *item = this->GetNextItem();
-  while ( item )
-    {
-    item->AddDataSet (dataset, property);
-    item = this->GetNextItem();
+    ( *PlanesActorsIterator )->SetVisibility(iVisibility);
+    ++PlanesActorsIterator;
     }
 }
 
@@ -676,3 +669,11 @@ void vtkViewImage2DCollection::SynchronizeViews( bool iSynchronize)
     this->SyncRender();
     }
 }
+//----------------------------------------------------------------------------
+std::vector< vtkActor * >
+vtkViewImage2DCollection::
+GetPlanesActors()
+{
+  return this->PlanesActors;
+}
+//----------------------------------------------------------------------------

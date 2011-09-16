@@ -9,6 +9,18 @@ IF( SUPER_SHARED_LIBS )
   set( SHARED_FFMPEG --enable-shared )
 ENDIF( SUPER_SHARED_LIBS )
 
+OPTION( FFMPEG_GPL "Use a GPL version of FFMPEG" OFF )
+
+SET(FFMPEG_GPL_FLAG "")
+
+IF( FFMPEG_GPL )
+  SET(FFMPEG_GPL_FLAG "--enable-gpl")
+  SET(msg "ATTENTION: You have enabled the use of GPL components of FFMPEG.")
+  SET(msg "${msg} By enabling this option, the binary of GoFigure2")
+  SET(msg "${msg} that you are going to build will be covered by a GPL license.")
+  MESSAGE("${msg}")
+ENDIF( FFMPEG_GPL )
+
 SET(FFMPEG_INSTALL_DIR  ${CMAKE_BINARY_DIR}/${proj}-install)
 
 ExternalProject_Add(${proj}
@@ -16,14 +28,15 @@ ExternalProject_Add(${proj}
   SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj}
   INSTALL_DIR ${FFMPEG_INSTALL_DIR}
   # get the project
-  GIT_REPOSITORY "${git_protocol}://git.ffmpeg.org/ffmpeg.git"
+  GIT_REPOSITORY "${git_protocol}://git.videolan.org/ffmpeg.git"
+  GIT_TAG "ffmpeg-0.6.3"
 
   # Build the project
   BUILD_IN_SOURCE 1
-  
+
   # Configure step
   # DO STH FOR THE ARCHITECTURE...
-  CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix=${FFMPEG_INSTALL_DIR} ${SHARED_FFMPEG} --enable-gpl --enable-avfilter --disable-yasm --disable-decoders --disable-zlib --disable-demuxer=matroska
+  CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix=${FFMPEG_INSTALL_DIR} ${SHARED_FFMPEG} ${FFMPEG_GPL_FLAG} --enable-avfilter --disable-yasm --disable-decoders --disable-zlib --disable-demuxer=matroska
 )
 
 # define the library suffix

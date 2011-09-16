@@ -309,7 +309,7 @@ void GoDBImport::SaveIntensityForMesh(std::string & ioLineContent,
         ioLineContent = this->GetValuesFromInfile< GoDBChannelRow >(NewChannel);
         this->ReplaceTheFieldWithNewIDs< GoDBChannelRow >(
           iMapColorIDs, "ColorID", NewChannel);
-        int OldID = atoi( NewChannel.GetMapValue("ChannelID").c_str() );
+        int OldID =  NewChannel.GetMapValue<int>("ChannelID");
         NewChannel.SetField("ChannelID", "0");
         NewChannel.SetField("ImagingSessionID", this->m_ImagingSessionID);
         MapChannelIDs[OldID] = NewChannel.SaveInDB(this->m_DatabaseConnector);

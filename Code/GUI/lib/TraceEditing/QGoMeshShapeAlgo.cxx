@@ -34,46 +34,32 @@
 #include "QGoMeshShapeAlgo.h"
 #include "QGoFilterShape.h"
 
+#include "GoImageProcessor.h"
 
-QGoMeshShapeAlgo::QGoMeshShapeAlgo(QWidget* iParent)
+
+QGoMeshShapeAlgo::QGoMeshShapeAlgo(std::vector< vtkPoints* >* iSeeds, QWidget* iParent)
+  :QGoShapeAlgo(iSeeds, iParent)
 {
-  this->SetAlgoWidget(iParent);
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 QGoMeshShapeAlgo::~QGoMeshShapeAlgo()
 {
-  delete m_Radius;
-  delete m_Shape;
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void QGoMeshShapeAlgo::SetAlgoWidget(QWidget* iParent)
-{
-  this->m_AlgoWidget = 
-    new QGoAlgorithmWidget("Shape 3D", iParent);
-  this->m_Radius = new QGoAlgoParameter<double>("Radius", false, 0.1, 99.99, 2, 3);
-  this->m_AlgoWidget->AddParameter(m_Radius);
-  QStringList ShapeList;
-  ShapeList.append("Sphere");
-  ShapeList.append("Cube");
-  this->m_Shape = new QGoAlgoParameter<std::string>("Shape",true, ShapeList, "Sphere");
-  this->m_AlgoWidget->AddParameter(m_Shape);
+  this->DeleteParameters();
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 std::vector<vtkPolyData*> QGoMeshShapeAlgo::ApplyAlgo(
-  vtkPoints* iSeeds, std::vector<vtkSmartPointer< vtkImageData > >* iImages,
-    int iChannel)
+  GoImageProcessor* iImages,
+  std::string iChannel, 
+  bool iIsInvertedOn)
 {
   QGoFilterShape ShapeFilter;
-
-  std::vector<vtkPolyData*> NewMeshes = 
-    ShapeFilter.ApplyFilter3D(m_Radius->GetValue(), 
-    iSeeds, this->m_Shape->Getvalue(), iImages, iChannel);
+  std::vector<vtkPolyData*> NewMeshes =
+    ShapeFilter.ApplyFilter3D(m_Radius->GetValue(),
+    this->m_Seeds, this->m_Shape->Getvalue(), iImages, 0);
 
   return NewMeshes;
 }

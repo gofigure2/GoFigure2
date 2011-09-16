@@ -34,37 +34,121 @@
 #ifndef __QGoMeshLevelSetAlgo_h
 #define __QGoMeshLevelSetAlgo_h
 
-#include "QGoMeshAlgo.h"
+#include "QGoLevelSetAlgo.h"
+#include "QGoFilterChanAndVese.h"
 #include "QGoAlgorithmWidget.h"
 #include "QGoAlgoParameter.h"
 #include "QGoGUILibConfigure.h"
 #include "vtkSmartPointer.h"
 #include "vtkPolyData.h"
 #include "vtkImageData.h"
+#include "vtkTransform.h"
+#include "vtkTransformPolyDataFilter.h"
+
+#include "GoImageProcessor.h"
 
 
 /**
 \class QGoMeshLevelSetAlgo
-\brief class to be the interface between the levelset algo for meshes 
+\brief class to be the interface between the levelset algo for meshes
 and GoFigure
 */
-class QGoMeshLevelSetAlgo: public QGoMeshAlgo
+class QGoMeshLevelSetAlgo: public QGoLevelSetAlgo
 {
 public:
-  QGoMeshLevelSetAlgo(QWidget *iParent = 0);
+  QGoMeshLevelSetAlgo(std::vector< vtkPoints* >* iSeeds, QWidget *iParent = 0);
   ~QGoMeshLevelSetAlgo();
 
   std::vector<vtkPolyData*> ApplyAlgo(
-    vtkPoints* iSeeds, std::vector<vtkSmartPointer< vtkImageData > >* iImages,
-    int iChannel);
+    GoImageProcessor* iImages,
+    std::string iChannel,
+    bool iIsInvertedOn = false);
 
 protected:
 
-  QGoAlgoParameter<double>*       m_Radius;
-  QGoAlgoParameter<int>*          m_Curvature;
-  QGoAlgoParameter<int>*          m_Iterations;
-  
-  void SetAlgoWidget(QWidget* iParent = 0);
+  template < class TPixel >
+            // note this will work only in 3D, so we can remove the template
+            // parameter on the image dimension
+             //unsigned int VImageDimension >
+  vtkPolyData * ApplyLevelSetFilter(
+    const std::vector<double>& iCenter,
+    typename itk::Image< TPixel, 3 >::Pointer iImages)
+    {
+    assert( iCenter.size() == 3);
+
+    const unsigned int ImageDimension = 3;
+
+    typedef TPixel PixelType;
+
+    typedef itk::Image< PixelType, ImageDimension >  ImageType;
+    typedef typename ImageType::Pointer               ImagePointer;
+
+    // let's compute the bounds of the region of interest
+    double radius = this->m_Radius->GetValue();
+
+    std::vector< double > bounds( 2 * ImageDimension, 0. );
+    unsigned int k = 0;
+    for( unsigned int dim = 0; dim < ImageDimension; dim++ )
+      {
+      bounds[k++] = iCenter[dim] - 2. * radius;
+      bounds[k++] = iCenter[dim] + 2. * radius;
+      }
+
+    // then let's extract the Region of Interest
+    ImagePointer ITK_ROI_Image =
+        this->ITKExtractROI< PixelType, ImageDimension >( bounds, iImages );
+
+    // Compute the segmentation in 3D
+    // why no call to the filter itself...?
+    QGoFilterChanAndVese Filter;
+    Filter.Apply3DFilter< PixelType >( ITK_ROI_Image,
+          iCenter,
+          0, // we dont want to extract ROI from input since we already did
+          this->m_Iterations->GetValue(),
+          this->m_Curvature->GetValue());
+
+    typename QGoFilterChanAndVese::Output3DPointer
+        ItkOutPut = Filter.GetOutput3D();
+
+    // Here it would be better if the mesh extraction would be performed directly
+    // in ITK instead.
+    vtkImageData * FilterOutPutToVTK =
+        this->ConvertITK2VTK<
+          typename QGoFilterChanAndVese::OutputPixelType,
+          ImageDimension>( ItkOutPut );
+
+    vtkPolyData* temp_output = this->ExtractPolyData(FilterOutPutToVTK, 0);
+    FilterOutPutToVTK->Delete();
+
+    double temp_bounds[6];
+    temp_output->GetBounds( temp_bounds );
+
+    double temp_center[3];
+    temp_center[0] = ( temp_bounds[0] + temp_bounds[1] ) * 0.5;
+    temp_center[1] = ( temp_bounds[2] + temp_bounds[3] ) * 0.5;
+    temp_center[2] = ( temp_bounds[4] + temp_bounds[5] ) * 0.5;
+
+    vtkSmartPointer< vtkTransform > translation =
+        vtkSmartPointer< vtkTransform >::New();
+
+    /// \todo fix it to get the real center!!!
+    translation->Translate(iCenter[0] - temp_center[0],
+                           iCenter[1] - temp_center[1],
+                           iCenter[2] - temp_center[2] );
+
+    vtkSmartPointer< vtkTransformPolyDataFilter > mesh_transform =
+        vtkSmartPointer< vtkTransformPolyDataFilter >::New();
+    mesh_transform->SetTransform(translation);
+    mesh_transform->SetInput( temp_output );
+    mesh_transform->Update();
+    temp_output->Delete();
+
+    // MIGHT LEAK! CHECK IT  IS DELETED!
+    vtkPolyData* mesh = vtkPolyData::New();
+    mesh->DeepCopy( mesh_transform->GetOutput() );
+
+    return mesh;
+    }
 };
 
 #endif
