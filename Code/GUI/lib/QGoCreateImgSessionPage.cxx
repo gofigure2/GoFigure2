@@ -246,14 +246,10 @@ bool QGoCreateImgSessionPage::validatePage()
 
   //if all the info filled by the user are ok, try to save the info into the
   // database:
-  SaveInfoInDatabase();
-
-  if ( field("ImgSessionID").toInt() == -1 )
+  bool cleanFileToBeImported = SaveInfoInDatabase();
+  if(!cleanFileToBeImported)
     {
-    QMessageBox msgBox;
-    msgBox.setText( tr("The images imported already belongs to an existing Imaging Session.") );
-    msgBox.exec();
-    return false;
+    return cleanFileToBeImported;
     }
 
   CloseDatabaseConnection(m_DatabaseConnector);
@@ -355,10 +351,11 @@ void QGoCreateImgSessionPage::ImportImages(vtkMySQLDatabase *DatabaseConnector)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoCreateImgSessionPage::ImportInfoFromMegacapture(QString iNewfilename)
+bool QGoCreateImgSessionPage::ImportInfoFromMegacapture(QString iNewfilename)
 {
   try
     {
+    // will throw an itk exceptio if an error occurs
     m_importFileInfoList = itk::MegaCaptureImport::New();
     m_importFileInfoList->SetFileName( iNewfilename.toAscii().data() );
 
@@ -376,19 +373,26 @@ void QGoCreateImgSessionPage::ImportInfoFromMegacapture(QString iNewfilename)
     {
     std::cerr << " caught an ITK exception: " << std::endl;
     e.Print(std::cerr);
-    return;
+    return false;
     }
   catch ( const std::exception & e )
     {
     std::cerr << " caught an std exception: " << std::endl;
     std::cerr << e.what() << std::endl;
-    return;
+    return false;
+    }
+  catch ( std::string & e )
+    {
+    std::cerr << " caught an exception: " << std::endl;
+    std::cerr << e << std::endl;
+    return false;
     }
   catch ( ... )
     {
     std::cerr << " caught an unknown exception!" << std::endl;
-    return;
+    return false;
     }
+  return true;
 }
 
 //-------------------------------------------------------------------------
@@ -403,6 +407,9 @@ void QGoCreateImgSessionPage::CreateChannels(vtkMySQLDatabase *DatabaseConnector
   myRecordSetType *RecordSet = new myRecordSetType;
   RecordSet->SetConnector(DatabaseConnector);
   RecordSet->SetTableName("channel");
+
+  std::cout << "m_HeaderFileInfo.m_NumberOfChannels: "
+      << m_HeaderFileInfo.m_NumberOfChannels << std::endl;
 
   for ( unsigned int i = 0; i < m_HeaderFileInfo.m_NumberOfChannels; i++ )
     {
@@ -600,10 +607,18 @@ void QGoCreateImgSessionPage::OpenDBConnection()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoCreateImgSessionPage::SaveInfoInDatabase()
+bool QGoCreateImgSessionPage::SaveInfoInDatabase()
 {
   /*First, get the info from the filenames and the headerfile: */
-  ImportInfoFromMegacapture( lineFilename->toPlainText() );
+  bool cleanFileToBeImported =
+      ImportInfoFromMegacapture(lineFilename->toPlainText() );
+  if(!cleanFileToBeImported)
+    {
+    QMessageBox msgBox;
+    msgBox.setText( tr("The images you try to import are corrupted.") );
+    msgBox.exec();
+    return false;
+    }
 
   /*Second, save in the DB the related ImagingSession as it is not possible to
   save in DB the images without knowing the corresponding ImagingSessionID:*/
@@ -624,7 +639,14 @@ void QGoCreateImgSessionPage::SaveInfoInDatabase()
 
     //Update CoordMin and CoordMax for ImagingSession:
     CreateImgSessionCoord( m_DatabaseConnector, field("ImgSessionID").toInt() );
+    return true;
     }
+
+  QMessageBox msgBox;
+  msgBox.setText(
+      tr("The images imported already belongs to an existing Imaging Session.") );
+  msgBox.exec();
+  return false;
 }
 
 //-------------------------------------------------------------------------

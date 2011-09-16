@@ -1633,6 +1633,11 @@ QGoTabImageView3DwT::SetMegaCaptureFile(
   m_NavigationDockWidget->SetNumberOfChannels(NumberOfChannels);
   m_ContourSegmentationDockWidget->SetNumberOfChannels(NumberOfChannels);
   m_MeshSegmentationDockWidget->SetNumberOfChannels(NumberOfChannels);
+  // set the threshoold value based on the image type:
+  int size = temp->GetScalarSize();
+  int threshold = pow(2, 8*size);
+  m_ContourSegmentationDockWidget->SetMaxThreshold(threshold-1);
+  m_MeshSegmentationDockWidget->SetMaxThreshold(threshold-1);
 
   // Set up QSpinBox in m_VideoRecorderWidget
   if ( NumberOfChannels > 1 )

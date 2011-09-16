@@ -62,6 +62,8 @@
 #include <QFileInfo>
 #include <QDir>
 #include <QScrollArea>
+#include <QTextStream>
+#include <QDebug>
 
 // Qt Dialog Box
 #include "QGoLsmToMegaExportDialog.h"
@@ -919,6 +921,46 @@ void QGoMainWindow::on_actionGoFigure2_Website_triggered()
 void QGoMainWindow::on_actionUser_mailing_list_triggered()
 {
   QDesktopServices::openUrl( QUrl("mailto:gofigure2-users@lists.sourceforge.net?subject=About GoFigure2") );
+}
+
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoMainWindow::on_actionReport_a_bug_triggered()
+{
+  QString url( "mailto:gofigure2-developers@lists.sourceforge.net?subject=Bug Report&body=" );
+
+  QString app_dir = QCoreApplication::applicationDirPath();
+  QDir    temp = QDir(app_dir);
+
+  temp.cdUp();
+  QString app_up_dir = temp.path();
+  temp.cdUp();
+  temp.cdUp();
+  QString app_up_up_up_dir = temp.path();
+
+  // linux without install
+  QStringList search_dir(app_dir + "/Resources");
+  // on windows without install
+  search_dir << app_up_dir + "/Resources";
+  // linux with install
+  search_dir << app_up_dir + "/share/doc/gofigure2/Resources";
+  // on mac without install
+  search_dir << app_up_up_up_dir + "/Resources";
+ 
+  QDir::setSearchPaths("BugEntryPath", search_dir);
+
+  QFile file("BugEntryPath:BugEntry.txt");
+
+  file.open(QIODevice::ReadOnly);
+
+  QTextStream textStream( & file);
+
+  QString text = textStream.readAll();
+
+  url.append( text );
+
+  QDesktopServices::openUrl( QUrl( url ) );
 }
 
 //--------------------------------------------------------------------------

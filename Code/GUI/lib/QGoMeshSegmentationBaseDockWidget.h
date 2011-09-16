@@ -78,6 +78,8 @@ public:
 
   void SetNumberOfChannels(int iNumberOfChannels);
 
+  void SetMaxThreshold(const int& iThreshold);
+
 public slots:
 /**
  * \brief Slot to know if we are in Manual, Semi Automatic ou Automatic segmentation

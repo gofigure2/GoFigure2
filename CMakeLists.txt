@@ -61,6 +61,7 @@ ENDIF( WIN32 )
 # GOFIGURE2_INSTALL_LIB_DIR          - library dir (libs)
 # GOFIGURE2_INSTALL_DOC_DIR          - documentation dir
 # GOFIGURE2_INSTALL_LICENSE_DIR      - licenses dir
+# GOFIGURE2_INSTALL_RESOURCSES_DIR   - resources dir
 #-----------------------------------------------------------------------
 IF( NOT GOFIGURE2_INSTALL_BUNDLE_DIR )
   SET( GOFIGURE2_INSTALL_BUNDLE_DIR "." )
@@ -85,6 +86,10 @@ ENDIF( NOT GOFIGURE2_INSTALL_DOC_DIR )
 IF( NOT GOFIGURE2_INSTALL_LICENSE_DIR )
   SET( GOFIGURE2_INSTALL_LICENSE_DIR "share/doc/gofigure2/Licenses" )
 ENDIF( NOT GOFIGURE2_INSTALL_LICENSE_DIR )
+
+IF( NOT GOFIGURE2_INSTALL_RESOURCSES_DIR )
+  SET( GOFIGURE2_INSTALL_RESOURCSES_DIR "share/doc/gofigure2/Resources" )
+ENDIF( NOT GOFIGURE2_INSTALL_RESOURCSES_DIR )
 
 #---------------------------------------------------------------------------
 # Define CMAKE_whatever_OUTPUT_DIRECTORY
@@ -116,6 +121,36 @@ ENDIF()
 
 
 SET( GOFIGURE2_LIBRARY_DIRS ${CMAKE_LIBRARY_OUTPUT_DIRECTORY} )
+
+
+#---------------------------------------------------------------------------
+# Export files (body of emails, etc...)
+#---------------------------------------------------------------------------
+# define useful variables
+IF( WIN32 )
+  SET( OS "Windows" )
+ELSE( WIN32 )
+  IF ( APPLE )
+    SET( OS "Mac OS X" )
+  ELSE( APPLE )
+    SET( OS "Linux" )
+  ENDIF( APPLE )
+ENDIF( WIN32 )
+
+# Licences
+file(MAKE_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Licenses)
+
+file(COPY        ${GOFIGURE2_SOURCE_DIR}/Licenses/
+     DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Licenses)
+
+# Resources
+file(MAKE_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Resources)
+
+CONFIGURE_FILE( ${GOFIGURE2_SOURCE_DIR}/Resources/BugEntry.txt.in
+ ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Resources/BugEntry.txt
+ @ONLY
+)
+
 #---------------------------------------------------------------------------
 # Define TESTING_DATA_PATH
 #---------------------------------------------------------------------------
@@ -462,10 +497,30 @@ IF( VTK_FOUND )
     INCLUDE( GoFigure2IncludeDirectories.cmake )
 
     CONFIGURE_FILE(
-      "${CMAKE_CURRENT_SOURCE_DIR}/UseGoFigure2.cmake.in"
-      "${CMAKE_CURRENT_BINARY_DIR}/UseGoFigure2.cmake"
+      "${CMAKE_CURRENT_SOURCE_DIR}/GoFigure2Config.cmake.in"
+      "${CMAKE_CURRENT_BINARY_DIR}/GoFigure2Config.cmake"
       @ONLY
       )
+
+    INSTALL(
+      FILES ${CMAKE_CURRENT_BINARY_DIR}/GoFigure2Config.cmake
+      DESTINATION ${GOFIGURE2_INSTALL_LIB_DIR}
+      COMPONENT Development
+      )
+
+    IF( UNIX AND NOT APPLE )
+      CONFIGURE_FILE(
+        "${CMAKE_CURRENT_SOURCE_DIR}/Resources/GoFigure2.desktop.in"
+        "${CMAKE_CURRENT_BINARY_DIR}/GoFigure2.desktop"
+        @ONLY
+        )
+
+      INSTALL(
+        FILES ${CMAKE_CURRENT_BINARY_DIR}/GoFigure2.desktop
+        DESTINATION ${GOFIGURE2_INSTALL_BIN_DIR}
+        @ONLY
+      )
+    ENDIF()
 
     #-----------------------------------------------------------------------
     # PACKAGE With CPack

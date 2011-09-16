@@ -268,8 +268,10 @@ SetEnableTraceCollectionColorBoxes(bool Enable)
 void
 QGoTraceManualEditingWidget::SetCellTypeComboBox()
 {
+  /*
   this->m_ChoseCellType = new QGoComboBox("Add a new celltype...",
-                                          this, "Delete a celltype...");
+                                          this, "Modify a celltype...");*/
+  this->m_ChoseCellType = new QGoComboBox("Add a new celltype...", this);
   QHBoxLayout *HLayoutForCellType = new QHBoxLayout;
   HLayoutForCellType->addWidget(m_ChoseCellType);
   this->VLayoutCellType->addLayout(HLayoutForCellType);
@@ -298,8 +300,7 @@ QGoTraceManualEditingWidget::SetCellTypeComboBox()
 void
 QGoTraceManualEditingWidget::SetSubCellTypeComboBox()
 {
-  this->m_ChoseSubCellType = new QGoComboBox("Add a new subcelltype...", this,
-                                             "Delete a subcelltype...");
+  this->m_ChoseSubCellType = new QGoComboBox("Add a new subcelltype...", this);
   this->VLayoutSubCellType->addWidget(LabelSubCellType);
   this->VLayoutSubCellType->addWidget(m_ChoseSubCellType);
 

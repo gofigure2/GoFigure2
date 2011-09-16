@@ -359,6 +359,23 @@ QGoImageView3D::UpdateOnFirstRender()
   this->m_Pool->InitializeAllObservers();
   this->m_Pool->Initialize();
 
+  // share bounds between all interactors styles, to prevent picking planes,
+  // wire mode on planes, surface mode on planes
+  vtkInteractorStyleImage2D *t0 =
+    static_cast< vtkInteractorStyleImage2D * >(
+        this->m_Pool->GetItem(0)->GetInteractorStyle());
+  t0->SetPlanesActors(m_Pool->GetPlanesActors());
+  vtkInteractorStyleImage2D *t1 =
+    static_cast< vtkInteractorStyleImage2D * >(
+        this->m_Pool->GetItem(1)->GetInteractorStyle());
+  t1->SetPlanesActors(m_Pool->GetPlanesActors());
+  vtkInteractorStyleImage2D *t2 =
+    static_cast< vtkInteractorStyleImage2D * >(
+        this->m_Pool->GetItem(2)->GetInteractorStyle());
+  t2->SetPlanesActors(m_Pool->GetPlanesActors());
+  this->m_View3D->GetInteractorStyle3D()
+      ->SetPlanesActors(this->m_View3D->GetPlanesActors());
+
   // Rotate the camera to show that the view is 3d
   vtkCamera *camera = this->m_View3D->GetRenderer()->GetActiveCamera();
   camera->Roll(-135);
@@ -762,6 +779,9 @@ QGoImageView3D::SetSliceViewXY(const int & iSlice)
       viewer->SetSlice(iSlice);
       viewer->Render();
       this->m_Pool->SyncRender(viewer);
+      // move slider and emit signal
+      this->SliderXY->setValue(iSlice);
+      // emit signal to navigation widget
       emit SliceViewXYChanged(iSlice);
       }
     }
@@ -792,6 +812,9 @@ QGoImageView3D::SetSliceViewXZ(const int & iSlice)
       viewer->SetSlice(iSlice);
       viewer->Render();
       this->m_Pool->SyncRender(viewer);
+      // move slider and emit signal
+      this->SliderXZ->setValue(iSlice);
+      // emit signal to navigation widget
       emit SliceViewXZChanged(iSlice);
       }
     }
@@ -822,6 +845,9 @@ QGoImageView3D::SetSliceViewYZ(const int & iSlice)
       viewer->SetSlice(iSlice);
       viewer->Render();
       this->m_Pool->SyncRender(viewer);
+      // move slider and emit signal
+      this->SliderYZ->setValue(iSlice);
+      // emit signal to navigation widget
       emit SliceViewYZChanged(iSlice);
       }
     }

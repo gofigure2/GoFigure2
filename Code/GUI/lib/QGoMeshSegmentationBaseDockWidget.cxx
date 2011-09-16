@@ -239,3 +239,14 @@ QGoMeshSegmentationBaseDockWidget::Initialize()
   //m_ContourManualSegmentation->GenerateContourRepresentationProperties(true);
 }
 */
+//---------------------------------------------------------------------------//
+
+//---------------------------------------------------------------------------//
+void
+QGoMeshSegmentationBaseDockWidget::
+SetMaxThreshold(const int& iThreshold)
+{
+  // modify max threshold in the semi automated widget
+  m_MeshSemiAutoSegmentation->SetMaxThreshold(iThreshold);
+}
+//---------------------------------------------------------------------------//

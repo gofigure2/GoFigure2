@@ -250,7 +250,7 @@ void QGoWizardDB::closeEvent(QCloseEvent *iEvent)
       //delete ServerPage;
       break;
       }
-    case 2:
+    case 1:
       {
       QGoOpenCreateProjectPage *ProjectPage = dynamic_cast< QGoOpenCreateProjectPage * >( CurrentPage );
       if ( ProjectPage->m_DatabaseConnector )
@@ -260,7 +260,7 @@ void QGoWizardDB::closeEvent(QCloseEvent *iEvent)
         }
       break;
       }
-    case 3:
+    case 2:
       {
       QGoOpenCreateImgSessionPage *ImgSessionPage = dynamic_cast< QGoOpenCreateImgSessionPage * >( CurrentPage );
       if ( ImgSessionPage->m_DatabaseConnector )
@@ -270,7 +270,7 @@ void QGoWizardDB::closeEvent(QCloseEvent *iEvent)
         }
       break;
       }
-    case 4:
+    case 3:
       {
       QGoCreateImgSessionPage *CreateImgSessionPage = dynamic_cast< QGoCreateImgSessionPage * >( CurrentPage );
       if ( CreateImgSessionPage->m_DatabaseConnector )

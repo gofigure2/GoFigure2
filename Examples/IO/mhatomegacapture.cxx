@@ -38,6 +38,7 @@
 #include "vtkImageData.h"
 #include "vtkPNGWriter.h"
 
+#include <string>
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -74,6 +75,10 @@ int main(int argc, char **argv)
 
   std::ofstream file(argv[2], std::ios_base::app);
 
+  std::string prefix( argv[2] );
+  prefix = prefix.substr( 0, prefix.length() - 4 );
+
+  
   int iTimePoint = atoi(argv[3]);
   int iChannel = atoi(argv[4]);
 
@@ -95,7 +100,7 @@ int main(int argc, char **argv)
   for ( int i = extent[4]; i <= extent[5]; i++ )
     {
     std::stringstream filename;
-    filename << "image-PL" << setfill('0') << setw(2) << plaque;
+    filename << prefix << "-PL" << setfill('0') << setw(2) << plaque;
     filename << "-CO" << setfill('0') << setw(2) << column;
     filename << "-RO" << setfill('0') << setw(2) << row;
     filename << "-ZT" << setfill('0') << setw(2) << ztile;
