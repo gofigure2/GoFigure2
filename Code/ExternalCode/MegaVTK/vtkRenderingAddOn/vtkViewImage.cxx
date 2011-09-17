@@ -171,9 +171,10 @@ void vtkViewImage::SetInput(vtkImageData *in)
       {
       this->ImageActor->SetInput(this->WindowLevel->GetOutput());
       this->WindowLevel->SetLookupTable(NULL);
-      // image is unsigned char ()
-      this->WindowLevel->SetWindow(255);
-      this->WindowLevel->SetLevel(127.5);
+      int type = in->GetScalarSize();
+      double threshold = pow(2, 8*type) - 1;
+      this->WindowLevel->SetWindow(threshold);
+      this->WindowLevel->SetLevel(threshold/2);
       this->ShowScalarBar = false;
       this->ScalarBarActor->SetVisibility(this->ShowScalarBar);
       }

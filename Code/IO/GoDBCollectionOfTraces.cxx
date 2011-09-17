@@ -107,6 +107,14 @@ void GoDBCollectionOfTraces::DeleteTracesInDB(std::list< unsigned int > TracesTo
     {
     unsigned int ID = *iter;
 
+    // if the trace is a mesh, we should delete its intensity as well
+    if(m_TracesName.compare("mesh") == 0)
+      {
+      // delete the related intensity table
+      DeleteRow(DatabaseConnector, "intensity" , m_TracesIDName,
+                ConvertToString< unsigned int >(ID));
+      }
+
     DeleteRow( DatabaseConnector, m_TracesName, m_TracesIDName,
       ConvertToString< unsigned int >(ID) );
     ++iter;
@@ -892,6 +900,22 @@ std::list< unsigned int > GoDBCollectionOfTraces::GetTraceIDsBelongingToCollecti
 {
   return ListSpecificValuesForOneColumn(iDatabaseConnector, this->m_TracesName,
                                         this->m_TracesIDName, this->m_CollectionIDName, iListCollectionIDs);
+}
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::list<unsigned int> GoDBCollectionOfTraces::GetTraceIDsBelongingToListTimePoints(
+    vtkMySQLDatabase *iDatabaseConnector,std::list<unsigned int> iListTPs)
+{
+  FieldWithValue JoinCondition = { "CoordIDMin", "CoordID", "=" };
+  std::vector< std::string > VectTimePoints = ListUnsgIntToVectorString(iListTPs);
+  FieldWithValue AndCondition = 
+    {"imagingsessionID", ConvertToString<unsigned int>(this->m_ImgSessionID), "="};
+
+  return GetAllSelectedValuesFromTwoTables(iDatabaseConnector, this->m_TracesName, 
+    "coordinate", this->m_TracesIDName, JoinCondition, "TCoord", VectTimePoints,
+     AndCondition);
 }
 
 //-------------------------------------------------------------------------

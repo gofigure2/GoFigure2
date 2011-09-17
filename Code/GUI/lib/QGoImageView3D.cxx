@@ -88,7 +88,6 @@ QGoImageView3D::QGoImageView3D(QWidget *iParent) :
   m_FirstRender(true),
   m_Initialized(false),
   m_ShowCube(true),
-  m_SynchronizeViews(true),
   m_BoxWidget(0),
   m_PlaneWidget(0)
 {
@@ -361,6 +360,23 @@ QGoImageView3D::UpdateOnFirstRender()
   this->m_Pool->SyncReset();
   this->m_Pool->InitializeAllObservers();
   this->m_Pool->Initialize();
+
+  // share bounds between all interactors styles, to prevent picking planes,
+  // wire mode on planes, surface mode on planes
+  vtkInteractorStyleImage2D *t0 =
+    static_cast< vtkInteractorStyleImage2D * >(
+        this->m_Pool->GetItem(0)->GetInteractorStyle());
+  t0->SetPlanesActors(m_Pool->GetPlanesActors());
+  vtkInteractorStyleImage2D *t1 =
+    static_cast< vtkInteractorStyleImage2D * >(
+        this->m_Pool->GetItem(1)->GetInteractorStyle());
+  t1->SetPlanesActors(m_Pool->GetPlanesActors());
+  vtkInteractorStyleImage2D *t2 =
+    static_cast< vtkInteractorStyleImage2D * >(
+        this->m_Pool->GetItem(2)->GetInteractorStyle());
+  t2->SetPlanesActors(m_Pool->GetPlanesActors());
+  this->m_View3D->GetInteractorStyle3D()
+      ->SetPlanesActors(this->m_View3D->GetPlanesActors());
 
   // Rotate the camera to show that the view is 3d
   vtkCamera *camera = this->m_View3D->GetRenderer()->GetActiveCamera();
@@ -768,12 +784,11 @@ QGoImageView3D::SetSliceViewXY(const int & iSlice)
       vtkViewImage2D *viewer = this->m_Pool->GetItem(0);
       viewer->SetSlice(iSlice);
       viewer->Render();
-      // synchronize views
-      if(m_SynchronizeViews)
-        {
-        this->m_Pool->SyncRender(viewer);
-        emit SliceViewXYChanged(iSlice);
-        }
+      this->m_Pool->SyncRender(viewer);
+      // move slider and emit signal
+      this->SliderXY->setValue(iSlice);
+      // emit signal to navigation widget
+      emit SliceViewXYChanged(iSlice);
       }
     }
 }
@@ -802,12 +817,11 @@ QGoImageView3D::SetSliceViewXZ(const int & iSlice)
       vtkViewImage2D *viewer = this->m_Pool->GetItem(1);
       viewer->SetSlice(iSlice);
       viewer->Render();
-      // synchronize views
-      if(m_SynchronizeViews)
-        {
-        this->m_Pool->SyncRender(viewer);
-        emit SliceViewXZChanged(iSlice);
-        }
+      this->m_Pool->SyncRender(viewer);
+      // move slider and emit signal
+      this->SliderXZ->setValue(iSlice);
+      // emit signal to navigation widget
+      emit SliceViewXZChanged(iSlice);
       }
     }
 }
@@ -836,12 +850,11 @@ QGoImageView3D::SetSliceViewYZ(const int & iSlice)
       vtkViewImage2D *viewer = this->m_Pool->GetItem(2);
       viewer->SetSlice(iSlice);
       viewer->Render();
-      // synchronize views
-      if(m_SynchronizeViews)
-        {
-        this->m_Pool->SyncRender(viewer);
-        emit SliceViewYZChanged(iSlice);
-        }
+      this->m_Pool->SyncRender(viewer);
+      // move slider and emit signal
+      this->SliderYZ->setValue(iSlice);
+      // emit signal to navigation widget
+      emit SliceViewYZChanged(iSlice);
       }
     }
 }
@@ -868,10 +881,7 @@ QGoImageView3D::MoveSliderXY()
     if ( s != this->SliderXY->value() )
       {
       this->SliderXY->setValue(s);
-      if(m_SynchronizeViews)
-        {
-        emit SliceViewXYChanged(s);
-        }
+      emit SliceViewXYChanged(s);
       }
     }
 }
@@ -889,10 +899,7 @@ QGoImageView3D::MoveSliderXZ()
     if ( s != this->SliderXZ->value() )
       {
       this->SliderXZ->setValue(s);
-      if(m_SynchronizeViews)
-        {
-        emit SliceViewXZChanged(s);
-        }
+      emit SliceViewXZChanged(s);
       }
     }
 }
@@ -910,10 +917,7 @@ QGoImageView3D::MoveSliderYZ()
     if ( s != this->SliderYZ->value() )
       {
       this->SliderYZ->setValue(s);
-      if(m_SynchronizeViews)
-        {
-        emit SliceViewYZChanged(s);
-        }
+      emit SliceViewYZChanged(s);
       }
     }
 }
@@ -1360,7 +1364,4 @@ QGoImageView3D::SynchronizeViews( bool iSynchronize)
     m_Pool->SynchronizeViews( iSynchronize );
     viewer->SynchronizeViews( iSynchronize );
     }
-
-  // update variable
-  m_SynchronizeViews = iSynchronize;
 }

@@ -70,6 +70,16 @@ public:
   */
   void DisplayInfoAndLoadVisuContainerForAllMeshes(vtkMySQLDatabase *iDatabaseConnector);
 
+  void DisplayInfoAndLoadVisuContainerForAllMeshesForSpecificTPs(
+    vtkMySQLDatabase *iDatabaseConnector, std::list<unsigned int> iListTPs);
+
+  void AddInfoInTWAndVisuContainerForMeshesForSpecificTPs(
+    vtkMySQLDatabase *iDatabaseConnector, std::list<unsigned int> iListTPs);
+
+  void RemoveTracesFromTWAndContainerForVisuForSpecificTPs(
+                                                    vtkMySQLDatabase *iDatabaseConnector,
+                                                    std::list<unsigned int> iListTPs);
+
   virtual void DisplayInfoForLastCreatedTrace(vtkMySQLDatabase *iDatabaseConnector);
 
   void DisplayInfoForLastCreatedMesh(vtkMySQLDatabase *iDatabaseConnector,
@@ -186,6 +196,10 @@ public:
     */
   double GetVolume(unsigned int iMeshID);
 
+  void CleanTWAndContainerForGivenTimePoint(vtkMySQLDatabase *iDatabaseConnector,
+                                            const std::list<unsigned int>& iTimePoints);
+
+
 public slots:
   /**
   \brief get the coordinate info for meshes needed for the visu
@@ -280,6 +294,13 @@ protected:
 
   //virtual pure method in QGoDBTraceManager
   virtual void DisplayInfoForAllTraces(vtkMySQLDatabase *iDatabaseConnector);
+
+  //virtual pure method in QGoDBTraceManager
+  virtual void DisplayInfoForTracesForSpecificTPs(vtkMySQLDatabase *iDatabaseConnector, 
+    std::list<unsigned int> iListTPs);
+
+  void AddInfoForMeshesInTWForSpecificTPs(vtkMySQLDatabase *iDatabaseConnector, 
+    std::list<unsigned int> iListTPs);
 
   void SetMeshBoundingBoxAndPoints(unsigned int iXCoordMin,
                                    unsigned int iYCoordMin,

@@ -45,7 +45,6 @@ QGoDBTraceManager::QGoDBTraceManager(QObject *iParent) :
   m_IsColorCodingOn(false), m_IsShowOnlyCurrentTimePointOn(false)
 {
 }
-
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -56,7 +55,6 @@ QGoDBTraceManager::~QGoDBTraceManager()
     delete this->m_CollectionOfTraces;
     }
 }
-
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -581,7 +579,6 @@ void QGoDBTraceManager::CheckShowRows()
     this->ShowOnlyRowsForCurrentTimePoint(true);
     }
 }
-
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -590,3 +587,4 @@ void QGoDBTraceManager::UpdateLastSelectedOneAsCollection()
   this->m_LastSelectedTraceAsCollection =
     this->m_SelectedCollectionData->first;
 }
+//-------------------------------------------------------------------------

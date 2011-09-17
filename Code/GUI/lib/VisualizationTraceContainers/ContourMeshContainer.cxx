@@ -241,10 +241,6 @@ ContourMeshContainer::DeleteElement(MultiIndexContainerTraceIDIterator iIter)
 
     m_Container.get< TraceID >().erase(iIter);
 
-    if ( m_ImageView )
-      {
-      m_ImageView->UpdateRenderWindows();
-      }
     return true;
     }
   return false;
@@ -265,11 +261,7 @@ ContourMeshContainer::DeleteAllHighlightedElements()
 
   while ( it0 != it1 )
     {
-
-      std::cout << "TRACE ID TO BE DELETED: " << it0->TraceID << std::endl;
-
     oList.push_back(it0->TraceID);
-
     if ( it0->ActorXY )
       {
       if ( m_ImageView )
@@ -376,5 +368,38 @@ ContourMeshContainer::GetMeshesPoints(std::list< unsigned int > iMeshID)
 
   return meshPosition;
 }
+//-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
+void
+ContourMeshContainer::
+Clear()
+{
+  MultiIndexContainerTraceIDIterator  it = m_Container.get< TraceID >().begin();
+  while ( it != m_Container.get< TraceID >().end() )
+    {
+    DeleteElement(it);
+    ++it;
+    }
+
+  assert ( m_ImageView );
+  m_ImageView->UpdateRenderWindows();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+ContourMeshContainer::
+Clear( const std::list<unsigned int>& iTraceIDs)
+{
+  std::list<unsigned int>::const_iterator it = iTraceIDs.begin();
+  while(it!= iTraceIDs.end())
+    {
+    DeleteElement(*it);
+    ++it;
+    }
+
+  assert ( m_ImageView );
+  m_ImageView->UpdateRenderWindows();
+}
 //-------------------------------------------------------------------------

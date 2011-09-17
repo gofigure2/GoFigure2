@@ -224,10 +224,10 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
 
   CreateBookmarkActions();
 
-	//CreateModeActions(); in setmegacapture/LSM files now
-	//CreateTracesActions();
+  //CreateModeActions(); in setmegacapture/LSM files now
+  //CreateTracesActions();
 
-	ReadSettings();
+  ReadSettings();
 
   m_DockWidgetList.push_back(
     std::pair< QGoDockWidgetStatus *, QDockWidget * >(
@@ -1612,8 +1612,7 @@ QGoTabImageView3DwT::SetLSMReader(vtkLSMReader *iReader, const int & iTimePoint)
   //update images
   UpdateImage();
   // update actors
-  this->m_ContourContainer->ShowActorsWithGivenTimePoint(iTimePoint);
-  this->m_MeshContainer->ShowActorsWithGivenTimePoint(iTimePoint);
+  this->ShowTraces(m_TCoord);
   // update widgets on image loading
   InitializeImageRelatedWidget();
   // render
@@ -1654,9 +1653,6 @@ QGoTabImageView3DwT::SetMegaCaptureFile(
   m_ImageProcessor->initTimePoint(m_TCoord);
   //update images
   UpdateImage();
-  // update actors
-  this->m_ContourContainer->ShowActorsWithGivenTimePoint(iTimePoint);
-  this->m_MeshContainer->ShowActorsWithGivenTimePoint(iTimePoint);
   // update widgets on image loading
   InitializeImageRelatedWidget();
   // render
@@ -1834,8 +1830,19 @@ QGoTabImageView3DwT::SetTimePoint(const int & iTimePoint)
   // for the trace widget, navigation widget and table widget
   emit TimePointChanged(m_TCoord);
 
-  this->m_ContourContainer->ShowActorsWithGivenTimePoint(m_TCoord);
-  this->m_MeshContainer->ShowActorsWithGivenTimePoint(m_TCoord);
+  // clean table widget and container
+  // then load new traces in TW and put polydatas in container
+  std::list<unsigned int> timePoints =
+          this->m_DataBaseTables->UpdateTableWidgetAndContainersForGivenTimePoint(
+          m_TCoord);
+
+  // create actors
+  // function has to be splitted-> remove duplications
+  this->CreateContoursActorsFromVisuContainer(timePoints);
+  this->CreateMeshesActorsFromVisuContainer(timePoints);
+
+  //show time specific actors
+  this->ShowTraces(m_TCoord);
 
   m_ImageView->Update();
 
@@ -3384,4 +3391,99 @@ EnableVolumeRendering(bool iEnable)
     {
     m_ImageView->DisableVolumeRendering();
     }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+CreateContoursActorsFromVisuContainer(std::list<unsigned int> iTPointToLoad)
+{
+  if ( this->m_ContourContainer )
+    {
+    // load everything if no list given
+    if ( iTPointToLoad.size() != 0)
+      {
+      std::list<unsigned int>::iterator it = iTPointToLoad.begin();
+      while(it != iTPointToLoad.end())
+        {
+        // let's iterate on the container with increasing TraceID
+        ContourContainer::MultiIndexContainerType::index< TCoord >::type::iterator
+        contour_list_it = this->m_ContourContainer->m_Container.get< TCoord >().find(*it);
+
+        ContourContainer::MultiIndexContainerType::index< TCoord >::type::iterator
+        contour_list_end = this->m_ContourContainer->m_Container.get< TCoord >().end();
+
+        // we don't need here to save this contour in the database,
+        // since they have just been extracted from it!
+        while ( contour_list_it != contour_list_end )
+          {
+          this->AddContourFromNodes< TCoord >( contour_list_it );
+          ++contour_list_it;
+          }
+        ++it;
+        }
+      }
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+CreateMeshesActorsFromVisuContainer(std::list<unsigned int> iTPointToLoad)
+{
+  if( this->m_MeshContainer)
+    {
+    // load everything if no list given
+    if ( iTPointToLoad.size() != 0)
+      {
+      //QProgressDialog progress( "Loading Meshes...", QString(), 0, nb_meshes );
+        //progress.setValue( i );
+        //++i;
+        //progress.setValue( nb_meshes );
+
+      std::list<unsigned int>::iterator it = iTPointToLoad.begin();
+      while(it != iTPointToLoad.end())
+        {
+        MeshContainer::MultiIndexContainerType::index< TCoord >::type::iterator
+          mesh_list_it = this->m_MeshContainer->m_Container.get< TCoord >().find(*it);
+
+        MeshContainer::MultiIndexContainerType::index< TCoord >::type::iterator
+          mesh_list_end = this->m_MeshContainer->m_Container.get< TCoord >().end();
+
+        // we don't need here to save this contour in the database,
+        // since they have just been extracted from it!
+        while ( mesh_list_it != mesh_list_end )
+          {
+          if ( mesh_list_it->Nodes )
+            {
+            GoFigureMeshAttributes attributes =
+              this->ComputeMeshAttributes(
+                mesh_list_it->Nodes, // mesh
+                false, // do not need to compute intensity based measure
+                mesh_list_it->TCoord
+                );
+            this->m_DataBaseTables->PrintVolumeAreaForMesh(
+              &attributes, mesh_list_it->TraceID);
+            }
+          this->AddMeshFromNodes< TCoord >(mesh_list_it);
+          ++mesh_list_it;
+          }
+        ++it;
+        }
+      }
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+ShowTraces(const unsigned int& iTimePoint)
+{
+  // only contours and meshes will be modified since tracks and lineage contain
+  // several time points
+  this->m_ContourContainer->ShowActorsWithGivenTimePoint(iTimePoint);
+  this->m_MeshContainer->ShowActorsWithGivenTimePoint(iTimePoint);
 }

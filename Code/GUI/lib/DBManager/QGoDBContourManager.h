@@ -94,6 +94,16 @@ public:
   */
   void DisplayInfoAndLoadVisuContainerForAllContours(vtkMySQLDatabase *iDatabaseConnector);
 
+  void DisplayInfoAndLoadVisuContainerForAllContoursForSpecificTPs(
+    vtkMySQLDatabase *iDatabaseConnector, std::list<unsigned int> iListTPs);
+
+   void AddInfoInTWAndVisuContainerForContoursForSpecificTPs(
+    vtkMySQLDatabase *iDatabaseConnector, std::list<unsigned int> iListTPs);
+
+  void RemoveTracesFromTWAndContainerForVisuForSpecificTPs(
+                                                    vtkMySQLDatabase *iDatabaseConnector,
+                                                    std::list<unsigned int> iListTPs);
+
   /**
   \brief is called when the user choses the change color action in the
   context menu,emit signals to get the databaseconnection and the selectedColor
@@ -115,6 +125,10 @@ public:
 
   //virtual pure method in QGoDBTraceManager
   virtual std::list< unsigned int > GetListHighlightedIDs();
+
+
+  void CleanTWAndContainerForGivenTimePoint(vtkMySQLDatabase *iDatabaseConnector,
+                                            const std::list<unsigned int>& iTimePoints);
 
 signals:
   /**
@@ -143,6 +157,13 @@ protected:
 
   //virtual pure method in QGoDBTraceManager
   virtual void DisplayInfoForAllTraces(vtkMySQLDatabase *iDatabaseConnector);
+
+  //virtual pure method in QGoDBTraceManager
+  virtual void DisplayInfoForTracesForSpecificTPs(vtkMySQLDatabase *iDatabaseConnector, 
+    std::list<unsigned int> iListTPs);
+
+  void AddInfoForContoursInTWForSpecificTPs(vtkMySQLDatabase *iDatabaseConnector, 
+    std::list<unsigned int> iListTPs);
 
   //virtual pure method in QGoDBTraceManager
   virtual void GetTracesInfoFromDBAndModifyContainerForVisu(

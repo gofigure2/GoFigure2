@@ -134,9 +134,9 @@ QGoImageView::SetBackgroundColor(const double & r,
 {
   double *current_rgb = this->GetBackgroundColor();
 
-  if ( ( current_rgb[0] != r )
-       && ( current_rgb[1] != g )
-       && ( current_rgb[2] != b ) )
+  if ( !(( current_rgb[0] == r )
+       && ( current_rgb[1] == g )
+       && ( current_rgb[2] == b )) )
     {
     double textcolor[3];
 

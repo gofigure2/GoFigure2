@@ -98,6 +98,16 @@ void QGoDBTrackManager::DisplayInfoForAllTraces(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+void QGoDBTrackManager::DisplayInfoForTracesForSpecificTPs(
+    vtkMySQLDatabase *iDatabaseConnector, std::list<unsigned int> iListTPs)
+{
+  (void) iListTPs;
+  this->DisplayInfoForAllTraces(iDatabaseConnector);
+}
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 void QGoDBTrackManager::DisplayInfoAndLoadVisuContainerForAllTracks(
   vtkMySQLDatabase *iDatabaseConnector)
 {
@@ -179,8 +189,8 @@ void QGoDBTrackManager::DeleteCheckedTraces(vtkMySQLDatabase *iDatabaseConnector
 {
   //if the tracks to be deleted belongs to some divisions, the divisions need to
   //be deleted first:
-  std::list<unsigned int> ListDivisionsToDelete = 
-    this->m_CollectionOfTraces->GetTrackFamilyID(iDatabaseConnector, 
+  std::list<unsigned int> ListDivisionsToDelete =
+    this->m_CollectionOfTraces->GetTrackFamilyID(iDatabaseConnector,
     this->GetListHighlightedIDs() );
   std::list<unsigned int>::iterator iter = ListDivisionsToDelete.begin();
   std::list<unsigned int> TrackIDsWithNoLineage = std::list<unsigned int>();
@@ -189,7 +199,7 @@ void QGoDBTrackManager::DeleteCheckedTraces(vtkMySQLDatabase *iDatabaseConnector
     {
     if (*iter != 0)
       {
-      emit NeedToGetDatabaseConnection(); 
+      emit NeedToGetDatabaseConnection();
       GoDBTrackFamilyRow Division(*iter, this->m_DatabaseConnector);
       this->DeleteOneDivision(Division, this->m_DatabaseConnector, TrackIDsWithNoLineage, LineagesToDelete);
       }
@@ -198,10 +208,10 @@ void QGoDBTrackManager::DeleteCheckedTraces(vtkMySQLDatabase *iDatabaseConnector
 
   if (!TrackIDsWithNoLineage.empty() ) //set the lineageID to 0 and update the bounding boxes of the previous lineages
     {
-    emit CheckedTracksToAddToSelectedLineage(TrackIDsWithNoLineage, 0, LineagesToDelete);  
+    emit CheckedTracksToAddToSelectedLineage(TrackIDsWithNoLineage, 0, LineagesToDelete);
     }
 
-  emit NeedToGetDatabaseConnection(); 
+  emit NeedToGetDatabaseConnection();
   this->DeleteTracesTemplate< TrackContainer >(this->m_DatabaseConnector,
                                                this->m_TrackContainerInfoForVisu);
 }
@@ -582,29 +592,29 @@ void QGoDBTrackManager::CreateCorrespondingTrackFamily()
     return;
     }
   emit NeedToGetDatabaseConnection();
-  if (this->IdentifyMotherDaughtersToCreateTrackFamily(this->m_DatabaseConnector, 
+  if (this->IdentifyMotherDaughtersToCreateTrackFamily(this->m_DatabaseConnector,
     this->GetListHighlightedIDs(), MotherID, DaughtersIDs) )
     {
-    int TrackFamilyID =  this->CreateTrackFamily(this->m_DatabaseConnector, 
+    int TrackFamilyID =  this->CreateTrackFamily(this->m_DatabaseConnector,
       MotherID, DaughtersIDs);
     if (TrackFamilyID != -1)
       {
       //check the lineageID of the mother:
       std::list<unsigned int> TrackID;
       TrackID.push_back(MotherID);
-      std::list<unsigned int> LineageIDToCheck = 
+      std::list<unsigned int> LineageIDToCheck =
         this->m_CollectionOfTraces->GetListCollectionIDs(this->m_DatabaseConnector,TrackID);
       //update the trackFamilyID for the daughters:
       std::list<unsigned int>::iterator iter = DaughtersIDs.begin();
       while(iter != DaughtersIDs.end() )
         {
-        this->UpdateTrackFamilyIDForDaughter(this->m_DatabaseConnector, 
+        this->UpdateTrackFamilyIDForDaughter(this->m_DatabaseConnector,
           *iter, TrackFamilyID);
         ++iter;
-        }  
+        }
       //if the daughters belongs to other lineages, they need to be deleted and all the tracks belonging
       //to these lineages have to be added to the DaughtersIDs list to be added to the mother lineage
-      std::list<unsigned int> PreviousLineagesToDelete = 
+      std::list<unsigned int> PreviousLineagesToDelete =
           this->GetTrackIDFromDaughtersFamilies(this->m_DatabaseConnector, DaughtersIDs);
       if (!LineageIDToCheck.empty())
         {
@@ -619,7 +629,7 @@ void QGoDBTrackManager::CreateCorrespondingTrackFamily()
         emit NewLineageToCreateFromTracks(DaughtersIDs, MotherID, PreviousLineagesToDelete);
         }
       }
-    } 
+    }
   emit DBConnectionNotNeededAnymore();
 }
 
@@ -646,7 +656,7 @@ bool QGoDBTrackManager::IdentifyMotherDaughtersToCreateTrackFamily(
   std::list<unsigned int>::iterator iter = iListTracksID.begin();
   //to change: modify the method CheckOverlappingTracks:
   unsigned int ioTraceIDToKeep = 0;
-  unsigned int ioTraceIDToDelete = 0; 
+  unsigned int ioTraceIDToDelete = 0;
   while(iter != iListTracksID.end())
     {
     if (*iter != static_cast<unsigned int>(ioMotherID) )
@@ -654,7 +664,7 @@ bool QGoDBTrackManager::IdentifyMotherDaughtersToCreateTrackFamily(
       std::list<unsigned int> TracksOverlappingToCheck;
       TracksOverlappingToCheck.push_back(ioMotherID);
       TracksOverlappingToCheck.push_back(*iter);
-      if (this->CheckOverlappingTracks(TracksOverlappingToCheck, 
+      if (this->CheckOverlappingTracks(TracksOverlappingToCheck,
         ioTraceIDToKeep, ioTraceIDToDelete, iDatabaseConnector) )
         {
         QMessageBox msgBox;
@@ -666,7 +676,7 @@ bool QGoDBTrackManager::IdentifyMotherDaughtersToCreateTrackFamily(
       ioDaughtersID.push_back(*iter);
       }
     iter++;
-    } 
+    }
   return true;
 }
 
@@ -700,9 +710,9 @@ int QGoDBTrackManager::CreateTrackFamily(vtkMySQLDatabase* iDatabaseConnector,
   ++iter;
   unsigned int TrackIDDaughterTwo = *iter;
   TrackFamily.SetField<unsigned int>("TrackIDDaughter1", TrackIDDaughterOne);
-  
+
   TrackFamily.SetField<unsigned int>("TrackIDDaughter2", TrackIDDaughterTwo);
-  this->m_TrackContainerInfoForVisu->AddDivision(iMotherTrackID, TrackIDDaughterOne, 
+  this->m_TrackContainerInfoForVisu->AddDivision(iMotherTrackID, TrackIDDaughterOne,
     TrackIDDaughterTwo);
   return TrackFamily.SaveInDB(iDatabaseConnector);
 }
@@ -726,8 +736,8 @@ std::list<unsigned int> QGoDBTrackManager::GetTrackIDFromDaughtersFamilies(
   std::list<unsigned int> &ioTrackIDsOfTheFamilies)
 {
   //delete the daughtersLineageID then as they are useless:
-  std::list<unsigned int> DaughtersLineageID = 
-      this->m_CollectionOfTraces->GetListCollectionIDs(iDatabaseConnector, 
+  std::list<unsigned int> DaughtersLineageID =
+      this->m_CollectionOfTraces->GetListCollectionIDs(iDatabaseConnector,
       ioTrackIDsOfTheFamilies);
 
   std::list<unsigned int> FirstDaugthersIDs = ioTrackIDsOfTheFamilies;
@@ -738,7 +748,7 @@ std::list<unsigned int> QGoDBTrackManager::GetTrackIDFromDaughtersFamilies(
     {
     std::list<unsigned int> ListDaughterID;
     ListDaughterID.push_back(*iter);
-    std::list<unsigned int> LineageIDofDaughter = 
+    std::list<unsigned int> LineageIDofDaughter =
       this->m_CollectionOfTraces->GetListCollectionIDs(iDatabaseConnector, ListDaughterID);
     if (LineageIDofDaughter.empty()) //need to put back the ID of the daughter as it won't be returned by the query
       {
@@ -748,7 +758,7 @@ std::list<unsigned int> QGoDBTrackManager::GetTrackIDFromDaughtersFamilies(
       {
       std::list<unsigned int> CollectionID;
       CollectionID.push_back(LineageIDofDaughter.front());
-      std::list<unsigned int> TrackIDsofTheFamily = 
+      std::list<unsigned int> TrackIDsofTheFamily =
         this->m_CollectionOfTraces->GetTraceIDsBelongingToCollectionID(
         iDatabaseConnector, CollectionID);
       std::list<unsigned int>::iterator iterTrackIDs = TrackIDsofTheFamily.begin();
@@ -769,7 +779,7 @@ std::list<unsigned int> QGoDBTrackManager::GetTrackIDFromDaughtersFamilies(
 void QGoDBTrackManager::LoadInfoVisuContainerForTrackFamilies(
   vtkMySQLDatabase *iDatabaseConnector)
 {
-  std::list<unsigned int> ListTrackIDs = 
+  std::list<unsigned int> ListTrackIDs =
     this->m_CollectionOfTraces->GetTrackFamilyDataFromDB(iDatabaseConnector);
   this->m_TrackContainerInfoForVisu->SetListOfDivisions(ListTrackIDs);
 }
@@ -780,7 +790,7 @@ void QGoDBTrackManager::DeleteTheDivisions()
 {
   //check that the selected traces are all mother, if not message in the status bar:
   std::list<unsigned int> TrackIDNotMother = std::list<unsigned int>();
-  std::list<unsigned int> CheckedTracks = 
+  std::list<unsigned int> CheckedTracks =
     this->m_TrackContainerInfoForVisu->GetHighlightedElementsTraceID();
   std::list<unsigned int> TrackIDsWithNoLineage = std::list<unsigned int>();
   std::list<unsigned int> LineagesToDelete = std::list<unsigned int>();
@@ -815,7 +825,7 @@ void QGoDBTrackManager::DeleteTheDivisions()
 
   if (!TrackIDsWithNoLineage.empty() ) //set the lineageID to 0 and update the bounding boxes of the previous lineages
     {
-    emit CheckedTracksToAddToSelectedLineage(TrackIDsWithNoLineage, 0, LineagesToDelete);  
+    emit CheckedTracksToAddToSelectedLineage(TrackIDsWithNoLineage, 0, LineagesToDelete);
     }
 }
 //-------------------------------------------------------------------------
@@ -837,14 +847,14 @@ void QGoDBTrackManager::DeleteOneDivision(GoDBTrackFamilyRow iDivision,
     ioTrackIDsNoLineage.push_back(MotherID);
     IsPartOfBiggerLineage = false;
     }
-  
+
   //delete the division from the database:
   iDivision.DeleteFromDB(this->m_DatabaseConnector);
 
   //update the different values for the daughters of the division:
-  this->UpdateFormerDaughtersOfADeletedDivision(DaughtersIDs, ioTrackIDsNoLineage, 
+  this->UpdateFormerDaughtersOfADeletedDivision(DaughtersIDs, ioTrackIDsNoLineage,
     IsPartOfBiggerLineage);
- 
+
   //delete the division from the visu:
   this->m_TrackContainerInfoForVisu->DeleteADivision( MotherID );
 
@@ -860,7 +870,7 @@ void QGoDBTrackManager::DeleteOneDivision(GoDBTrackFamilyRow iDivision,
 
 //-------------------------------------------------------------------------
 void QGoDBTrackManager::UpdateFormerDaughtersOfADeletedDivision(
-  std::list<unsigned int> iDaughtersID, 
+  std::list<unsigned int> iDaughtersID,
   std::list<unsigned int> &ioTrackIDsNoLineage,
   bool &ioPartOfHigherLineage)
 {
@@ -873,7 +883,7 @@ void QGoDBTrackManager::UpdateFormerDaughtersOfADeletedDivision(
       this->UpdateTrackFamilyIDForDaughter(this->m_DatabaseConnector, *iter, 0);
       if (this->IsTheTrackAMother(*iter, this->m_DatabaseConnector) )
         {
-        this->CreateALineageWithFormerDaughterOfADeletedDivision(*iter, 
+        this->CreateALineageWithFormerDaughterOfADeletedDivision(*iter,
           this->m_DatabaseConnector, ioPartOfHigherLineage);
         }
       else
@@ -908,23 +918,23 @@ void QGoDBTrackManager::PrintAMessageForTracksWithNoDivision(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-unsigned int QGoDBTrackManager::IsTheTrackAMother(unsigned int iDaughterID, 
+unsigned int QGoDBTrackManager::IsTheTrackAMother(unsigned int iDaughterID,
   vtkMySQLDatabase* iDatabaseConnector)
 {
-  unsigned int TrackFamilyID;
   GoDBTrackFamilyRow Family;
   Family.SetField<unsigned int>("TrackIDMother", iDaughterID);
-  TrackFamilyID = Family.DoesThisTrackFamilyAlreadyExists(iDatabaseConnector);
+
+  int TrackFamilyID = Family.DoesThisTrackFamilyAlreadyExists(iDatabaseConnector);
   if (TrackFamilyID != -1)
     {
-    return TrackFamilyID;
+    return static_cast< unsigned int >( TrackFamilyID );
     }
   return 0;
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-unsigned int QGoDBTrackManager::IsTheTrackADaughter(unsigned int iTrackID, 
+unsigned int QGoDBTrackManager::IsTheTrackADaughter(unsigned int iTrackID,
   vtkMySQLDatabase* iDatabaseConnector)
 {
   GoDBTrackRow Track(iTrackID, iDatabaseConnector);
@@ -934,7 +944,7 @@ unsigned int QGoDBTrackManager::IsTheTrackADaughter(unsigned int iTrackID,
 
 //-------------------------------------------------------------------------
 void QGoDBTrackManager::CreateALineageWithFormerDaughterOfADeletedDivision(
-  unsigned int iDaughterID, vtkMySQLDatabase* iDatabaseConnector, 
+  unsigned int iDaughterID, vtkMySQLDatabase* iDatabaseConnector,
   bool &ioPartOfHigherLineage)
 {
     //GoDBTrackRow Daughter(iDaughterID, iDatabaseConnector);
@@ -951,7 +961,7 @@ void QGoDBTrackManager::CreateALineageWithFormerDaughterOfADeletedDivision(
   std::list<unsigned int> TracksIDs = this->m_TrackContainerInfoForVisu->GetSubLineage(iDaughterID);
   if (TracksIDs.size() > 1)
     {
-    emit NewLineageToCreateFromTracks(TracksIDs, iDaughterID, PreviousLineageToDelete); //need to create a new lineage with 
+    emit NewLineageToCreateFromTracks(TracksIDs, iDaughterID, PreviousLineageToDelete); //need to create a new lineage with
       //the family of the daughter
     }
 }
@@ -959,14 +969,14 @@ void QGoDBTrackManager::CreateALineageWithFormerDaughterOfADeletedDivision(
 
 //-------------------------------------------------------------------------
 std::string QGoDBTrackManager::CheckMeshCanBeAddedToTrack(
-  vtkMySQLDatabase* iDatabaseConnector, unsigned int iTrackID, 
+  vtkMySQLDatabase* iDatabaseConnector, unsigned int iTrackID,
   unsigned int iMeshTimePoint,
   std::list<unsigned int> &ioMotherTrackDivisionToUpdate)
 {
   std::string Message = "";
-  unsigned int TrackMinTimePoint = 
+  unsigned int TrackMinTimePoint =
     this->m_CollectionOfTraces->GetBoundedBoxTimePoint(iDatabaseConnector, iTrackID, true);
-  unsigned int TrackMaxTimePoint = 
+  unsigned int TrackMaxTimePoint =
     this->m_CollectionOfTraces->GetBoundedBoxTimePoint(iDatabaseConnector, iTrackID, false);
   //if the mesh inside the bounding box of the track, no pb:
   if (iMeshTimePoint > TrackMinTimePoint && iMeshTimePoint < TrackMaxTimePoint)
@@ -981,11 +991,11 @@ std::string QGoDBTrackManager::CheckMeshCanBeAddedToTrack(
     {
     return Message;
     }
-  
+
   if (DivisionIDTrackIsAMother)
     {
     if (iMeshTimePoint >= TrackMinTimePoint)
-      {     
+      {
       //check that the meshtimepoint < timepoint min daughter if not, message
       unsigned int DivisionToUpdate = this->CheckBoundingBoxDivisionAsAMother(
         iDatabaseConnector, iMeshTimePoint, DivisionIDTrackIsAMother );
@@ -1008,7 +1018,7 @@ std::string QGoDBTrackManager::CheckMeshCanBeAddedToTrack(
       return Message;
       }
       //check that the meshtimepoint > timepoint max mother if not, message
-    unsigned int DivisionToUpdate = 
+    unsigned int DivisionToUpdate =
       this->CheckBoundingBoxDivisionAsADaughter(iDatabaseConnector, iMeshTimePoint,
       DivisionIDTrackIsADaughter);
     if (DivisionToUpdate != 0)
@@ -1058,7 +1068,7 @@ unsigned int QGoDBTrackManager::CheckBoundingBoxDivisionAsADaughter(
         return Division.GetMapValue<unsigned int>("TrackIDMother");
         }
       return 0;
-      }   
+      }
     return 0;
 }
 //-------------------------------------------------------------------------

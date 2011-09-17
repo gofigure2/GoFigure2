@@ -36,8 +36,9 @@
 #include "GoImageProcessor.h"
 
 QGoSetOfContoursWaterShedAlgo::
-QGoSetOfContoursWaterShedAlgo(std::vector< vtkPoints* >* iSeeds, QWidget* iParent)
-  :QGoWaterShedAlgo(iSeeds, iParent)
+QGoSetOfContoursWaterShedAlgo(std::vector< vtkPoints* >* iSeeds,
+                              int iMaxThreshold, QWidget* iParent)
+  :QGoWaterShedAlgo(iSeeds, iMaxThreshold, iParent)
 {
   m_Sampling = new QGoAlgoParameter<int>("Sampling", false, 0, 999, 3);
   this->m_AlgoWidget->AddParameter(m_Sampling);

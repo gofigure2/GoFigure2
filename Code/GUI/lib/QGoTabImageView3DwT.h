@@ -245,6 +245,30 @@ public:
   void InitializeToolsForTracesToolBar(QMenu* iMenu, QToolBar* iToolBar);
   void InitializeTraceSettingsToolBar(QToolBar* iToolBar);
 
+  /**
+    \brief Creates actors for the contours which are at the given time points
+    in the container. The actors are not visible by default. (see ShowTraces)
+    \param[in] iTPointToLoad Time points to be used to create actors.
+    */
+  void CreateContoursActorsFromVisuContainer(
+          std::list<unsigned int> iTPointToLoad);
+
+  /**
+    \brief Creates actors for the meshes which are at the given time points
+    in the container. The actors are not visible by default. (see ShowTraces)
+    \param[in] iTPointToLoad Time points to be used to create actors.
+    */
+  void CreateMeshesActorsFromVisuContainer(
+          std::list<unsigned int> iTPointToLoad);
+
+  /**
+    \brief Show traces from container which are at the given time point.
+    Only updates contours and meshes since tracks and lineages go over several
+    time points.
+    \param[in] iTimePoint Visible time point.
+    */
+  void ShowTraces(const unsigned int& iTimePoint);
+
 signals:
   void TimePointChanged(int TimePoint);
 
@@ -463,8 +487,7 @@ protected:
     if ( iIt->Nodes )
       {
       bool highlighted = false;
-      bool visibility =
-        ( static_cast< unsigned int >( m_TCoord ) == iIt->TCoord );
+      bool visibility = false;
 
       AddTraceIDIntoPolydata(iIt->Nodes, iIt->TraceID, "MESH");
 

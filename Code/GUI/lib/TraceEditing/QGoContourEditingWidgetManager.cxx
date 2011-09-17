@@ -125,7 +125,8 @@ void QGoContourEditingWidgetManager::SetSemiAutomaticAlgorithms(QWidget* iParent
     this, SLOT(ApplyShapeAlgo() ) );
 
   //watershed:
-  this->m_WaterShedAlgo = new QGoMeshWaterShedAlgo(this->m_Seeds, iParent);
+  this->m_WaterShedAlgo = new QGoMeshWaterShedAlgo(this->m_Seeds,
+this->m_MaxThreshold, iParent);
   QGoAlgorithmWidget* WaterShedWidget = m_WaterShedAlgo->GetAlgoWidget();
   this->m_TraceEditingWidget->AddAlgoWidgetForSemiAutomaticMode(WaterShedWidget);
 

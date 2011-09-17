@@ -112,6 +112,7 @@ protected:
   GoImageProcessor*          m_Images;
   int*                       m_CurrentTimePoint;
   QStringList                m_ListTimePoint;
+  int                        m_MaxThreshold;
 
   void SetTheTraceWidget(std::vector<QString> iVectChannels, int iTimeMin,
     int iTimeMax, QWidget* iParent);

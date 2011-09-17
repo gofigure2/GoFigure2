@@ -71,6 +71,10 @@
 #include <vtkInteractorStyleImage.h>
 #include "MegaVTK2Configure.h"
 
+#include "vtkActor.h"
+#include "vtkProp.h"
+#include <vector>
+
 #define VTKIS_SLICE_MOVE  5051
 
 /**
@@ -177,6 +181,13 @@ public:
    */
   void SynchronizeViews( bool iSynchronize);
 
+  /*
+   * \brief Add plane actors to be able to get rid of them while picking,
+   *  wireframe mode. and surface mode
+   * \param[in] iSynchronize Enable/disable synchronization
+   */
+  void SetPlanesActors( std::vector< vtkActor * > iBounds);
+
 protected:
   vtkInteractorStyleImage2D();
   ~vtkInteractorStyleImage2D();
@@ -193,6 +204,7 @@ private:
   unsigned int m_Mode;
   bool         m_LeftButtonDown;
   bool         m_SynchronizeViews;
+  std::vector< vtkActor * > m_PlanesActors;
 };
 
 #endif

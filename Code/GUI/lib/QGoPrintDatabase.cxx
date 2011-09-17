@@ -44,6 +44,7 @@
 #include <QCloseEvent>
 #include <QPixmap>
 #include <QStatusBar>
+#include <QSettings>
 
 #include <iostream>
 
@@ -82,7 +83,7 @@ QGoPrintDatabase::QGoPrintDatabase(QWidget *iParent) :
   m_IsDatabaseUsed(false),
   m_ReeditMode(false),
   m_MeshGenerationMode(false)
-{ 
+{
   this->SetUpUi();
 
   this->m_CellTypeManager = new QGoDBCellTypeManager(this);
@@ -216,20 +217,38 @@ void QGoPrintDatabase::CloseDBConnection()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoPrintDatabase::FillTableFromDatabase()
+void QGoPrintDatabase::FillTableFromDatabase(const int& iThreshold)
 {
   OpenDBConnection();
-  this->GetContentAndDisplayAllTracesInfo(this->m_DatabaseConnector);
+  // Get number of meshes to be loaded
+  int nbOfTraces = NumberOfElementForGivenImagingSessionAndTrace(
+          this->m_DatabaseConnector,
+          this->m_ImgSessionID,
+          "mesh");
+
+  // if there are more than 5 thousands meshes, only load 3 time points in
+  // memory
+  if(nbOfTraces > iThreshold)
+    {
+    this->m_VisibleTimePoints.resize(3);
+    this->GetContentAndDisplayAllTracesInfoFor3TPs(this->m_DatabaseConnector);
+    }
+  else
+    {
+    this->m_VisibleTimePoints.resize(0);
+    this->GetContentAndDisplayAllTracesInfo(this->m_DatabaseConnector);
+    }
+
   CloseDBConnection();
 
   QString title = QString("Table for: %1 ").arg( m_ImgSessionName.c_str() );
   this->setWindowTitle(title);
-  
+
   this->m_StackedTables->addWidget(this->m_ContoursManager->GetTableWidget());
   this->m_StackedTables->addWidget(this->m_MeshesManager->GetTableWidget());
   this->m_StackedTables->addWidget(this->m_TracksManager->GetTableWidget());
   this->m_StackedTables->addWidget(this->m_LineagesManager->GetTableWidget());
-  
+
   m_IsDatabaseUsed = true;
   emit PrintDBReady();
 }
@@ -328,7 +347,7 @@ QGoPrintDatabase::SaveMeshFromVisuInDB(unsigned int iXCoordMin,
       emit PrintMessage(MessageToPrint);
       }
     std::list<unsigned int> MotherTrackDivisionToUpdate;
-    MessageToPrint = this->m_TracksManager->CheckMeshCanBeAddedToTrack(this->m_DatabaseConnector, TrackID, 
+    MessageToPrint = this->m_TracksManager->CheckMeshCanBeAddedToTrack(this->m_DatabaseConnector, TrackID,
       *this->m_SelectedTimePoint, MotherTrackDivisionToUpdate).c_str();
     unsigned int NewMeshID;
     if (!MessageToPrint.isEmpty() )
@@ -378,7 +397,7 @@ QGoPrintDatabase::SaveMeshFromVisuInDB(unsigned int iXCoordMin,
     if (!MotherTrackDivisionToUpdate.empty() )
       {
       this->m_TracksManager->UpdateDivisions(MotherTrackDivisionToUpdate);
-      }  
+      }
     }
   else //for mesh generated from contours:
     {
@@ -1164,6 +1183,53 @@ void QGoPrintDatabase::GetContentAndDisplayAllTracesInfo(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+
+void QGoPrintDatabase::GetContentAndDisplayAllTracesInfoFor3TPs(
+  vtkMySQLDatabase *iDatabaseConnector)
+{
+  m_VisibleTimePoints.clear();
+
+  if(*this->m_SelectedTimePoint>0)
+    {
+    m_VisibleTimePoints.push_back(*this->m_SelectedTimePoint-1);
+    }
+  m_VisibleTimePoints.push_back(*this->m_SelectedTimePoint);
+  m_VisibleTimePoints.push_back(*this->m_SelectedTimePoint+1);
+  this->m_ContoursManager->
+    DisplayInfoAndLoadVisuContainerForAllContoursForSpecificTPs(iDatabaseConnector,
+    m_VisibleTimePoints);
+  this->m_MeshesManager->
+    DisplayInfoAndLoadVisuContainerForAllMeshesForSpecificTPs(iDatabaseConnector,
+    m_VisibleTimePoints);
+
+  this->m_TracksManager->DisplayInfoAndLoadVisuContainerForAllTracks(iDatabaseConnector);
+  this->m_LineagesManager->DisplayInfoAndLoadVisuContainerForAllLineages(iDatabaseConnector);
+}
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoPrintDatabase::AddTracesForSelectedTimePoints(
+  vtkMySQLDatabase *iDatabaseConnector, std::list<unsigned int> iListTimePoints)
+{
+
+}
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoPrintDatabase::RemoveTracesFromListTimePoints(
+  vtkMySQLDatabase *iDatabaseConnector, std::list<unsigned int> iListTimePoints)
+{
+  this->m_ContoursManager->RemoveTracesFromTWAndContainerForVisuForSpecificTPs(
+    iDatabaseConnector, iListTimePoints);
+  this->m_MeshesManager->RemoveTracesFromTWAndContainerForVisuForSpecificTPs(
+    iDatabaseConnector, iListTimePoints);
+}
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 void QGoPrintDatabase::CreateContextMenu(const QPoint & iPos)
 {
   QMenu *ContextMenu = new QMenu;
@@ -1172,7 +1238,7 @@ void QGoPrintDatabase::CreateContextMenu(const QPoint & iPos)
   TraceSettings->setCheckable(true);
   TraceSettings->setChecked(this->m_TraceSettingsVisible);
 
-  QObject::connect( TraceSettings, SIGNAL( triggered (bool) ), this, 
+  QObject::connect( TraceSettings, SIGNAL( triggered (bool) ), this,
     SLOT( ShowHideTraceSettingsFromContextMenu(bool) ) );
 
   ContextMenu->addAction(TraceSettings);
@@ -1505,10 +1571,10 @@ void QGoPrintDatabase::SetTracksManager()
 void QGoPrintDatabase::SetLineagesManager()
 {
   this->m_LineagesManager = new QGoDBLineageManager(m_ImgSessionID, this);
-                    
-  QObject::connect( this->m_LineagesManager, 
+
+  QObject::connect( this->m_LineagesManager,
                     SIGNAL( NeedToGetDatabaseConnection() ),
-                    this, 
+                    this,
                     SLOT( PassDBConnectionToLineagesManager() ) );
   QObject::connect( this->m_LineagesManager,
                     SIGNAL( DBConnectionNotNeededAnymore() ),
@@ -1849,13 +1915,13 @@ void QGoPrintDatabase::SplitMergeTracksWithWidget(
 
 //--------------------------------------------------------------------------
 void QGoPrintDatabase::AddCheckedTracksToSelectedLineage(
-  std::list<unsigned int> iListDaughters, unsigned int iLineageID, 
+  std::list<unsigned int> iListDaughters, unsigned int iLineageID,
   std::list<unsigned int> iListLineagesToDelete)
 {
   if (!iListLineagesToDelete.empty() )
     {
     this->DeleteListTraces< QGoDBLineageManager, QGoDBLineageManager > (
-      this->m_LineagesManager, this->m_LineagesManager, this->m_TracksManager, 
+      this->m_LineagesManager, this->m_LineagesManager, this->m_TracksManager,
       iListLineagesToDelete, true);
     }
 
@@ -1892,3 +1958,97 @@ void QGoPrintDatabase::ShowHideTraceSettingsFromContextMenu(bool isVisible)
     }
    return !this->m_TraceSettingsVisible;
  }
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+std::list<unsigned int>
+QGoPrintDatabase::
+UpdateTableWidgetAndContainersForGivenTimePoint(
+        const unsigned int& iNewTimePoint)
+{
+  this->OpenDBConnection();
+
+  if(this->m_VisibleTimePoints.size() == 3)
+    {
+    // list to be removed
+    std::list<unsigned int> listToRemove;
+    listToRemove = m_VisibleTimePoints;
+    // iterator
+    std::list<unsigned int>::iterator it_listToRemove = listToRemove.begin();
+
+    // list to be added
+    std::list<unsigned int> listToAdd;
+    if(iNewTimePoint>0)
+      {
+      listToAdd.push_back(iNewTimePoint-1);
+      }
+    listToAdd.push_back(iNewTimePoint);
+    listToAdd.push_back(iNewTimePoint+1);
+    // iterator
+    std::list<unsigned int>::iterator it_listToAdd = listToAdd.begin();
+    m_VisibleTimePoints = listToAdd;
+
+    // list common t points
+    std::list<unsigned int> listCommonT;
+    while(it_listToRemove != listToRemove.end())
+      {
+      while(it_listToAdd != listToAdd.end())
+        {
+        if(*it_listToRemove == *it_listToAdd)
+          {
+          /**
+            \todo check if we can do it properly
+          // remove elements from a list while iterating on it doesn't sound safe
+          // that's why we use listCommonT
+          // To be checked
+            */
+          listCommonT.push_back(*it_listToRemove);
+          }
+        ++it_listToAdd;
+        }
+      it_listToAdd = listToAdd.begin();
+      ++it_listToRemove;
+      }
+
+    // remove common t points
+    // iterator
+    std::list<unsigned int>::iterator it_listCommonT = listCommonT.begin();
+    while(it_listCommonT != listCommonT.end())
+      {
+      listToRemove.remove(*it_listCommonT);
+      listToAdd.remove(*it_listCommonT);
+      ++it_listCommonT;
+      }
+
+    // remove time points
+    if(listToRemove.size() > 0)
+      {
+      this->m_ContoursManager->CleanTWAndContainerForGivenTimePoint(
+        this->m_DatabaseConnector, listToRemove);
+      this->m_MeshesManager->CleanTWAndContainerForGivenTimePoint(
+        this->m_DatabaseConnector, listToRemove);
+      }
+
+
+    // add time points
+    if(listToAdd.size() > 0)
+      {
+      this->m_ContoursManager->
+        DisplayInfoAndLoadVisuContainerForAllContoursForSpecificTPs(
+        this->m_DatabaseConnector,
+        listToAdd);
+      this->m_MeshesManager->
+        DisplayInfoAndLoadVisuContainerForAllMeshesForSpecificTPs(
+        this->m_DatabaseConnector,
+        listToAdd);
+      }
+
+    this->CloseDBConnection();
+    return listToAdd;
+  }
+
+  std::list<unsigned int> listToAdd(0);
+  return listToAdd;
+
+}
+//--------------------------------------------------------------------------
