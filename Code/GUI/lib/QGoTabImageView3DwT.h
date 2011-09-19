@@ -387,6 +387,8 @@ public slots:
 
   void updateSlot();
 
+  void PolydatasRequested(int);
+
 protected:
   QGoImageView3D *                               m_ImageView;
 

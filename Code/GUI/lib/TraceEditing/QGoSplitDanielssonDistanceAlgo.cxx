@@ -35,7 +35,7 @@
 
 
 QGoSplitDanielssonDistanceAlgo::QGoSplitDanielssonDistanceAlgo(std::vector< vtkPoints* >* iSeeds, QWidget* iParent)
-  :QGoSemiAutoSegmentationAlgo(iSeeds, iParent)
+  :QGoSplitSegmentationAlgo(iSeeds, iParent)
 {
   this->SetAlgoWidget(iParent);
 }
@@ -58,9 +58,9 @@ void QGoSplitDanielssonDistanceAlgo::DeleteParameters()
 void QGoSplitDanielssonDistanceAlgo::SetAlgoWidget(QWidget* iParent)
 {
   this->m_AlgoWidget =
-    new QGoAlgorithmWidget("Split Danielsson", iParent);
+    new QGoAlgorithmWidget("Danielsson", iParent);
 
-  QGoSemiAutoSegmentationAlgo::SetAlgoWidget();
+  QGoSplitSegmentationAlgo::SetAlgoWidget();
 }
 //-------------------------------------------------------------------------
 

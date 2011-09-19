@@ -1,3 +1,4 @@
+
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
  at Megason Lab, Systems biology, Harvard Medical school, 2009-11
@@ -31,42 +32,67 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#ifndef __QGoSplitDanielssonDistanceAlgo_h
-#define __QGoSplitDanielssonDistanceAlgo_h
+#ifndef __QGoSplitSegmentationAlgo_h
+#define __QGoSplitSegmentationAlgo_h
 
-#include "QGoSplitSegmentationAlgo.h"
+#include "QGoSegmentationAlgo.h"
 #include "QGoAlgorithmWidget.h"
-#include "QGoAlgoParameter.h"
 #include "QGoGUILibConfigure.h"
 #include "vtkSmartPointer.h"
 #include "vtkPolyData.h"
 #include "vtkImageData.h"
+#include "QGoGUILibConfigure.h"
 
 class GoImageProcessor;
 
-
 /**
-\class QGoSplitDanielssonDistanceAlgo
-\brief class to be the interface between the shape algo for meshes,
-contours and set of contours and GoFigure
+\class QGoSplitSegmentationAlgo
+\brief abstract class to be the interface between the semi automatic
+algorithms for meshes and contours and GoFigure
 */
-class QGoSplitDanielssonDistanceAlgo: public QGoSplitSegmentationAlgo
+class QGOGUILIB_EXPORT QGoSplitSegmentationAlgo:public QGoSegmentationAlgo
 {
+  Q_OBJECT
 public:
-  QGoSplitDanielssonDistanceAlgo(std::vector< vtkPoints* >* iSeeds,
-                                 QWidget* iParent = 0);
-  ~QGoSplitDanielssonDistanceAlgo();
+  explicit QGoSplitSegmentationAlgo(std::vector< vtkPoints* >* iSeeds, QWidget *iParent = 0);
+  virtual ~QGoSplitSegmentationAlgo();
 
- virtual std::vector<vtkPolyData*> ApplyAlgo(
+
+  /**
+  \brief return the vtkpolydata created by the algorithm
+  */
+  virtual std::vector<vtkPolyData*> ApplyAlgo(
     GoImageProcessor* iImages,
     std::string iChannel,
-    bool iIsInvertedOn = false ) = 0;
+    bool iIsInvertedOn = false) = 0;
 
 protected:
+  std::vector< vtkPoints* >*      m_Seeds;
+  QGoAlgoParameter<double>*       m_Radius;
 
+  /**
+  \brief construct the algowidget with the different parameters
+  */
   virtual void SetAlgoWidget(QWidget* iParent = 0);
 
-  void DeleteParameters();
+
+  /**
+  \brief delete the different parameters
+  */
+  virtual void DeleteParameters() = 0;
+
+  /*
+   * \brief Get boundingBox from a center and a radius
+   * \param[in] iCenter center of the box
+   * \param[in] iRadius radius of the box
+   * \param[in] iOrientation 0-xy, 1-xz, 2-yz, 3-xyz
+   * \return vector[6] containing the bounding box (xmin, xmax, ymin, imax, ...)
+   */
+  std::vector<double> GetBounds(
+      const std::vector<double>& iCenter,
+      const double& iRadius,
+      const unsigned int& iOrientation = 3);
+
 };
 
 #endif

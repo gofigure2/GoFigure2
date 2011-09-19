@@ -40,6 +40,8 @@
 #include "vtkImageData.h"
 #include <iostream>
 
+#include <QDebug>
+
 #include "QGoMeshWaterShedAlgo.h"
 #include "GoImageProcessor.h"
 
@@ -180,10 +182,12 @@ void QGoMeshEditingWidgetManager::SetSplitMergeMode(QWidget* iParent)
   m_DanielAlgo = new QGoMeshSplitDanielssonDistanceAlgo(this->m_Seeds,
                                                         iParent);
   QGoAlgorithmWidget * DanielWidget = m_DanielAlgo->GetAlgoWidget();
+  DanielWidget->setObjectName("Split");
+
   SplitAlgoWidget->AddMethod(DanielWidget );
 
   QObject::connect( DanielWidget, SIGNAL(ApplyAlgo() ) ,
-                    this, SLOT(ApplyDanielAlgo() ) );
+                    this, SLOT(RequestPolydatas() ) );
 
   QGoAlgorithmsManagerWidget* MergeAlgoWidget =
     new QGoAlgorithmsManagerWidget("Merge", iParent);
@@ -193,9 +197,26 @@ void QGoMeshEditingWidgetManager::SetSplitMergeMode(QWidget* iParent)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+void QGoMeshEditingWidgetManager::RequestPolydatas(){
+
+  qDebug() << QObject::sender()->objectName().compare("Merge");
+  if(QObject::sender()->objectName().compare("Merge") == 0)
+    {
+    // need 2 polydata if the widget is a merge widget
+    emit RequestPolydatas(2);
+    }
+  else
+    {
+    // need 1 polydata
+    emit RequestPolydatas(1);
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 void QGoMeshEditingWidgetManager::ApplyDanielAlgo()
 {
-  this->GetPolydatasFromAlgo<QGoMeshSplitDanielssonDistanceAlgo>(this->m_DanielAlgo);
+  //this->GetPolydatasSplittedFromAlgo<QGoMeshSplitDanielssonDistanceAlgo>(this->m_DanielAlgo);
 }
 //-------------------------------------------------------------------------
 

@@ -1,3 +1,4 @@
+
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
  at Megason Lab, Systems biology, Harvard Medical school, 2009-11
@@ -31,42 +32,59 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#ifndef __QGoSplitDanielssonDistanceAlgo_h
-#define __QGoSplitDanielssonDistanceAlgo_h
-
 #include "QGoSplitSegmentationAlgo.h"
-#include "QGoAlgorithmWidget.h"
-#include "QGoAlgoParameter.h"
-#include "QGoGUILibConfigure.h"
-#include "vtkSmartPointer.h"
-#include "vtkPolyData.h"
-#include "vtkImageData.h"
 
-class GoImageProcessor;
+//-------------------------------------------------------------------------
+QGoSplitSegmentationAlgo::
+QGoSplitSegmentationAlgo(
+  std::vector< vtkPoints* >* iSeeds,
+  QWidget *iParent) : QGoSegmentationAlgo( iParent ), m_Seeds( iSeeds )
+{}
+//-------------------------------------------------------------------------
 
-
-/**
-\class QGoSplitDanielssonDistanceAlgo
-\brief class to be the interface between the shape algo for meshes,
-contours and set of contours and GoFigure
-*/
-class QGoSplitDanielssonDistanceAlgo: public QGoSplitSegmentationAlgo
+//-------------------------------------------------------------------------
+QGoSplitSegmentationAlgo::~QGoSplitSegmentationAlgo()
 {
-public:
-  QGoSplitDanielssonDistanceAlgo(std::vector< vtkPoints* >* iSeeds,
-                                 QWidget* iParent = 0);
-  ~QGoSplitDanielssonDistanceAlgo();
 
- virtual std::vector<vtkPolyData*> ApplyAlgo(
-    GoImageProcessor* iImages,
-    std::string iChannel,
-    bool iIsInvertedOn = false ) = 0;
+}
+//-------------------------------------------------------------------------
 
-protected:
+//-------------------------------------------------------------------------
+void QGoSplitSegmentationAlgo::SetAlgoWidget(QWidget* iParent)
+{
 
-  virtual void SetAlgoWidget(QWidget* iParent = 0);
+}
 
-  void DeleteParameters();
-};
+//-------------------------------------------------------------------------
 
-#endif
+//-------------------------------------------------------------------------
+std::vector<double>
+QGoSplitSegmentationAlgo::
+GetBounds(const std::vector<double>& iCenter,
+          const double& iRadius,
+          const unsigned int& iOrientation)
+{
+  assert( iCenter.size() == 3 );
+  assert( iRadius >= 0. );
+  assert( iOrientation < 4 );
+
+  std::vector<double> boundingBox( 6, 0. );
+  unsigned int k = 0;
+
+  for(unsigned int i=0; i<3; i++)
+    {
+    if(i == iOrientation)
+      {
+      boundingBox[k++] = iCenter[i];
+      boundingBox[k++] = iCenter[i];
+      }
+    else
+      {
+      boundingBox[k++] = iCenter[i] - iRadius;
+      boundingBox[k++] = iCenter[i] + iRadius;
+      }
+    }
+
+ return boundingBox;
+}
+//-------------------------------------------------------------------------

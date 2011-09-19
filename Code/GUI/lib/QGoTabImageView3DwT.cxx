@@ -543,6 +543,11 @@ QGoTabImageView3DwT::CreateMeshEditingDockWidget(int iTimeMin, int iTimeMax)
                     this,
                     SLOT(UpdateTracesEditingWidget() ) );
 
+  QObject::connect( this->m_MeshEditingWidget,
+                    SIGNAL(RequestPolydatas(int) ),
+                    this,
+                    SLOT( PolydatasRequested( int) ) );
+
 
   /*QObject::connect( m_MeshSegmentationDockWidget,
                     SIGNAL( ReinitializeInteractorActivated(bool) ),
@@ -3486,4 +3491,12 @@ ShowTraces(const unsigned int& iTimePoint)
   // several time points
   this->m_ContourContainer->ShowActorsWithGivenTimePoint(iTimePoint);
   this->m_MeshContainer->ShowActorsWithGivenTimePoint(iTimePoint);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+PolydatasRequested(int iNumberOfPolydatas){
+  std::cout << "need " << iNumberOfPolydatas << " polydatas" << std::endl;
 }

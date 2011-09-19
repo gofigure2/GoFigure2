@@ -115,6 +115,7 @@ SET( QGoGUILIB_SRC
   TraceEditing/QGoSplitDanielssonDistanceAlgo.cxx
   TraceEditing/QGoSetOfContoursShapeAlgo.cxx
   TraceEditing/QGoSemiAutoSegmentationAlgo.cxx
+  TraceEditing/QGoSplitSegmentationAlgo.cxx
   TraceEditing/QGoFilterSemiAutoBase.cxx
 
   # transfer function widget
@@ -266,6 +267,7 @@ SET( QGoGUILIB_HDRS
   TraceEditing/QGoContourEditingWidgetManager.h
   TraceEditing/QGoSegmentationAlgo.h
   TraceEditing/QGoSemiAutoSegmentationAlgo.h
+  TraceEditing/QGoSplitSegmentationAlgo.h
   TraceEditing/QGoTraceEditingWidgetManager.h
   TraceEditing/QGoFilterSemiAutoBase.h
 
