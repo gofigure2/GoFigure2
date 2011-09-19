@@ -158,7 +158,9 @@ GoTransferFunctionEditorWidget::GoTransferFunctionEditorWidget(QWidget *parent,
   m_MinSlider->setOrientation(Qt::Horizontal);
   m_MinSlider->setMaximum(255);
   m_MinSlider->setValue(20);
-  m_MinSlider->setStyleSheet("QSlider::add-page:horizontal {background: blue;} QSlider::sub-page:vertical {background: white;}");
+  m_MinSlider->setStyleSheet("QSlider::groove:horizontal {border: 1px solid #bbb;background: white;height: 10px;border-radius: 4px;position: absolute;left: -10px;right: -10px;}QSlider::sub-page:horizontal {background: qlineargradient(x1: 0, y1: 0,    x2: 0, y2: 1,stop: 0 #66e, stop: 1 #bbf);background: qlineargradient(x1: 0, y1: 0.2, x2: 1, y2: 1,stop: 0 #bbf, stop: 1 #55f);border: 1px solid #777;height: 10px;border-radius: 4px;}QSlider::add-page:horizontal {background: #fff;border: 1px solid #777;height: 10px;border-radius: 4px;}QSlider::handle:horizontal { image: url(:widget/arrow_up.png);width: 20px;margin-top: -1px;margin-bottom: -2px;}QSlider::sub-page:horizontal:disabled {background: #bbb;border-color: #999;}QSlider::add-page:horizontal:disabled {background: #eee;border-color: #999;}QSlider::handle:horizontal:disabled {background: #eee;border: 1px solid #aaa;border-radius: 4px;}");
+  //m_MinSlider->setStyleSheet("QSlider::handle:horizontal {image: url(:/widget/arrow_up.png); } QSlider::groove:horizontal { background: red; position:absolute; left: 4px; right:4px;}");
+  //m_MinSlider->setStyleSheet("QSlider::add-page:horizontal {background: blue;} QSlider::sub-page:horizontal {background: white;}");
   connect(m_MinSlider, SIGNAL(valueChanged(int)), this, SLOT(minValueChanged(int)));
 
   QLabel* maxName = new QLabel("Max:");
@@ -166,7 +168,9 @@ GoTransferFunctionEditorWidget::GoTransferFunctionEditorWidget(QWidget *parent,
   m_MaxSlider->setOrientation(Qt::Horizontal);
   m_MaxSlider->setMaximum(255);
   m_MaxSlider->setValue(230);
-  m_MaxSlider->setStyleSheet("QSlider::add-page:horizontal {background: white;} QSlider::sub-page:vertical {background: blue;}");
+  //m_MaxSlider->setStyleSheet("QSlider::handle:horizontal {image: url(:/widget/arrow_down.png);");
+  m_MaxSlider->setStyleSheet("QSlider::groove:horizontal {border: 1px solid #bbb;background: white;height: 10px;border-radius: 4px;position: absolute;left: -10px;right: -10px;}QSlider::sub-page:horizontal {background: qlineargradient(x1: 0, y1: 0,    x2: 0, y2: 1,stop: 0 #66e, stop: 1 #bbf);background: qlineargradient(x1: 0, y1: 0.2, x2: 1, y2: 1,stop: 0 #bbf, stop: 1 #55f);border: 1px solid #777;height: 10px;border-radius: 4px;}QSlider::add-page:horizontal {background: #fff;border: 1px solid #777;height: 10px;border-radius: 4px;}QSlider::handle:horizontal {image: url(:widget/arrow_down.png);width: 20px;margin-top: -1px;margin-bottom: -2px;}QSlider::sub-page:horizontal:disabled {background: #bbb;border-color: #999;}QSlider::add-page:horizontal:disabled {background: #eee;border-color: #999;}QSlider::handle:horizontal:disabled {background: #eee;border: 1px solid #aaa;border-radius: 4px;}");
+
   connect(m_MaxSlider, SIGNAL(valueChanged(int)), this, SLOT(maxValueChanged(int)));
 
   QHBoxLayout *posLayout = new QHBoxLayout;
