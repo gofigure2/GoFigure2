@@ -207,7 +207,7 @@ UpdateLookupTable(vtkLookupTable* iLUT, qreal iGamma, qreal iMin, qreal iMax)
   for(int i=iMin; i<iMax; ++i)
     {
     qreal input = ((qreal)i - iMin)/((iMax-iMin));
-    qreal power = (qreal)(pow(input, iGamma/500));
+    qreal power = (qreal)(pow(input, iGamma));
     qreal temp_height = height*(1-power);
     if(temp_height<0)
       {

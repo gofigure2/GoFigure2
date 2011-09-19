@@ -144,40 +144,30 @@ GoTransferFunctionEditorWidget::GoTransferFunctionEditorWidget(QWidget *parent,
   QLabel* gammaName = new QLabel("Gamma:");
   m_GammaSlider = new QSlider(this);
   m_GammaSlider->setOrientation(Qt::Horizontal);
-  m_GammaSlider->setMaximum(5000);
-  m_GammaSlider->setMinimum(50);
-  m_GammaSlider->setValue(500);
-  connect(m_GammaSlider, SIGNAL(valueChanged(int)), this, SLOT(gammaValueChanged(int)));
+  m_GammaSlider->setMaximum(399);
+  m_GammaSlider->setMinimum(1);
+  m_GammaSlider->setValue(200);
+  connect(m_GammaSlider, SIGNAL(valueChanged(int)), this, SLOT(pointsUpdated()));
 
   QHBoxLayout *gammaLayout = new QHBoxLayout;
   gammaLayout->addWidget(gammaName);
   gammaLayout->addWidget(m_GammaSlider);
 
-  QLabel* minName = new QLabel("Min:");
   m_MinSlider = new QSlider(this);
   m_MinSlider->setOrientation(Qt::Horizontal);
   m_MinSlider->setMaximum(255);
-  m_MinSlider->setValue(20);
+  m_MinSlider->setValue(0);
   m_MinSlider->setStyleSheet("QSlider::groove:horizontal {border: 1px solid #bbb;background: #ffffff;height: 4px;position: absolute;left: -10px;right: -10px;}QSlider::sub-page:horizontal {background: #808080;border: 1px solid black;}QSlider::add-page:horizontal {background: #ffffff;border: 1px solid black;}QSlider::handle:horizontal {image: url(/home/nr52/gitroot/gofigure/Resources/widget/arrow_up.png);width: 20px;margin-top: -1px;margin-bottom: -2px;}");
-  //m_MinSlider->setStyleSheet("QSlider::handle:horizontal {image: url(:/widget/arrow_up.png); } QSlider::groove:horizontal { background: red; position:absolute; left: 4px; right:4px;}");
-  //m_MinSlider->setStyleSheet("QSlider::add-page:horizontal {background: blue;} QSlider::sub-page:horizontal {background: white;}");
-  connect(m_MinSlider, SIGNAL(valueChanged(int)), this, SLOT(minValueChanged(int)));
+  connect(m_MinSlider, SIGNAL(valueChanged(int)), this, SLOT(pointsUpdated()));
 
-  QLabel* maxName = new QLabel("Max:");
   m_MaxSlider = new QSlider(this);
   m_MaxSlider->setOrientation(Qt::Horizontal);
   m_MaxSlider->setMaximum(255);
-  m_MaxSlider->setValue(230);
-  //m_MaxSlider->setStyleSheet("QSlider::handle:horizontal {image: url(:/widget/arrow_down.png);");
+  m_MaxSlider->setValue(255);
   m_MaxSlider->setStyleSheet("QSlider::groove:horizontal {border: 1px solid #bbb;background: #ffffff;height: 4px;position: absolute;left: -10px;right: -10px;}QSlider::sub-page:horizontal {background: #ffffff;border: 1px solid black;}QSlider::add-page:horizontal {background: #909090;border: 1px solid black;}QSlider::handle:horizontal {image: url(/home/nr52/gitroot/gofigure/Resources/widget/arrow_down.png);width: 20px;margin-top: -1px;margin-bottom: -2px;}");
 
-  connect(m_MaxSlider, SIGNAL(valueChanged(int)), this, SLOT(maxValueChanged(int)));
+  connect(m_MaxSlider, SIGNAL(valueChanged(int)), this, SLOT(pointsUpdated()));
 
-  QHBoxLayout *posLayout = new QHBoxLayout;
-  posLayout->addWidget(minName);
-  posLayout->addWidget(m_MinSlider);
-  posLayout->addWidget(maxName);
-  posLayout->addWidget(m_MaxSlider);
 
   QCheckBox* tfCB = new QCheckBox("Show TF");
   tfCB->setChecked(true);
@@ -206,7 +196,6 @@ GoTransferFunctionEditorWidget::GoTransferFunctionEditorWidget(QWidget *parent,
 
 
   vbox->addLayout(gammaLayout);
-  vbox->addLayout(posLayout);
   vbox->addWidget(tfCB);
   vbox->addWidget(tfoCB);
   vbox->addWidget(histoCB);
@@ -246,7 +235,7 @@ void GoTransferFunctionEditorWidget::pointsUpdated()
     {
     // update the LUT
     m_red_shade->UpdateLookupTable(m_LUT,
-                                   (qreal)m_GammaSlider->value(),
+                                   (qreal)m_GammaSlider->value()/200,
                                    (qreal)m_MinSlider->value(),
                                    (qreal)m_MaxSlider->value());
     // send signal to update the visualization
@@ -606,41 +595,5 @@ updateOpacityTF()
     m_OpacityTF->AddPoint(x, y);
     }
   m_OpacityTF->Modified();
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-GoTransferFunctionEditorWidget::
-gammaValueChanged(int iValue)
-{
-  qDebug() << "gamma value changed: " << iValue;
-
-  // update transfer function
-  pointsUpdated();
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-GoTransferFunctionEditorWidget::
-minValueChanged(int iValue)
-{
-  qDebug() << "min value changed: " << iValue;
-
-  // update transfer function
-  pointsUpdated();
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-GoTransferFunctionEditorWidget::
-maxValueChanged(int iValue)
-{
-  qDebug() << "max value changed: " << iValue;
-
-  // update transfer function
-  pointsUpdated();
 }
 //-------------------------------------------------------------------------
