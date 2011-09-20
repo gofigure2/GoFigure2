@@ -80,7 +80,7 @@ public:
   /** Display */
 //     void PrintSelf( std::ostream& os, Indent indent ) const;
 
-  typedef bool LabelType;
+  typedef unsigned char LabelType;
 
   typedef ShapeLabelObject< LabelType, ImageDimension > ShapeLabelObjectType;
   typedef typename ShapeLabelObjectType::Pointer        ShapeLabelObjectPointer;
