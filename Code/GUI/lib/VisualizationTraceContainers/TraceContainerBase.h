@@ -444,6 +444,12 @@ public:
   std::list< unsigned int > GetHighlightedElementsTraceID();
 
   /**
+    \brief Get N highlighted elements by pair<ID, Polydata>.
+    */
+
+  std::list< std::pair<unsigned int, vtkPolyData*> > GetHighlightedElements(int iNumber);
+
+  /**
     \brief Remove the element which TraceId = iId
     <ul>
       <li>from the visualization

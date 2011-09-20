@@ -485,7 +485,31 @@ TraceContainerBase< TContainer >::GetHighlightedElementsTraceID()
     }
   return oList;
 }
+//-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
+template< class TContainer >
+std::list< std::pair<unsigned int, vtkPolyData*> >
+TraceContainerBase< TContainer >::
+GetHighlightedElements(int iNumber){
+  std::list< std::pair<unsigned int, vtkPolyData*> > oList;
+  MultiIndexContainerHighlightedIterator it0, it1;
+
+  using boost::multi_index:: get;
+
+  boost::tuples::tie(it0, it1) =
+    m_Container.get< Highlighted >().equal_range(true);
+  int counter = 0;
+  while ( it0 != it1 && counter < iNumber)
+    {
+    std::pair<unsigned int, vtkPolyData*> pair(it0->TraceID, it0->Nodes);
+    oList.push_back(pair);
+    ++counter;
+    ++it0;
+    }
+
+  return oList;
+}
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------

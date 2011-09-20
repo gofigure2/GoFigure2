@@ -3499,4 +3499,16 @@ void
 QGoTabImageView3DwT::
 PolydatasRequested(int iNumberOfPolydatas){
   std::cout << "need " << iNumberOfPolydatas << " polydatas" << std::endl;
+  //from container, get first checked mesh
+  std::list< std::pair<unsigned int, vtkPolyData*> > elements =
+      this->m_MeshContainer-> GetHighlightedElements(iNumberOfPolydatas);
+  // check sizes match
+  if(elements.size() != iNumberOfPolydatas)
+    {
+    std::cout << "checked elements MISMATCH..." << __FILE__ << " " << __LINE__ << std::endl;
+    }
+  else
+    {
+    std::cout << "checked elements MATCH..." << __FILE__ << " " << __LINE__ << std::endl;
+    }
 }
