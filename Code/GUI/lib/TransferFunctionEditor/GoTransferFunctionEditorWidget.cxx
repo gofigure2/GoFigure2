@@ -144,9 +144,9 @@ GoTransferFunctionEditorWidget::GoTransferFunctionEditorWidget(QWidget *parent,
   QLabel* gammaName = new QLabel("Gamma:");
   m_GammaSlider = new QSlider(this);
   m_GammaSlider->setOrientation(Qt::Horizontal);
-  m_GammaSlider->setMaximum(399);
+  m_GammaSlider->setMaximum(199);
   m_GammaSlider->setMinimum(1);
-  m_GammaSlider->setValue(200);
+  m_GammaSlider->setValue(100);
   connect(m_GammaSlider, SIGNAL(valueChanged(int)), this, SLOT(pointsUpdated()));
 
   QHBoxLayout *gammaLayout = new QHBoxLayout;
@@ -186,15 +186,24 @@ GoTransferFunctionEditorWidget::GoTransferFunctionEditorWidget(QWidget *parent,
   QSpacerItem* spacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Minimum);
   vbox->addItem(spacer);
 
-  vbox->addWidget(m_MaxSlider);
-  vbox->addWidget(m_red_shade);
-  vbox->addWidget(m_MinSlider);
+  QVBoxLayout* shadeVerticalLayout = new QVBoxLayout;
+  shadeVerticalLayout->addWidget(m_MaxSlider);
+  shadeVerticalLayout->addWidget(m_red_shade);
+  shadeVerticalLayout->addWidget(m_MinSlider);
+
+  QHBoxLayout* shadeHorizontalLayout=  new QHBoxLayout;
+  QSpacerItem* spacerShade1 =
+      new QSpacerItem(10, 10, QSizePolicy::Minimum, QSizePolicy::Minimum);
+  QSpacerItem* spacerShade2 =
+      new QSpacerItem(10, 10, QSizePolicy::Minimum, QSizePolicy::Minimum);
 
   QSpacerItem* spacer2 = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Minimum);
-  vbox->addItem(spacer2);
+  shadeHorizontalLayout->addItem(spacerShade1);
+  shadeHorizontalLayout->addLayout(shadeVerticalLayout);
+  shadeHorizontalLayout->addItem(spacerShade2);
 
 
-
+  vbox->addLayout(shadeHorizontalLayout);
   vbox->addLayout(gammaLayout);
   vbox->addWidget(tfCB);
   vbox->addWidget(tfoCB);
@@ -233,9 +242,15 @@ void GoTransferFunctionEditorWidget::pointsUpdated()
 {
   if(m_LUT)
     {
+    qreal side = m_GammaSlider->value()/100;
+    int ope = pow(-1, side + 1);
+    qreal value = (100 - m_GammaSlider->value()%100  + side*(m_GammaSlider->value()%100 -100 + 200 - m_GammaSlider->value()))/50;
+    qDebug() << "gamma: " << value;
+    qreal gamma_value = pow(value, ope);
+
     // update the LUT
     m_red_shade->UpdateLookupTable(m_LUT,
-                                   (qreal)m_GammaSlider->value()/200,
+                                   gamma_value,
                                    (qreal)m_MinSlider->value(),
                                    (qreal)m_MaxSlider->value());
     // send signal to update the visualization
