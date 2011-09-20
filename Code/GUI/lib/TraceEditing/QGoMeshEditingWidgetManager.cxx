@@ -182,7 +182,6 @@ void QGoMeshEditingWidgetManager::SetSplitMergeMode(QWidget* iParent)
   m_DanielAlgo = new QGoMeshSplitDanielssonDistanceAlgo(this->m_Seeds,
                                                         iParent);
   QGoAlgorithmWidget * DanielWidget = m_DanielAlgo->GetAlgoWidget();
-  DanielWidget->setObjectName("Split");
 
   SplitAlgoWidget->AddMethod(DanielWidget );
 
@@ -198,9 +197,8 @@ void QGoMeshEditingWidgetManager::SetSplitMergeMode(QWidget* iParent)
 
 //-------------------------------------------------------------------------
 void QGoMeshEditingWidgetManager::RequestPolydatas(){
-
-  qDebug() << QObject::sender()->objectName().compare("Merge");
-  if(QObject::sender()->objectName().compare("Merge") == 0)
+  m_TempReference = dynamic_cast<QGoAlgorithmWidget*>(QObject::sender());
+  if(QString::fromStdString(m_TraceEditingWidget->GetCurrentModeName()).compare("Merge") == 0)
     {
     // need 2 polydata if the widget is a merge widget
     emit RequestPolydatas(2);
@@ -209,6 +207,33 @@ void QGoMeshEditingWidgetManager::RequestPolydatas(){
     {
     // need 1 polydata
     emit RequestPolydatas(1);
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoMeshEditingWidgetManager::
+RequestedPolydatas(std::list< std::pair<unsigned int, vtkPolyData*> > iRequest){
+  qDebug() << "received QGoMeshEditingWidgetManager" << iRequest.size();
+  // in split mote
+  if(iRequest.size() == 1)
+    {
+    //need seeds
+
+    emit UpdateSeeds();
+    std::vector<vtkPolyData*> NewTraces = m_TempReference->ApplyAlgo(
+      this->m_Images,
+      this->m_TraceEditingWidget->GetCurrentImageName(),
+      iRequest.front().second,
+      this->m_TraceEditingWidget->GetIsInvertedOn());
+    // emit TraceModified(ID, polydata)
+    //emit TracesCreatedFromAlgo(NewTraces[1], this->GetSelectedTimePoint() );
+    emit ClearAllSeeds();
+    }
+  else
+    {
+    //don't need seeds
     }
 }
 //-------------------------------------------------------------------------

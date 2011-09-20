@@ -288,6 +288,8 @@ signals:
 
   void StartContourSegmentation(vtkPoints *iPoints);
 
+  void RequestedPolydatas(std::list< std::pair<unsigned int, vtkPolyData*> >);
+
 public slots:
   void SetTimePoint(const int &);
 
@@ -387,7 +389,7 @@ public slots:
 
   void updateSlot();
 
-  void PolydatasRequested(int);
+  void PolydatasRequested(unsigned int);
 
 protected:
   QGoImageView3D *                               m_ImageView;

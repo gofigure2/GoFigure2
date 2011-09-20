@@ -544,9 +544,14 @@ QGoTabImageView3DwT::CreateMeshEditingDockWidget(int iTimeMin, int iTimeMax)
                     SLOT(UpdateTracesEditingWidget() ) );
 
   QObject::connect( this->m_MeshEditingWidget,
-                    SIGNAL(RequestPolydatas(int) ),
+                    SIGNAL(RequestPolydatas(unsigned int) ),
                     this,
-                    SLOT( PolydatasRequested( int) ) );
+                    SLOT( PolydatasRequested(unsigned int) ) );
+
+  QObject::connect( this,
+                    SIGNAL( RequestedPolydatas(std::list< std::pair<unsigned int, vtkPolyData*> >) ),
+                    this->m_MeshEditingWidget,
+                    SLOT( RequestedPolydatas(std::list< std::pair<unsigned int, vtkPolyData*> >) ) );
 
 
   /*QObject::connect( m_MeshSegmentationDockWidget,
@@ -3497,7 +3502,7 @@ ShowTraces(const unsigned int& iTimePoint)
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
-PolydatasRequested(int iNumberOfPolydatas){
+PolydatasRequested(unsigned int iNumberOfPolydatas){
   std::cout << "need " << iNumberOfPolydatas << " polydatas" << std::endl;
   //from container, get first checked mesh
   std::list< std::pair<unsigned int, vtkPolyData*> > elements =
@@ -3510,5 +3515,6 @@ PolydatasRequested(int iNumberOfPolydatas){
   else
     {
     std::cout << "checked elements MATCH..." << __FILE__ << " " << __LINE__ << std::endl;
+    emit RequestedPolydatas(elements);
     }
 }

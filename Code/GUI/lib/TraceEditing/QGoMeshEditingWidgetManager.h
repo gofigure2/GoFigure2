@@ -88,11 +88,12 @@ public:
 public slots:
 
   void RequestPolydatas();
+  void RequestedPolydatas(std::list< std::pair<unsigned int, vtkPolyData*> >);
 
 signals:
 
   void SetOfContoursFromAlgo(std::vector<std::vector<vtkPolyData*> > iVectVectPolydata, int iTCoord);
-  void RequestPolydatas(int);
+  void RequestPolydatas(unsigned int);
 
 protected:
   QGoAlgorithmsManagerWidget*                     m_SetOfContoursWidget;
@@ -105,6 +106,8 @@ protected:
   QGoSetOfContoursWaterShedAlgo*                  m_SetOfContoursWaterShedAlgo;
   QGoSetOfContoursLevelSetAlgo*                   m_SetOfContoursLevelSetAlgo;
   QGoSetOfContoursShapeAlgo*                      m_SetOfContoursShapeAlgo;
+
+  QGoSegmentationAlgo*                             m_TempReference;
 
   /**
   \brief add the algowidget of the different algo in the algomanagerwidget
