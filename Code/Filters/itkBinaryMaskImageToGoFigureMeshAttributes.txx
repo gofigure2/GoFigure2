@@ -128,9 +128,11 @@ BinaryMaskImageToGoFigureMeshAttributes< TInput, TMask >::GenerateData()
     }
 
   ShapeLabelMapPointer shapeLabelMap = shapeConverter->GetOutput();
-  if ( shapeLabelMap->HasLabel(255) )
+  LabelType maxLabel = NumericTraits< LabelType >::max();
+
+  if ( shapeLabelMap->HasLabel(maxLabel) )
     {
-    const ShapeLabelObjectType *shapeObject = shapeLabelMap->GetLabelObject(255);
+    const ShapeLabelObjectType *shapeObject = shapeLabelMap->GetLabelObject(maxLabel);
 
     // Number of voxels;
     m_Size = shapeObject->Size();
@@ -168,9 +170,9 @@ BinaryMaskImageToGoFigureMeshAttributes< TInput, TMask >::GenerateData()
 
     StatLabelMapPointer statLabelMap = statConverter->GetOutput();
 
-    if ( statLabelMap->HasLabel(255) )
+    if ( statLabelMap->HasLabel(maxLabel) )
       {
-      const StatLabelObjectType *statObject = statLabelMap->GetLabelObject(255);
+      const StatLabelObjectType *statObject = statLabelMap->GetLabelObject(maxLabel);
 
       m_Mean = statObject->GetMean();
       m_Sum = statObject->GetSum();
