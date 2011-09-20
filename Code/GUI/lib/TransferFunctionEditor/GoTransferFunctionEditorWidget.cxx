@@ -244,7 +244,7 @@ void GoTransferFunctionEditorWidget::pointsUpdated()
     {
     qreal side = m_GammaSlider->value()/100;
     int ope = pow(-1, side + 1);
-    qreal value = (100 - m_GammaSlider->value()%100  + side*(m_GammaSlider->value()%100 -100 + 200 - m_GammaSlider->value()))/50;
+    qreal value = ope*(m_GammaSlider->value()-100)/50;
     qDebug() << "gamma: " << value;
     qreal gamma_value = pow(value, ope);
 
