@@ -58,7 +58,7 @@ QGoMeshEditingWidgetManager::QGoMeshEditingWidgetManager(
   iCurrentTimePoint, iParent)
 {
   this->SetSemiAutomaticAlgorithms(iParent);
-  this->SetSplitMergeMode(iParent);
+  this->SetSplitMergeMode(iVectChannels, this->m_ListTimePoint,iParent);
   this->SetSetOfContoursAlgorithms(iVectChannels, this->m_ListTimePoint,
     iParent);
 }
@@ -173,10 +173,12 @@ void QGoMeshEditingWidgetManager::SetSetOfContoursAlgorithms(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoMeshEditingWidgetManager::SetSplitMergeMode(QWidget* iParent)
+void QGoMeshEditingWidgetManager::SetSplitMergeMode(
+    std::vector<QString> iVectChannels, QStringList iListTime,
+    QWidget* iParent)
 {
   QGoAlgorithmsManagerWidget* SplitAlgoWidget =
-    new QGoAlgorithmsManagerWidget("Split", iParent);
+    new QGoAlgorithmsManagerWidget("Split", iParent, iVectChannels);
   this->m_TraceEditingWidget->AddMode(SplitAlgoWidget, true);
 
   m_DanielAlgo = new QGoMeshSplitDanielssonDistanceAlgo(this->m_Seeds,
@@ -186,7 +188,7 @@ void QGoMeshEditingWidgetManager::SetSplitMergeMode(QWidget* iParent)
   SplitAlgoWidget->AddMethod(DanielWidget );
 
   QObject::connect( DanielWidget, SIGNAL(ApplyAlgo() ) ,
-                    this, SLOT(RequestPolydatas() ) );
+                    this, SLOT(RequestPolydatasForDanielsson() ) );
 
   QGoAlgorithmsManagerWidget* MergeAlgoWidget =
     new QGoAlgorithmsManagerWidget("Merge", iParent);
@@ -196,9 +198,10 @@ void QGoMeshEditingWidgetManager::SetSplitMergeMode(QWidget* iParent)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoMeshEditingWidgetManager::RequestPolydatas(){
-  m_TempReference = dynamic_cast<QGoAlgorithmWidget*>(QObject::sender());
-  if(QString::fromStdString(m_TraceEditingWidget->GetCurrentModeName()).compare("Merge") == 0)
+void QGoMeshEditingWidgetManager::RequestPolydatasForDanielsson(){
+  m_TempReference = dynamic_cast<QGoSplitSegmentationAlgo*>(m_DanielAlgo);
+  emit RequestPolydatas(1);
+  /*if(QString::fromStdString(m_TraceEditingWidget->GetCurrentModeName()).compare("Merge") == 0)
     {
     // need 2 polydata if the widget is a merge widget
     emit RequestPolydatas(2);
@@ -207,7 +210,7 @@ void QGoMeshEditingWidgetManager::RequestPolydatas(){
     {
     // need 1 polydata
     emit RequestPolydatas(1);
-    }
+    }*/
 }
 //-------------------------------------------------------------------------
 
@@ -235,13 +238,6 @@ RequestedPolydatas(std::list< std::pair<unsigned int, vtkPolyData*> > iRequest){
     {
     //don't need seeds
     }
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void QGoMeshEditingWidgetManager::ApplyDanielAlgo()
-{
-  //this->GetPolydatasSplittedFromAlgo<QGoMeshSplitDanielssonDistanceAlgo>(this->m_DanielAlgo);
 }
 //-------------------------------------------------------------------------
 

@@ -56,50 +56,59 @@ std::vector<vtkPolyData*> QGoMeshSplitDanielssonDistanceAlgo::ApplyAlgo(
     vtkPolyData* iPolyData,
     bool iIsInvertedOn)
 {
-  size_t nb_ch = iImages->getNumberOfChannels();
+  iPolyData->Print(cout);
 
-  const unsigned int Dimension = 3;
-  typedef unsigned char PixelType;
+  std::vector<vtkPolyData*> oVector;
 
-  typedef itk::Image< PixelType, Dimension > ImageType;
-
-  typedef itk::vtkMeshSplitterDanielssonDistanceImageFilter< ImageType >
-      SplitterType;
-  SplitterType::Pointer filter = SplitterType::New();
-  filter->SetNumberOfImages( nb_ch );
-
-
-  filter->SetMesh( iPolyData );
-
-  for( size_t i = 0; i < nb_ch; i++ )
+  if(this->m_Seeds->size() > 2)
     {
-    filter->SetFeatureImage( i,
-                             iImages->getImageITK<PixelType, Dimension>(
-                                 iImages->getChannelName(i)));
-    }
+    size_t nb_ch = iImages->getNumberOfChannels();
 
-  typedef SplitterType::PointSetType PointSetType;
-  PointSetType::Pointer seeds = PointSetType::New();
+    const unsigned int Dimension = 3;
+    typedef unsigned char PixelType;
 
-  ImageType::PointType itk_pt;
-  double vtk_pt[3];
+    typedef itk::Image< PixelType, Dimension > ImageType;
 
-  for( vtkIdType id = 0; id < this->m_Seeds->size(); id++ )
+    typedef itk::vtkMeshSplitterDanielssonDistanceImageFilter< ImageType >
+        SplitterType;
+    SplitterType::Pointer filter = SplitterType::New();
+    filter->SetNumberOfImages( nb_ch );
+
+
+    filter->SetMesh( iPolyData );
+
+    for( size_t i = 0; i < nb_ch; i++ )
     {
-    for ( int i = 0; i < (*this->m_Seeds)[id]->GetNumberOfPoints(); i++ )
-      {
-      (*this->m_Seeds)[id]->GetPoint( i, vtk_pt );
-      itk_pt[0] = vtk_pt[0];
-      itk_pt[1] = vtk_pt[1];
-      itk_pt[2] = vtk_pt[2];
-      seeds->SetPoint( i, itk_pt );
+      filter->SetFeatureImage( i,
+                               iImages->getImageITK<PixelType, Dimension>(
+                                   iImages->getChannelName(i)));
       }
-    }
 
-  filter->SetSeeds( seeds );
-  filter->Update();
+    typedef SplitterType::PointSetType PointSetType;
+    PointSetType::Pointer seeds = PointSetType::New();
 
-  return filter->GetOutputs();
+    ImageType::PointType itk_pt;
+    double vtk_pt[3];
+
+    for( vtkIdType id = 0; id < 2; id++ )
+      {
+      for ( int i = 0; i < (*this->m_Seeds)[id]->GetNumberOfPoints(); i++ )
+        {
+        (*this->m_Seeds)[id]->GetPoint( i, vtk_pt );
+        std::cout << "Point:" << std::endl;
+        itk_pt[0] = vtk_pt[0];
+        itk_pt[1] = vtk_pt[1];
+        itk_pt[2] = vtk_pt[2];
+        std::cout << itk_pt[0] << "-" << itk_pt[1] << "-" << itk_pt[2] << std::endl;
+        seeds->SetPoint( i, itk_pt );
+        }
+      }
+
+    filter->SetSeeds( seeds );
+    filter->Update();
+    oVector = filter->GetOutputs();
+  }
+  return oVector;
 }
 //-------------------------------------------------------------------------
 

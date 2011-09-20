@@ -87,7 +87,7 @@ public:
 
 public slots:
 
-  void RequestPolydatas();
+  void RequestPolydatasForDanielsson();
   void RequestedPolydatas(std::list< std::pair<unsigned int, vtkPolyData*> >);
 
 signals:
@@ -107,7 +107,7 @@ protected:
   QGoSetOfContoursLevelSetAlgo*                   m_SetOfContoursLevelSetAlgo;
   QGoSetOfContoursShapeAlgo*                      m_SetOfContoursShapeAlgo;
 
-  QGoSegmentationAlgo*                             m_TempReference;
+  QGoSplitSegmentationAlgo*                             m_TempReference;
 
   /**
   \brief add the algowidget of the different algo in the algomanagerwidget
@@ -116,9 +116,12 @@ protected:
   virtual void SetSemiAutomaticAlgorithms(QWidget* iParent = 0);
 
   void SetSetOfContoursAlgorithms(
-   std::vector<QString> iVectChannels, QStringList iListTime, QWidget* iParent = 0);
+   std::vector<QString> iVectChannels, QStringList iListTime,
+      QWidget* iParent = 0);
 
-  void SetSplitMergeMode(QWidget* iParent);
+  void SetSplitMergeMode(
+      std::vector<QString> iVectChannels, QStringList iListTime,
+      QWidget* iParent = 0);
 
   /**
   \brief get the sets of vtkpolydata for the new created sets of contours
@@ -142,7 +145,6 @@ protected slots:
   void ApplyLevelSetAlgo();
   void ApplyShapeAlgo();
   void ApplyWaterShedAlgo();
-  void ApplyDanielAlgo();
   void ApplySetOfContoursWaterShedAlgo();
   void ApplySetOfContoursLevelSetAlgo();
   void ApplySetOfContoursShapeAlgo();
