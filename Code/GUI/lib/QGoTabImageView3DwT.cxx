@@ -2020,8 +2020,8 @@ QGoTabImageView3DwT::SnapshotViewXY(
 //-------------------------------------------------------------------------
 QString
 QGoTabImageView3DwT::SnapshotViewXZ(
-  GoFigure::FileType & iType,
-  QString & iBaseName)
+  GoFigure::FileType iType,
+  QString iBaseName)
 {
   return m_ImageView->SnapshotViewXZ(iType, iBaseName);
 }
@@ -2031,8 +2031,8 @@ QGoTabImageView3DwT::SnapshotViewXZ(
 //-------------------------------------------------------------------------
 QString
 QGoTabImageView3DwT::SnapshotViewYZ(
-  GoFigure::FileType & iType,
-  QString & iBaseName)
+  GoFigure::FileType iType,
+  QString iBaseName)
 {
   return m_ImageView->SnapshotViewYZ(iType, iBaseName);
 }
@@ -2042,8 +2042,8 @@ QGoTabImageView3DwT::SnapshotViewYZ(
 //-------------------------------------------------------------------------
 QString
 QGoTabImageView3DwT::SnapshotViewXYZ(
-  GoFigure::FileType & iType,
-  QString & iBaseName)
+  GoFigure::FileType iType,
+  QString iBaseName)
 {
   return m_ImageView->SnapshotViewXYZ(iType, iBaseName);
 }
@@ -2052,7 +2052,7 @@ QGoTabImageView3DwT::SnapshotViewXYZ(
 
 //-------------------------------------------------------------------------
 void
-QGoTabImageView3DwT::SetSliceViewXY(int & iS)
+QGoTabImageView3DwT::SetSliceViewXY(int iS)
 {
   m_ImageView->SetSliceViewXY(iS);
 }
@@ -2061,7 +2061,7 @@ QGoTabImageView3DwT::SetSliceViewXY(int & iS)
 
 //-------------------------------------------------------------------------
 void
-QGoTabImageView3DwT::SetSliceViewXZ(int & iS)
+QGoTabImageView3DwT::SetSliceViewXZ(int iS)
 {
   m_ImageView->SetSliceViewXZ(iS);
 }
@@ -2070,7 +2070,7 @@ QGoTabImageView3DwT::SetSliceViewXZ(int & iS)
 
 //-------------------------------------------------------------------------
 void
-QGoTabImageView3DwT::SetSliceViewYZ(int & iS)
+QGoTabImageView3DwT::SetSliceViewYZ(int iS)
 {
   m_ImageView->SetSliceViewYZ(iS);
 }
@@ -2079,7 +2079,7 @@ QGoTabImageView3DwT::SetSliceViewYZ(int & iS)
 
 //-------------------------------------------------------------------------
 void
-QGoTabImageView3DwT::SetFullScreenView(int & iS)
+QGoTabImageView3DwT::SetFullScreenView(int iS)
 {
   m_ImageView->SetFullScreenView(iS);
 }
@@ -2470,7 +2470,7 @@ QGoTabImageView3DwT::AddContour(vtkPolyData *dataset, vtkProperty *iProperty)
 
 //-------------------------------------------------------------------------
 void
-QGoTabImageView3DwT::ReEditContour(const unsigned int & iId)
+QGoTabImageView3DwT::ReEditContour(unsigned int iId)
 {
   vtkPolyData *nodes = NULL;
 
