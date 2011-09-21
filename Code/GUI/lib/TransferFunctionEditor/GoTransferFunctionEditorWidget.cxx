@@ -242,11 +242,17 @@ void GoTransferFunctionEditorWidget::pointsUpdated()
 {
   if(m_LUT)
     {
-    qreal side = m_GammaSlider->value()/100;
+    qreal side = m_GammaSlider->value()/(100);
     int ope = pow(-1, side + 1);
-    qreal value = ope*(m_GammaSlider->value()-100)/50;
-    qDebug() << "gamma: " << value;
-    qreal gamma_value = pow(value, ope);
+    qreal value = (qreal)(ope*(m_GammaSlider->value()-100) + ope);
+    qreal gamma_value;
+    if(value > 2)
+      {
+      qreal temp = log(value);
+      gamma_value = pow(temp, ope);
+      }
+    else
+      gamma_value = 1;
 
     // update the LUT
     m_red_shade->UpdateLookupTable(m_LUT,

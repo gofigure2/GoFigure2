@@ -197,9 +197,9 @@ UpdateLookupTable(vtkLookupTable* iLUT, qreal iGamma, qreal iMin, qreal iMax)
   // before window
   for(int i=0; i<iMin; ++i)
     {
-    iPoints << QPointF((qreal)(i)*width/255, height);
+    iPoints << QPointF((qreal)(i)*width/255, height-1);
 
-    QColor color(m_shade.pixel(i*(width-1)/numTableValues, height));
+    QColor color(m_shade.pixel(i*(width-1)/numTableValues, height-1));
     iLUT->SetTableValue(i, color.redF(), color.greenF(), color.blueF());
     }
 
@@ -208,7 +208,7 @@ UpdateLookupTable(vtkLookupTable* iLUT, qreal iGamma, qreal iMin, qreal iMax)
     {
     qreal input = ((qreal)i - iMin)/((iMax-iMin));
     qreal power = (qreal)(pow(input, iGamma));
-    qreal temp_height = height*(1-power);
+    qreal temp_height = (height-1)*(1-power);
     if(temp_height<0)
       {
       break;
@@ -223,7 +223,7 @@ UpdateLookupTable(vtkLookupTable* iLUT, qreal iGamma, qreal iMin, qreal iMax)
   }
 
   // after window
-  for(int i=iMax; i<256; ++i)
+  for(int i=iMax; i<255; ++i)
     {
     iPoints << QPointF((qreal)(i)*width/255, 0);
 
