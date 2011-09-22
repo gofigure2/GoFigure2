@@ -116,11 +116,15 @@ QPolygonF GoTransferFunctionWidget::points() const
 //-------------------------------------------------------------------------
 void GoTransferFunctionWidget::paintEvent(QPaintEvent *)
 {
-  generateShade();
+  // generate shade, if necessary
+  if (m_shade.isNull() || m_shade.size() != size())
+    {
+    generateShade();
+    }
 
+  // draw shade
   QPainter p(this);
   p.drawImage(0, 0, m_shade);
-
   p.setPen(QColor(146, 146, 146));
   p.drawRect(0, 0, width() - 1, height() - 1);
 
@@ -146,17 +150,14 @@ void GoTransferFunctionWidget::paintEvent(QPaintEvent *)
 //-------------------------------------------------------------------------
 void GoTransferFunctionWidget::generateShade()
 {
-  if (m_shade.isNull() || m_shade.size() != size())
-    {
-    m_shade = QImage(size(), QImage::Format_RGB32);
-    QLinearGradient shade(0, 0, 0, height());
-    shade.setColorAt(1, Qt::black);
+  m_shade = QImage(size(), QImage::Format_RGB32);
+  QLinearGradient shade(0, 0, 0, height());
+  shade.setColorAt(1, Qt::black);
 
-    shade.setColorAt(0, m_color);
+  shade.setColorAt(0, m_color);
 
-    QPainter p(&m_shade);
-    p.fillRect(rect(), shade);
-    }
+  QPainter p(&m_shade);
+  p.fillRect(rect(), shade);
 }
 //-------------------------------------------------------------------------
 
@@ -197,7 +198,7 @@ UpdateLookupTable(vtkLookupTable* iLUT, qreal iGamma, qreal iMin, qreal iMax)
   // before window
   for(int i=0; i<iMin; ++i)
     {
-    iPoints << QPointF((qreal)(i)*width/255, height-1);
+    iPoints << QPointF((qreal)(i)*(width-1)/numTableValues, height-1);
 
     QColor color(m_shade.pixel(i*(width-1)/numTableValues, height-1));
     iLUT->SetTableValue(i, color.redF(), color.greenF(), color.blueF());
@@ -211,11 +212,11 @@ UpdateLookupTable(vtkLookupTable* iLUT, qreal iGamma, qreal iMin, qreal iMax)
     qreal temp_height = (height-1)*(1-power);
     if(temp_height<0)
       {
-      break;
+      qDebug()<< temp_height << " must be >0!";
       }
     else
       {
-      iPoints << QPointF((qreal)(i)*width/255,temp_height);
+      iPoints << QPointF((qreal)(i)*(width-1)/numTableValues,temp_height);
 
       QColor color(m_shade.pixel(i*(width-1)/numTableValues, temp_height));
       iLUT->SetTableValue(i, color.redF(), color.greenF(), color.blueF());
@@ -225,7 +226,7 @@ UpdateLookupTable(vtkLookupTable* iLUT, qreal iGamma, qreal iMin, qreal iMax)
   // after window
   for(int i=iMax; i<255; ++i)
     {
-    iPoints << QPointF((qreal)(i)*width/255, 0);
+    iPoints << QPointF((qreal)(i)*(width-1)/numTableValues, 0);
 
     QColor color(m_shade.pixel(i*(width-1)/numTableValues, 0));
     iLUT->SetTableValue(i, color.redF(), color.greenF(), color.blueF());
@@ -256,13 +257,11 @@ Reset()
 // reset alpha
 QPolygonF points;
 points << QPointF(0, height())
-       << QPointF(width(),(height()));
+       << QPointF(width(),0);
 m_hoverPoints->setPoints(points);
 m_hoverPoints->setPointLock(0, HoverPoints::LockToLeft);
 m_hoverPoints->setPointLock(1, HoverPoints::LockToRight);
 m_hoverPoints->setSortType(HoverPoints::XSort);
-
-update();
 }
 //-------------------------------------------------------------------------
 
@@ -272,12 +271,20 @@ GoTransferFunctionWidget::
 UpdateGamma( QPolygonF& iPoints)
 {
 m_gammaPoints->setPoints(iPoints);
-m_gammaPoints->setPointLock(0, HoverPoints::LockToLeft);
-m_gammaPoints->setPointLock(1, HoverPoints::LockToRight);
 m_gammaPoints->setSortType(HoverPoints::XSort);
 
-// reset gamma
-
 update();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+GoTransferFunctionWidget::
+setColor(QColor iColor)
+{
+  m_color = iColor;
+  // generate new shade
+  generateShade();
+  update();
 }
 //-------------------------------------------------------------------------

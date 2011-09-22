@@ -112,19 +112,18 @@ public:
 
 public slots:
   void pointsUpdated();
-
+  // color
+  void setColor();
   // LUT
   void presetLUT();
   void resetLUT();
   void saveLUT();
   void readLUT();
   void savePoints();
-
   // opacity TF
   void updateOpacityTF();
 
 signals:
-
   void updateVisualization();
   void updatePoints(QString,
                     std::vector< std::map< unsigned int, unsigned int> >);
@@ -144,6 +143,8 @@ private:
                         QTextStream& iStream,
                         const QString& iBalise);
 
+  QPushButton* m_ColorPushButton;
+
   GoTransferFunctionWidget *m_red_shade;
   GoTransferFunctionWidget *m_alpha_shade;
 
@@ -152,6 +153,8 @@ private:
   QSlider* m_MaxSlider;
 
   QColor                    m_Color;
+  // for reset
+  QColor                    m_Color_original;
   QString                   m_Channel;
 
   vtkLookupTable           *m_LUT;

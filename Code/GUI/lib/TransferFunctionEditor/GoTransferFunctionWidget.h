@@ -110,13 +110,20 @@ public:
     void Reset();
     void UpdateGamma( QPolygonF& iPoints);
 
+    void setColor(QColor iColor);
+
 signals:
     void colorsChanged();
     void enableHoverPoints(bool);
     void enableGammaPoints(bool);
 
 private:
+    // shade
     void generateShade();
+    //LUT
+    // generateLUT()
+    //opacity
+    // generateOpacity
 
     QColor m_color;
     QImage m_shade;

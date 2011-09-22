@@ -83,6 +83,7 @@
 //qt
 #include "hoverpoints.h"
 #include <QSpacerItem>
+#include <QColorDialog>
 
 //vtk
 #include "vtkLookupTable.h"
@@ -101,11 +102,15 @@ GoTransferFunctionEditorWidget::GoTransferFunctionEditorWidget(QWidget *parent,
                                                                const std::vector<double>& iColor)
     : QWidget(parent )
 {
+  // needs a minimum size
+
   // update color
   m_Color.setRedF(iColor[0]/255);
   m_Color.setGreenF(iColor[1]/255);
   m_Color.setBlueF(iColor[2]/255);
   m_Color.setAlphaF(iColor[3]/255);
+
+  m_Color_original = m_Color;
 
   QVBoxLayout *vbox = new QVBoxLayout(this);
   vbox->setSpacing(1);
@@ -135,11 +140,17 @@ GoTransferFunctionEditorWidget::GoTransferFunctionEditorWidget(QWidget *parent,
   layout->addWidget(okPushButton);
   layout->addWidget(resetLUTPushButton);
 
-  QLabel* channelName = new QLabel("Channel:");
-  QLabel* channelNameText = new QLabel(iChannel);
-  QHBoxLayout *nameLayout = new QHBoxLayout;
-  nameLayout->addWidget(channelName);
-  nameLayout->addWidget(channelNameText);
+  QLabel* channelName = new QLabel(iChannel);
+  m_ColorPushButton = new QPushButton(this);
+  QString style = "background: rgb(%1, %2, %3);";
+  m_ColorPushButton->setStyleSheet(
+        style.arg(m_Color.red()).arg(m_Color .green()).arg(m_Color.blue()));
+  QHBoxLayout *colorLayout = new QHBoxLayout;
+  colorLayout->addWidget(channelName);
+  colorLayout->addWidget(m_ColorPushButton);
+  connect(m_ColorPushButton, SIGNAL(clicked()), this, SLOT(setColor()));
+
+  vbox->addLayout(colorLayout);
 
   QLabel* gammaName = new QLabel("Gamma:");
   m_GammaSlider = new QSlider(this);
@@ -181,8 +192,6 @@ GoTransferFunctionEditorWidget::GoTransferFunctionEditorWidget(QWidget *parent,
   histoCB->setChecked(true);
   histoCB->setEnabled(false);
 
-  vbox->addLayout(nameLayout);
-
   QSpacerItem* spacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Minimum);
   vbox->addItem(spacer);
 
@@ -213,27 +222,20 @@ GoTransferFunctionEditorWidget::GoTransferFunctionEditorWidget(QWidget *parent,
   vbox->addLayout(layout);
 
   connect(m_red_shade, SIGNAL(colorsChanged()), this, SLOT(pointsUpdated()));
-  connect(m_red_shade, SIGNAL(colorsChanged()), this, SLOT(updateOpacityTF()));
+  //connect(m_red_shade, SIGNAL(colorsChanged()), this, SLOT(updateOpacityTF()));
 
   connect(okPushButton, SIGNAL(released()), this, SLOT(close()));
-  /*connect(okPushButton, SIGNAL(released()), this, SLOT(savePoints()));
+  //connect(okPushButton, SIGNAL(released()), this, SLOT(savePoints()));
 
   connect(resetLUTPushButton, SIGNAL(pressed()), this, SLOT(resetLUT()));
-  connect(saveLUTPushButton, SIGNAL(pressed()), this, SLOT(saveLUT()));
+  /*connect(saveLUTPushButton, SIGNAL(pressed()), this, SLOT(saveLUT()));
   connect(loadLUTPushButton, SIGNAL(pressed()), this, SLOT(readLUT()));*/
   // useless...?
-  connect(presetLUTPushButton, SIGNAL(pressed()), this, SLOT(presetLUT()));
+  //connect(presetLUTPushButton, SIGNAL(pressed()), this, SLOT(presetLUT()));
 
 
   // enable event filter
   this->installEventFilter(this);
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-inline static bool x_less_than(const QPointF &p1, const QPointF &p2)
-{
-  return p1.x() < p2.x();
 }
 //-------------------------------------------------------------------------
 
@@ -248,6 +250,7 @@ void GoTransferFunctionEditorWidget::pointsUpdated()
     qreal gamma_value;
     if(value > 2)
       {
+      // need log?
       qreal temp = log(value);
       gamma_value = pow(temp, ope);
       }
@@ -415,9 +418,19 @@ void
 GoTransferFunctionEditorWidget::
 resetLUT()
 {
+  // reset shade color
   m_red_shade->Reset();
+  m_red_shade->setColor(m_Color_original);
+  
+  // reset button color
+  QString style = "background: rgb(%1, %2, %3);";
+  m_ColorPushButton->setStyleSheet(
+        style.arg(m_Color_original.red()).arg(m_Color_original .green()).arg(m_Color_original.blue()));
 
   // update transfer function
+  m_GammaSlider->setValue(100);
+  m_MinSlider->setValue(0);
+  m_MaxSlider->setValue(255);
   pointsUpdated();
 
   //update opacity TF
@@ -436,6 +449,10 @@ savePoints()
   // RED ------------------------------
   QPolygonF redPoints = m_red_shade->points();
   computeMapFromPoints(pointsVector[0], redPoints);
+
+  // opacity
+
+  // color
 
   emit updatePoints(m_Channel, pointsVector);
 }
@@ -616,5 +633,30 @@ updateOpacityTF()
     m_OpacityTF->AddPoint(x, y);
     }
   m_OpacityTF->Modified();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+GoTransferFunctionEditorWidget::
+setColor()
+{
+  QColor color = QColorDialog::getColor();
+  // if we selected a color and clicked on "OK"
+  if(color.isValid())
+    {
+    m_Color = color;
+    }
+
+  // update button
+  QString style = "background: rgb(%1, %2, %3);";
+  m_ColorPushButton->setStyleSheet(
+        style.arg(m_Color.red()).arg(m_Color .green()).arg(m_Color.blue()));
+
+  // update shade
+  m_red_shade->setColor(m_Color);
+
+  // update LUT
+  pointsUpdated();
 }
 //-------------------------------------------------------------------------
