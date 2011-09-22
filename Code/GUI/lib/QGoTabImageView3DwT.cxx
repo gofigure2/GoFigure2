@@ -3327,10 +3327,15 @@ QGoTabImageView3DwT::
 openTransferFunctionEditor(QString iName)
 {
   // create editor
+  // get LUT parameters (gamma, min, max)
+  std::vector<int> lutParameters =
+      m_ImageProcessor->getLUTParameters(iName.toStdString());
+
   GoTransferFunctionEditorWidget* editor =
       new GoTransferFunctionEditorWidget(NULL,
-                                         iName, // name
-                                         m_ImageProcessor->getColor(iName.toStdString())); // color
+                                         iName,
+                                         m_ImageProcessor->getColor(iName.toStdString()),
+                                         lutParameters);
   // connect signals
 
   QObject::connect( editor,
@@ -3339,14 +3344,24 @@ openTransferFunctionEditor(QString iName)
                     SLOT( updateSlot()) );
 
   QObject::connect( editor,
-                    SIGNAL( updatePoints(QString, std::vector< std::map< unsigned int, unsigned int> >) ),
+                    SIGNAL( updatePoints(QString,
+                                         std::map< unsigned int, unsigned int>,
+                                         QColor,
+                                         int,
+                                         int,
+                                         int) ),
                     this,
-                    SLOT( updatePoints(QString, std::vector< std::map< unsigned int, unsigned int> >)) );
+                    SLOT( updatePoints(QString,
+                                       std::map< unsigned int, unsigned int>,
+                                       QColor,
+                                       int,
+                                       int,
+                                       int)) );
 
   // show editor - to have consistent geomerty to add the points
   editor->show();
   // add points
-  editor->AddPoints(m_ImageProcessor->getRGBA(iName.toStdString()));
+  editor->AddPoints(m_ImageProcessor->getAlpha(iName.toStdString()));
   // add LUT
   editor->AddLookupTable(m_ImageProcessor->getLookuptable(iName.toStdString()));
   // add Opacity TF
@@ -3371,9 +3386,26 @@ QGoTabImageView3DwT::updateSlot()
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
-updatePoints(QString iName, std::vector< std::map< unsigned int, unsigned int> > iPoints)
+updatePoints(QString iName,
+             std::map< unsigned int, unsigned int> iPoints,
+             QColor iColor,
+             int iMin,
+             int iMax,
+             int iGamma)
 {
+  // update opacity TF points
   m_ImageProcessor->updatePoints(iName.toStdString(), iPoints);
+
+  //color
+  std::vector<double> color;
+  color.push_back(iColor.redF()*255);
+  color.push_back(iColor.greenF()*255);
+  color.push_back(iColor.blueF()*255);
+
+  m_ImageProcessor->setColor(iName.toStdString(), color);
+
+  //LUT parameters
+  m_ImageProcessor->setLUTParameters(iName.toStdString(), iGamma, iMin, iMax);
 }
 //-------------------------------------------------------------------------
 

@@ -297,7 +297,12 @@ public slots:
 
   void GoToDefaultMenu(bool iEnable = false);
 
-  void updatePoints(QString, std::vector< std::map< unsigned int, unsigned int> >);
+  void updatePoints(QString,
+                    std::map< unsigned int, unsigned int >,
+                    QColor,
+                    int,
+                    int,
+                    int);
 
 #if defined ( ENABLEFFMPEG ) || defined ( ENABLEAVI )
   void SetRendererWindow(int);

@@ -102,7 +102,7 @@ GoTransferFunctionWidget::GoTransferFunctionWidget(QColor iColor,
 
   setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
 
-  connect(m_hoverPoints, SIGNAL(pointsChanged(QPolygonF)), this, SIGNAL(colorsChanged()));
+  connect(m_hoverPoints, SIGNAL(pointsChanged(QPolygonF)), this, SIGNAL(opacityChanged()));
 }
 //-------------------------------------------------------------------------
 

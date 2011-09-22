@@ -99,7 +99,8 @@
 
 GoTransferFunctionEditorWidget::GoTransferFunctionEditorWidget(QWidget *parent,
                                                                QString iChannel,
-                                                               const std::vector<double>& iColor)
+                                                               const std::vector<double>& iColor,
+                                                               std::vector<int> iLUTParameters)
     : QWidget(parent )
 {
   // needs a minimum size
@@ -124,6 +125,7 @@ GoTransferFunctionEditorWidget::GoTransferFunctionEditorWidget(QWidget *parent,
 
   m_Channel = iChannel;
 
+/*
   QPushButton *presetLUTPushButton = new QPushButton("Preset LUT", this);
   presetLUTPushButton->setEnabled(false);
 
@@ -131,7 +133,7 @@ GoTransferFunctionEditorWidget::GoTransferFunctionEditorWidget(QWidget *parent,
   QPushButton *saveLUTPushButton = new QPushButton("Save LUT", this);
   QPushButton *loadLUTPushButton = new QPushButton("Load LUT", this);
   lutLayout->addWidget(loadLUTPushButton);
-  lutLayout->addWidget(saveLUTPushButton);
+  lutLayout->addWidget(saveLUTPushButton);*/
 
   QPushButton *okPushButton = new QPushButton("OK", this);
   QPushButton *resetLUTPushButton = new QPushButton("Reset", this);
@@ -157,7 +159,7 @@ GoTransferFunctionEditorWidget::GoTransferFunctionEditorWidget(QWidget *parent,
   m_GammaSlider->setOrientation(Qt::Horizontal);
   m_GammaSlider->setMaximum(199);
   m_GammaSlider->setMinimum(1);
-  m_GammaSlider->setValue(100);
+  m_GammaSlider->setValue(iLUTParameters[0]);
   connect(m_GammaSlider, SIGNAL(valueChanged(int)), this, SLOT(pointsUpdated()));
 
   QHBoxLayout *gammaLayout = new QHBoxLayout;
@@ -167,14 +169,14 @@ GoTransferFunctionEditorWidget::GoTransferFunctionEditorWidget(QWidget *parent,
   m_MinSlider = new QSlider(this);
   m_MinSlider->setOrientation(Qt::Horizontal);
   m_MinSlider->setMaximum(255);
-  m_MinSlider->setValue(0);
+  m_MinSlider->setValue(iLUTParameters[1]);
   m_MinSlider->setStyleSheet("QSlider::groove:horizontal {border: 1px solid #bbb;background: #ffffff;height: 4px;position: absolute;left: -10px;right: -10px;}QSlider::sub-page:horizontal {background: #808080;border: 1px solid black;}QSlider::add-page:horizontal {background: #ffffff;border: 1px solid black;}QSlider::handle:horizontal {image: url(/home/nr52/gitroot/gofigure/Resources/widget/arrow_up.png);width: 20px;margin-top: -1px;margin-bottom: -2px;}");
   connect(m_MinSlider, SIGNAL(valueChanged(int)), this, SLOT(pointsUpdated()));
 
   m_MaxSlider = new QSlider(this);
   m_MaxSlider->setOrientation(Qt::Horizontal);
   m_MaxSlider->setMaximum(255);
-  m_MaxSlider->setValue(255);
+  m_MaxSlider->setValue(iLUTParameters[2]);
   m_MaxSlider->setStyleSheet("QSlider::groove:horizontal {border: 1px solid #bbb;background: #ffffff;height: 4px;position: absolute;left: -10px;right: -10px;}QSlider::sub-page:horizontal {background: #ffffff;border: 1px solid black;}QSlider::add-page:horizontal {background: #909090;border: 1px solid black;}QSlider::handle:horizontal {image: url(/home/nr52/gitroot/gofigure/Resources/widget/arrow_down.png);width: 20px;margin-top: -1px;margin-bottom: -2px;}");
 
   connect(m_MaxSlider, SIGNAL(valueChanged(int)), this, SLOT(pointsUpdated()));
@@ -188,9 +190,9 @@ GoTransferFunctionEditorWidget::GoTransferFunctionEditorWidget(QWidget *parent,
   tfoCB->setChecked(true);
   connect(tfoCB, SIGNAL(clicked(bool)), m_red_shade, SIGNAL(enableHoverPoints(bool)));
 
-  QCheckBox* histoCB = new QCheckBox("Show Log Histogram");
+  /*QCheckBox* histoCB = new QCheckBox("Show Log Histogram");
   histoCB->setChecked(true);
-  histoCB->setEnabled(false);
+  histoCB->setEnabled(false);*/
 
   QSpacerItem* spacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Minimum);
   vbox->addItem(spacer);
@@ -216,16 +218,15 @@ GoTransferFunctionEditorWidget::GoTransferFunctionEditorWidget(QWidget *parent,
   vbox->addLayout(gammaLayout);
   vbox->addWidget(tfCB);
   vbox->addWidget(tfoCB);
-  vbox->addWidget(histoCB);
+  /*vbox->addWidget(histoCB);
   vbox->addLayout(lutLayout);
-  vbox->addWidget(presetLUTPushButton);
+  vbox->addWidget(presetLUTPushButton);*/
   vbox->addLayout(layout);
 
-  connect(m_red_shade, SIGNAL(colorsChanged()), this, SLOT(pointsUpdated()));
-  //connect(m_red_shade, SIGNAL(colorsChanged()), this, SLOT(updateOpacityTF()));
+  connect(m_red_shade, SIGNAL(opacityChanged()), this, SLOT(updateOpacityTF()));
 
   connect(okPushButton, SIGNAL(released()), this, SLOT(close()));
-  //connect(okPushButton, SIGNAL(released()), this, SLOT(savePoints()));
+  connect(okPushButton, SIGNAL(released()), this, SLOT(saveAll()));
 
   connect(resetLUTPushButton, SIGNAL(pressed()), this, SLOT(resetLUT()));
   /*connect(saveLUTPushButton, SIGNAL(pressed()), this, SLOT(saveLUT()));
@@ -281,17 +282,18 @@ static void set_shade_points(const QPolygonF &points, GoTransferFunctionWidget *
 //-------------------------------------------------------------------------
 void
 GoTransferFunctionEditorWidget::
-AddPoints( const std::vector< std::map< unsigned int, unsigned int> >& iRGBA)
+AddPoints( const std::map< unsigned int, unsigned int>& iAlpha)
 {
   //red
   QPolygonF redPoints;
   // add gamma points
-  computePointsFromMap(iRGBA[0], redPoints);
+  // should be sth else
+  computePointsFromMap(iAlpha, redPoints);
   m_red_shade->AddGammaPoints(redPoints);
 
   QPolygonF alphaPoints;
   // add alpha points
-  computePointsFromMap(iRGBA[3], alphaPoints);
+  computePointsFromMap(iAlpha, alphaPoints);
   m_red_shade->AddPoints(alphaPoints);
 
   // update histogram and alpha gradient
@@ -441,20 +443,24 @@ resetLUT()
 //-------------------------------------------------------------------------
 void
 GoTransferFunctionEditorWidget::
-savePoints()
+saveAll()
 {
-  std::vector< std::map< unsigned int, unsigned int> > pointsVector;
-  pointsVector.resize(4);
+  std::map< unsigned int, unsigned int> pointsVector;
 
-  // RED ------------------------------
+  // opacity ------------------------------
   QPolygonF redPoints = m_red_shade->points();
-  computeMapFromPoints(pointsVector[0], redPoints);
-
-  // opacity
+  computeMapFromPoints(pointsVector, redPoints);
 
   // color
 
-  emit updatePoints(m_Channel, pointsVector);
+  // gamma, min and max
+
+  emit updatePoints(m_Channel,
+                    pointsVector,
+                    m_Color,
+                    m_MinSlider->value(),
+                    m_MaxSlider->value(),
+                    m_GammaSlider->value());
 }
 //-------------------------------------------------------------------------
 

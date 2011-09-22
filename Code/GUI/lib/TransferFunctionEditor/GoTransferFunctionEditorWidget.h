@@ -93,12 +93,12 @@ class GoTransferFunctionEditorWidget : public QWidget
   Q_OBJECT
 public:
   GoTransferFunctionEditorWidget(QWidget *parent, QString iChannel,
-                                 const std::vector<double>& iColor);
+                                 const std::vector<double>& iColor,
+                                 std::vector<int> iLUTParameters);
 
   void setGradientStops(const QGradientStops &stops);
 
-  void AddPoints(
-    const std::vector<std::map<unsigned int, unsigned int> >& iRGBA);
+  void AddPoints( const std::map<unsigned int, unsigned int >& iRGBA);
 
   void AddLookupTable(vtkLookupTable* iLUT);
 
@@ -119,14 +119,18 @@ public slots:
   void resetLUT();
   void saveLUT();
   void readLUT();
-  void savePoints();
+  void saveAll();
   // opacity TF
   void updateOpacityTF();
 
 signals:
   void updateVisualization();
   void updatePoints(QString,
-                    std::vector< std::map< unsigned int, unsigned int> >);
+                    std::map< unsigned int, unsigned int>,
+                    QColor,
+                    int,
+                    int,
+                    int);
 
 private:
 

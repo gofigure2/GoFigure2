@@ -113,7 +113,7 @@ public:
     void setColor(QColor iColor);
 
 signals:
-    void colorsChanged();
+    void opacityChanged();
     void enableHoverPoints(bool);
     void enableGammaPoints(bool);
 
