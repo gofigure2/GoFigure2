@@ -3406,6 +3406,9 @@ updatePoints(QString iName,
 
   //LUT parameters
   m_ImageProcessor->setLUTParameters(iName.toStdString(), iGamma, iMin, iMax);
+
+  // color of button in navigation widget
+  m_NavigationDockWidget->ModifyChannel(iName, iColor);
 }
 //-------------------------------------------------------------------------
 

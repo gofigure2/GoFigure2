@@ -365,6 +365,23 @@ AddChannel(const QString& iName, const QColor& iColor, const unsigned int& iNumb
 //-------------------------------------------------------------------------
 void
 QGoNavigationDockWidget::
+ModifyChannel(QString iName, QColor iColor)
+{
+  QList<QPushButton*>::iterator it2 = m_ListPushButtons.begin();
+  while(iName.compare((*it2)->objectName()) != 0)
+    {
+    ++it2;
+    }
+
+  QString style = "background: rgb(%1, %2, %3);";
+  (*it2)->setStyleSheet(
+        style.arg(iColor.red()).arg(iColor .green()).arg(iColor.blue()));
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoNavigationDockWidget::
 visibilityChanged(bool iVisibility)
 {
   emit visibilityChanged(QObject::sender()->objectName(), iVisibility);
