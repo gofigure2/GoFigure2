@@ -60,7 +60,7 @@ std::vector<vtkPolyData*> QGoMeshSplitDanielssonDistanceAlgo::ApplyAlgo(
 
   std::vector<vtkPolyData*> oVector;
 
-  if(this->m_Seeds->size() > 2)
+  if( (*this->m_Seeds)[0]->GetNumberOfPoints() > 2)
     {
     size_t nb_ch = iImages->getNumberOfChannels();
 
@@ -92,16 +92,13 @@ std::vector<vtkPolyData*> QGoMeshSplitDanielssonDistanceAlgo::ApplyAlgo(
 
     for( vtkIdType id = 0; id < 2; id++ )
       {
-      for ( int i = 0; i < (*this->m_Seeds)[id]->GetNumberOfPoints(); i++ )
-        {
-        (*this->m_Seeds)[id]->GetPoint( i, vtk_pt );
-        std::cout << "Point:" << std::endl;
-        itk_pt[0] = vtk_pt[0];
-        itk_pt[1] = vtk_pt[1];
-        itk_pt[2] = vtk_pt[2];
-        std::cout << itk_pt[0] << "-" << itk_pt[1] << "-" << itk_pt[2] << std::endl;
-        seeds->SetPoint( i, itk_pt );
-        }
+      (*this->m_Seeds)[0]->GetPoint( id, vtk_pt );
+      std::cout << "Point:" << std::endl;
+      itk_pt[0] = vtk_pt[0];
+      itk_pt[1] = vtk_pt[1];
+      itk_pt[2] = vtk_pt[2];
+      std::cout << itk_pt[0] << "-" << itk_pt[1] << "-" << itk_pt[2] << std::endl;
+      seeds->SetPoint( id, itk_pt );
       }
 
     filter->SetSeeds( seeds );
