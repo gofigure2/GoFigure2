@@ -142,16 +142,15 @@ GoTransferFunctionEditorWidget::GoTransferFunctionEditorWidget(QWidget *parent,
   layout->addWidget(okPushButton);
   layout->addWidget(resetLUTPushButton);
 
-  QLabel* channelName = new QLabel(iChannel);
+  QHBoxLayout *colorLayout = new QHBoxLayout(this);
+  QLabel *color = new QLabel("Color: ");
   m_ColorPushButton = new QPushButton(this);
-  QString style = "background: rgb(%1, %2, %3);";
+  QString style = "background: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 0,stop: 0 black, stop: 1 rgb(%1, %2, %3)); border-radius: 4px;";
   m_ColorPushButton->setStyleSheet(
         style.arg(m_Color.red()).arg(m_Color .green()).arg(m_Color.blue()));
-  QHBoxLayout *colorLayout = new QHBoxLayout;
-  colorLayout->addWidget(channelName);
-  colorLayout->addWidget(m_ColorPushButton);
   connect(m_ColorPushButton, SIGNAL(clicked()), this, SLOT(setColor()));
-
+  colorLayout->addWidget(color);
+  colorLayout->addWidget(m_ColorPushButton);
   vbox->addLayout(colorLayout);
 
   QLabel* gammaName = new QLabel("Gamma:");
@@ -170,14 +169,14 @@ GoTransferFunctionEditorWidget::GoTransferFunctionEditorWidget(QWidget *parent,
   m_MinSlider->setOrientation(Qt::Horizontal);
   m_MinSlider->setMaximum(255);
   m_MinSlider->setValue(iLUTParameters[1]);
-  m_MinSlider->setStyleSheet("QSlider::groove:horizontal {border: 1px solid #bbb;background: #ffffff;height: 4px;position: absolute;left: -10px;right: -10px;}QSlider::sub-page:horizontal {background: #808080;border: 1px solid black;}QSlider::add-page:horizontal {background: #ffffff;border: 1px solid black;}QSlider::handle:horizontal {image: url(/home/nr52/gitroot/gofigure/Resources/widget/arrow_up.png);width: 20px;margin-top: -1px;margin-bottom: -2px;}");
+  m_MinSlider->setStyleSheet("QSlider::groove:horizontal {border: 1px solid #bbb;background: rgba(0, 0, 0, 0);height: 4px;position: absolute;left: -10px;right: -10px;}QSlider::sub-page:horizontal {background: #808080;border: 1px solid black;}QSlider::add-page:horizontal {background: rgba(0, 0, 0, 0);border: 1px solid black;}QSlider::handle:horizontal {image: url(/home/nr52/gitroot/gofigure/Resources/widget/arrow_up.png);width: 20px;margin-top: -1px;margin-bottom: -2px;}");
   connect(m_MinSlider, SIGNAL(valueChanged(int)), this, SLOT(pointsUpdated()));
 
   m_MaxSlider = new QSlider(this);
   m_MaxSlider->setOrientation(Qt::Horizontal);
   m_MaxSlider->setMaximum(255);
   m_MaxSlider->setValue(iLUTParameters[2]);
-  m_MaxSlider->setStyleSheet("QSlider::groove:horizontal {border: 1px solid #bbb;background: #ffffff;height: 4px;position: absolute;left: -10px;right: -10px;}QSlider::sub-page:horizontal {background: #ffffff;border: 1px solid black;}QSlider::add-page:horizontal {background: #909090;border: 1px solid black;}QSlider::handle:horizontal {image: url(/home/nr52/gitroot/gofigure/Resources/widget/arrow_down.png);width: 20px;margin-top: -1px;margin-bottom: -2px;}");
+  m_MaxSlider->setStyleSheet("QSlider::groove:horizontal {border: 1px solid #bbb;background: rgba(0, 0, 0, 0);height: 4px;position: absolute;left: -10px;right: -10px;}QSlider::sub-page:horizontal {background: rgba(0, 0, 0, 0);border: 1px solid black;}QSlider::add-page:horizontal {background: #909090;border: 1px solid black;}QSlider::handle:horizontal {image: url(/home/nr52/gitroot/gofigure/Resources/widget/arrow_down.png);width: 20px;margin-top: -1px;margin-bottom: -2px;}");
 
   connect(m_MaxSlider, SIGNAL(valueChanged(int)), this, SLOT(pointsUpdated()));
 
@@ -225,7 +224,7 @@ GoTransferFunctionEditorWidget::GoTransferFunctionEditorWidget(QWidget *parent,
 
   connect(m_red_shade, SIGNAL(opacityChanged()), this, SLOT(updateOpacityTF()));
 
-  connect(okPushButton, SIGNAL(released()), this, SLOT(close()));
+  //connect(okPushButton, SIGNAL(released()), this, SLOT(close()));
   connect(okPushButton, SIGNAL(released()), this, SLOT(saveAll()));
 
   connect(resetLUTPushButton, SIGNAL(pressed()), this, SLOT(resetLUT()));
@@ -656,7 +655,7 @@ setColor()
     }
 
   // update button
-  QString style = "background: rgb(%1, %2, %3);";
+  QString style = "background: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 0,stop: 0 black, stop: 1 rgb(%1, %2, %3)); border-radius: 4px;";
   m_ColorPushButton->setStyleSheet(
         style.arg(m_Color.red()).arg(m_Color .green()).arg(m_Color.blue()));
 

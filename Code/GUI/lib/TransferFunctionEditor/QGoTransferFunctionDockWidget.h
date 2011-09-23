@@ -42,6 +42,8 @@
 
 #include "QGoGUILibConfigure.h"
 
+class GoTransferFunctionEditorWidget;
+
 
 /** \class QGoTransferFunctionDockWidget
  *  \brief Dock Widget for browsing images (changing slice, time point...)
@@ -58,5 +60,7 @@ public:
 
   /** \brief Destructor */
   ~QGoTransferFunctionDockWidget();
+
+  void AddTransferFunction(QString iName, GoTransferFunctionEditorWidget* iTF);
 };
 #endif

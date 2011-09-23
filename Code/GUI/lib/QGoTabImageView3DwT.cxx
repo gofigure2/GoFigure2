@@ -38,6 +38,7 @@
 #include "QGoImageView3D.h"
 //#include "QGoLUTDialog.h"
 #include "QGoNavigationDockWidget.h"
+#include "QGoTransferFunctionDockWidget.h"
 
 #if defined ( ENABLEFFMPEG ) || defined ( ENABLEAVI )
 
@@ -181,6 +182,11 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
 
   CreateVisuDockWidget();
 
+  // create TF dockwidget
+  m_TransferFunctionDockWidget =
+    new QGoTransferFunctionDockWidget(this);
+
+
   // segmentation dockwidgets
   //CreateContourSegmentationDockWidget();
   //CreateMeshSegmentationDockWiget();in setmegacapture/LSM files now
@@ -234,6 +240,12 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
       new QGoDockWidgetStatus(
         m_NavigationDockWidget, Qt::RightDockWidgetArea, false, true),
       m_NavigationDockWidget) );
+
+  m_DockWidgetList.push_back(
+    std::pair< QGoDockWidgetStatus *, QDockWidget * >(
+      new QGoDockWidgetStatus(
+        m_TransferFunctionDockWidget, Qt::RightDockWidgetArea, false, true),
+      m_TransferFunctionDockWidget) );
 
   /*m_DockWidgetList.push_back(
     std::pair< QGoDockWidgetStatus *, QDockWidget * >(
@@ -1029,6 +1041,8 @@ QGoTabImageView3DwT::CreateAllViewActions()
 
   this->m_ViewActions.push_back( m_NavigationDockWidget->toggleViewAction() );
 
+  this->m_ViewActions.push_back( m_TransferFunctionDockWidget->toggleViewAction() );
+
   this->m_ViewActions.push_back( m_DataBaseTables->toggleViewAction() );
 
   /// \todo create group actions for views changing
@@ -1693,9 +1707,9 @@ InitializeImageRelatedWidget()
           true); // all checkboxes are check edwhen we start
     // create TF editor
     // add it in the vector
-    createTransferFunctionEditor(QString::fromStdString(name));
+    GoTransferFunctionEditorWidget* widget =
+        createTransferFunctionEditor(QString::fromStdString(name));
     }
-
 
   m_NavigationDockWidget->SetXMinimumAndMaximum(extent[0], extent[1]);
   m_NavigationDockWidget->SetXSlice( ( extent[0] + extent[1] ) / 2 );
@@ -3325,7 +3339,7 @@ DopplerSizeChanged(int iDopplerSize)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void
+GoTransferFunctionEditorWidget*
 QGoTabImageView3DwT::
 createTransferFunctionEditor(QString iName)
 {
@@ -3373,8 +3387,10 @@ createTransferFunctionEditor(QString iName)
   // add histogram - should not recalculate all the time...
   editor->AddHistogram(m_ImageProcessor->getHistogram(iName.toStdString()));
 
-  // add it in the vector
-  //m_TransferFunctionVector.push_back(editor);
+  //editor->setParent(m_TransferFunctionDockWidget);
+  m_TransferFunctionDockWidget->AddTransferFunction(iName, editor);
+
+  return editor;
 }
 //-------------------------------------------------------------------------
 

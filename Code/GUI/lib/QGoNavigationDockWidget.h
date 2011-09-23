@@ -130,8 +130,6 @@ public slots:
 
   void visibilityChanged(bool);
 
-  void changeColor();
-
 signals:
   void XSliceChanged(int Slice);
 

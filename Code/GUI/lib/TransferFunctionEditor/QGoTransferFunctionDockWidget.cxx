@@ -35,11 +35,18 @@
 
 #include "QGoTransferFunctionDockWidget.h"
 
+#include "GoTransferFunctionEditorWidget.h"
+
 QGoTransferFunctionDockWidget::
 QGoTransferFunctionDockWidget( QWidget *iParent) :
   QGoDockWidget(iParent)
 {
   this->setupUi(this);
+
+  QIcon Navigation;
+  Navigation.addPixmap(QPixmap( QString::fromUtf8(":/fig/navigation.png") ),
+                       QIcon::Normal, QIcon::Off);
+  this->m_ToggleAction->setIcon(Navigation);
 }
 
 //-------------------------------------------------------------------------
@@ -48,4 +55,13 @@ QGoTransferFunctionDockWidget( QWidget *iParent) :
 QGoTransferFunctionDockWidget::
 ~QGoTransferFunctionDockWidget()
 {
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTransferFunctionDockWidget::
+AddTransferFunction(QString iName, GoTransferFunctionEditorWidget* iTF)
+{
+  this->tabWidget->addTab(iTF, iName);
 }

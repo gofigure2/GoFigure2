@@ -73,6 +73,8 @@ class QGoLineageViewerWidget;
 
 class QGoImageView3D;
 class QGoNavigationDockWidget;
+class QGoTransferFunctionDockWidget;
+class GoTransferFunctionEditorWidget;
 class QGoPrintDatabase;
 
 #if defined ENABLEFFMPEG || defined ENABLEAVI
@@ -388,7 +390,7 @@ public slots:
 
   void visibilityChanged(QString iName, bool iVisibility);
 
-  void createTransferFunctionEditor(QString iName);
+  GoTransferFunctionEditorWidget* createTransferFunctionEditor(QString iName);
   void openTransferFunctionEditor(QString iName);
 
   void updateSlot();
@@ -420,6 +422,7 @@ protected:
   int m_TCoord;
 
   QGoNavigationDockWidget *m_NavigationDockWidget;
+  QGoTransferFunctionDockWidget *m_TransferFunctionDockWidget;
 
   // base segmentation dockwidget for contours
   //QGoContourSegmentationBaseDockWidget *m_ContourSegmentationDockWidget;
