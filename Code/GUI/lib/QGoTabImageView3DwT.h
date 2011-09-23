@@ -388,6 +388,7 @@ public slots:
 
   void visibilityChanged(QString iName, bool iVisibility);
 
+  void createTransferFunctionEditor(QString iName);
   void openTransferFunctionEditor(QString iName);
 
   void updateSlot();
@@ -731,6 +732,8 @@ protected slots:
 
 private:
   void InitializeImageRelatedWidget();
+
+  //std::vector<GoTransferFunctionEditorWidget*> m_TransferFunctionVector;
 
   Q_DISABLE_COPY(QGoTabImageView3DwT);
 };

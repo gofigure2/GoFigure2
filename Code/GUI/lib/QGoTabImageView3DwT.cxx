@@ -740,7 +740,7 @@ QGoTabImageView3DwT::CreateVisuDockWidget()
   QObject::connect( m_NavigationDockWidget, SIGNAL( visibilityChanged(QString, bool) ),
                     this, SLOT( visibilityChanged(QString, bool) ) );
 
-  QObject::connect( m_NavigationDockWidget, SIGNAL( openTransferFunctionEditor(QString) ),
+  QObject::connect( m_NavigationDockWidget, SIGNAL( createTransferFunctionEditor(QString) ),
                     this, SLOT( openTransferFunctionEditor(QString) ) );
 }
 
@@ -1691,6 +1691,9 @@ InitializeImageRelatedWidget()
                  color[3]),
           i,
           true); // all checkboxes are check edwhen we start
+    // create TF editor
+    // add it in the vector
+    createTransferFunctionEditor(QString::fromStdString(name));
     }
 
 
@@ -3324,7 +3327,7 @@ DopplerSizeChanged(int iDopplerSize)
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
-openTransferFunctionEditor(QString iName)
+createTransferFunctionEditor(QString iName)
 {
   // create editor
   // get LUT parameters (gamma, min, max)
@@ -3369,6 +3372,19 @@ openTransferFunctionEditor(QString iName)
         m_ImageProcessor->getOpacityTransferFunction(iName.toStdString()));
   // add histogram - should not recalculate all the time...
   editor->AddHistogram(m_ImageProcessor->getHistogram(iName.toStdString()));
+
+  // add it in the vector
+  //m_TransferFunctionVector.push_back(editor);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+openTransferFunctionEditor(QString iName)
+{
+  //show TF widget
+  //add item  to it if not there
 }
 //-------------------------------------------------------------------------
 
