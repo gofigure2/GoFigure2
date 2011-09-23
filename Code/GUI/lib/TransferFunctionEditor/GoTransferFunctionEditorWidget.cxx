@@ -135,7 +135,7 @@ GoTransferFunctionEditorWidget::GoTransferFunctionEditorWidget(QWidget *parent,
   lutLayout->addWidget(loadLUTPushButton);
   lutLayout->addWidget(saveLUTPushButton);*/
 
-  QPushButton *okPushButton = new QPushButton("OK", this);
+  QPushButton *okPushButton = new QPushButton("Apply", this);
   QPushButton *resetLUTPushButton = new QPushButton("Reset", this);
 
   QHBoxLayout *layout = new QHBoxLayout;
@@ -425,7 +425,7 @@ resetLUT()
   m_red_shade->setColor(m_Color);
   
   // reset button color
-  QString style = "background: rgb(%1, %2, %3);";
+  QString style = "background: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 0,stop: 0 black, stop: 1 rgb(%1, %2, %3)); border-radius: 4px;";
   m_ColorPushButton->setStyleSheet(
         style.arg(m_Color.red()).arg(m_Color .green()).arg(m_Color.blue()));
 
