@@ -420,14 +420,15 @@ void
 GoTransferFunctionEditorWidget::
 resetLUT()
 {
+  m_Color = m_Color_original;
   // reset shade color
   m_red_shade->Reset();
-  m_red_shade->setColor(m_Color_original);
+  m_red_shade->setColor(m_Color);
   
   // reset button color
   QString style = "background: rgb(%1, %2, %3);";
   m_ColorPushButton->setStyleSheet(
-        style.arg(m_Color_original.red()).arg(m_Color_original .green()).arg(m_Color_original.blue()));
+        style.arg(m_Color.red()).arg(m_Color .green()).arg(m_Color.blue()));
 
   // update transfer function
   m_GammaSlider->setValue(100);
