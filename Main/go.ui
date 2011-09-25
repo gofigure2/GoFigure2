@@ -119,9 +119,11 @@
     <addaction name="actionAbout_Qt"/>
     <addaction name="separator"/>
     <addaction name="actionGoFigure2_Website"/>
+    <addaction name="actionCheck_For_Updates"/>
+    <addaction name="separator"/>
+    <addaction name="actionReport_a_bug"/>
     <addaction name="actionUser_mailing_list"/>
     <addaction name="actionDeveloper_mailing_list"/>
-    <addaction name="actionCheck_For_Updates"/>
    </widget>
    <widget class="QMenu" name="menuView">
     <property name="enabled">
@@ -317,6 +319,11 @@
   <action name="actionGoFigure2_Website">
    <property name="text">
     <string>GoFigure2 website</string>
+   </property>
+  </action>
+  <action name="actionReport_a_bug">
+   <property name="text">
+    <string>Report a bug</string>
    </property>
   </action>
   <action name="actionUser_mailing_list">

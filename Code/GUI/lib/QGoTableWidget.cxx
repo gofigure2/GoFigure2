@@ -363,7 +363,7 @@ void QGoTableWidget::SetColorForTable(TWContainerType iTWRowContainer,
       int rgb = 255 - ( Red + Green + Blue ) / 3;
       TextColor.setRgb(rgb, rgb, rgb, 255);
       }
-    
+
     this->item(iIndexRowTW, indexGroupIDInTableWidget)->setBackgroundColor(Color);
     this->item(iIndexRowTW, indexGroupIDInTableWidget)->setTextColor(TextColor);
 }
@@ -373,7 +373,7 @@ void QGoTableWidget::SetColorForTable(TWContainerType iTWRowContainer,
 //--------------------------------------------------------------------------
 void QGoTableWidget::DisplayDataForOneRow(TWContainerType iTWRowContainer,
                                           unsigned int iIndexTWRowContainer,
-                                          unsigned int iIndexTWRow,
+                                          int iIndexTWRow,
                                           std::vector< int > iIndexColorTraceRowContainer,
                                           std::vector< int > iIndexColorCollectionRowContainer,
                                           std::string iTraceName, std::string iCollectionName)
@@ -400,7 +400,7 @@ void QGoTableWidget::DisplayDataForOneRow(TWContainerType iTWRowContainer,
               this->setItem(iIndexTWRow, j, t_item);
               }
             if ( t_item )
-              {       
+              {
               if ( iTWRowContainer[i].first.TypeName == "string" )
                 {
                 t_item->setData( 0, QString::fromStdString(Value) );
@@ -419,7 +419,7 @@ void QGoTableWidget::DisplayDataForOneRow(TWContainerType iTWRowContainer,
         if (iCollectionName != "None") //no collection for lineages
           {
           this->SetColorForTable(
-            iTWRowContainer, iIndexTWRowContainer, iIndexColorCollectionRowContainer, 
+            iTWRowContainer, iIndexTWRowContainer, iIndexColorCollectionRowContainer,
             iCollectionName, iIndexTWRow);
           }
         }
@@ -438,7 +438,7 @@ void QGoTableWidget::InsertNewRow(TWContainerType iTWRowContainer,
   this->setRowCount(IndexNewRow + 1);
   this->DisplayDataForOneRow(iTWRowContainer, iIndexTWRowContainer, IndexNewRow, iIndexColorTraceRowContainer,
     iIndexColorCollectionRowContainer, iTraceName, iCollectionName);
-  this->SetSelectedColumn(IndexNewRow);  
+  this->SetSelectedColumn(IndexNewRow);
   this->SetVisibleColumn(IndexNewRow, iVisible);
 }
 //--------------------------------------------------------------------------
@@ -455,7 +455,7 @@ void QGoTableWidget::InsertNewRows(TWContainerType iTWRowContainer,
     this->setSortingEnabled(false);
     for ( unsigned int i = 0; i < iTWRowContainer[1].second.size(); i++ )
       {
-        this->InsertNewRow(iTWRowContainer, i, iIndexColorTraceRowContainer, 
+        this->InsertNewRow(iTWRowContainer, i, iIndexColorTraceRowContainer,
           iIndexColorCollectionRowContainer, iTraceName, iCollectionName,
           iVisible);
       }
