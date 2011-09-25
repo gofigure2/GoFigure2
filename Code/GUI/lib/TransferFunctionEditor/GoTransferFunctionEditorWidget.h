@@ -93,12 +93,12 @@ class GoTransferFunctionEditorWidget : public QWidget
   Q_OBJECT
 public:
   GoTransferFunctionEditorWidget(QWidget *parent, QString iChannel,
-                                 const std::vector<double>& iColor);
+                                 const std::vector<double>& iColor,
+                                 std::vector<int> iLUTParameters);
 
   void setGradientStops(const QGradientStops &stops);
 
-  void AddPoints(
-    const std::vector<std::map<unsigned int, unsigned int> >& iRGBA);
+  void AddPoints( const std::map<unsigned int, unsigned int >& iRGBA);
 
   void AddLookupTable(vtkLookupTable* iLUT);
 
@@ -112,27 +112,25 @@ public:
 
 public slots:
   void pointsUpdated();
-
-  // sliders
-  void gammaValueChanged(int);
-  void minValueChanged(int);
-  void maxValueChanged(int);
-
+  // color
+  void setColor();
   // LUT
   void presetLUT();
   void resetLUT();
   void saveLUT();
   void readLUT();
-  void savePoints();
-
+  void saveAll();
   // opacity TF
   void updateOpacityTF();
 
 signals:
-
   void updateVisualization();
   void updatePoints(QString,
-                    std::vector< std::map< unsigned int, unsigned int> >);
+                    std::map< unsigned int, unsigned int>,
+                    QColor,
+                    int,
+                    int,
+                    int);
 
 private:
 
@@ -149,6 +147,8 @@ private:
                         QTextStream& iStream,
                         const QString& iBalise);
 
+  QPushButton* m_ColorPushButton;
+
   GoTransferFunctionWidget *m_red_shade;
   GoTransferFunctionWidget *m_alpha_shade;
 
@@ -157,6 +157,8 @@ private:
   QSlider* m_MaxSlider;
 
   QColor                    m_Color;
+  // for reset
+  QColor                    m_Color_original;
   QString                   m_Channel;
 
   vtkLookupTable           *m_LUT;

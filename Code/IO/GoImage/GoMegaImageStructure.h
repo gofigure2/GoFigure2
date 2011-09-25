@@ -65,9 +65,12 @@ struct QGOIO_EXPORT GoMegaImageStructure
     std::vector< double >                              Color;
     bool                                               Visibility;
     std::string                                        Name;
-    std::vector<std::map<unsigned int, unsigned int> > RGBA;
+    std::map<unsigned int, unsigned int>               Alpha;
     vtkSmartPointer<vtkPiecewiseFunction>              OpacityTF;
     vtkSmartPointer<vtkImageAccumulate>                Histogram;
+    int                                                Gamma;
+    int                                                Min;
+    int                                                Max;
 
     /** Constructor */
     GoMegaImageStructure(unsigned int iIndex,
@@ -81,23 +84,17 @@ struct QGOIO_EXPORT GoMegaImageStructure
     {
     Image = iImage;
 
-    // init RGBA vectors
-    // vector might not be the best....
-    // to be clean, only need 1 vector
-    RGBA.resize(4);
-    for(int i = 0; i<3; ++i)
-      {
-      for( int j = 0; j<256; ++j)
-        {
-        RGBA[i][j] = j;
-        }
-      }
-
     // alpha, modified by user on clicks
-    RGBA[3][0] = 0;
-    RGBA[3][255] = Color[3];
+    Alpha[0] = 0;
+    Alpha[255] = Color[3];
 
-    //temp
+    // gamma
+    Gamma = 100;
+    // min
+    Min = 0;
+    // max
+    Max = 255;
+
     OpacityTF = vtkSmartPointer<vtkPiecewiseFunction>::New();
     OpacityTF->AddPoint(0, 0);
     OpacityTF->AddPoint(255, Color[3]/255);
@@ -117,6 +114,28 @@ struct QGOIO_EXPORT GoMegaImageStructure
     }
 
     // functions to modify the structure through the boost::multiindexcontainer
+   void  setGamma(int iGamma)
+   {
+     Gamma = iGamma;
+   }
+
+   void  setMin(int iMin)
+   {
+     Min = iMin;
+   }
+
+   void  setMax(int iMax)
+   {
+     Max = iMax;
+   }
+
+   void  setLUTParameters(int iGamma, int iMin, int iMax)
+   {
+     Gamma = iGamma;
+     Min = iMin;
+     Max = iMax;
+   }
+
    void  setLUT(vtkSmartPointer<vtkLookupTable> iLUT)
    {
      LUT = iLUT;
@@ -125,6 +144,11 @@ struct QGOIO_EXPORT GoMegaImageStructure
    void  setVisibility(bool iVisibility)
    {
      Visibility = iVisibility;
+   }
+
+   void  setColor(std::vector<double> iColor)
+   {
+     Color = iColor;
    }
 
    void  setName(std::string iName)
@@ -151,9 +175,9 @@ struct QGOIO_EXPORT GoMegaImageStructure
      Histogram->Update();
    }
 
-   void setPointsRGBA(std::vector< std::map< unsigned int, unsigned int> > iRGBA)
+   void set_PointsAlpha(std::map< unsigned int, unsigned int> iAlpha)
    {
-     RGBA = iRGBA;
+     Alpha = iAlpha;
    }
 
    /*

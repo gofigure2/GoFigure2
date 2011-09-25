@@ -83,6 +83,7 @@
 //qt
 #include "hoverpoints.h"
 #include <QSpacerItem>
+#include <QColorDialog>
 
 //vtk
 #include "vtkLookupTable.h"
@@ -98,14 +99,19 @@
 
 GoTransferFunctionEditorWidget::GoTransferFunctionEditorWidget(QWidget *parent,
                                                                QString iChannel,
-                                                               const std::vector<double>& iColor)
+                                                               const std::vector<double>& iColor,
+                                                               std::vector<int> iLUTParameters)
     : QWidget(parent )
 {
+  // needs a minimum size
+
   // update color
   m_Color.setRedF(iColor[0]/255);
   m_Color.setGreenF(iColor[1]/255);
   m_Color.setBlueF(iColor[2]/255);
   m_Color.setAlphaF(iColor[3]/255);
+
+  m_Color_original = m_Color;
 
   QVBoxLayout *vbox = new QVBoxLayout(this);
   vbox->setSpacing(1);
@@ -119,6 +125,7 @@ GoTransferFunctionEditorWidget::GoTransferFunctionEditorWidget(QWidget *parent,
 
   m_Channel = iChannel;
 
+/*
   QPushButton *presetLUTPushButton = new QPushButton("Preset LUT", this);
   presetLUTPushButton->setEnabled(false);
 
@@ -126,52 +133,53 @@ GoTransferFunctionEditorWidget::GoTransferFunctionEditorWidget(QWidget *parent,
   QPushButton *saveLUTPushButton = new QPushButton("Save LUT", this);
   QPushButton *loadLUTPushButton = new QPushButton("Load LUT", this);
   lutLayout->addWidget(loadLUTPushButton);
-  lutLayout->addWidget(saveLUTPushButton);
+  lutLayout->addWidget(saveLUTPushButton);*/
 
-  QPushButton *okPushButton = new QPushButton("OK", this);
+  QPushButton *okPushButton = new QPushButton("Apply", this);
   QPushButton *resetLUTPushButton = new QPushButton("Reset", this);
 
   QHBoxLayout *layout = new QHBoxLayout;
   layout->addWidget(okPushButton);
   layout->addWidget(resetLUTPushButton);
 
-  QLabel* channelName = new QLabel("Channel:");
-  QLabel* channelNameText = new QLabel(iChannel);
-  QHBoxLayout *nameLayout = new QHBoxLayout;
-  nameLayout->addWidget(channelName);
-  nameLayout->addWidget(channelNameText);
+  QHBoxLayout *colorLayout = new QHBoxLayout(this);
+  QLabel *color = new QLabel("Color: ");
+  m_ColorPushButton = new QPushButton(this);
+  QString style = "background: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 0,stop: 0 black, stop: 1 rgb(%1, %2, %3)); border-radius: 4px;";
+  m_ColorPushButton->setStyleSheet(
+        style.arg(m_Color.red()).arg(m_Color .green()).arg(m_Color.blue()));
+  connect(m_ColorPushButton, SIGNAL(clicked()), this, SLOT(setColor()));
+  colorLayout->addWidget(color);
+  colorLayout->addWidget(m_ColorPushButton);
+  vbox->addLayout(colorLayout);
 
   QLabel* gammaName = new QLabel("Gamma:");
   m_GammaSlider = new QSlider(this);
   m_GammaSlider->setOrientation(Qt::Horizontal);
-  m_GammaSlider->setMaximum(5000);
-  m_GammaSlider->setMinimum(50);
-  m_GammaSlider->setValue(500);
-  connect(m_GammaSlider, SIGNAL(valueChanged(int)), this, SLOT(gammaValueChanged(int)));
+  m_GammaSlider->setMaximum(199);
+  m_GammaSlider->setMinimum(1);
+  m_GammaSlider->setValue(iLUTParameters[0]);
+  connect(m_GammaSlider, SIGNAL(valueChanged(int)), this, SLOT(pointsUpdated()));
 
   QHBoxLayout *gammaLayout = new QHBoxLayout;
   gammaLayout->addWidget(gammaName);
   gammaLayout->addWidget(m_GammaSlider);
 
-  QLabel* minName = new QLabel("Min:");
   m_MinSlider = new QSlider(this);
   m_MinSlider->setOrientation(Qt::Horizontal);
   m_MinSlider->setMaximum(255);
-  m_MinSlider->setValue(20);
-  connect(m_MinSlider, SIGNAL(valueChanged(int)), this, SLOT(minValueChanged(int)));
+  m_MinSlider->setValue(iLUTParameters[1]);
+  m_MinSlider->setStyleSheet("QSlider::groove:horizontal {border: 1px solid #bbb;background: rgba(0, 0, 0, 0);height: 4px;position: absolute;left: -10px;right: -10px;}QSlider::sub-page:horizontal {background: #808080;border: 1px solid black;}QSlider::add-page:horizontal {background: rgba(0, 0, 0, 0);border: 1px solid black;}QSlider::handle:horizontal {image: url(/home/nr52/gitroot/gofigure/Resources/widget/arrow_up.png);width: 20px;margin-top: -1px;margin-bottom: -2px;}");
+  connect(m_MinSlider, SIGNAL(valueChanged(int)), this, SLOT(pointsUpdated()));
 
-  QLabel* maxName = new QLabel("Max:");
   m_MaxSlider = new QSlider(this);
   m_MaxSlider->setOrientation(Qt::Horizontal);
   m_MaxSlider->setMaximum(255);
-  m_MaxSlider->setValue(230);
-  connect(m_MaxSlider, SIGNAL(valueChanged(int)), this, SLOT(maxValueChanged(int)));
+  m_MaxSlider->setValue(iLUTParameters[2]);
+  m_MaxSlider->setStyleSheet("QSlider::groove:horizontal {border: 1px solid #bbb;background: rgba(0, 0, 0, 0);height: 4px;position: absolute;left: -10px;right: -10px;}QSlider::sub-page:horizontal {background: rgba(0, 0, 0, 0);border: 1px solid black;}QSlider::add-page:horizontal {background: #909090;border: 1px solid black;}QSlider::handle:horizontal {image: url(/home/nr52/gitroot/gofigure/Resources/widget/arrow_down.png);width: 20px;margin-top: -1px;margin-bottom: -2px;}");
 
-  QHBoxLayout *posLayout = new QHBoxLayout;
-  posLayout->addWidget(minName);
-  posLayout->addWidget(m_MinSlider);
-  posLayout->addWidget(maxName);
-  posLayout->addWidget(m_MaxSlider);
+  connect(m_MaxSlider, SIGNAL(valueChanged(int)), this, SLOT(pointsUpdated()));
+
 
   QCheckBox* tfCB = new QCheckBox("Show TF");
   tfCB->setChecked(true);
@@ -181,43 +189,49 @@ GoTransferFunctionEditorWidget::GoTransferFunctionEditorWidget(QWidget *parent,
   tfoCB->setChecked(true);
   connect(tfoCB, SIGNAL(clicked(bool)), m_red_shade, SIGNAL(enableHoverPoints(bool)));
 
-  QCheckBox* histoCB = new QCheckBox("Show Log Histogram");
+  /*QCheckBox* histoCB = new QCheckBox("Show Log Histogram");
   histoCB->setChecked(true);
-  histoCB->setEnabled(false);
-
-  vbox->addLayout(nameLayout);
+  histoCB->setEnabled(false);*/
 
   QSpacerItem* spacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Minimum);
   vbox->addItem(spacer);
-  vbox->addWidget(m_MaxSlider);
-  vbox->addWidget(m_red_shade);
-  vbox->addWidget(m_MinSlider);
+
+  QVBoxLayout* shadeVerticalLayout = new QVBoxLayout;
+  shadeVerticalLayout->addWidget(m_MaxSlider);
+  shadeVerticalLayout->addWidget(m_red_shade);
+  shadeVerticalLayout->addWidget(m_MinSlider);
+
+  QHBoxLayout* shadeHorizontalLayout=  new QHBoxLayout;
+  QSpacerItem* spacerShade1 =
+      new QSpacerItem(10, 10, QSizePolicy::Minimum, QSizePolicy::Minimum);
+  QSpacerItem* spacerShade2 =
+      new QSpacerItem(10, 10, QSizePolicy::Minimum, QSizePolicy::Minimum);
 
   QSpacerItem* spacer2 = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Minimum);
-  vbox->addItem(spacer2);
+  shadeHorizontalLayout->addItem(spacerShade1);
+  shadeHorizontalLayout->addLayout(shadeVerticalLayout);
+  shadeHorizontalLayout->addItem(spacerShade2);
 
 
-
+  vbox->addLayout(shadeHorizontalLayout);
   vbox->addLayout(gammaLayout);
-  vbox->addLayout(posLayout);
   vbox->addWidget(tfCB);
   vbox->addWidget(tfoCB);
-  vbox->addWidget(histoCB);
+  /*vbox->addWidget(histoCB);
   vbox->addLayout(lutLayout);
-  vbox->addWidget(presetLUTPushButton);
+  vbox->addWidget(presetLUTPushButton);*/
   vbox->addLayout(layout);
 
-  connect(m_red_shade, SIGNAL(colorsChanged()), this, SLOT(pointsUpdated()));
-  connect(m_red_shade, SIGNAL(colorsChanged()), this, SLOT(updateOpacityTF()));
+  connect(m_red_shade, SIGNAL(opacityChanged()), this, SLOT(updateOpacityTF()));
 
-  connect(okPushButton, SIGNAL(released()), this, SLOT(close()));
-  /*connect(okPushButton, SIGNAL(released()), this, SLOT(savePoints()));
+  //connect(okPushButton, SIGNAL(released()), this, SLOT(close()));
+  connect(okPushButton, SIGNAL(released()), this, SLOT(saveAll()));
 
   connect(resetLUTPushButton, SIGNAL(pressed()), this, SLOT(resetLUT()));
-  connect(saveLUTPushButton, SIGNAL(pressed()), this, SLOT(saveLUT()));
+  /*connect(saveLUTPushButton, SIGNAL(pressed()), this, SLOT(saveLUT()));
   connect(loadLUTPushButton, SIGNAL(pressed()), this, SLOT(readLUT()));*/
   // useless...?
-  connect(presetLUTPushButton, SIGNAL(pressed()), this, SLOT(presetLUT()));
+  //connect(presetLUTPushButton, SIGNAL(pressed()), this, SLOT(presetLUT()));
 
 
   // enable event filter
@@ -226,20 +240,26 @@ GoTransferFunctionEditorWidget::GoTransferFunctionEditorWidget(QWidget *parent,
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-inline static bool x_less_than(const QPointF &p1, const QPointF &p2)
-{
-  return p1.x() < p2.x();
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
 void GoTransferFunctionEditorWidget::pointsUpdated()
 {
   if(m_LUT)
     {
+    qreal side = m_GammaSlider->value()/(100);
+    int ope = pow(-1, side + 1);
+    qreal value = (qreal)(ope*(m_GammaSlider->value()-100) + ope);
+    qreal gamma_value;
+    if(value > 2)
+      {
+      // need log?
+      qreal temp = log(value);
+      gamma_value = pow(temp, ope);
+      }
+    else
+      gamma_value = 1;
+
     // update the LUT
     m_red_shade->UpdateLookupTable(m_LUT,
-                                   (qreal)m_GammaSlider->value(),
+                                   gamma_value,
                                    (qreal)m_MinSlider->value(),
                                    (qreal)m_MaxSlider->value());
     // send signal to update the visualization
@@ -261,17 +281,18 @@ static void set_shade_points(const QPolygonF &points, GoTransferFunctionWidget *
 //-------------------------------------------------------------------------
 void
 GoTransferFunctionEditorWidget::
-AddPoints( const std::vector< std::map< unsigned int, unsigned int> >& iRGBA)
+AddPoints( const std::map< unsigned int, unsigned int>& iAlpha)
 {
   //red
   QPolygonF redPoints;
   // add gamma points
-  computePointsFromMap(iRGBA[0], redPoints);
+  // should be sth else
+  computePointsFromMap(iAlpha, redPoints);
   m_red_shade->AddGammaPoints(redPoints);
 
   QPolygonF alphaPoints;
   // add alpha points
-  computePointsFromMap(iRGBA[3], alphaPoints);
+  computePointsFromMap(iAlpha, alphaPoints);
   m_red_shade->AddPoints(alphaPoints);
 
   // update histogram and alpha gradient
@@ -398,9 +419,20 @@ void
 GoTransferFunctionEditorWidget::
 resetLUT()
 {
+  m_Color = m_Color_original;
+  // reset shade color
   m_red_shade->Reset();
+  m_red_shade->setColor(m_Color);
+  
+  // reset button color
+  QString style = "background: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 0,stop: 0 black, stop: 1 rgb(%1, %2, %3)); border-radius: 4px;";
+  m_ColorPushButton->setStyleSheet(
+        style.arg(m_Color.red()).arg(m_Color .green()).arg(m_Color.blue()));
 
   // update transfer function
+  m_GammaSlider->setValue(100);
+  m_MinSlider->setValue(0);
+  m_MaxSlider->setValue(255);
   pointsUpdated();
 
   //update opacity TF
@@ -411,16 +443,24 @@ resetLUT()
 //-------------------------------------------------------------------------
 void
 GoTransferFunctionEditorWidget::
-savePoints()
+saveAll()
 {
-  std::vector< std::map< unsigned int, unsigned int> > pointsVector;
-  pointsVector.resize(4);
+  std::map< unsigned int, unsigned int> pointsVector;
 
-  // RED ------------------------------
+  // opacity ------------------------------
   QPolygonF redPoints = m_red_shade->points();
-  computeMapFromPoints(pointsVector[0], redPoints);
+  computeMapFromPoints(pointsVector, redPoints);
 
-  emit updatePoints(m_Channel, pointsVector);
+  // color
+
+  // gamma, min and max
+
+  emit updatePoints(m_Channel,
+                    pointsVector,
+                    m_Color,
+                    m_MinSlider->value(),
+                    m_MaxSlider->value(),
+                    m_GammaSlider->value());
 }
 //-------------------------------------------------------------------------
 
@@ -605,35 +645,24 @@ updateOpacityTF()
 //-------------------------------------------------------------------------
 void
 GoTransferFunctionEditorWidget::
-gammaValueChanged(int iValue)
+setColor()
 {
-  qDebug() << "gamma value changed: " << iValue;
+  QColor color = QColorDialog::getColor();
+  // if we selected a color and clicked on "OK"
+  if(color.isValid())
+    {
+    m_Color = color;
+    }
 
-  // update transfer function
-  pointsUpdated();
-}
-//-------------------------------------------------------------------------
+  // update button
+  QString style = "background: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 0,stop: 0 black, stop: 1 rgb(%1, %2, %3)); border-radius: 4px;";
+  m_ColorPushButton->setStyleSheet(
+        style.arg(m_Color.red()).arg(m_Color .green()).arg(m_Color.blue()));
 
-//-------------------------------------------------------------------------
-void
-GoTransferFunctionEditorWidget::
-minValueChanged(int iValue)
-{
-  qDebug() << "min value changed: " << iValue;
+  // update shade
+  m_red_shade->setColor(m_Color);
 
-  // update transfer function
-  pointsUpdated();
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-GoTransferFunctionEditorWidget::
-maxValueChanged(int iValue)
-{
-  qDebug() << "max value changed: " << iValue;
-
-  // update transfer function
+  // update LUT
   pointsUpdated();
 }
 //-------------------------------------------------------------------------

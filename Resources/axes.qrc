@@ -39,5 +39,7 @@
         <file>fig/TrackView.png</file>
         <file>fig/LineageView.png</file>
         <file>fig/synchronize.png</file>
+        <file>widget/arrow_up.png</file>
+        <file>widget/arrow_down.png</file>
     </qresource>
 </RCC>

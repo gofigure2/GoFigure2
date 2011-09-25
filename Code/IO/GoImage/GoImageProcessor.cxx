@@ -214,16 +214,68 @@ getColor(const std::string& iName) const
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-std::vector<std::map<unsigned int, unsigned int> >
+void
 GoImageProcessor::
-getRGBA(const std::string& iName) const
+setColor(const std::string& iName, std::vector<double>& iColor)
+{
+  GoMegaImageStructureMultiIndexContainer::index<Name>::type::iterator it =
+      m_MegaImageContainer.get< Name >().find(iName);
+
+  if(it!=m_MegaImageContainer.get< Name >().end())
+    {
+    m_MegaImageContainer.get< Name >().modify( it , set_color(iColor));
+    }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+GoImageProcessor::
+setLUTParameters(const std::string& iName, int iGamma, int iMin, int iMax)
+{
+  GoMegaImageStructureMultiIndexContainer::index<Name>::type::iterator it =
+      m_MegaImageContainer.get< Name >().find(iName);
+
+  if(it!=m_MegaImageContainer.get< Name >().end())
+    {
+    m_MegaImageContainer.get< Name >().modify( it , set_LUT_Parameters(iGamma,
+                                                                       iMin,
+                                                                       iMax));
+    }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+std::vector<int>
+GoImageProcessor::
+getLUTParameters(const std::string& iName)
 {
   GoMegaImageStructureMultiIndexContainer::index<Name>::type::iterator it =
       m_MegaImageContainer.get< Name >().find(iName);
 
   assert(it!=m_MegaImageContainer.get< Name >().end());
 
-  return it->RGBA;
+  std::vector<int> parameters;
+
+  parameters.push_back(it->Gamma);
+  parameters.push_back(it->Min);
+  parameters.push_back(it->Max);
+
+  return parameters;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+std::map<unsigned int, unsigned int>
+GoImageProcessor::
+getAlpha(const std::string& iName) const
+{
+  GoMegaImageStructureMultiIndexContainer::index<Name>::type::iterator it =
+      m_MegaImageContainer.get< Name >().find(iName);
+
+  assert(it!=m_MegaImageContainer.get< Name >().end());
+
+  return it->Alpha;
 }
 //--------------------------------------------------------------------------
 
@@ -580,14 +632,14 @@ getNumberOfVisibleChannels()
 //--------------------------------------------------------------------------
 void
 GoImageProcessor::
-updatePoints(std::string iName, std::vector< std::map< unsigned int, unsigned int> > iVector)
+updatePoints(std::string iName, std::map< unsigned int, unsigned int> iPointsAlpha)
 {
   GoMegaImageStructureMultiIndexContainer::index<Name>::type::iterator it =
       m_MegaImageContainer.get< Name >().find(iName);
 
   if(it!=m_MegaImageContainer.get< Name >().end())
     {
-    m_MegaImageContainer.get< Name >().modify( it , set_PointsRGBA(iVector));
+    m_MegaImageContainer.get< Name >().modify( it , set_PointsAlpha(iPointsAlpha));
     }
 }
 //--------------------------------------------------------------------------

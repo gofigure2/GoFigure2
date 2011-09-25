@@ -38,6 +38,7 @@
 #include "QGoImageView3D.h"
 //#include "QGoLUTDialog.h"
 #include "QGoNavigationDockWidget.h"
+#include "QGoTransferFunctionDockWidget.h"
 
 #if defined ( ENABLEFFMPEG ) || defined ( ENABLEAVI )
 
@@ -181,6 +182,11 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
 
   CreateVisuDockWidget();
 
+  // create TF dockwidget
+  m_TransferFunctionDockWidget =
+    new QGoTransferFunctionDockWidget(this);
+
+
   // segmentation dockwidgets
   //CreateContourSegmentationDockWidget();
   //CreateMeshSegmentationDockWiget();in setmegacapture/LSM files now
@@ -234,6 +240,12 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
       new QGoDockWidgetStatus(
         m_NavigationDockWidget, Qt::RightDockWidgetArea, false, true),
       m_NavigationDockWidget) );
+
+  m_DockWidgetList.push_back(
+    std::pair< QGoDockWidgetStatus *, QDockWidget * >(
+      new QGoDockWidgetStatus(
+        m_TransferFunctionDockWidget, Qt::RightDockWidgetArea, false, true),
+      m_TransferFunctionDockWidget) );
 
   /*m_DockWidgetList.push_back(
     std::pair< QGoDockWidgetStatus *, QDockWidget * >(
@@ -740,7 +752,7 @@ QGoTabImageView3DwT::CreateVisuDockWidget()
   QObject::connect( m_NavigationDockWidget, SIGNAL( visibilityChanged(QString, bool) ),
                     this, SLOT( visibilityChanged(QString, bool) ) );
 
-  QObject::connect( m_NavigationDockWidget, SIGNAL( openTransferFunctionEditor(QString) ),
+  QObject::connect( m_NavigationDockWidget, SIGNAL( createTransferFunctionEditor(QString) ),
                     this, SLOT( openTransferFunctionEditor(QString) ) );
 }
 
@@ -1028,6 +1040,8 @@ QGoTabImageView3DwT::CreateAllViewActions()
   this->m_ViewActions.push_back(separator4);
 
   this->m_ViewActions.push_back( m_NavigationDockWidget->toggleViewAction() );
+
+  this->m_ViewActions.push_back( m_TransferFunctionDockWidget->toggleViewAction() );
 
   this->m_ViewActions.push_back( m_DataBaseTables->toggleViewAction() );
 
@@ -1691,8 +1705,11 @@ InitializeImageRelatedWidget()
                  color[3]),
           i,
           true); // all checkboxes are check edwhen we start
+    // create TF editor
+    // add it in the vector
+    GoTransferFunctionEditorWidget* widget =
+        createTransferFunctionEditor(QString::fromStdString(name));
     }
-
 
   m_NavigationDockWidget->SetXMinimumAndMaximum(extent[0], extent[1]);
   m_NavigationDockWidget->SetXSlice( ( extent[0] + extent[1] ) / 2 );
@@ -3322,15 +3339,20 @@ DopplerSizeChanged(int iDopplerSize)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void
+GoTransferFunctionEditorWidget*
 QGoTabImageView3DwT::
-openTransferFunctionEditor(QString iName)
+createTransferFunctionEditor(QString iName)
 {
   // create editor
+  // get LUT parameters (gamma, min, max)
+  std::vector<int> lutParameters =
+      m_ImageProcessor->getLUTParameters(iName.toStdString());
+
   GoTransferFunctionEditorWidget* editor =
       new GoTransferFunctionEditorWidget(NULL,
-                                         iName, // name
-                                         m_ImageProcessor->getColor(iName.toStdString())); // color
+                                         iName,
+                                         m_ImageProcessor->getColor(iName.toStdString()),
+                                         lutParameters);
   // connect signals
 
   QObject::connect( editor,
@@ -3339,14 +3361,24 @@ openTransferFunctionEditor(QString iName)
                     SLOT( updateSlot()) );
 
   QObject::connect( editor,
-                    SIGNAL( updatePoints(QString, std::vector< std::map< unsigned int, unsigned int> >) ),
+                    SIGNAL( updatePoints(QString,
+                                         std::map< unsigned int, unsigned int>,
+                                         QColor,
+                                         int,
+                                         int,
+                                         int) ),
                     this,
-                    SLOT( updatePoints(QString, std::vector< std::map< unsigned int, unsigned int> >)) );
+                    SLOT( updatePoints(QString,
+                                       std::map< unsigned int, unsigned int>,
+                                       QColor,
+                                       int,
+                                       int,
+                                       int)) );
 
   // show editor - to have consistent geomerty to add the points
   editor->show();
   // add points
-  editor->AddPoints(m_ImageProcessor->getRGBA(iName.toStdString()));
+  editor->AddPoints(m_ImageProcessor->getAlpha(iName.toStdString()));
   // add LUT
   editor->AddLookupTable(m_ImageProcessor->getLookuptable(iName.toStdString()));
   // add Opacity TF
@@ -3354,6 +3386,21 @@ openTransferFunctionEditor(QString iName)
         m_ImageProcessor->getOpacityTransferFunction(iName.toStdString()));
   // add histogram - should not recalculate all the time...
   editor->AddHistogram(m_ImageProcessor->getHistogram(iName.toStdString()));
+
+  //editor->setParent(m_TransferFunctionDockWidget);
+  m_TransferFunctionDockWidget->AddTransferFunction(iName, editor);
+
+  return editor;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+openTransferFunctionEditor(QString iName)
+{
+  //show TF widget
+  //add item  to it if not there
 }
 //-------------------------------------------------------------------------
 
@@ -3371,9 +3418,29 @@ QGoTabImageView3DwT::updateSlot()
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
-updatePoints(QString iName, std::vector< std::map< unsigned int, unsigned int> > iPoints)
+updatePoints(QString iName,
+             std::map< unsigned int, unsigned int> iPoints,
+             QColor iColor,
+             int iMin,
+             int iMax,
+             int iGamma)
 {
+  // update opacity TF points
   m_ImageProcessor->updatePoints(iName.toStdString(), iPoints);
+
+  //color
+  std::vector<double> color;
+  color.push_back(iColor.redF()*255);
+  color.push_back(iColor.greenF()*255);
+  color.push_back(iColor.blueF()*255);
+
+  m_ImageProcessor->setColor(iName.toStdString(), color);
+
+  //LUT parameters
+  m_ImageProcessor->setLUTParameters(iName.toStdString(), iGamma, iMin, iMax);
+
+  // color of button in navigation widget
+  m_NavigationDockWidget->ModifyChannel(iName, iColor);
 }
 //-------------------------------------------------------------------------
 
