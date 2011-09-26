@@ -58,13 +58,11 @@ SplitBinaryImage()
  // std::cout << m_BinaryImage << std::endl;
 
   FeatureImagePointer seed_image = FeatureImageType::New();
- // seed_image->SetRegions( this->m_BinaryImage->GetLargestPossibleRegion() );
- // seed_image->SetOrigin( this->m_BinaryImage->GetOrigin() );
- // seed_image->SetSpacing( this->m_BinaryImage->GetSpacing() );
+  seed_image->SetRegions( this->m_BinaryImage->GetLargestPossibleRegion() );
   seed_image->CopyInformation(this->m_BinaryImage);
   seed_image->Allocate();
   seed_image->FillBuffer( zero );
-  seed_image->Update();
+//  seed_image->Update();
 
 
   // Fill the seeds
