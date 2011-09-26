@@ -37,6 +37,8 @@
 
 #include "itkvtkMeshSplitterDanielssonDistanceImageFilter.h"
 
+#include <iostream>
+
 namespace itk
 {
 template< class TFeatureImage, class TPointSet >
@@ -49,15 +51,21 @@ void
 vtkMeshSplitterDanielssonDistanceImageFilter< TFeatureImage, TPointSet >::
 SplitBinaryImage()
 {
+  std::cout << "begin split!" << std::endl;
   FeatureImagePixelType zero = NumericTraits< FeatureImagePixelType >::Zero;
 
+ // std::cout << "binary image" << std::endl;
+ // std::cout << m_BinaryImage << std::endl;
+
   FeatureImagePointer seed_image = FeatureImageType::New();
-  seed_image->SetRegions( this->m_BinaryImage->GetLargestPossibleRegion() );
-  seed_image->SetOrigin( this->m_BinaryImage->GetOrigin() );
-  seed_image->SetSpacing( this->m_BinaryImage->GetSpacing() );
+ // seed_image->SetRegions( this->m_BinaryImage->GetLargestPossibleRegion() );
+ // seed_image->SetOrigin( this->m_BinaryImage->GetOrigin() );
+ // seed_image->SetSpacing( this->m_BinaryImage->GetSpacing() );
+  seed_image->CopyInformation(this->m_BinaryImage);
   seed_image->Allocate();
   seed_image->FillBuffer( zero );
   seed_image->Update();
+
 
   // Fill the seeds
   FeatureImageIndexType index;
@@ -67,6 +75,7 @@ SplitBinaryImage()
   PointsContainerConstIterator it = points->Begin();
   PointsContainerConstIterator end = points->End();
 
+
   while( it != end )
     {
     pt.CastFrom( it->Value() );
@@ -75,12 +84,16 @@ SplitBinaryImage()
     ++it;
     }
 
+    std::cout << "first while done!" << std::endl;
+
+    std::cout << "voronoi map!" << std::endl;
   //Compute the voronoi map
   DistanceFilterPointer distance_filter = DistanceFilterType::New();
   distance_filter->SetInput( seed_image );
   distance_filter->UseImageSpacingOn();
   distance_filter->SetInputIsBinary( true );
-  distance_filter->UpdateLargestPossibleRegion();
+  distance_filter->SetSquaredDistance( false );
+  //distance_filter->UpdateLargestPossibleRegion();
   distance_filter->Update();
 
   this->m_OutputImage = distance_filter->GetVoronoiMap();
@@ -95,6 +108,8 @@ SplitBinaryImage()
   Vor_it.GoToBegin();
   Bin_it.GoToBegin();
 
+  std::cout << "second while!" << std::endl;
+
   while( !Vor_it.IsAtEnd() )
     {
     if( Bin_it.Get() == zero )
@@ -104,6 +119,7 @@ SplitBinaryImage()
     ++Vor_it;
     ++Bin_it;
     }
+      std::cout << "second while done!" << std::endl;
   }
 }
 
