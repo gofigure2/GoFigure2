@@ -179,6 +179,8 @@ GenerateMeshesFromOutputImage()
 
   this->m_Outputs.resize( MeshVector.size() );
 
+  i = 0;
+
   while( it != end )
     {
     ITKVTKMeshConverterPointer converter = ITKVTKMeshConverterType::New();
