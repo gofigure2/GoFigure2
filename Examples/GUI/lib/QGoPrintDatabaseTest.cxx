@@ -59,7 +59,7 @@ int main(int argc, char *argv[])
     {
     win->SetDatabaseVariables(argv[2], "localhost", "gofigure",
                               "gofigure", atoi(argv[3]), argv[4]);
-    win->FillTableFromDatabase();
+    win->FillTableFromDatabase(atoi(argv[3]));
     }
   //win->SetDatabaseVariables(
   //  "gofiguredatabase", "localhost", "gofigure",
