@@ -44,13 +44,6 @@
 
 int main(int argc, char **argv)
 {
-  QApplication app(argc, argv);
-
-  QCoreApplication::setOrganizationName("MegasonLab");
-  QCoreApplication::setOrganizationDomain(
-    "http://gofigure2.sourceforge.net");
-  QCoreApplication::setApplicationName("GoFigure2");
-
   QString inputfilename;
 
   if ( argc > 1 )
@@ -81,6 +74,13 @@ int main(int argc, char **argv)
       }
     }
 
+  QApplication app(argc, argv);
+
+  QCoreApplication::setOrganizationName("MegasonLab");
+  QCoreApplication::setOrganizationDomain(
+    "http://gofigure2.sourceforge.net");
+  QCoreApplication::setApplicationName("GoFigure2");
+
   QPixmap pixmap( QString::fromUtf8(":/fig/splash.png") );
 
   QSplashScreen *splash = new QSplashScreen(
@@ -107,7 +107,7 @@ int main(int argc, char **argv)
   splash->finish(form);
 
   int output;
-  
+
   try
     {
     output = app.exec();
