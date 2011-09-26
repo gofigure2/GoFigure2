@@ -36,6 +36,9 @@
 #include "itkvtkMeshSplitterDanielssonDistanceImageFilter.h"
 #include "GoImageProcessor.h"
 
+// temp
+#include "vtkPolyDataWriter.h"
+
 QGoMeshSplitDanielssonDistanceAlgo::QGoMeshSplitDanielssonDistanceAlgo(std::vector< vtkPoints* >* iSeeds, QWidget* iParent)
     :QGoSplitDanielssonDistanceAlgo(iSeeds, iParent)
 {
@@ -60,7 +63,11 @@ std::vector<vtkPolyData*> QGoMeshSplitDanielssonDistanceAlgo::ApplyAlgo(
 
   std::vector<vtkPolyData*> oVector;
 
-  if( (*this->m_Seeds)[0]->GetNumberOfPoints() > 2)
+  std::cout << "nb of point 0: " << (*this->m_Seeds)[0]->GetNumberOfPoints() << std::endl;
+  std::cout << "nb of point 1: " << (*this->m_Seeds)[1]->GetNumberOfPoints() << std::endl;
+  std::cout << "nb of point 2: " << (*this->m_Seeds)[2]->GetNumberOfPoints() << std::endl;
+
+  if( (*this->m_Seeds)[0]->GetNumberOfPoints() >= 2)
     {
     size_t nb_ch = iImages->getNumberOfChannels();
 
@@ -104,6 +111,19 @@ std::vector<vtkPolyData*> QGoMeshSplitDanielssonDistanceAlgo::ApplyAlgo(
     filter->SetSeeds( seeds );
     filter->Update();
     oVector = filter->GetOutputs();
+
+    std::cout << "done" << std::endl;
+
+    vtkPolyDataWriter* writer = vtkPolyDataWriter::New();
+    writer->SetInput(oVector[0]);
+    writer->SetFileName("firstMesh.vtk");
+    writer->Write();
+
+    writer->SetInput(oVector[1]);
+    writer->SetFileName("secondMesh.vtk");
+    writer->Write();
+
+    writer->Delete();
   }
   return oVector;
 }
