@@ -36,12 +36,8 @@
 #include "itkvtkMeshSplitterDanielssonDistanceImageFilter.h"
 #include "GoImageProcessor.h"
 
-#include "vtkTransformPolyDataFilter.h"
-#include "vtkTransform.h"
-
-// temp
+//temp
 #include "vtkPolyDataWriter.h"
-#include "itkImageFileWriter.h"
 
 QGoMeshSplitDanielssonDistanceAlgo::QGoMeshSplitDanielssonDistanceAlgo(std::vector< vtkPoints* >* iSeeds, QWidget* iParent)
     :QGoSplitDanielssonDistanceAlgo(iSeeds, iParent)
@@ -78,6 +74,7 @@ std::vector<vtkPolyData*> QGoMeshSplitDanielssonDistanceAlgo::ApplyAlgo(
         SplitterType;
     SplitterType::Pointer filter = SplitterType::New();
     filter->SetNumberOfImages( nb_ch );
+    filter->SetMesh( iPolyData );
 
     // work on smaller region
     typedef itk::Image< PixelType, Dimension >  ImageType;
@@ -87,28 +84,7 @@ std::vector<vtkPolyData*> QGoMeshSplitDanielssonDistanceAlgo::ApplyAlgo(
       {
       bounds[i*2] = static_cast<int>(boundsPointer[i*2] -10);
       bounds[i*2+1] = static_cast<int>(boundsPointer[i*2+1] +10);
-      std::cout <<"bounds: " << bounds[i*2] << std::endl;
-      std::cout <<"bounds: " << bounds[i*2+1] << std::endl;
       }
-
-    // origins have to match!
-  vtkSmartPointer<vtkTransform> translation =
-    vtkSmartPointer<vtkTransform>::New();
-  translation->Translate(- bounds[0], - bounds[2], - bounds[4]);
-
-  std::cout <<"tanslation: " <<  - bounds[0] << std::endl;
-  std::cout <<"tanslation: " <<  - bounds[2] << std::endl;
-  std::cout <<"tanslation: " <<  - bounds[4] << std::endl;
-
-  vtkSmartPointer<vtkTransformPolyDataFilter> transformFilter =
-    vtkSmartPointer<vtkTransformPolyDataFilter>::New();
-  transformFilter->SetInput(iPolyData);
-  transformFilter->SetTransform(translation);
-  transformFilter->Update();
-
- // transformFilter->GetOutput()->Print(cout);
-
-  filter->SetMesh( iPolyData );
 
     ImageType::PointType origin;
     for( size_t i = 0; i < nb_ch; i++ )
@@ -118,17 +94,8 @@ std::vector<vtkPolyData*> QGoMeshSplitDanielssonDistanceAlgo::ApplyAlgo(
           this->ITKExtractROI< PixelType, Dimension >( bounds,
                                                        iImages->getImageITK<PixelType, Dimension>(
                                                                 iImages->getChannelName(i)));
-/*
-      double origin[3] = {0.0, 0.0, 0.0};
-      ITK_ROI_Image->SetOrigin(origin);*/
       filter->SetFeatureImage( i,
                                ITK_ROI_Image);
-
-      typedef  itk::ImageFileWriter< ImageType  > WriterType;
-        WriterType::Pointer writer = WriterType::New();
-        writer->SetFileName("extractedROI.mhd");
-        writer->SetInput(ITK_ROI_Image);
-        writer->Update();
       }
 
     typedef SplitterType::PointSetType PointSetType;
