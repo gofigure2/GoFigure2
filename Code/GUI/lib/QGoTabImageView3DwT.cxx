@@ -2639,8 +2639,6 @@ QGoTabImageView3DwT::ModifyInDBAndRenderMeshForVisu(
       this->m_MeshContainer-> GetHighlightedElementsTCoord();
 
   // Save mesh first mesh, provide track ID
-  std::cout << "collectionID: " << collectionID.front() << std::endl;
-  std::cout << "tCoord: " << tCoord.front() << std::endl;
   SaveAndVisuMesh(iVectPolydata[0], tCoord.front(), collectionID.front());
 
   // Save second mesh, with track ID == 0
@@ -2701,11 +2699,7 @@ QGoTabImageView3DwT::SaveAndVisuMesh(vtkPolyData *iView,
     return;
     }
 
-  std::cout << "save mesh..." << std::endl;
-
   SaveMesh(iView, iTCoord, iCollectionID);
-
-  std::cout << "add mesh to visu..." << std::endl;
 
   // should be done in the mesh manager, from goprintdatabase
 
@@ -2715,9 +2709,6 @@ QGoTabImageView3DwT::SaveAndVisuMesh(vtkPolyData *iView,
   std::vector< vtkActor * > actors =
     VisualizeTrace(iView,
                    this->m_MeshContainer->m_CurrentElement.rgba);
-
-  std::cout << "current element track id: " <<
-      this->m_MeshContainer->m_CurrentElement.CollectionID << std::endl;
 
   // update container since a new mesh is created
   // miss track ID!

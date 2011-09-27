@@ -326,8 +326,8 @@ QGoPrintDatabase::SaveMeshFromVisuInDB(unsigned int iXCoordMin,
   OpenDBConnection();
   if ( !this->m_MeshGenerationMode)
     {
-    std::cout << "iTrackID: " << iTrackID << std::endl;
     unsigned int TrackID = 0;
+
     if(iTrackID != -1)
       {
       TrackID = iTrackID;
@@ -337,7 +337,6 @@ QGoPrintDatabase::SaveMeshFromVisuInDB(unsigned int iXCoordMin,
       TrackID = this->m_TraceSettingsWidget->GetCurrentSelectedCollectionID();
       }
 
-    std::cout << "TRACK ID: " << TrackID << std::endl;
     //check that there isn't an existing mesh with the same timepoint in the
     // track,if so, set its trackID to 0:
     /** \todo print a different message if several meshes are created at the

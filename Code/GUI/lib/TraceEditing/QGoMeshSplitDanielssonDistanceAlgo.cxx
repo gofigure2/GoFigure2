@@ -118,25 +118,6 @@ std::vector<vtkPolyData*> QGoMeshSplitDanielssonDistanceAlgo::ApplyAlgo(
     filter->SetSeeds( seeds );
     filter->Update();
     oVector = filter->GetOutputs();
-
-    oVector[0]->Print(cout);
-    oVector[1]->Print(cout);
-
-    std::cout << "done" << std::endl;
-
-    oVector[0]->Print(cout);
-    oVector[1]->Print(cout);
-
-    vtkPolyDataWriter* writer = vtkPolyDataWriter::New();
-    writer->SetInput(oVector[0]);
-    writer->SetFileName("firstMesh.vtk");
-    writer->Write();
-
-    writer->SetInput(oVector[1]);
-    writer->SetFileName("secondMesh.vtk");
-    writer->Write();
-
-    writer->Delete();
   }
   return oVector;
 }
