@@ -211,6 +211,10 @@ public:
   void CleanTWAndContainerForGivenTimePoint(vtkMySQLDatabase *iDatabaseConnector,
                                             const std::list<unsigned int>& iTimePoints);
 
+  void ModifyTrackIDInVisuContainer(unsigned int iTrackID,
+                                    std::list< unsigned int > iToTrack,
+                                    std::list< unsigned int > iToNull);
+
 
 public slots:
   /**

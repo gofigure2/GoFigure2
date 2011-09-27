@@ -901,6 +901,8 @@ GetVolume(unsigned int iMeshID)
   return (this->GetTableWidget()->GetValue( iMeshID, "mesh", "Volume" )).toDouble();
 }
 //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 void
 QGoDBMeshManager::
 CleanTWAndContainerForGivenTimePoint(vtkMySQLDatabase *iDatabaseConnector,
@@ -908,4 +910,16 @@ CleanTWAndContainerForGivenTimePoint(vtkMySQLDatabase *iDatabaseConnector,
 {
   this->RemoveTracesFromTWAndContainerForVisuForSpecificTPsTemplate<MeshContainer>(
           iDatabaseConnector, this->m_MeshContainerInfoForVisu, iTimePoints);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoDBMeshManager::
+ModifyTrackIDInVisuContainer(unsigned int iTrackID,
+                                  std::list< unsigned int > iToTrack,
+                                  std::list< unsigned int > iToNull)
+{
+  m_MeshContainerInfoForVisu->AssignToGivenCollection(iTrackID, iToTrack);
+  m_MeshContainerInfoForVisu->AssignToGivenCollection(0, iToNull);
 }

@@ -58,6 +58,26 @@
 #include "vtkLookupTableManager.h"
 #include "QGoGUILibConfigure.h"
 
+/**
+  \struct change_Collection_ID
+  \brief Change the collection ID of a trace
+  \sa TraceStructure
+  */
+//-----------------------------------------------------------------------------
+struct change_collectionID
+{
+  change_collectionID(const unsigned int& iCollectionID):collectionID(iCollectionID){}
+
+  void operator()(ContourMeshStructure& iStructure)
+  {
+    iStructure.ModifyCollectionID(collectionID);
+  }
+
+private:
+  unsigned int collectionID;
+};
+//-----------------------------------------------------------------------------
+
 namespace boost
 {
 typedef multi_index::multi_index_container<
@@ -380,6 +400,11 @@ public:
       ++it;
       }
     }
+
+  void AssignToGivenCollection(unsigned int iCollection,
+                               std::list< unsigned int > iToBeAssigned);
+
+  void AssignToCollectionZero(std::list< unsigned int > iToBeAssigned);
 
 public slots:
 
