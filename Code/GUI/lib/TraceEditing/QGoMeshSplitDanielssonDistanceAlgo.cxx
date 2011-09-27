@@ -36,8 +36,12 @@
 #include "itkvtkMeshSplitterDanielssonDistanceImageFilter.h"
 #include "GoImageProcessor.h"
 
+#include "vtkTransformPolyDataFilter.h"
+#include "vtkTransform.h"
+
 // temp
 #include "vtkPolyDataWriter.h"
+#include "itkImageFileWriter.h"
 
 QGoMeshSplitDanielssonDistanceAlgo::QGoMeshSplitDanielssonDistanceAlgo(std::vector< vtkPoints* >* iSeeds, QWidget* iParent)
     :QGoSplitDanielssonDistanceAlgo(iSeeds, iParent)
@@ -59,13 +63,7 @@ std::vector<vtkPolyData*> QGoMeshSplitDanielssonDistanceAlgo::ApplyAlgo(
     vtkPolyData* iPolyData,
     bool iIsInvertedOn)
 {
-  iPolyData->Print(cout);
-
   std::vector<vtkPolyData*> oVector;
-
-  std::cout << "nb of point 0: " << (*this->m_Seeds)[0]->GetNumberOfPoints() << std::endl;
-  std::cout << "nb of point 1: " << (*this->m_Seeds)[1]->GetNumberOfPoints() << std::endl;
-  std::cout << "nb of point 2: " << (*this->m_Seeds)[2]->GetNumberOfPoints() << std::endl;
 
   if( (*this->m_Seeds)[0]->GetNumberOfPoints() >= 2)
     {
@@ -79,16 +77,58 @@ std::vector<vtkPolyData*> QGoMeshSplitDanielssonDistanceAlgo::ApplyAlgo(
     typedef itk::vtkMeshSplitterDanielssonDistanceImageFilter< ImageType >
         SplitterType;
     SplitterType::Pointer filter = SplitterType::New();
-    filter->SetNumberOfImages( nb_ch );
+    filter->SetNumberOfImages( 1 );
 
+    // work on smaller region
+    typedef itk::Image< PixelType, Dimension >  ImageType;
+    std::vector< double > bounds(6);
+    double* boundsPointer = iPolyData->GetBounds();
+    for(int i = 0; i<Dimension; ++i)
+      {
+      bounds[i*2] = static_cast<int>(boundsPointer[i*2] -10);
+      bounds[i*2+1] = static_cast<int>(boundsPointer[i*2+1] +10);
+      std::cout <<"bounds: " << bounds[i*2] << std::endl;
+      std::cout <<"bounds: " << bounds[i*2+1] << std::endl;
+      }
 
-    filter->SetMesh( iPolyData );
+    // origins have to match!
+  vtkSmartPointer<vtkTransform> translation =
+    vtkSmartPointer<vtkTransform>::New();
+  translation->Translate(- bounds[0], - bounds[2], - bounds[4]);
 
-    for( size_t i = 0; i < nb_ch; i++ )
+  std::cout <<"tanslation: " <<  - bounds[0] << std::endl;
+  std::cout <<"tanslation: " <<  - bounds[2] << std::endl;
+  std::cout <<"tanslation: " <<  - bounds[4] << std::endl;
+
+  vtkSmartPointer<vtkTransformPolyDataFilter> transformFilter =
+    vtkSmartPointer<vtkTransformPolyDataFilter>::New();
+  transformFilter->SetInput(iPolyData);
+  transformFilter->SetTransform(translation);
+  transformFilter->Update();
+
+ // transformFilter->GetOutput()->Print(cout);
+
+  filter->SetMesh( iPolyData );
+
+    ImageType::PointType origin;
+    for( size_t i = 0; i < 1; i++ )
     {
+      // then let's extract the Region of Interest
+      ImageType::Pointer ITK_ROI_Image =
+          this->ITKExtractROI< PixelType, Dimension >( bounds,
+                                                       iImages->getImageITK<PixelType, Dimension>(
+                                                                iImages->getChannelName(i)));
+/*
+      double origin[3] = {0.0, 0.0, 0.0};
+      ITK_ROI_Image->SetOrigin(origin);*/
       filter->SetFeatureImage( i,
-                               iImages->getImageITK<PixelType, Dimension>(
-                                   iImages->getChannelName(i)));
+                               ITK_ROI_Image);
+
+      typedef  itk::ImageFileWriter< ImageType  > WriterType;
+        WriterType::Pointer writer = WriterType::New();
+        writer->SetFileName("extractedROI.mhd");
+        writer->SetInput(ITK_ROI_Image);
+        writer->Update();
       }
 
     typedef SplitterType::PointSetType PointSetType;
@@ -112,7 +152,13 @@ std::vector<vtkPolyData*> QGoMeshSplitDanielssonDistanceAlgo::ApplyAlgo(
     filter->Update();
     oVector = filter->GetOutputs();
 
+    oVector[0]->Print(cout);
+    oVector[1]->Print(cout);
+
     std::cout << "done" << std::endl;
+
+    oVector[0]->Print(cout);
+    oVector[1]->Print(cout);
 
     vtkPolyDataWriter* writer = vtkPolyDataWriter::New();
     writer->SetInput(oVector[0]);

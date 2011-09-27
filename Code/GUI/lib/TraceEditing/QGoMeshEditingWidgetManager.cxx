@@ -231,7 +231,9 @@ RequestedPolydatas(std::list< std::pair<unsigned int, vtkPolyData*> > iRequest){
       iRequest.front().second,
       this->m_TraceEditingWidget->GetIsInvertedOn());
     // emit TraceModified(ID, polydata)
-    //emit TracesCreatedFromAlgo(NewTraces[1], this->GetSelectedTimePoint() );
+    //std::vector<vtkPolyData*> TraceCreated(1);
+    //TraceCreated[0] = NewTraces[1];
+    //emit TracesCreatedFromAlgo(TraceCreated, this->GetSelectedTimePoint() );
     emit ClearAllSeeds();
     }
   else
