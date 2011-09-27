@@ -218,7 +218,6 @@ void QGoMeshEditingWidgetManager::RequestPolydatasForDanielsson(){
 void
 QGoMeshEditingWidgetManager::
 RequestedPolydatas(std::list< std::pair<unsigned int, vtkPolyData*> > iRequest){
-  qDebug() << "received QGoMeshEditingWidgetManager" << iRequest.size();
   // in split mote
   if(iRequest.size() == 1)
     {
@@ -230,10 +229,7 @@ RequestedPolydatas(std::list< std::pair<unsigned int, vtkPolyData*> > iRequest){
       this->m_TraceEditingWidget->GetCurrentImageName(),
       iRequest.front().second,
       this->m_TraceEditingWidget->GetIsInvertedOn());
-    // emit TraceModified(ID, polydata)
-    //std::vector<vtkPolyData*> TraceCreated(1);
-    //TraceCreated[0] = NewTraces[1];
-    //emit TracesCreatedFromAlgo(TraceCreated, this->GetSelectedTimePoint() );
+    emit TracesSplittedFromAlgo(NewTraces);
     emit ClearAllSeeds();
     }
   else

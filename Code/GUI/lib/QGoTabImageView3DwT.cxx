@@ -532,6 +532,11 @@ QGoTabImageView3DwT::CreateMeshEditingDockWidget(int iTimeMin, int iTimeMax)
                     this,
                     SLOT( SaveInDBAndRenderMeshForVisu(std::vector<vtkPolyData *>, int) ) );
 
+  QObject::connect( this->m_MeshEditingWidget,
+                    SIGNAL(TracesSplittedFromAlgo(std::vector<vtkPolyData *>) ),
+                    this,
+                    SLOT( ModifyInDBAndRenderMeshForVisu(std::vector<vtkPolyData *>) ) );
+
   /** \todo connect the signal, reimplement the slot*/
   QObject::connect( this->m_MeshEditingWidget,
                     SIGNAL(SetOfContoursFromAlgo(std::vector<std::vector<vtkPolyData*> >, int) ),
@@ -2582,7 +2587,7 @@ QGoTabImageView3DwT::CreateContour(vtkPolyData *contour_nodes, vtkPolyData *iVie
 
 //-------------------------------------------------------------------------
 void
-QGoTabImageView3DwT::SaveMesh(vtkPolyData *iView, int iTCoord)
+QGoTabImageView3DwT::SaveMesh(vtkPolyData *iView, int iTCoord, int iCollectionID)
 {
   // Compute Bounding Box
   std::vector< int > bounds = this->GetBoundingBox(iView);
@@ -2596,7 +2601,8 @@ QGoTabImageView3DwT::SaveMesh(vtkPolyData *iView, int iTCoord)
                                                bounds[1], bounds[3], bounds[5],
                                                iTCoord,
                                                iView,
-                                               &MeshAttributes);
+                                               &MeshAttributes,
+                                               iCollectionID);
 }
 
 //-------------------------------------------------------------------------
@@ -2618,6 +2624,30 @@ QGoTabImageView3DwT::SaveInDBAndRenderMeshForVisu(
     ++iter;
     }
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::ModifyInDBAndRenderMeshForVisu(
+  std::vector<vtkPolyData *> iVectPolydata)
+{
+  // get mesh track ID
+  std::list< unsigned int > collectionID =
+      this->m_MeshContainer-> GetHighlightedElementsCollectionID();
+  // get mesh time point
+  std::list< unsigned int > tCoord =
+      this->m_MeshContainer-> GetHighlightedElementsTCoord();
+
+  // Save mesh first mesh, provide track ID
+  std::cout << "collectionID: " << collectionID.front() << std::endl;
+  std::cout << "tCoord: " << tCoord.front() << std::endl;
+  SaveAndVisuMesh(iVectPolydata[0], tCoord.front(), collectionID.front());
+
+  // Save second mesh, with track ID == 0
+  SaveAndVisuMesh(iVectPolydata[1], tCoord.front(), 0);
+}
+//-------------------------------------------------------------------------
+
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
@@ -2662,7 +2692,8 @@ void QGoTabImageView3DwT::SaveInDBAndRenderContourForVisu(
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::SaveAndVisuMesh(vtkPolyData *iView,
-                                     unsigned int iTCoord)
+                                     unsigned int iTCoord,
+                                     int iCollectionID)
 {
   if ( !iView )
     {
@@ -2672,9 +2703,9 @@ QGoTabImageView3DwT::SaveAndVisuMesh(vtkPolyData *iView,
 
   std::cout << "save mesh..." << std::endl;
 
-  SaveMesh(iView, iTCoord);
+  SaveMesh(iView, iTCoord, iCollectionID);
 
-    std::cout << "add mesh to visu..." << std::endl;
+  std::cout << "add mesh to visu..." << std::endl;
 
   // should be done in the mesh manager, from goprintdatabase
 
@@ -2685,7 +2716,11 @@ QGoTabImageView3DwT::SaveAndVisuMesh(vtkPolyData *iView,
     VisualizeTrace(iView,
                    this->m_MeshContainer->m_CurrentElement.rgba);
 
+  std::cout << "current element track id: " <<
+      this->m_MeshContainer->m_CurrentElement.CollectionID << std::endl;
+
   // update container since a new mesh is created
+  // miss track ID!
   m_MeshContainer->UpdateCurrentElementFromVisu(actors,
                                                 iView,
                                                 iTCoord,

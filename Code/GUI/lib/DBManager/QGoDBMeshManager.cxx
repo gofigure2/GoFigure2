@@ -271,6 +271,7 @@ unsigned int QGoDBMeshManager::SaveNewMeshFromVisu(
   double *rgba = this->GetVectorFromQColor(this->m_SelectedColorData->second);
   this->m_MeshContainerInfoForVisu->UpdateCurrentElementFromDB(
     NewMeshID, rgba);
+  this->m_MeshContainerInfoForVisu->UpdateCurrentElementCollection(iTrackID);
   delete[] rgba;
   this->DisplayInfoForLastCreatedMesh(iDatabaseConnector, iMeshAttributes);
   return NewMeshID;

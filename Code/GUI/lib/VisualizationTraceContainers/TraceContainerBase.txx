@@ -186,7 +186,8 @@ TraceContainerBase< TContainer >::ResetCurrentElement()
 //-------------------------------------------------------------------------
 template< class TContainer >
 void TraceContainerBase< TContainer >::UpdateCurrentElementFromDB(unsigned int iTraceID,
-                                                                  double irgba[4], bool IsVisible)
+                                                                  double irgba[4],
+                                                                  bool IsVisible)
 {
   this->m_CurrentElement.TraceID = iTraceID;
   this->m_CurrentElement.rgba[0] = irgba[0];
@@ -195,7 +196,15 @@ void TraceContainerBase< TContainer >::UpdateCurrentElementFromDB(unsigned int i
   this->m_CurrentElement.rgba[3] = irgba[3];
   this->m_CurrentElement.Visible = IsVisible;
 }
+//-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
+template< class TContainer >
+void TraceContainerBase< TContainer >::UpdateCurrentElementCollection(
+    unsigned int iCollectionID)
+{
+  this->m_CurrentElement.CollectionID = iCollectionID;
+}
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -481,6 +490,50 @@ TraceContainerBase< TContainer >::GetHighlightedElementsTraceID()
   while ( it0 != it1 )
     {
     oList.push_back(it0->TraceID);
+    ++it0;
+    }
+  return oList;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+template< class TContainer >
+std::list< unsigned int >
+TraceContainerBase< TContainer >::GetHighlightedElementsCollectionID()
+{
+  MultiIndexContainerHighlightedIterator it0, it1;
+
+  using boost::multi_index:: get;
+
+  boost::tuples::tie(it0, it1) =
+    m_Container.get< Highlighted >().equal_range(true);
+
+  std::list< unsigned int > oList;
+  while ( it0 != it1 )
+    {
+    oList.push_back(it0->CollectionID);
+    ++it0;
+    }
+  return oList;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+template< class TContainer >
+std::list< unsigned int >
+TraceContainerBase< TContainer >::GetHighlightedElementsTCoord()
+{
+  MultiIndexContainerHighlightedIterator it0, it1;
+
+  using boost::multi_index:: get;
+
+  boost::tuples::tie(it0, it1) =
+    m_Container.get< Highlighted >().equal_range(true);
+
+  std::list< unsigned int > oList;
+  while ( it0 != it1 )
+    {
+    oList.push_back(it0->TCoord);
     ++it0;
     }
   return oList;

@@ -320,12 +320,24 @@ QGoPrintDatabase::SaveMeshFromVisuInDB(unsigned int iXCoordMin,
                                        unsigned int iZCoordMax,
                                        int iTCoord,
                                        vtkPolyData *iMeshNodes,
-                                       GoFigureMeshAttributes *iMeshAttributes)
+                                       GoFigureMeshAttributes *iMeshAttributes,
+                                       int iTrackID)
 {
   OpenDBConnection();
-  if ( !this->m_MeshGenerationMode )
+  if ( !this->m_MeshGenerationMode)
     {
-    unsigned int TrackID = this->m_TraceSettingsWidget->GetCurrentSelectedCollectionID();
+    std::cout << "iTrackID: " << iTrackID << std::endl;
+    unsigned int TrackID = 0;
+    if(iTrackID != -1)
+      {
+      TrackID = iTrackID;
+      }
+    else
+      {
+      TrackID = this->m_TraceSettingsWidget->GetCurrentSelectedCollectionID();
+      }
+
+    std::cout << "TRACK ID: " << TrackID << std::endl;
     //check that there isn't an existing mesh with the same timepoint in the
     // track,if so, set its trackID to 0:
     /** \todo print a different message if several meshes are created at the
@@ -376,7 +388,8 @@ QGoPrintDatabase::SaveMeshFromVisuInDB(unsigned int iXCoordMin,
                                                            iTCoord,
                                                            iMeshNodes,
                                                            this->m_DatabaseConnector,
-                                                           iMeshAttributes);
+                                                           iMeshAttributes,
+                                                           TrackID);
 
     std::list< unsigned int > ListNewMeshes;
     ListNewMeshes.push_back(NewMeshID);

@@ -371,6 +371,8 @@ public:
   void UpdateCurrentElementFromDB(unsigned int iTraceID, double irgba[4],
     bool IsVisible = false);
 
+  void UpdateCurrentElementCollection(unsigned int iCollectionID);
+
   /**
     \brief Get the polydata representing the current element track
     \return Pointer to the current element track
@@ -442,6 +444,10 @@ public:
     \brief Get the list of highlighted elements TraceID.
     */
   std::list< unsigned int > GetHighlightedElementsTraceID();
+
+  std::list< unsigned int > GetHighlightedElementsCollectionID();
+
+  std::list< unsigned int > GetHighlightedElementsTCoord();
 
   /**
     \brief Get N highlighted elements by pair<ID, Polydata>.

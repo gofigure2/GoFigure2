@@ -132,7 +132,9 @@ public:
                             unsigned int iYCoordMax,
                             unsigned int iZCoordMax,
                             int iTCoord,
-                            vtkPolyData *iMeshNodes, GoFigureMeshAttributes *iMeshAttributes);
+                            vtkPolyData *iMeshNodes,
+                            GoFigureMeshAttributes *iMeshAttributes,
+                            int iTrackID = -1);
 
   /**
   \brief save a new contour in the database, the TW and the container for the contours to sphere
