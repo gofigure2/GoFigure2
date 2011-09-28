@@ -124,6 +124,8 @@ public:
   visualization, if the mesh is an updated mesh which already exists(for
   example a new contour is added to this mesh, the NewMesh has to be set
   to false
+  \param[in] iTrackID Track ID we want the mesh to belong to.
+   if -1, we get the track ID from the trace editing widget.
   */
   void SaveMeshFromVisuInDB(unsigned int iXCoordMin,
                             unsigned int iYCoordMin,
