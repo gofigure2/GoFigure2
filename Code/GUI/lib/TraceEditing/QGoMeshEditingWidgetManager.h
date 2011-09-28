@@ -46,6 +46,7 @@
 #include "QGoSetOfContoursLevelSetAlgo.h"
 #include "QGoSetOfContoursShapeAlgo.h"
 #include "QGoMeshSplitDanielssonDistanceAlgo.h"
+#include "QGoMeshMergeConvexHullAlgo.h"
 #include <QAction>
 #include <QDockWidget>
 
@@ -88,6 +89,7 @@ public:
 public slots:
 
   void RequestPolydatasForDanielsson();
+  void RequestPolydatasForConvexHull();
   void RequestedPolydatas(std::list< std::pair<unsigned int, vtkPolyData*> >);
 
 signals:
@@ -98,10 +100,13 @@ signals:
 protected:
   QGoAlgorithmsManagerWidget*                     m_SetOfContoursWidget;
 
+  // segmentation algos
   QGoMeshLevelSetAlgo*                            m_LevelSetAlgo;
   QGoMeshShapeAlgo*                               m_ShapeAlgo;
   QGoMeshWaterShedAlgo*                           m_WaterShedAlgo;
+  // split/merge algos
   QGoMeshSplitDanielssonDistanceAlgo*             m_DanielAlgo;
+  QGoMeshMergeConvexHullAlgo*                     m_ConvexHullAlgo;
 
   QGoSetOfContoursWaterShedAlgo*                  m_SetOfContoursWaterShedAlgo;
   QGoSetOfContoursLevelSetAlgo*                   m_SetOfContoursLevelSetAlgo;

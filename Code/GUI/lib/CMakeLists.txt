@@ -107,12 +107,14 @@ SET( QGoGUILIB_SRC
   TraceEditing/QGoMeshShapeAlgo.cxx
   TraceEditing/QGoMeshWaterShedAlgo.cxx
   TraceEditing/QGoMeshSplitDanielssonDistanceAlgo.cxx
+  TraceEditing/QGoMeshMergeConvexHullAlgo.cxx
   TraceEditing/QGoWaterShedAlgo.cxx
   TraceEditing/QGoSetOfContoursWaterShedAlgo.cxx
   TraceEditing/QGoSetOfContoursLevelSetAlgo.cxx
   TraceEditing/QGoLevelSetAlgo.cxx
   TraceEditing/QGoShapeAlgo.cxx
   TraceEditing/QGoSplitDanielssonDistanceAlgo.cxx
+  TraceEditing/QGoMergeConvexHullAlgo.cxx
   TraceEditing/QGoSetOfContoursShapeAlgo.cxx
   TraceEditing/QGoSemiAutoSegmentationAlgo.cxx
   TraceEditing/QGoSplitSegmentationAlgo.cxx

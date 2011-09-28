@@ -194,6 +194,15 @@ void QGoMeshEditingWidgetManager::SetSplitMergeMode(
     new QGoAlgorithmsManagerWidget("Merge", iParent);
   this->m_TraceEditingWidget->AddMode(MergeAlgoWidget, true);
 
+  m_ConvexHullAlgo = new QGoMeshMergeConvexHullAlgo(this->m_Seeds,
+                                                        iParent);
+  QGoAlgorithmWidget * ConvexHullWidget = m_ConvexHullAlgo->GetAlgoWidget();
+
+  MergeAlgoWidget->AddMethod(ConvexHullWidget );
+
+  QObject::connect( ConvexHullWidget, SIGNAL(ApplyAlgo() ) ,
+                    this, SLOT(RequestPolydatasForConvexHull() ) );
+
 }
 //-------------------------------------------------------------------------
 
@@ -201,16 +210,13 @@ void QGoMeshEditingWidgetManager::SetSplitMergeMode(
 void QGoMeshEditingWidgetManager::RequestPolydatasForDanielsson(){
   m_TempReference = dynamic_cast<QGoSplitSegmentationAlgo*>(m_DanielAlgo);
   emit RequestPolydatas(1);
-  /*if(QString::fromStdString(m_TraceEditingWidget->GetCurrentModeName()).compare("Merge") == 0)
-    {
-    // need 2 polydata if the widget is a merge widget
-    emit RequestPolydatas(2);
-    }
-  else
-    {
-    // need 1 polydata
-    emit RequestPolydatas(1);
-    }*/
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoMeshEditingWidgetManager::RequestPolydatasForConvexHull(){
+  m_TempReference = dynamic_cast<QGoSplitSegmentationAlgo*>(m_ConvexHullAlgo);
+  emit RequestPolydatas(2);
 }
 //-------------------------------------------------------------------------
 
@@ -235,6 +241,7 @@ RequestedPolydatas(std::list< std::pair<unsigned int, vtkPolyData*> > iRequest){
   else
     {
     //don't need seeds
+    std::cout << "received 2 polydatas" << std::endl;
     }
 }
 //-------------------------------------------------------------------------
