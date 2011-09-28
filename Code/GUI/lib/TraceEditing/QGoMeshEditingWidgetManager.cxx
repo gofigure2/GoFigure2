@@ -191,8 +191,8 @@ void QGoMeshEditingWidgetManager::SetSplitMergeMode(
                     this, SLOT(RequestPolydatasForDanielsson() ) );
 
   QGoAlgorithmsManagerWidget* MergeAlgoWidget =
-    new QGoAlgorithmsManagerWidget("Merge", iParent);
-  this->m_TraceEditingWidget->AddMode(MergeAlgoWidget, true);
+    new QGoAlgorithmsManagerWidget("Merge", iParent, iVectChannels);
+  this->m_TraceEditingWidget->AddMode(MergeAlgoWidget, false);
 
   m_ConvexHullAlgo = new QGoMeshMergeConvexHullAlgo(this->m_Seeds,
                                                         iParent);
@@ -224,25 +224,35 @@ void QGoMeshEditingWidgetManager::RequestPolydatasForConvexHull(){
 void
 QGoMeshEditingWidgetManager::
 RequestedPolydatas(std::list< std::pair<unsigned int, vtkPolyData*> > iRequest){
-  // in split mote
+  // in split mode
   if(iRequest.size() == 1)
     {
-    //need seeds
-
+    std::vector<vtkPolyData*> polys;
+    polys.push_back(iRequest.front().second);
     emit UpdateSeeds();
     std::vector<vtkPolyData*> NewTraces = m_TempReference->ApplyAlgo(
       this->m_Images,
       this->m_TraceEditingWidget->GetCurrentImageName(),
-      iRequest.front().second,
+      polys,
       this->m_TraceEditingWidget->GetIsInvertedOn());
     emit TracesSplittedFromAlgo(NewTraces);
     emit ClearAllSeeds();
     }
+  // merge mode
   else
     {
-    //don't need seeds
-    std::cout << "received 2 polydatas" << std::endl;
+    std::vector<vtkPolyData*> polys;
+    polys.push_back(iRequest.front().second);
+    polys.push_back(iRequest.back().second);
+    std::vector<vtkPolyData*> NewTraces = m_TempReference->ApplyAlgo(
+      this->m_Images,
+      this->m_TraceEditingWidget->GetCurrentImageName(),
+      polys,
+      this->m_TraceEditingWidget->GetIsInvertedOn());
+    emit TracesMergedFromAlgo(NewTraces);
     }
+
+
 }
 //-------------------------------------------------------------------------
 

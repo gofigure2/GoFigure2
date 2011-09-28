@@ -366,7 +366,10 @@ public slots:
   void SaveInDBAndRenderMeshForVisu(
     std::vector<vtkPolyData *> iVectPolydata, int iTCoord);
 
-  void ModifyInDBAndRenderMeshForVisu(
+  void SplitInDBAndRenderMeshForVisu(
+    std::vector<vtkPolyData *> iVectPolydata);
+
+  void MergeInDBAndRenderMeshForVisu(
     std::vector<vtkPolyData *> iVectPolydata);
 
   void SaveInDBAndRenderSetOfContoursForVisu(

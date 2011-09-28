@@ -60,7 +60,7 @@ public:
  virtual std::vector<vtkPolyData*> ApplyAlgo(
     GoImageProcessor* iImages,
     std::string iChannel,
-    vtkPolyData* iPolyData,
+    std::vector<vtkPolyData*> iPolyData,
     bool iIsInvertedOn = false ) = 0;
 
 protected:

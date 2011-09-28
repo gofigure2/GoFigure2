@@ -35,6 +35,9 @@
 
 #include "GoImageProcessor.h"
 
+#include "itkImage.h"
+#include "itkvtkMeshMergeConvexHullFilter.h"
+
 QGoMeshMergeConvexHullAlgo::QGoMeshMergeConvexHullAlgo(std::vector< vtkPoints* >* iSeeds, QWidget* iParent)
     :QGoMergeConvexHullAlgo(iSeeds, iParent)
 {
@@ -52,10 +55,46 @@ QGoMeshMergeConvexHullAlgo::~QGoMeshMergeConvexHullAlgo()
 std::vector<vtkPolyData*> QGoMeshMergeConvexHullAlgo::ApplyAlgo(
     GoImageProcessor* iImages,
     std::string iChannel,
-    vtkPolyData* iPolyData,
+    std::vector<vtkPolyData*> iPolyData,
     bool iIsInvertedOn)
 {
+  const unsigned int Dimension = 3;
+  typedef unsigned char PixelType;
+
+  typedef itk::Image< PixelType, Dimension > ImageType;
+
+  typedef std::list< vtkPolyData* > PolyDataListType;
+
+  typedef itk::vtkMeshMergeConvexHullFilter< ImageType, PolyDataListType > MergerType;
+  MergerType::Pointer filter = MergerType::New();
+
+  PolyDataListType meshes;
+  meshes.push_back( iPolyData[0] );
+  meshes.push_back( iPolyData[1] );
+
+  // work on smaller region
+  std::vector< double > bounds(6);
+  double* boundsPointer = iPolyData[0]->GetBounds();
+  for(int i = 0; i<Dimension; ++i)
+    {
+    bounds[i*2] = static_cast<int>(boundsPointer[i*2] -10);
+    bounds[i*2+1] = static_cast<int>(boundsPointer[i*2+1] +10);
+    }
+
+  // then let's extract the Region of Interest
+  // on 1 image as for now
+  ImageType::Pointer ITK_ROI_Image =
+      this->ITKExtractROI< PixelType, Dimension >( bounds,
+                                                   iImages->getImageITK<PixelType, Dimension>(
+                                                            iImages->getChannelName(0)));
+
+  filter->SetInputs( meshes );
+  filter->SetNumberOfImages( 1 );
+  filter->SetFeatureImage( 0, ITK_ROI_Image );
+  filter->Update();
+
   std::vector<vtkPolyData*> oVector;
+  oVector.push_back(filter->GetOutput());
   return oVector;
 }
 //-------------------------------------------------------------------------

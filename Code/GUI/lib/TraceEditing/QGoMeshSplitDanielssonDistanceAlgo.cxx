@@ -56,7 +56,7 @@ QGoMeshSplitDanielssonDistanceAlgo::~QGoMeshSplitDanielssonDistanceAlgo()
 std::vector<vtkPolyData*> QGoMeshSplitDanielssonDistanceAlgo::ApplyAlgo(
     GoImageProcessor* iImages,
     std::string iChannel,
-    vtkPolyData* iPolyData,
+    std::vector<vtkPolyData*> iPolyData,
     bool iIsInvertedOn)
 {
   std::vector<vtkPolyData*> oVector;
@@ -74,12 +74,12 @@ std::vector<vtkPolyData*> QGoMeshSplitDanielssonDistanceAlgo::ApplyAlgo(
         SplitterType;
     SplitterType::Pointer filter = SplitterType::New();
     filter->SetNumberOfImages( nb_ch );
-    filter->SetMesh( iPolyData );
+    filter->SetMesh( iPolyData[0] );
 
     // work on smaller region
     typedef itk::Image< PixelType, Dimension >  ImageType;
     std::vector< double > bounds(6);
-    double* boundsPointer = iPolyData->GetBounds();
+    double* boundsPointer = iPolyData[0]->GetBounds();
     for(int i = 0; i<Dimension; ++i)
       {
       bounds[i*2] = static_cast<int>(boundsPointer[i*2] -10);

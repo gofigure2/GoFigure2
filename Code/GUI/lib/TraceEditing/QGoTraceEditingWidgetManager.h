@@ -103,6 +103,7 @@ signals:
   */
   void TracesCreatedFromAlgo(std::vector<vtkPolyData *> iVectPolydata, int iTCoord);
   void TracesSplittedFromAlgo(std::vector<vtkPolyData *> iVectPolydata);
+  void TracesMergedFromAlgo(std::vector<vtkPolyData *> iVectPolydata);
 
 protected:
   QGoDockWidget*              m_TraceEditingDockWidget;

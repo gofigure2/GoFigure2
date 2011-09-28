@@ -535,7 +535,12 @@ QGoTabImageView3DwT::CreateMeshEditingDockWidget(int iTimeMin, int iTimeMax)
   QObject::connect( this->m_MeshEditingWidget,
                     SIGNAL(TracesSplittedFromAlgo(std::vector<vtkPolyData *>) ),
                     this,
-                    SLOT( ModifyInDBAndRenderMeshForVisu(std::vector<vtkPolyData *>) ) );
+                    SLOT( SplitInDBAndRenderMeshForVisu(std::vector<vtkPolyData *>) ) );
+
+  QObject::connect( this->m_MeshEditingWidget,
+                    SIGNAL(TracesMergedFromAlgo(std::vector<vtkPolyData *>) ),
+                    this,
+                    SLOT( MergeInDBAndRenderMeshForVisu(std::vector<vtkPolyData *>) ) );
 
   /** \todo connect the signal, reimplement the slot*/
   QObject::connect( this->m_MeshEditingWidget,
@@ -2628,7 +2633,7 @@ QGoTabImageView3DwT::SaveInDBAndRenderMeshForVisu(
 
 //-------------------------------------------------------------------------
 void
-QGoTabImageView3DwT::ModifyInDBAndRenderMeshForVisu(
+QGoTabImageView3DwT::SplitInDBAndRenderMeshForVisu(
   std::vector<vtkPolyData *> iVectPolydata)
 {
   // get mesh track ID
@@ -2643,6 +2648,23 @@ QGoTabImageView3DwT::ModifyInDBAndRenderMeshForVisu(
 
   // Save second mesh, with track ID == 0
   SaveAndVisuMesh(iVectPolydata[1], tCoord.front(), 0);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::MergeInDBAndRenderMeshForVisu(
+  std::vector<vtkPolyData *> iVectPolydata)
+{
+  // get mesh track ID
+  std::list< unsigned int > collectionID =
+      this->m_MeshContainer-> GetHighlightedElementsCollectionID();
+  // get mesh time point
+  std::list< unsigned int > tCoord =
+      this->m_MeshContainer-> GetHighlightedElementsTCoord();
+
+  // Save mesh first mesh, provide track ID
+  SaveAndVisuMesh(iVectPolydata[0], tCoord.front(), collectionID.front());
 }
 //-------------------------------------------------------------------------
 
