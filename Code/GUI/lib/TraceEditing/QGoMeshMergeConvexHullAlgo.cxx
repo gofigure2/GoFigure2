@@ -41,7 +41,7 @@
 QGoMeshMergeConvexHullAlgo::QGoMeshMergeConvexHullAlgo(std::vector< vtkPoints* >* iSeeds, QWidget* iParent)
     :QGoMergeConvexHullAlgo(iSeeds, iParent)
 {
-
+  this->setObjectName("Merge");
 }
 //-------------------------------------------------------------------------
 
@@ -64,31 +64,50 @@ std::vector<vtkPolyData*> QGoMeshMergeConvexHullAlgo::ApplyAlgo(
   typedef itk::Image< PixelType, Dimension > ImageType;
 
   typedef std::list< vtkPolyData* > PolyDataListType;
+  PolyDataListType listOfPolydatas;
 
-  typedef itk::vtkMeshMergeConvexHullFilter< ImageType, PolyDataListType > MergerType;
-  MergerType::Pointer filter = MergerType::New();
-
-  PolyDataListType meshes;
-  meshes.push_back( iPolyData[0] );
-  meshes.push_back( iPolyData[1] );
-
-  // work on smaller region
-  std::vector< double > bounds(6);
-  double* boundsPointer = iPolyData[0]->GetBounds();
+  // init bounding box
+  std::vector< double > bounds(Dimension*2);
   for(int i = 0; i<Dimension; ++i)
     {
-    bounds[i*2] = static_cast<int>(boundsPointer[i*2] -10);
-    bounds[i*2+1] = static_cast<int>(boundsPointer[i*2+1] +10);
+    bounds[i*2] = std::numeric_limits<int>::max();
+    bounds[i*2+1] = std::numeric_limits<int>::min();
+    }
+
+  // get bounding box over all selected polydatas
+  std::vector<vtkPolyData*>::iterator iterator = iPolyData.begin();
+  while(iterator != iPolyData.end())
+    {
+    double* boundsPointer = (*iterator)->GetBounds();
+    for(int i = 0; i<Dimension; ++i)
+      {
+      if(boundsPointer[i*2] < bounds[i*2])
+          bounds[i*2] = static_cast<int>(boundsPointer[i*2]);
+      if(boundsPointer[i*2 + 1] > bounds[i*2 +1])
+          bounds[i*2+1] = static_cast<int>(boundsPointer[i*2+1]);
+      }
+    listOfPolydatas.push_back(*iterator);
+    ++iterator;
+  }
+
+  // increase size of bounding box by 10... bug itk?
+  for(int i = 0; i<Dimension; ++i)
+    {
+    bounds[i*2] = bounds[i*2] - 10;
+    bounds[i*2+1] = bounds[i*2+1] + 10;
+    std::cout << "bouds: " << bounds[i*2] << " - " << bounds[i*2+1] << std::endl;
     }
 
   // then let's extract the Region of Interest
-  // on 1 image as for now
+  // on 1 image as for now - channel 0
   ImageType::Pointer ITK_ROI_Image =
       this->ITKExtractROI< PixelType, Dimension >( bounds,
                                                    iImages->getImageITK<PixelType, Dimension>(
                                                             iImages->getChannelName(0)));
 
-  filter->SetInputs( meshes );
+  typedef itk::vtkMeshMergeConvexHullFilter< ImageType, PolyDataListType > MergerType;
+  MergerType::Pointer filter = MergerType::New();
+  filter->SetInputs( listOfPolydatas );
   filter->SetNumberOfImages( 1 );
   filter->SetFeatureImage( 0, ITK_ROI_Image );
   filter->Update();

@@ -450,10 +450,10 @@ public:
   std::list< unsigned int > GetHighlightedElementsTCoord();
 
   /**
-    \brief Get N highlighted elements by pair<ID, Polydata>.
+    \brief Get all highlighted elements by pair<ID, Polydata>.
     */
 
-  std::list< std::pair<unsigned int, vtkPolyData*> > GetHighlightedElements(int iNumber);
+  std::list< std::pair<unsigned int, vtkPolyData*> > GetHighlightedElements();
 
   /**
     \brief Remove the element which TraceId = iId

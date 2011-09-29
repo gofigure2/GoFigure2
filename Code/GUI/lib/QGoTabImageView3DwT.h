@@ -369,8 +369,7 @@ public slots:
   void SplitInDBAndRenderMeshForVisu(
     std::vector<vtkPolyData *> iVectPolydata);
 
-  void MergeInDBAndRenderMeshForVisu(
-    std::vector<vtkPolyData *> iVectPolydata);
+  void MergeInDBAndRenderMeshForVisu( vtkPolyData * iVectPolydata);
 
   void SaveInDBAndRenderSetOfContoursForVisu(
     std::vector<std::vector<vtkPolyData*> >, int);
@@ -399,7 +398,7 @@ public slots:
 
   void updateSlot();
 
-  void PolydatasRequested(unsigned int);
+  void PolydatasRequested();
 
 protected:
   QGoImageView3D *                               m_ImageView;

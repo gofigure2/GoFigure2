@@ -538,9 +538,9 @@ QGoTabImageView3DwT::CreateMeshEditingDockWidget(int iTimeMin, int iTimeMax)
                     SLOT( SplitInDBAndRenderMeshForVisu(std::vector<vtkPolyData *>) ) );
 
   QObject::connect( this->m_MeshEditingWidget,
-                    SIGNAL(TracesMergedFromAlgo(std::vector<vtkPolyData *>) ),
+                    SIGNAL(TracesMergedFromAlgo(vtkPolyData *)),
                     this,
-                    SLOT( MergeInDBAndRenderMeshForVisu(std::vector<vtkPolyData *>) ) );
+                    SLOT( MergeInDBAndRenderMeshForVisu(vtkPolyData * ) ));
 
   /** \todo connect the signal, reimplement the slot*/
   QObject::connect( this->m_MeshEditingWidget,
@@ -554,9 +554,9 @@ QGoTabImageView3DwT::CreateMeshEditingDockWidget(int iTimeMin, int iTimeMax)
                     SLOT(UpdateTracesEditingWidget() ) );
 
   QObject::connect( this->m_MeshEditingWidget,
-                    SIGNAL(RequestPolydatas(unsigned int) ),
+                    SIGNAL(RequestPolydatas() ),
                     this,
-                    SLOT( PolydatasRequested(unsigned int) ) );
+                    SLOT( PolydatasRequested() ) );
 
   QObject::connect( this,
                     SIGNAL( RequestedPolydatas(std::list< std::pair<unsigned int, vtkPolyData*> >) ),
@@ -2654,7 +2654,7 @@ QGoTabImageView3DwT::SplitInDBAndRenderMeshForVisu(
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::MergeInDBAndRenderMeshForVisu(
-  std::vector<vtkPolyData *> iVectPolydata)
+  vtkPolyData * iVectPolydata)
 {
   // get mesh track ID
   std::list< unsigned int > collectionID =
@@ -2664,7 +2664,7 @@ QGoTabImageView3DwT::MergeInDBAndRenderMeshForVisu(
       this->m_MeshContainer-> GetHighlightedElementsTCoord();
 
   // Save mesh first mesh, provide track ID
-  SaveAndVisuMesh(iVectPolydata[0], tCoord.front(), collectionID.front());
+  SaveAndVisuMesh(iVectPolydata, tCoord.front(), collectionID.front());
 }
 //-------------------------------------------------------------------------
 
@@ -3550,19 +3550,8 @@ ShowTraces(const unsigned int& iTimePoint)
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
-PolydatasRequested(unsigned int iNumberOfPolydatas){
-  std::cout << "need " << iNumberOfPolydatas << " polydatas" << std::endl;
-  //from container, get first checked mesh
+PolydatasRequested(){
   std::list< std::pair<unsigned int, vtkPolyData*> > elements =
-      this->m_MeshContainer-> GetHighlightedElements(iNumberOfPolydatas);
-  // check sizes match
-  if(elements.size() != iNumberOfPolydatas)
-    {
-    std::cout << "checked elements MISMATCH..." << __FILE__ << " " << __LINE__ << std::endl;
-    }
-  else
-    {
-    std::cout << "checked elements MATCH..." << __FILE__ << " " << __LINE__ << std::endl;
-    emit RequestedPolydatas(elements);
-    }
+      this->m_MeshContainer-> GetHighlightedElements();
+  emit RequestedPolydatas(elements);
 }

@@ -205,18 +205,18 @@ void QGoMeshEditingWidgetManager::SetSplitMergeMode(
 
 }
 //-------------------------------------------------------------------------
-
+// required to setup the go reference to the algorithm we gonna use
 //-------------------------------------------------------------------------
 void QGoMeshEditingWidgetManager::RequestPolydatasForDanielsson(){
   m_TempReference = dynamic_cast<QGoSplitSegmentationAlgo*>(m_DanielAlgo);
-  emit RequestPolydatas(1);
+  emit RequestPolydatas();
 }
 //-------------------------------------------------------------------------
-
+// required to setup the go reference to the algorithm we gonna use
 //-------------------------------------------------------------------------
 void QGoMeshEditingWidgetManager::RequestPolydatasForConvexHull(){
   m_TempReference = dynamic_cast<QGoSplitSegmentationAlgo*>(m_ConvexHullAlgo);
-  emit RequestPolydatas(2);
+  emit RequestPolydatas();
 }
 //-------------------------------------------------------------------------
 
@@ -224,35 +224,57 @@ void QGoMeshEditingWidgetManager::RequestPolydatasForConvexHull(){
 void
 QGoMeshEditingWidgetManager::
 RequestedPolydatas(std::list< std::pair<unsigned int, vtkPolyData*> > iRequest){
+  // get mode
+  QString mode =
+      QString::fromStdString(this->m_TraceEditingWidget->GetCurrentModeName());
+  // create iterator
+  std::list< std::pair<unsigned int, vtkPolyData*> >::iterator iterator =
+      iRequest.begin();
+
   // in split mode
-  if(iRequest.size() == 1)
+  if(mode.compare("Split") == 0)
     {
-    std::vector<vtkPolyData*> polys;
-    polys.push_back(iRequest.front().second);
     emit UpdateSeeds();
-    std::vector<vtkPolyData*> NewTraces = m_TempReference->ApplyAlgo(
-      this->m_Images,
-      this->m_TraceEditingWidget->GetCurrentImageName(),
-      polys,
-      this->m_TraceEditingWidget->GetIsInvertedOn());
-    emit TracesSplittedFromAlgo(NewTraces);
+
+    // loop through all polydatas
+    while(iterator != iRequest.end())
+      {
+      // need vector for API
+      std::vector<vtkPolyData*> polys;
+      polys.push_back((*iterator).second);
+      std::vector<vtkPolyData*> NewTraces = m_TempReference->ApplyAlgo(
+        this->m_Images,
+        this->m_TraceEditingWidget->GetCurrentImageName(),
+        polys,
+        this->m_TraceEditingWidget->GetIsInvertedOn());
+      // need to send trace ID and time point...!
+      emit TracesSplittedFromAlgo(NewTraces);
+      ++iterator;
+      }
+
     emit ClearAllSeeds();
     }
   // merge mode
+  // give all pds at once
   else
     {
     std::vector<vtkPolyData*> polys;
-    polys.push_back(iRequest.front().second);
-    polys.push_back(iRequest.back().second);
+
+    // fill vector with all polydatas
+    while(iterator != iRequest.end())
+      {
+      polys.push_back((*iterator).second);
+      ++iterator;
+      }
+
+    // apply algo
     std::vector<vtkPolyData*> NewTraces = m_TempReference->ApplyAlgo(
       this->m_Images,
       this->m_TraceEditingWidget->GetCurrentImageName(),
       polys,
       this->m_TraceEditingWidget->GetIsInvertedOn());
-    emit TracesMergedFromAlgo(NewTraces);
+    emit TracesMergedFromAlgo(NewTraces.front());
     }
-
-
 }
 //-------------------------------------------------------------------------
 

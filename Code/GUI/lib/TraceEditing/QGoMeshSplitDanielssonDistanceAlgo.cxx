@@ -42,7 +42,7 @@
 QGoMeshSplitDanielssonDistanceAlgo::QGoMeshSplitDanielssonDistanceAlgo(std::vector< vtkPoints* >* iSeeds, QWidget* iParent)
     :QGoSplitDanielssonDistanceAlgo(iSeeds, iParent)
 {
-
+  this->setObjectName("Split");
 }
 //-------------------------------------------------------------------------
 

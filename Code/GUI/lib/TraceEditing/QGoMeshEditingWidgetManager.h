@@ -95,7 +95,7 @@ public slots:
 signals:
 
   void SetOfContoursFromAlgo(std::vector<std::vector<vtkPolyData*> > iVectVectPolydata, int iTCoord);
-  void RequestPolydatas(unsigned int);
+  void RequestPolydatas();
 
 protected:
   QGoAlgorithmsManagerWidget*                     m_SetOfContoursWidget;
