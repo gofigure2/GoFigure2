@@ -101,12 +101,11 @@ std::vector<vtkPolyData*> QGoMeshSplitDanielssonDistanceAlgo::ApplyAlgo(
       }
     }
 
-
   if( position >= 2)
     {
     SplitterType::Pointer filter = SplitterType::New();
     // size_t nb_ch = iImages->getNumberOfChannels();
-    filter->SetNumberOfImages( 0 );
+    filter->SetNumberOfImages( 1 );
     filter->SetMesh( iPolyData[0] );
 
     // work on smaller region
@@ -120,8 +119,8 @@ std::vector<vtkPolyData*> QGoMeshSplitDanielssonDistanceAlgo::ApplyAlgo(
     // then let's extract the Region of Interest
     ImageType::Pointer ITK_ROI_Image =
         this->ITKExtractROI< PixelType, Dimension >( bounds,
-                                                       iImages->getImageITK<PixelType, Dimension>(
-                                                                iImages->getChannelName(0)));
+                                                     iImages->getImageITK<PixelType, Dimension>(
+                                                         iImages->getChannelName(0)));
     filter->SetFeatureImage( 0,
                              ITK_ROI_Image);
 

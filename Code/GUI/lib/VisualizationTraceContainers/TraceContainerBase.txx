@@ -511,6 +511,7 @@ TraceContainerBase< TContainer >::GetHighlightedElementsCollectionID()
   std::list< unsigned int > oList;
   while ( it0 != it1 )
     {
+    std::cout << "collection ID: " << it0->CollectionID << std::endl;
     oList.push_back(it0->CollectionID);
     ++it0;
     }
