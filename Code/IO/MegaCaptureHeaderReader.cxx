@@ -150,9 +150,11 @@ void MegaCaptureHeaderReader::Read()
     for ( unsigned int i = 0; i < m_NumberOfChannels; i++ )
       {
       ifs >> word >> color;
-      std::ostringstream channelColor;
-      channelColor << "ChannelColor" << std::setw(2) << std::setfill('0') << i;
-      CheckKeyWord(word, channelColor.str(), lineNumber);
+      std::ostringstream channelColor1;
+      channelColor1 << "ChannelColor" << std::setw(2) << std::setfill('0') << i;
+      std::ostringstream channelColor2;
+      channelColor2 << "ChannelColor" << i;
+      CheckKeyWord(word, channelColor1.str(), lineNumber, channelColor2.str());
       m_ChannelColor[i] = ConvertUnsignedLongColorToRGBIntColor(color);
       }
     ifs >> word >> m_ChannelDepth;
@@ -205,10 +207,11 @@ std::vector< int > MegaCaptureHeaderReader::ConvertUnsignedLongColorToRGBIntColo
 /*****************************************************************************/
 bool
 MegaCaptureHeaderReader::
-CheckKeyWord(std::string iWord, std::string iCompare, int& iLineNumber)
+CheckKeyWord(std::string iWord, std::string iCompare, int& iLineNumber,
+             std::string iExtraKeyWord)
 {
   ++iLineNumber;
-  if(iWord.compare(iCompare) != 0)
+  if( (iWord.compare(iCompare) != 0) && (iWord.compare(iExtraKeyWord) != 0) )
     {
     std::cerr << ">> ERROR: *" << iCompare << "* keyword should on the line *"
               << iLineNumber << "* of your .meg file"<< std::endl;
