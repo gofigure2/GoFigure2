@@ -87,6 +87,7 @@ ConversionLsmToMegaThread::run()
   // Allocate memory to avoid automatic suppression at the end of this function
   /**
    * \todo Reimplement these methods in this function
+     only get lsm reader from there, no conversion
    */
   LSMToMegaCapture *converter = new LSMToMegaCapture;
 
@@ -194,9 +195,9 @@ ConversionLsmToMegaThread::ExportWithReimplemented(std::string iMegaPath)
     int r = m_LSMReaders[0]->GetChannelColorComponent(i, 0);
     int g = m_LSMReaders[0]->GetChannelColorComponent(i, 1);
     int b = m_LSMReaders[0]->GetChannelColorComponent(i, 2);
-
-    file << "ChannelColor" << i << " " << r * 256 * 256 + g * 256 + b << std::endl;
-
+    std::ostringstream channelColor;
+    channelColor << "ChannelColor" << std::setw(2) << std::setfill('0') << i;
+    file << channelColor.str() << " " << r * 256 * 256 + g * 256 + b << std::endl;
     //send signal for progress bar
     emit ProgressSent();
     }
