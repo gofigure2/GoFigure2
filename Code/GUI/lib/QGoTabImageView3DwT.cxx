@@ -559,9 +559,9 @@ QGoTabImageView3DwT::CreateMeshEditingDockWidget(int iTimeMin, int iTimeMax)
                     SLOT( PolydatasRequested() ) );
 
   QObject::connect( this,
-                    SIGNAL( RequestedPolydatas(std::list< std::pair<unsigned int, vtkPolyData*> >) ),
+                    SIGNAL( RequestedPolydatas(std::list< vtkPolyData* >) ),
                     this->m_MeshEditingWidget,
-                    SLOT( RequestedPolydatas(std::list< std::pair<unsigned int, vtkPolyData*> >) ) );
+                    SLOT( RequestedPolydatas(std::list< vtkPolyData* >) ) );
 
 
   /*QObject::connect( m_MeshSegmentationDockWidget,
@@ -2636,6 +2636,12 @@ void
 QGoTabImageView3DwT::SplitInDBAndRenderMeshForVisu(
   std::vector<vtkPolyData *> iVectPolydata)
 {
+  if( iVectPolydata.size() == 0 )
+    return;
+
+  // get mesh trace ID
+  std::list< unsigned int > traceID =
+      this->m_MeshContainer-> GetHighlightedElementsTraceID();
   // get mesh track ID
   std::list< unsigned int > collectionID =
       this->m_MeshContainer-> GetHighlightedElementsCollectionID();
@@ -2646,8 +2652,15 @@ QGoTabImageView3DwT::SplitInDBAndRenderMeshForVisu(
   // Save mesh first mesh, provide track ID
   SaveAndVisuMesh(iVectPolydata[0], tCoord.front(), collectionID.front());
 
-  // Save second mesh, with track ID == 0
-  SaveAndVisuMesh(iVectPolydata[1], tCoord.front(), 0);
+  // uncheck this element
+  // need it so when we split next mesh, time point and track ID will be accurate
+  m_MeshContainer->UpdateElementHighlighting(traceID.front());
+
+  if( iVectPolydata.size() > 1)
+    {
+    for(int i=1; i<iVectPolydata.size(); ++i)
+      SaveAndVisuMesh(iVectPolydata[i], tCoord.front(), 0);
+    }
 }
 //-------------------------------------------------------------------------
 
@@ -2656,12 +2669,26 @@ void
 QGoTabImageView3DwT::MergeInDBAndRenderMeshForVisu(
   vtkPolyData * iVectPolydata)
 {
+  if( iVectPolydata == NULL )
+    return;
+
+  // get mesh trace ID
+  std::list< unsigned int > traceID =
+      this->m_MeshContainer-> GetHighlightedElementsTraceID();
   // get mesh track ID
   std::list< unsigned int > collectionID =
       this->m_MeshContainer-> GetHighlightedElementsCollectionID();
   // get mesh time point
   std::list< unsigned int > tCoord =
       this->m_MeshContainer-> GetHighlightedElementsTCoord();
+
+  // uncheck all
+  std::list< unsigned int >::iterator iterator = traceID.begin();
+  while(iterator != traceID.end())
+    {
+    m_MeshContainer->UpdateElementHighlighting(*iterator);
+    ++iterator;
+    }
 
   // Save mesh first mesh, provide track ID
   SaveAndVisuMesh(iVectPolydata, tCoord.front(), collectionID.front());
@@ -3551,7 +3578,7 @@ ShowTraces(const unsigned int& iTimePoint)
 void
 QGoTabImageView3DwT::
 PolydatasRequested(){
-  std::list< std::pair<unsigned int, vtkPolyData*> > elements =
+  std::list< vtkPolyData* > elements =
       this->m_MeshContainer-> GetHighlightedElements();
   emit RequestedPolydatas(elements);
 }

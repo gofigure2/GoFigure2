@@ -90,7 +90,7 @@ public slots:
 
   void RequestPolydatasForDanielsson();
   void RequestPolydatasForConvexHull();
-  void RequestedPolydatas(std::list< std::pair<unsigned int, vtkPolyData*> >);
+  void RequestedPolydatas(std::list< vtkPolyData* >);
 
 signals:
 

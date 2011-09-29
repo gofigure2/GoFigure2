@@ -59,61 +59,71 @@ std::vector<vtkPolyData*> QGoMeshSplitDanielssonDistanceAlgo::ApplyAlgo(
     std::vector<vtkPolyData*> iPolyData,
     bool iIsInvertedOn)
 {
+  const unsigned int Dimension = 3;
+  typedef unsigned char PixelType;
+  typedef itk::Image< PixelType, Dimension >  ImageType;
+  typedef itk::vtkMeshSplitterDanielssonDistanceImageFilter< ImageType >
+      SplitterType;
+
   std::vector<vtkPolyData*> oVector;
 
-  if( (*this->m_Seeds)[0]->GetNumberOfPoints() >= 2)
+  std::vector< double > bounds(6);
+  double* boundsPointer = iPolyData[0]->GetBounds();
+  for(int i = 0; i<Dimension; ++i)
     {
-    size_t nb_ch = iImages->getNumberOfChannels();
+    bounds[i*2] = static_cast<int>(boundsPointer[i*2]);
+    bounds[i*2+1] = static_cast<int>(boundsPointer[i*2+1]);
+    }
 
-    const unsigned int Dimension = 3;
-    typedef unsigned char PixelType;
+  typedef SplitterType::PointSetType PointSetType;
+  PointSetType::Pointer seeds = PointSetType::New();
 
-    typedef itk::Image< PixelType, Dimension > ImageType;
+  ImageType::PointType itk_pt;
+  double vtk_pt[3];
+  int position = 0;
+  for( size_t id = 0; id < this->m_Seeds->size(); id++ )
+    {
+    for ( int i = 0; i < (*this->m_Seeds)[id]->GetNumberOfPoints(); i++ )
+      {
+      (*this->m_Seeds)[id]->GetPoint(i, vtk_pt);
+      // if seed is inside the bounding box, use it!
+      if(    vtk_pt[0] > bounds[0] && vtk_pt[0] < bounds[1]
+          && vtk_pt[1] > bounds[2] && vtk_pt[1] < bounds[3]
+          && vtk_pt[2] > bounds[4] && vtk_pt[2] < bounds[5])
+        {
+        itk_pt[0] = vtk_pt[0];
+        itk_pt[1] = vtk_pt[1];
+        itk_pt[2] = vtk_pt[2];
+        std::cout << itk_pt[0] << "-" << itk_pt[1] << "-" << itk_pt[2] << std::endl;
+        seeds->SetPoint( position, itk_pt );
+        ++position;
+        }
+      }
+    }
 
-    typedef itk::vtkMeshSplitterDanielssonDistanceImageFilter< ImageType >
-        SplitterType;
+
+  if( position >= 2)
+    {
     SplitterType::Pointer filter = SplitterType::New();
-    filter->SetNumberOfImages( nb_ch );
+    // size_t nb_ch = iImages->getNumberOfChannels();
+    filter->SetNumberOfImages( 0 );
     filter->SetMesh( iPolyData[0] );
 
     // work on smaller region
-    typedef itk::Image< PixelType, Dimension >  ImageType;
-    std::vector< double > bounds(6);
-    double* boundsPointer = iPolyData[0]->GetBounds();
+    // increase size of bounding box by 10... bug itk?
     for(int i = 0; i<Dimension; ++i)
       {
-      bounds[i*2] = static_cast<int>(boundsPointer[i*2] -10);
-      bounds[i*2+1] = static_cast<int>(boundsPointer[i*2+1] +10);
+      bounds[i*2] = bounds[i*2] - 10;
+      bounds[i*2+1] = bounds[i*2+1] + 10;
       }
 
-    ImageType::PointType origin;
-    for( size_t i = 0; i < nb_ch; i++ )
-    {
-      // then let's extract the Region of Interest
-      ImageType::Pointer ITK_ROI_Image =
-          this->ITKExtractROI< PixelType, Dimension >( bounds,
+    // then let's extract the Region of Interest
+    ImageType::Pointer ITK_ROI_Image =
+        this->ITKExtractROI< PixelType, Dimension >( bounds,
                                                        iImages->getImageITK<PixelType, Dimension>(
-                                                                iImages->getChannelName(i)));
-      filter->SetFeatureImage( i,
-                               ITK_ROI_Image);
-      }
-
-    typedef SplitterType::PointSetType PointSetType;
-    PointSetType::Pointer seeds = PointSetType::New();
-
-    ImageType::PointType itk_pt;
-    double vtk_pt[3];
-
-    for( vtkIdType id = 0; id < 2; id++ )
-      {
-      (*this->m_Seeds)[0]->GetPoint( id, vtk_pt );
-      std::cout << "Point:" << std::endl;
-      itk_pt[0] = vtk_pt[0];
-      itk_pt[1] = vtk_pt[1];
-      itk_pt[2] = vtk_pt[2];
-      std::cout << itk_pt[0] << "-" << itk_pt[1] << "-" << itk_pt[2] << std::endl;
-      seeds->SetPoint( id, itk_pt );
-      }
+                                                                iImages->getChannelName(0)));
+    filter->SetFeatureImage( 0,
+                             ITK_ROI_Image);
 
     filter->SetSeeds( seeds );
     filter->Update();

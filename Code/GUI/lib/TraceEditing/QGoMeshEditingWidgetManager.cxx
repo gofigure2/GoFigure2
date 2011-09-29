@@ -223,12 +223,12 @@ void QGoMeshEditingWidgetManager::RequestPolydatasForConvexHull(){
 //-------------------------------------------------------------------------
 void
 QGoMeshEditingWidgetManager::
-RequestedPolydatas(std::list< std::pair<unsigned int, vtkPolyData*> > iRequest){
+RequestedPolydatas(std::list< vtkPolyData* > iRequest){
   // get mode
   QString mode =
       QString::fromStdString(this->m_TraceEditingWidget->GetCurrentModeName());
   // create iterator
-  std::list< std::pair<unsigned int, vtkPolyData*> >::iterator iterator =
+  std::list< vtkPolyData*>::iterator iterator =
       iRequest.begin();
 
   // in split mode
@@ -241,7 +241,7 @@ RequestedPolydatas(std::list< std::pair<unsigned int, vtkPolyData*> > iRequest){
       {
       // need vector for API
       std::vector<vtkPolyData*> polys;
-      polys.push_back((*iterator).second);
+      polys.push_back(*iterator);
       std::vector<vtkPolyData*> NewTraces = m_TempReference->ApplyAlgo(
         this->m_Images,
         this->m_TraceEditingWidget->GetCurrentImageName(),
@@ -263,7 +263,7 @@ RequestedPolydatas(std::list< std::pair<unsigned int, vtkPolyData*> > iRequest){
     // fill vector with all polydatas
     while(iterator != iRequest.end())
       {
-      polys.push_back((*iterator).second);
+      polys.push_back(*iterator);
       ++iterator;
       }
 

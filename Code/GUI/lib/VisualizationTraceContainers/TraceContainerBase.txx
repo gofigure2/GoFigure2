@@ -542,10 +542,10 @@ TraceContainerBase< TContainer >::GetHighlightedElementsTCoord()
 
 //-------------------------------------------------------------------------
 template< class TContainer >
-std::list< std::pair<unsigned int, vtkPolyData*> >
+std::list< vtkPolyData* >
 TraceContainerBase< TContainer >::
 GetHighlightedElements(){
-  std::list< std::pair<unsigned int, vtkPolyData*> > oList;
+  std::list< vtkPolyData*> oList;
   MultiIndexContainerHighlightedIterator it0, it1;
 
   using boost::multi_index:: get;
@@ -554,8 +554,7 @@ GetHighlightedElements(){
     m_Container.get< Highlighted >().equal_range(true);
   while ( it0 != it1)
     {
-    std::pair<unsigned int, vtkPolyData*> pair(it0->TraceID, it0->Nodes);
-    oList.push_back(pair);
+    oList.push_back(it0->Nodes);
     ++it0;
     }
 

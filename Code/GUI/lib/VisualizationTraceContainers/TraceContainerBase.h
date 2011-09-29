@@ -453,7 +453,7 @@ public:
     \brief Get all highlighted elements by pair<ID, Polydata>.
     */
 
-  std::list< std::pair<unsigned int, vtkPolyData*> > GetHighlightedElements();
+  std::list< vtkPolyData* > GetHighlightedElements();
 
   /**
     \brief Remove the element which TraceId = iId

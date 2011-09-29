@@ -288,7 +288,7 @@ signals:
 
   void StartContourSegmentation(vtkPoints *iPoints);
 
-  void RequestedPolydatas(std::list< std::pair<unsigned int, vtkPolyData*> >);
+  void RequestedPolydatas(std::list< vtkPolyData* >);
 
 public slots:
   void SetTimePoint(const int &);
