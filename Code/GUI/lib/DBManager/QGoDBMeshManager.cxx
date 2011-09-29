@@ -611,8 +611,11 @@ unsigned int QGoDBMeshManager::ReassignTrackIDForPreviousMeshWithSameTimePoint(v
     }
   oExistingMeshID = ExistingMeshID.front();
   GoDBMeshRow ExistingMesh(oExistingMeshID, iDatabaseConnector);
-  ExistingMesh.SetCollectionID(0);  //reassign the track ID to 0:
+  // modify table widget and DB
+  ExistingMesh.SetCollectionID(0);
   ExistingMesh.SaveInDB(iDatabaseConnector);
+  // modify visu container as well
+  m_MeshContainerInfoForVisu->AssignToGivenCollection(0, ExistingMeshID);
   this->DisplayInfoForExistingTrace(iDatabaseConnector, oExistingMeshID); //update
                                                                           // the
                                                                           // TW

@@ -404,8 +404,6 @@ public:
   void AssignToGivenCollection(unsigned int iCollection,
                                std::list< unsigned int > iToBeAssigned);
 
-  void AssignToCollectionZero(std::list< unsigned int > iToBeAssigned);
-
 public slots:
 
   /**

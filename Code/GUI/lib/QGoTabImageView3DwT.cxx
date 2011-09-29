@@ -2649,18 +2649,19 @@ QGoTabImageView3DwT::SplitInDBAndRenderMeshForVisu(
   std::list< unsigned int > tCoord =
       this->m_MeshContainer-> GetHighlightedElementsTCoord();
 
-  // Save mesh first mesh, provide track ID
-  SaveAndVisuMesh(iVectPolydata[0], tCoord.front(), collectionID.front());
-
   // uncheck this element
   // need it so when we split next mesh, time point and track ID will be accurate
   m_MeshContainer->UpdateElementHighlighting(traceID.front());
+
+  // Save mesh first mesh, provide track ID
+  SaveAndVisuMesh(iVectPolydata[0], tCoord.front(), collectionID.front());
 
   if( iVectPolydata.size() > 1)
     {
     for(int i=1; i<iVectPolydata.size(); ++i)
       SaveAndVisuMesh(iVectPolydata[i], tCoord.front(), 0);
     }
+  
 }
 //-------------------------------------------------------------------------
 
@@ -2760,7 +2761,6 @@ QGoTabImageView3DwT::SaveAndVisuMesh(vtkPolyData *iView,
                    this->m_MeshContainer->m_CurrentElement.rgba);
 
   // update container since a new mesh is created
-  // miss track ID!
   m_MeshContainer->UpdateCurrentElementFromVisu(actors,
                                                 iView,
                                                 iTCoord,
