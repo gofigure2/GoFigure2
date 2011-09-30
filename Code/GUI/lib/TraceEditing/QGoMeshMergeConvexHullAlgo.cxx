@@ -90,20 +90,23 @@ std::vector<vtkPolyData*> QGoMeshMergeConvexHullAlgo::ApplyAlgo(
     ++iterator;
   }
 
-  // increase size of bounding box by 10... bug itk?
+  ImageType::Pointer ITK_Full_Image = iImages->getImageITK<PixelType, Dimension>(
+           iImages->getChannelName(0));
+
+  itk::Vector<double> spacing = ITK_Full_Image->GetSpacing();
+
+  // work on smaller region
+  // increase size of bounding box by 20*spacing... bug itk?
   for(int i = 0; i<Dimension; ++i)
     {
-    bounds[i*2] = bounds[i*2] - 10;
-    bounds[i*2+1] = bounds[i*2+1] + 10;
-    std::cout << "bouds: " << bounds[i*2] << " - " << bounds[i*2+1] << std::endl;
+    bounds[i*2] = bounds[i*2] - 10*spacing[i];
+    bounds[i*2+1] = bounds[i*2+1] + 10*spacing[i];
     }
 
   // then let's extract the Region of Interest
   // on 1 image as for now - channel 0
   ImageType::Pointer ITK_ROI_Image =
-      this->ITKExtractROI< PixelType, Dimension >( bounds,
-                                                   iImages->getImageITK<PixelType, Dimension>(
-                                                            iImages->getChannelName(0)));
+      this->ITKExtractROI< PixelType, Dimension >( bounds, ITK_Full_Image);
 
   typedef itk::vtkMeshMergeConvexHullFilter< ImageType, PolyDataListType > MergerType;
   MergerType::Pointer filter = MergerType::New();

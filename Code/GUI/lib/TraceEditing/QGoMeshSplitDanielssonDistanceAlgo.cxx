@@ -103,24 +103,27 @@ std::vector<vtkPolyData*> QGoMeshSplitDanielssonDistanceAlgo::ApplyAlgo(
 
   if( position >= 2)
     {
-    SplitterType::Pointer filter = SplitterType::New();
-    // size_t nb_ch = iImages->getNumberOfChannels();
-    filter->SetNumberOfImages( 1 );
-    filter->SetMesh( iPolyData[0] );
+    ImageType::Pointer ITK_Full_Image = iImages->getImageITK<PixelType, Dimension>(
+        iImages->getChannelName(0));
+
+    itk::Vector<double> spacing = ITK_Full_Image->GetSpacing();
 
     // work on smaller region
-    // increase size of bounding box by 10... bug itk?
+    // increase size of bounding box by 20*spacing... bug itk?
     for(int i = 0; i<Dimension; ++i)
       {
-      bounds[i*2] = bounds[i*2] - 10;
-      bounds[i*2+1] = bounds[i*2+1] + 10;
+      bounds[i*2] = bounds[i*2] - 10*spacing[i];
+      bounds[i*2+1] = bounds[i*2+1] + 10*spacing[i];
       }
 
     // then let's extract the Region of Interest
     ImageType::Pointer ITK_ROI_Image =
-        this->ITKExtractROI< PixelType, Dimension >( bounds,
-                                                     iImages->getImageITK<PixelType, Dimension>(
-                                                         iImages->getChannelName(0)));
+        this->ITKExtractROI< PixelType, Dimension >( bounds, ITK_Full_Image);
+
+    SplitterType::Pointer filter = SplitterType::New();
+    // size_t nb_ch = iImages->getNumberOfChannels();
+    filter->SetNumberOfImages( 1 );
+    filter->SetMesh( iPolyData[0] );
     filter->SetFeatureImage( 0,
                              ITK_ROI_Image);
 
