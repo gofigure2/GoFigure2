@@ -44,7 +44,7 @@ QGoTransferFunctionDockWidget( QWidget *iParent) :
   this->setupUi(this);
 
   QIcon Navigation;
-  Navigation.addPixmap(QPixmap( QString::fromUtf8(":/fig/navigation.png") ),
+  Navigation.addPixmap(QPixmap( QString::fromUtf8(":/fig/transferFunction.png") ),
                        QIcon::Normal, QIcon::Off);
   this->m_ToggleAction->setIcon(Navigation);
 }

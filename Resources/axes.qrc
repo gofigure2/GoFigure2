@@ -41,5 +41,6 @@
         <file>fig/synchronize.png</file>
         <file>widget/arrow_up.png</file>
         <file>widget/arrow_down.png</file>
+        <file>fig/transferFunction.png</file>
     </qresource>
 </RCC>
