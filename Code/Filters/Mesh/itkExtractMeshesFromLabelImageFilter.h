@@ -53,10 +53,17 @@
 
 #include "itkVector.h"
 #include "itkQuadEdgeMesh.h"
+#ifdef ITKv4
 #include "itkSmoothingQuadEdgeMeshFilter.h"
+#include "itkSquaredEdgeLengthDecimationQuadEdgeMeshFilter.h"
+#else
+#include "itkQuadEdgeMeshSmoothing.h"
+#include "itkQuadEdgeMeshSquaredEdgeLengthDecimation.h"
+#endif
+
 #include "itkQuadEdgeMeshParamMatrixCoefficients.h"
 #include "itkQuadEdgeMeshDecimationCriteria.h"
-#include "itkSquaredEdgeLengthDecimationQuadEdgeMeshFilter.h"
+
 #include "itkBinaryMask3DMeshSource.h"
 
 #include <fstream>
@@ -166,14 +173,23 @@ public:
   typedef BinaryMask3DMeshSource< ImageType, MeshType > MeshSourceType;
   typedef typename MeshSourceType::Pointer MeshSourcePointer;
 
+  #ifdef ITKv4
   typedef SmoothingQuadEdgeMeshFilter< MeshType, MeshType > MeshSmoothingType;
+  #else
+  typedef QuadEdgeMeshSmoothing< MeshType, MeshType > MeshSmoothingType;
+  #endif
   typedef typename MeshSmoothingType::Pointer MeshSmoothingPointer;
 
   typedef NumberOfFacesCriterion< MeshType > CriterionType;
   typedef typename CriterionType::Pointer CriterionPointer;
 
+  #ifdef ITKv4
   typedef SquaredEdgeLengthDecimationQuadEdgeMeshFilter<
     MeshType, MeshType, CriterionType > DecimationType;
+  #else
+  typedef QuadEdgeMeshSquaredEdgeLengthDecimation<
+    MeshType, MeshType, CriterionType > DecimationType;
+  #endif
   typedef typename DecimationType::Pointer DecimationPointer;
 
   typedef VTKPolyDataWriter< MeshType > MeshWriterType;

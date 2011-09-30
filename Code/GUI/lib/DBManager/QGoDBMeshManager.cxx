@@ -271,6 +271,7 @@ unsigned int QGoDBMeshManager::SaveNewMeshFromVisu(
   double *rgba = this->GetVectorFromQColor(this->m_SelectedColorData->second);
   this->m_MeshContainerInfoForVisu->UpdateCurrentElementFromDB(
     NewMeshID, rgba);
+  this->m_MeshContainerInfoForVisu->UpdateCurrentElementCollection(iTrackID);
   delete[] rgba;
   this->DisplayInfoForLastCreatedMesh(iDatabaseConnector, iMeshAttributes);
   return NewMeshID;
@@ -610,8 +611,11 @@ unsigned int QGoDBMeshManager::ReassignTrackIDForPreviousMeshWithSameTimePoint(v
     }
   oExistingMeshID = ExistingMeshID.front();
   GoDBMeshRow ExistingMesh(oExistingMeshID, iDatabaseConnector);
-  ExistingMesh.SetCollectionID(0);  //reassign the track ID to 0:
+  // modify table widget and DB
+  ExistingMesh.SetCollectionID(0);
   ExistingMesh.SaveInDB(iDatabaseConnector);
+  // modify visu container as well
+  m_MeshContainerInfoForVisu->AssignToGivenCollection(0, ExistingMeshID);
   this->DisplayInfoForExistingTrace(iDatabaseConnector, oExistingMeshID); //update
                                                                           // the
                                                                           // TW
@@ -900,6 +904,8 @@ GetVolume(unsigned int iMeshID)
   return (this->GetTableWidget()->GetValue( iMeshID, "mesh", "Volume" )).toDouble();
 }
 //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 void
 QGoDBMeshManager::
 CleanTWAndContainerForGivenTimePoint(vtkMySQLDatabase *iDatabaseConnector,
@@ -907,4 +913,16 @@ CleanTWAndContainerForGivenTimePoint(vtkMySQLDatabase *iDatabaseConnector,
 {
   this->RemoveTracesFromTWAndContainerForVisuForSpecificTPsTemplate<MeshContainer>(
           iDatabaseConnector, this->m_MeshContainerInfoForVisu, iTimePoints);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoDBMeshManager::
+ModifyTrackIDInVisuContainer(unsigned int iTrackID,
+                                  std::list< unsigned int > iToTrack,
+                                  std::list< unsigned int > iToNull)
+{
+  m_MeshContainerInfoForVisu->AssignToGivenCollection(iTrackID, iToTrack);
+  m_MeshContainerInfoForVisu->AssignToGivenCollection(0, iToNull);
 }

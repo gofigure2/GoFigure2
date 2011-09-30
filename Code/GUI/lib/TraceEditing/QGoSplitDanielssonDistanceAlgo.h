@@ -31,46 +31,43 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
+#ifndef __QGoSplitDanielssonDistanceAlgo_h
+#define __QGoSplitDanielssonDistanceAlgo_h
 
-#ifndef __itkvtkMeshMergeConvexHullFilter_h
-#define __itkvtkMeshMergeConvexHullFilter_h
+#include "QGoSplitSegmentationAlgo.h"
+#include "QGoAlgorithmWidget.h"
+#include "QGoAlgoParameter.h"
+#include "QGoGUILibConfigure.h"
+#include "vtkSmartPointer.h"
+#include "vtkPolyData.h"
+#include "vtkImageData.h"
 
-#include "GoFiltersConfigure.h"
+class GoImageProcessor;
 
-#include "itkvtkMeshMergeFilterBase.h"
 
-#include "itkObjectFactory.h"
-
-namespace itk
-{
-template< class TFeatureImage, class TPolyDataContainer >
-class GOFILTERS_EXPORT vtkMeshMergeConvexHullFilter :
-    public vtkMeshMergeFilterBase< TFeatureImage, TPolyDataContainer >
+/**
+\class QGoSplitDanielssonDistanceAlgo
+\brief class to be the interface between the shape algo for meshes,
+contours and set of contours and GoFigure
+*/
+class QGoSplitDanielssonDistanceAlgo: public QGoSplitSegmentationAlgo
 {
 public:
-  typedef vtkMeshMergeFilterBase< TFeatureImage, TPolyDataContainer > Superclass;
-  typedef vtkMeshMergeConvexHullFilter Self;
-  typedef SmartPointer< Self > Pointer;
-  typedef SmartPointer< const Self > ConstPointer;
+  QGoSplitDanielssonDistanceAlgo(std::vector< vtkPoints* >* iSeeds,
+                                 QWidget* iParent = 0);
+  ~QGoSplitDanielssonDistanceAlgo();
 
-  /** Run-time type information (and related methods). */
-  itkTypeMacro( vtkMeshMergeConvexHullFilter,
-               vtkMeshMergeFilterBase );
-
-  /** Method for creation through the object factory. */
-  itkNewMacro(Self);
+ virtual std::vector<vtkPolyData*> ApplyAlgo(
+    GoImageProcessor* iImages,
+    std::string iChannel,
+    std::vector<vtkPolyData*> iPolyData,
+    bool iIsInvertedOn = false ) = 0;
 
 protected:
-  vtkMeshMergeConvexHullFilter();
-  ~vtkMeshMergeConvexHullFilter() {}
 
-  void GenerateData();
-  void SetRequiredAttributeComputationFlags();
+  virtual void SetAlgoWidget(QWidget* iParent = 0);
 
-private:
-  vtkMeshMergeConvexHullFilter( const Self& );
-  void operator = ( const Self& );
+  void DeleteParameters();
 };
-}
-#include "itkvtkMeshMergeConvexHullFilter.txx"
-#endif // __itkvtkMeshMergeConvexHullFilter_h
+
+#endif

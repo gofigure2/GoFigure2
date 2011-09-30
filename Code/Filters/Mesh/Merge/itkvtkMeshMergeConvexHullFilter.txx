@@ -44,16 +44,16 @@
 
 namespace itk
 {
-template< class TFeatureImage >
-vtkMeshMergeConvexHullFilter< TFeatureImage >::
+template< class TFeatureImage, class TPolyDataContainer >
+vtkMeshMergeConvexHullFilter< TFeatureImage, TPolyDataContainer >::
 vtkMeshMergeConvexHullFilter() : Superclass()
 {
   this->SetRequiredAttributeComputationFlags();
 }
 
-template< class TFeatureImage >
+template< class TFeatureImage, class TPolyDataContainer >
 void
-vtkMeshMergeConvexHullFilter< TFeatureImage >::
+vtkMeshMergeConvexHullFilter< TFeatureImage, TPolyDataContainer >::
 GenerateData()
 {
   vtkSmartPointer< vtkAppendPolyData > append =
@@ -83,9 +83,9 @@ GenerateData()
   this->m_Outputs.front()->DeepCopy( surfaceFilter->GetOutput() );
 }
 
-template< class TFeatureImage >
+template< class TFeatureImage, class TPolyDataContainer >
 void
-vtkMeshMergeConvexHullFilter< TFeatureImage >::
+vtkMeshMergeConvexHullFilter< TFeatureImage, TPolyDataContainer >::
 SetRequiredAttributeComputationFlags()
 {
   this->m_ShapeComputation = true;

@@ -76,10 +76,10 @@ void QGoAlgorithmsManagerWidget::Initialize(std::vector<QString> iVectChannels,
     QLabel* Label= new QLabel("TSlice",this);
     HBox->addWidget(Label);
     HBox->addWidget(this->m_TimeComboBox);
-    this->m_InvertBox = new QCheckBox("Invert", this);
-    HBox->addWidget(this->m_InvertBox);
-    //FormLayout->addRow(tr("TSlice:"), this->m_TimeComboBox);
     }
+
+  this->m_InvertBox = new QCheckBox("Invert", this);
+  HBox->addWidget(this->m_InvertBox);
 
   this->m_VBoxLayout->addLayout(HBox);
   if (!iVectChannels.empty() )

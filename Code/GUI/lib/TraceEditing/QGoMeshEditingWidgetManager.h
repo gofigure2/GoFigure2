@@ -46,6 +46,7 @@
 #include "QGoSetOfContoursLevelSetAlgo.h"
 #include "QGoSetOfContoursShapeAlgo.h"
 #include "QGoMeshSplitDanielssonDistanceAlgo.h"
+#include "QGoMeshMergeConvexHullAlgo.h"
 #include <QAction>
 #include <QDockWidget>
 
@@ -87,21 +88,31 @@ public:
 
 public slots:
 
+  void RequestPolydatasForDanielsson();
+  void RequestPolydatasForConvexHull();
+  void RequestedPolydatas(std::list< vtkPolyData* >);
+
 signals:
 
   void SetOfContoursFromAlgo(std::vector<std::vector<vtkPolyData*> > iVectVectPolydata, int iTCoord);
+  void RequestPolydatas();
 
 protected:
   QGoAlgorithmsManagerWidget*                     m_SetOfContoursWidget;
 
+  // segmentation algos
   QGoMeshLevelSetAlgo*                            m_LevelSetAlgo;
   QGoMeshShapeAlgo*                               m_ShapeAlgo;
   QGoMeshWaterShedAlgo*                           m_WaterShedAlgo;
+  // split/merge algos
   QGoMeshSplitDanielssonDistanceAlgo*             m_DanielAlgo;
+  QGoMeshMergeConvexHullAlgo*                     m_ConvexHullAlgo;
 
   QGoSetOfContoursWaterShedAlgo*                  m_SetOfContoursWaterShedAlgo;
   QGoSetOfContoursLevelSetAlgo*                   m_SetOfContoursLevelSetAlgo;
   QGoSetOfContoursShapeAlgo*                      m_SetOfContoursShapeAlgo;
+
+  QGoSplitSegmentationAlgo*                             m_TempReference;
 
   /**
   \brief add the algowidget of the different algo in the algomanagerwidget
@@ -110,9 +121,12 @@ protected:
   virtual void SetSemiAutomaticAlgorithms(QWidget* iParent = 0);
 
   void SetSetOfContoursAlgorithms(
-   std::vector<QString> iVectChannels, QStringList iListTime, QWidget* iParent = 0);
+   std::vector<QString> iVectChannels, QStringList iListTime,
+      QWidget* iParent = 0);
 
-  void SetSplitMergeMode(QWidget* iParent);
+  void SetSplitMergeMode(
+      std::vector<QString> iVectChannels, QStringList iListTime,
+      QWidget* iParent = 0);
 
   /**
   \brief get the sets of vtkpolydata for the new created sets of contours
@@ -136,7 +150,6 @@ protected slots:
   void ApplyLevelSetAlgo();
   void ApplyShapeAlgo();
   void ApplyWaterShedAlgo();
-  void ApplyDanielAlgo();
   void ApplySetOfContoursWaterShedAlgo();
   void ApplySetOfContoursLevelSetAlgo();
   void ApplySetOfContoursShapeAlgo();

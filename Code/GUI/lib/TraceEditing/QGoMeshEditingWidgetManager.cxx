@@ -40,6 +40,8 @@
 #include "vtkImageData.h"
 #include <iostream>
 
+#include <QDebug>
+
 #include "QGoMeshWaterShedAlgo.h"
 #include "GoImageProcessor.h"
 
@@ -56,7 +58,7 @@ QGoMeshEditingWidgetManager::QGoMeshEditingWidgetManager(
   iCurrentTimePoint, iParent)
 {
   this->SetSemiAutomaticAlgorithms(iParent);
-  this->SetSplitMergeMode(iParent);
+  this->SetSplitMergeMode(iVectChannels, this->m_ListTimePoint,iParent);
   this->SetSetOfContoursAlgorithms(iVectChannels, this->m_ListTimePoint,
     iParent);
 }
@@ -171,30 +173,108 @@ void QGoMeshEditingWidgetManager::SetSetOfContoursAlgorithms(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoMeshEditingWidgetManager::SetSplitMergeMode(QWidget* iParent)
+void QGoMeshEditingWidgetManager::SetSplitMergeMode(
+    std::vector<QString> iVectChannels, QStringList iListTime,
+    QWidget* iParent)
 {
   QGoAlgorithmsManagerWidget* SplitAlgoWidget =
-    new QGoAlgorithmsManagerWidget("Split", iParent);
+    new QGoAlgorithmsManagerWidget("Split", iParent, iVectChannels);
   this->m_TraceEditingWidget->AddMode(SplitAlgoWidget, true);
 
-  m_DanielAlgo = new QGoMeshSplitDanielssonDistanceAlgo(iParent);
+  m_DanielAlgo = new QGoMeshSplitDanielssonDistanceAlgo(this->m_Seeds,
+                                                        iParent);
   QGoAlgorithmWidget * DanielWidget = m_DanielAlgo->GetAlgoWidget();
+
   SplitAlgoWidget->AddMethod(DanielWidget );
 
   QObject::connect( DanielWidget, SIGNAL(ApplyAlgo() ) ,
-                    this, SLOT(ApplyDanielAlgo() ) );
+                    this, SLOT(RequestPolydatasForDanielsson() ) );
 
   QGoAlgorithmsManagerWidget* MergeAlgoWidget =
-    new QGoAlgorithmsManagerWidget("Merge", iParent);
-  this->m_TraceEditingWidget->AddMode(MergeAlgoWidget, true);
+    new QGoAlgorithmsManagerWidget("Merge", iParent, iVectChannels);
+  this->m_TraceEditingWidget->AddMode(MergeAlgoWidget, false);
 
+  m_ConvexHullAlgo = new QGoMeshMergeConvexHullAlgo(this->m_Seeds,
+                                                        iParent);
+  QGoAlgorithmWidget * ConvexHullWidget = m_ConvexHullAlgo->GetAlgoWidget();
+
+  MergeAlgoWidget->AddMethod(ConvexHullWidget );
+
+  QObject::connect( ConvexHullWidget, SIGNAL(ApplyAlgo() ) ,
+                    this, SLOT(RequestPolydatasForConvexHull() ) );
+
+}
+//-------------------------------------------------------------------------
+// required to setup the go reference to the algorithm we gonna use
+//-------------------------------------------------------------------------
+void QGoMeshEditingWidgetManager::RequestPolydatasForDanielsson(){
+  m_TempReference = dynamic_cast<QGoSplitSegmentationAlgo*>(m_DanielAlgo);
+  emit RequestPolydatas();
+}
+//-------------------------------------------------------------------------
+// required to setup the go reference to the algorithm we gonna use
+//-------------------------------------------------------------------------
+void QGoMeshEditingWidgetManager::RequestPolydatasForConvexHull(){
+  m_TempReference = dynamic_cast<QGoSplitSegmentationAlgo*>(m_ConvexHullAlgo);
+  emit RequestPolydatas();
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoMeshEditingWidgetManager::ApplyDanielAlgo()
-{
-  this->GetPolydatasFromAlgo<QGoMeshSplitDanielssonDistanceAlgo>(this->m_DanielAlgo);
+void
+QGoMeshEditingWidgetManager::
+RequestedPolydatas(std::list< vtkPolyData* > iRequest){
+  // get mode
+  QString mode =
+      QString::fromStdString(this->m_TraceEditingWidget->GetCurrentModeName());
+  // create iterator
+  std::list< vtkPolyData*>::iterator iterator =
+      iRequest.begin();
+
+  // in split mode
+  if(mode.compare("Split") == 0)
+    {
+    emit UpdateSeeds();
+
+    // loop through all polydatas
+    while(iterator != iRequest.end())
+      {
+      // need vector for API
+      std::vector<vtkPolyData*> polys;
+      polys.push_back(*iterator);
+      std::vector<vtkPolyData*> NewTraces = m_TempReference->ApplyAlgo(
+        this->m_Images,
+        this->m_TraceEditingWidget->GetCurrentImageName(),
+        polys,
+        this->m_TraceEditingWidget->GetIsInvertedOn());
+      // need to send trace ID and time point...!
+      emit TracesSplittedFromAlgo(NewTraces);
+      ++iterator;
+      }
+
+    emit ClearAllSeeds();
+    }
+  // merge mode
+  // give all pds at once
+  else
+    {
+    std::vector<vtkPolyData*> polys;
+
+    // fill vector with all polydatas
+    while(iterator != iRequest.end())
+      {
+      polys.push_back(*iterator);
+      ++iterator;
+      }
+
+    // apply algo
+    std::vector<vtkPolyData*> NewTraces = m_TempReference->ApplyAlgo(
+      this->m_Images,
+      this->m_TraceEditingWidget->GetCurrentImageName(),
+      polys,
+      this->m_TraceEditingWidget->GetIsInvertedOn());
+    emit TracesMergedFromAlgo(NewTraces.front());
+    }
 }
 //-------------------------------------------------------------------------
 

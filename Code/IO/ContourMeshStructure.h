@@ -136,6 +136,8 @@ public:
   /** Destructor */
   ~ContourMeshStructure();
 
+  void ModifyCollectionID(unsigned int iCollectionID);
+
   /** Printing one element. std::cout << element << std::endl; */
   friend std::ostream & operator<<
     (std::ostream & os, const ContourMeshStructure & c)

@@ -31,46 +31,37 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
+#ifndef __QGoMeshMergeConvexHullAlgo_h
+#define __QGoMeshMergeConvexHullAlgo_h
 
-#ifndef __itkvtkMeshMergeConvexHullFilter_h
-#define __itkvtkMeshMergeConvexHullFilter_h
+#include "QGoMergeConvexHullAlgo.h"
+#include "QGoAlgorithmWidget.h"
+#include "QGoAlgoParameter.h"
+#include "QGoGUILibConfigure.h"
+#include "vtkSmartPointer.h"
+#include "vtkPolyData.h"
+#include "vtkImageData.h"
 
-#include "GoFiltersConfigure.h"
+class GoImageProcessor;
 
-#include "itkvtkMeshMergeFilterBase.h"
 
-#include "itkObjectFactory.h"
-
-namespace itk
-{
-template< class TFeatureImage, class TPolyDataContainer >
-class GOFILTERS_EXPORT vtkMeshMergeConvexHullFilter :
-    public vtkMeshMergeFilterBase< TFeatureImage, TPolyDataContainer >
+/**
+\class QGoMeshMergeConvexHullAlgo
+\brief class to be the interface between the QGoMeshMergeConvexHullAlgo algo for meshes
+and GoFigure
+*/
+class QGoMeshMergeConvexHullAlgo: public QGoMergeConvexHullAlgo
 {
 public:
-  typedef vtkMeshMergeFilterBase< TFeatureImage, TPolyDataContainer > Superclass;
-  typedef vtkMeshMergeConvexHullFilter Self;
-  typedef SmartPointer< Self > Pointer;
-  typedef SmartPointer< const Self > ConstPointer;
+  QGoMeshMergeConvexHullAlgo(std::vector< vtkPoints* >* iSeeds,
+                                     QWidget *iParent = 0);
+  ~QGoMeshMergeConvexHullAlgo();
 
-  /** Run-time type information (and related methods). */
-  itkTypeMacro( vtkMeshMergeConvexHullFilter,
-               vtkMeshMergeFilterBase );
-
-  /** Method for creation through the object factory. */
-  itkNewMacro(Self);
-
-protected:
-  vtkMeshMergeConvexHullFilter();
-  ~vtkMeshMergeConvexHullFilter() {}
-
-  void GenerateData();
-  void SetRequiredAttributeComputationFlags();
-
-private:
-  vtkMeshMergeConvexHullFilter( const Self& );
-  void operator = ( const Self& );
+  std::vector<vtkPolyData*> ApplyAlgo(
+    GoImageProcessor* iImages,
+    std::string iChannel,
+    std::vector<vtkPolyData*> iPolyData,
+    bool iIsInvertedOn);
 };
-}
-#include "itkvtkMeshMergeConvexHullFilter.txx"
-#endif // __itkvtkMeshMergeConvexHullFilter_h
+
+#endif

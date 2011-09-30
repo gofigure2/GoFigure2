@@ -320,12 +320,23 @@ QGoPrintDatabase::SaveMeshFromVisuInDB(unsigned int iXCoordMin,
                                        unsigned int iZCoordMax,
                                        int iTCoord,
                                        vtkPolyData *iMeshNodes,
-                                       GoFigureMeshAttributes *iMeshAttributes)
+                                       GoFigureMeshAttributes *iMeshAttributes,
+                                       int iTrackID)
 {
   OpenDBConnection();
-  if ( !this->m_MeshGenerationMode )
+  if ( !this->m_MeshGenerationMode)
     {
-    unsigned int TrackID = this->m_TraceSettingsWidget->GetCurrentSelectedCollectionID();
+    unsigned int TrackID = 0;
+
+    if(iTrackID != -1)
+      {
+      TrackID = iTrackID;
+      }
+    else
+      {
+      TrackID = this->m_TraceSettingsWidget->GetCurrentSelectedCollectionID();
+      }
+
     //check that there isn't an existing mesh with the same timepoint in the
     // track,if so, set its trackID to 0:
     /** \todo print a different message if several meshes are created at the
@@ -376,7 +387,8 @@ QGoPrintDatabase::SaveMeshFromVisuInDB(unsigned int iXCoordMin,
                                                            iTCoord,
                                                            iMeshNodes,
                                                            this->m_DatabaseConnector,
-                                                           iMeshAttributes);
+                                                           iMeshAttributes,
+                                                           TrackID);
 
     std::list< unsigned int > ListNewMeshes;
     ListNewMeshes.push_back(NewMeshID);
@@ -1845,6 +1857,11 @@ AddListMeshesToATrack(std::list< unsigned int > iListMeshes, unsigned int iTrack
   this->AddCheckedTracesToCollection< QGoDBMeshManager, QGoDBTrackManager >(
     this->m_MeshesManager, this->m_TracksManager,
     iTrackID, ListMeshToBelongToTheTrack);
+
+  // update the visualization container!
+  this->m_MeshesManager->ModifyTrackIDInVisuContainer(iTrackID,
+                                                      ListMeshToBelongToTheTrack,
+                                                      ListNullMeshToBelongToTheTrack);
   this->CloseDBConnection();
 }
 

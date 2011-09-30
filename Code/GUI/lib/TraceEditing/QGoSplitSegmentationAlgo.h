@@ -1,3 +1,4 @@
+
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
  at Megason Lab, Systems biology, Harvard Medical school, 2009-11
@@ -31,46 +32,68 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
+#ifndef __QGoSplitSegmentationAlgo_h
+#define __QGoSplitSegmentationAlgo_h
 
-#ifndef __itkvtkMeshMergeConvexHullFilter_h
-#define __itkvtkMeshMergeConvexHullFilter_h
+#include "QGoSegmentationAlgo.h"
+#include "QGoAlgorithmWidget.h"
+#include "QGoGUILibConfigure.h"
+#include "vtkSmartPointer.h"
+#include "vtkPolyData.h"
+#include "vtkImageData.h"
+#include "QGoGUILibConfigure.h"
 
-#include "GoFiltersConfigure.h"
+class GoImageProcessor;
 
-#include "itkvtkMeshMergeFilterBase.h"
-
-#include "itkObjectFactory.h"
-
-namespace itk
+/**
+\class QGoSplitSegmentationAlgo
+\brief abstract class to be the interface between the semi automatic
+algorithms for meshes and contours and GoFigure
+*/
+class QGOGUILIB_EXPORT QGoSplitSegmentationAlgo:public QGoSegmentationAlgo
 {
-template< class TFeatureImage, class TPolyDataContainer >
-class GOFILTERS_EXPORT vtkMeshMergeConvexHullFilter :
-    public vtkMeshMergeFilterBase< TFeatureImage, TPolyDataContainer >
-{
+  Q_OBJECT
 public:
-  typedef vtkMeshMergeFilterBase< TFeatureImage, TPolyDataContainer > Superclass;
-  typedef vtkMeshMergeConvexHullFilter Self;
-  typedef SmartPointer< Self > Pointer;
-  typedef SmartPointer< const Self > ConstPointer;
+  explicit QGoSplitSegmentationAlgo(std::vector< vtkPoints* >* iSeeds, QWidget *iParent = 0);
+  virtual ~QGoSplitSegmentationAlgo();
 
-  /** Run-time type information (and related methods). */
-  itkTypeMacro( vtkMeshMergeConvexHullFilter,
-               vtkMeshMergeFilterBase );
 
-  /** Method for creation through the object factory. */
-  itkNewMacro(Self);
+  /**
+  \brief return the vtkpolydata created by the algorithm
+  */
+  virtual std::vector<vtkPolyData*> ApplyAlgo(
+    GoImageProcessor* iImages,
+    std::string iChannel,
+    std::vector<vtkPolyData*> iPolyData,
+    bool iIsInvertedOn = false) = 0;
 
 protected:
-  vtkMeshMergeConvexHullFilter();
-  ~vtkMeshMergeConvexHullFilter() {}
+  std::vector< vtkPoints* >*      m_Seeds;
+  QGoAlgoParameter<double>*       m_Radius;
 
-  void GenerateData();
-  void SetRequiredAttributeComputationFlags();
+  /**
+  \brief construct the algowidget with the different parameters
+  */
+  virtual void SetAlgoWidget(QWidget* iParent = 0);
 
-private:
-  vtkMeshMergeConvexHullFilter( const Self& );
-  void operator = ( const Self& );
+
+  /**
+  \brief delete the different parameters
+  */
+  virtual void DeleteParameters() = 0;
+
+  /*
+   * \brief Get boundingBox from a center and a radius
+   * \param[in] iCenter center of the box
+   * \param[in] iRadius radius of the box
+   * \param[in] iOrientation 0-xy, 1-xz, 2-yz, 3-xyz
+   * \return vector[6] containing the bounding box (xmin, xmax, ymin, imax, ...)
+   */
+  std::vector<double> GetBounds(
+      const std::vector<double>& iCenter,
+      const double& iRadius,
+      const unsigned int& iOrientation = 3);
+
 };
-}
-#include "itkvtkMeshMergeConvexHullFilter.txx"
-#endif // __itkvtkMeshMergeConvexHullFilter_h
+
+#endif

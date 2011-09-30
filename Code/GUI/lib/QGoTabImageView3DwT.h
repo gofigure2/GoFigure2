@@ -288,6 +288,8 @@ signals:
 
   void StartContourSegmentation(vtkPoints *iPoints);
 
+  void RequestedPolydatas(std::list< vtkPolyData* >);
+
 public slots:
   void SetTimePoint(const int &);
 
@@ -351,14 +353,23 @@ public slots:
 
   /** \brief Save a mesh in the database and render the mesh
    * at the given time point.
+   * \param[in] iCollection Collection ID we want the mesh to belong to.
+   * if -1, we get the collection ID from the trace editing widget.
   \todo to be renamed */
-  void  SaveAndVisuMesh(vtkPolyData *iView, unsigned int iTCoord);
+  void  SaveAndVisuMesh(vtkPolyData *iView,
+                        unsigned int iTCoord,
+                        int iCollection = -1);
 
   /** \brief Save a mesh in the database and render the mesh.
    * at the current time point
   */
   void SaveInDBAndRenderMeshForVisu(
     std::vector<vtkPolyData *> iVectPolydata, int iTCoord);
+
+  void SplitInDBAndRenderMeshForVisu(
+    std::vector<vtkPolyData *> iVectPolydata);
+
+  void MergeInDBAndRenderMeshForVisu( vtkPolyData * iVectPolydata);
 
   void SaveInDBAndRenderSetOfContoursForVisu(
     std::vector<std::vector<vtkPolyData*> >, int);
@@ -386,6 +397,8 @@ public slots:
   void openTransferFunctionEditor(QString iName);
 
   void updateSlot();
+
+  void PolydatasRequested();
 
 protected:
   QGoImageView3D *                               m_ImageView;
@@ -580,7 +593,7 @@ protected:
    * \param[in] iMesh mesh to be saved
    * \param[in] iTCoord
    */
-  void SaveMesh(vtkPolyData *iMesh, int iTCoord);
+  void SaveMesh(vtkPolyData *iMesh, int iTCoord, int iCollectionID = -1);
 
   void GetBackgroundColorFromImageViewer();
 
