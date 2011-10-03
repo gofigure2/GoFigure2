@@ -202,9 +202,6 @@ GoTransferFunctionEditorWidget::GoTransferFunctionEditorWidget(QWidget *parent,
   histoCB->setChecked(true);
   histoCB->setEnabled(false);*/
 
-  QSpacerItem* spacer = new QSpacerItem(1, 1, QSizePolicy::Minimum, QSizePolicy::Minimum);
-  //vbox->addItem(spacer);
-
   QVBoxLayout* shadeVerticalLayout = new QVBoxLayout;
   shadeVerticalLayout->addWidget(m_MaxSlider);
   shadeVerticalLayout->addLayout(m_red_shade_layout);

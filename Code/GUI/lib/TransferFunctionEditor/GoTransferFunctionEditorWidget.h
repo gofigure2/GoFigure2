@@ -150,7 +150,6 @@ private:
   QPushButton* m_ColorPushButton;
 
   GoTransferFunctionWidget *m_red_shade;
-  GoTransferFunctionWidget *m_alpha_shade;
 
   QSlider* m_GammaSlider;
   QSlider* m_MinSlider;

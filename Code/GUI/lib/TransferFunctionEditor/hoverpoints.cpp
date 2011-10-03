@@ -97,7 +97,9 @@ HoverPoints::HoverPoints(QWidget *widget, PointShape shape)
     m_pointSize = QSize(11, 11);
     m_currentIndex = -1;
     m_editable = true;
-    m_enabled = true;
+
+    if(shape != HoverPoints::CircleShape)
+      m_enabled = true;
 
     connect(this, SIGNAL(pointsChanged(QPolygonF)),
             m_widget, SLOT(update()));
@@ -116,6 +118,11 @@ void HoverPoints::setEnabled(bool enabled)
 bool HoverPoints::eventFilter(QObject *object, QEvent *event)
 {
     if (object == m_widget) {
+      qDebug() << "update hover points event" ;
+      qDebug() << "event: " << event;
+      qDebug() << "m_editable: " << m_editable;
+      qDebug() << "m_enabled: " << m_enabled;
+
         switch (event->type()) {
 
         case QEvent::MouseButtonPress:
@@ -303,6 +310,7 @@ bool HoverPoints::eventFilter(QObject *object, QEvent *event)
         {
             if(!m_enabled)
               break;
+
             QWidget *that_widget = m_widget;
             m_widget = 0;
             QApplication::sendEvent(object, event);
@@ -326,12 +334,8 @@ bool HoverPoints::eventFilter(QObject *object, QEvent *event)
 
 void HoverPoints::paintPoints()
 {
-  // don't paint anything if not enabled
-  if(!m_enabled)
-    {
-    return;
-    }
 
+  qDebug() << "paint...";
     QPainter p;
 #ifdef QT_OPENGL_SUPPORT
     ArthurFrame *af = qobject_cast<ArthurFrame *>(m_widget);

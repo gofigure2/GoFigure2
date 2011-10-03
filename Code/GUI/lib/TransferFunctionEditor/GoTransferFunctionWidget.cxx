@@ -101,7 +101,7 @@ GoTransferFunctionWidget::GoTransferFunctionWidget(QColor iColor,
   // opacity TF
   m_hoverPoints = new HoverPoints(this, HoverPoints::CircleShape);
   m_hoverPoints->setConnectionType(HoverPoints::LineConnection);
-    connect(this, SIGNAL(enableHoverPoints(bool)), m_hoverPoints, SLOT(setEnabled(bool)));
+  connect(this, SIGNAL(enableHoverPoints(bool)), m_hoverPoints, SLOT(setEnabled(bool)));
 
   setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
 
@@ -144,7 +144,6 @@ void GoTransferFunctionWidget::paintEvent(QPaintEvent *)
       listOfPoints.push_back(point2);
       listOfPoints.push_back(point);
       }
-
     p.drawLines(listOfPoints);
     }
 }
