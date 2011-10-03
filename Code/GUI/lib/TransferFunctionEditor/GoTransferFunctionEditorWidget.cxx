@@ -121,6 +121,14 @@ GoTransferFunctionEditorWidget::GoTransferFunctionEditorWidget(QWidget *parent,
         m_Color,
         this);
 
+  QHBoxLayout *m_red_shade_layout = new QHBoxLayout(this);
+  QSpacerItem* spacer_red1 = new QSpacerItem(10, 10, QSizePolicy::Minimum, QSizePolicy::Minimum);
+  QSpacerItem* spacer_red2 = new QSpacerItem(10, 10, QSizePolicy::Minimum, QSizePolicy::Minimum);
+
+  m_red_shade_layout->addSpacerItem(spacer_red1);
+  m_red_shade_layout->addWidget(m_red_shade);
+  m_red_shade_layout->addSpacerItem(spacer_red2);
+
   m_LUT = NULL;
 
   m_Channel = iChannel;
@@ -145,6 +153,7 @@ GoTransferFunctionEditorWidget::GoTransferFunctionEditorWidget(QWidget *parent,
   QHBoxLayout *colorLayout = new QHBoxLayout(this);
   QLabel *color = new QLabel("Color: ");
   m_ColorPushButton = new QPushButton(this);
+  m_ColorPushButton->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
   QString style = "background: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 0,stop: 0 black, stop: 1 rgb(%1, %2, %3)); border-radius: 4px;";
   m_ColorPushButton->setStyleSheet(
         style.arg(m_Color.red()).arg(m_Color .green()).arg(m_Color.blue()));
@@ -169,36 +178,36 @@ GoTransferFunctionEditorWidget::GoTransferFunctionEditorWidget(QWidget *parent,
   m_MinSlider->setOrientation(Qt::Horizontal);
   m_MinSlider->setMaximum(255);
   m_MinSlider->setValue(iLUTParameters[1]);
-  m_MinSlider->setStyleSheet("QSlider::groove:horizontal {border: 1px solid #bbb;background: rgba(0, 0, 0, 0);height: 4px;position: absolute;left: -10px;right: -10px;}QSlider::sub-page:horizontal {background: #808080;border: 1px solid black;}QSlider::add-page:horizontal {background: rgba(0, 0, 0, 0);border: 1px solid black;}QSlider::handle:horizontal {image: url(/home/nr52/gitroot/gofigure/Resources/widget/arrow_up.png);width: 20px;margin-top: -1px;margin-bottom: -2px;}");
+  m_MinSlider->setStyleSheet("QSlider::groove:horizontal {border: 1px solid #bbb;background: rgba(0, 0, 0, 0);height: 4px;position: absolute; right: 10px;left: 10px; }QSlider::handle:horizontal {image: url(/home/nr52/gitroot/gofigure/Resources/widget/arrow_up.png);width: 20px;height: 6px;margin-top: -2px;margin-bottom: -2px; right: -10px; left:-10px; border: 1px solid black; background: rgba(255, 255, 255, 200); border-radius: 4px;}QSlider::sub-page:horizontal {background: #909090;border: 1px solid black;}QSlider::add-page:horizontal {background: rgba(0, 0, 0, 0);border: 1px solid black;}");
   connect(m_MinSlider, SIGNAL(valueChanged(int)), this, SLOT(pointsUpdated()));
 
   m_MaxSlider = new QSlider(this);
   m_MaxSlider->setOrientation(Qt::Horizontal);
   m_MaxSlider->setMaximum(255);
   m_MaxSlider->setValue(iLUTParameters[2]);
-  m_MaxSlider->setStyleSheet("QSlider::groove:horizontal {border: 1px solid #bbb;background: rgba(0, 0, 0, 0);height: 4px;position: absolute;left: -10px;right: -10px;}QSlider::sub-page:horizontal {background: rgba(0, 0, 0, 0);border: 1px solid black;}QSlider::add-page:horizontal {background: #909090;border: 1px solid black;}QSlider::handle:horizontal {image: url(/home/nr52/gitroot/gofigure/Resources/widget/arrow_down.png);width: 20px;margin-top: -1px;margin-bottom: -2px;}");
+  m_MaxSlider->setStyleSheet("QSlider::groove:horizontal {border: 1px solid #bbb;background: rgba(0, 0, 0, 0);height: 4px;position: absolute; right: 10px;left: 10px; }QSlider::handle:horizontal {image: url(/home/nr52/gitroot/gofigure/Resources/widget/arrow_down.png);width: 20px;height: 6px;margin-top: -2px;margin-bottom: -2px; right: -10px; left:-10px; border: 1px solid black; background: rgba(255, 255, 255, 200); border-radius: 4px;}QSlider::sub-page:horizontal {background: rgba(0, 0, 0, 0);border: 1px solid black;}QSlider::add-page:horizontal {background: #909090;border: 1px solid black;}");
 
   connect(m_MaxSlider, SIGNAL(valueChanged(int)), this, SLOT(pointsUpdated()));
 
 
-  QCheckBox* tfCB = new QCheckBox("Show TF");
+  QCheckBox* tfCB = new QCheckBox("Color Transfer Function");
   tfCB->setChecked(true);
   connect(tfCB, SIGNAL(clicked(bool)), m_red_shade, SIGNAL(enableGammaPoints(bool)));
 
-  QCheckBox* tfoCB = new QCheckBox("Show TF Opacity");
-  tfoCB->setChecked(true);
+  QCheckBox* tfoCB = new QCheckBox("Opacity Transfer Function");
+  tfoCB->setChecked(false);
   connect(tfoCB, SIGNAL(clicked(bool)), m_red_shade, SIGNAL(enableHoverPoints(bool)));
 
   /*QCheckBox* histoCB = new QCheckBox("Show Log Histogram");
   histoCB->setChecked(true);
   histoCB->setEnabled(false);*/
 
-  QSpacerItem* spacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Minimum);
-  vbox->addItem(spacer);
+  QSpacerItem* spacer = new QSpacerItem(1, 1, QSizePolicy::Minimum, QSizePolicy::Minimum);
+  //vbox->addItem(spacer);
 
   QVBoxLayout* shadeVerticalLayout = new QVBoxLayout;
   shadeVerticalLayout->addWidget(m_MaxSlider);
-  shadeVerticalLayout->addWidget(m_red_shade);
+  shadeVerticalLayout->addLayout(m_red_shade_layout);
   shadeVerticalLayout->addWidget(m_MinSlider);
 
   QHBoxLayout* shadeHorizontalLayout=  new QHBoxLayout;
@@ -294,6 +303,7 @@ AddPoints( const std::map< unsigned int, unsigned int>& iAlpha)
   // add alpha points
   computePointsFromMap(iAlpha, alphaPoints);
   m_red_shade->AddPoints(alphaPoints);
+  //enableHoverPoints();
 
   // update histogram and alpha gradient
   pointsUpdated();
@@ -639,6 +649,8 @@ updateOpacityTF()
     m_OpacityTF->AddPoint(x, y);
     }
   m_OpacityTF->Modified();
+
+  emit updateVisualization();
 }
 //-------------------------------------------------------------------------
 

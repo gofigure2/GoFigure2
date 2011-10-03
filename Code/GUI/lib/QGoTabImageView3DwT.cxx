@@ -238,13 +238,15 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
   m_DockWidgetList.push_back(
     std::pair< QGoDockWidgetStatus *, QDockWidget * >(
       new QGoDockWidgetStatus(
-        m_NavigationDockWidget, Qt::RightDockWidgetArea, false, true),
+        m_NavigationDockWidget, Qt::RightDockWidgetArea, false, true, this),
       m_NavigationDockWidget) );
 
+  
   m_DockWidgetList.push_back(
     std::pair< QGoDockWidgetStatus *, QDockWidget * >(
       new QGoDockWidgetStatus(
-        m_TransferFunctionDockWidget, Qt::RightDockWidgetArea, false, true),
+        m_TransferFunctionDockWidget,
+        Qt::RightDockWidgetArea, false, true, this),
       m_TransferFunctionDockWidget) );
 
   /*m_DockWidgetList.push_back(
@@ -268,14 +270,14 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
   m_DockWidgetList.push_back(
     std::pair< QGoDockWidgetStatus *, QDockWidget * >(
       new QGoDockWidgetStatus(this->m_TrackViewDockWidget,
-                              Qt::LeftDockWidgetArea, false, true),
+                              Qt::LeftDockWidgetArea, false, true, this),
       this->m_TrackViewDockWidget) );
 
 
   m_DockWidgetList.push_back(
     std::pair< QGoDockWidgetStatus *, QDockWidget * >(
       new QGoDockWidgetStatus(this->m_LineageViewDockWidget,
-                              Qt::LeftDockWidgetArea, false, true),
+                              Qt::LeftDockWidgetArea, false, true, this),
       this->m_LineageViewDockWidget) );
 
   m_DockWidgetList.push_back(
@@ -287,7 +289,7 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
 #if defined ( ENABLEFFMPEG ) || defined ( ENABLEAVI )
   m_DockWidgetList.push_back(
     std::pair< QGoDockWidgetStatus *, QDockWidget * >(
-      new QGoDockWidgetStatus(m_VideoRecorderWidget, Qt::LeftDockWidgetArea, false, true),
+      new QGoDockWidgetStatus(m_VideoRecorderWidget, Qt::LeftDockWidgetArea, false, true, this),
       m_VideoRecorderWidget) );
 
 #endif
@@ -429,6 +431,12 @@ QGoTabImageView3DwT::CreateContourEditingDockWidget(
     channelNames, iTimeMin, iTimeMax, &m_Seeds,
     m_ImageProcessor, &m_TCoord, this);
 
+  m_DockWidgetList.push_back(
+    std::pair< QGoDockWidgetStatus *, QDockWidget * >(
+      new QGoDockWidgetStatus(
+        this->m_ContourEditingWidget->GetDockWidget(), Qt::LeftDockWidgetArea, false, true, this),
+        this->m_ContourEditingWidget->GetDockWidget()) );
+
   this->CreateConnectionsTraceEditingWidget<QGoContourEditingWidgetManager>(
     iTimeMin, iTimeMax, this->m_ContourEditingWidget);
 
@@ -527,13 +535,13 @@ QGoTabImageView3DwT::CreateMeshEditingDockWidget(int iTimeMin, int iTimeMax)
                    SIGNAL(ClearAllSeeds() ),
                    this->m_ImageView,
                    SLOT(ClearAllSeeds() ) ); now on the template method
-
+*/
   m_DockWidgetList.push_back(
     std::pair< QGoDockWidgetStatus *, QDockWidget * >(
       new QGoDockWidgetStatus(
-        this->m_MeshEditingWidget->GetDockWidget(), Qt::LeftDockWidgetArea, false, true),
+        this->m_MeshEditingWidget->GetDockWidget(), Qt::LeftDockWidgetArea, false, true, this),
         this->m_MeshEditingWidget->GetDockWidget()) );
-
+/*
   QObject::connect( this->m_MeshEditingWidget,
                     SIGNAL( SetSeedInteractorBehaviour(bool) ),
                     this,

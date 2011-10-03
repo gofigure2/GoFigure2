@@ -88,6 +88,9 @@ GoTransferFunctionWidget::GoTransferFunctionWidget(QColor iColor,
     m_alpha_gradient(QLinearGradient(0, 0, 0, 0))
 {
 
+  this->setMinimumWidth(50);
+  this->setMinimumHeight(50);
+
   setAttribute(Qt::WA_NoBackground);
 
   // gamma TF

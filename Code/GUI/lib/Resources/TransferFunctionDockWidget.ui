@@ -21,7 +21,7 @@
     <normaloff>:/fig/navigation.png</normaloff>:/fig/navigation.png</iconset>
   </property>
   <property name="allowedAreas">
-   <set>Qt::LeftDockWidgetArea|Qt::RightDockWidgetArea</set>
+   <set>Qt::AllDockWidgetAreas</set>
   </property>
   <property name="windowTitle">
    <string>Transfer Function</string>
