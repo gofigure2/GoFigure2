@@ -729,16 +729,18 @@ void QGoPrintDatabase::ExportMeshes()
 //-------------------------------------------------------------------------
 void QGoPrintDatabase::ImportContours()
 {
-  QString p = QFileDialog::getOpenFileName( this,
+  QStringList p = QFileDialog::getOpenFileNames( this,
                                             tr("Open Contours Export File"), "",
                                             tr("TextFile (*.txt)") );
 
+  QStringList::Iterator it = p.begin();
+
   //refactoring
-  if ( !p.isNull() )
+  while ( it != p.end() )
     {
     emit        PrintMessage( tr("Warning: Close and reopen your imagingsession once the import is done !!") );
-    QFileInfo   pathInfo(p);
-    std::string filename = p.toStdString();
+    QFileInfo   pathInfo(*it);
+    std::string filename = (*it).toStdString();
     //import into the database:
     GoDBImport ImportHelper(this->m_Server, this->m_User,
                             this->m_Password, this->m_ImgSessionID, filename,
@@ -760,6 +762,8 @@ void QGoPrintDatabase::ImportContours()
     //as in the import contours file, there are data such as colors,celltype
     //and subcelltype, the lists may have been updated in the database:
     this->InitializeTheComboboxesNotTraceRelated();
+
+    ++it;
     }
 }
 
@@ -776,12 +780,6 @@ void QGoPrintDatabase::ImportMeshes()
 
   while ( it != p.end() )
     {
-    std::cout << "==================================" << std::endl;
-    std::cout << "in while..." << std::endl;
-    std::cout << "in while..." << std::endl;
-    std::cout << "in while..." << std::endl;
-    std::cout << "in while..." << std::endl;
-    std::cout << "==================================" << std::endl;
     emit        PrintMessage( tr("Warning: Close and reopen your imagingsession once the import is done !!") );
     QFileInfo   pathInfo(*it);
     std::string filename = (*it).toStdString();
