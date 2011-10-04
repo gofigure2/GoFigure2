@@ -226,6 +226,8 @@ void QGoPrintDatabase::FillTableFromDatabase(const int& iThreshold)
           this->m_ImgSessionID,
           "mesh");
 
+  std::cout << "number of traces:    " << nbOfTraces << std::endl;
+
   // if there are more than 5 thousands meshes, only load 3 time points in
   // memory
   if(nbOfTraces > iThreshold)
@@ -766,14 +768,20 @@ void QGoPrintDatabase::ImportContours()
 //-------------------------------------------------------------------------
 void QGoPrintDatabase::ImportMeshes()
 {
-  QStringList p = QFileDialog::getgetOpenFileNames( this,
+  QStringList p = QFileDialog::getOpenFileNames( this,
                                             tr("Open Meshes Export Files"), "",
                                             tr("TextFile (*.txt)") );
 
-  QStringList::iterator it = p.begin();
+  QStringList::Iterator it = p.begin();
 
-  if ( it != p.end() )
+  while ( it != p.end() )
     {
+    std::cout << "==================================" << std::endl;
+    std::cout << "in while..." << std::endl;
+    std::cout << "in while..." << std::endl;
+    std::cout << "in while..." << std::endl;
+    std::cout << "in while..." << std::endl;
+    std::cout << "==================================" << std::endl;
     emit        PrintMessage( tr("Warning: Close and reopen your imagingsession once the import is done !!") );
     QFileInfo   pathInfo(*it);
     std::string filename = (*it).toStdString();
