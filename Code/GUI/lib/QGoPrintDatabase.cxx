@@ -766,17 +766,17 @@ void QGoPrintDatabase::ImportContours()
 //-------------------------------------------------------------------------
 void QGoPrintDatabase::ImportMeshes()
 {
-  QString p = QFileDialog::getOpenFileName( this,
-                                            tr("Open Meshes Export File"), "",
+  QStringList p = QFileDialog::getgetOpenFileNames( this,
+                                            tr("Open Meshes Export Files"), "",
                                             tr("TextFile (*.txt)") );
 
-  //refactoring
+  QStringList::iterator it = p.begin();
 
-  if ( !p.isNull() )
+  if ( it != p.end() )
     {
     emit        PrintMessage( tr("Warning: Close and reopen your imagingsession once the import is done !!") );
-    QFileInfo   pathInfo(p);
-    std::string filename = p.toStdString();
+    QFileInfo   pathInfo(*it);
+    std::string filename = (*it).toStdString();
     //import into the database:
     GoDBImport ImportHelper(this->m_Server, this->m_User,
                             this->m_Password, this->m_ImgSessionID, filename,
@@ -793,6 +793,8 @@ void QGoPrintDatabase::ImportMeshes()
                                                                  this->m_DatabaseConnector);
     this->CloseDBConnection();
     this->InitializeTheComboboxesNotTraceRelated();
+
+    ++it;
     }
 }
 
