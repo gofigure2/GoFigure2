@@ -601,9 +601,9 @@ protected slots:
   virtual void ZoomInteractorBehavior(bool);
 
   /**
-   * \brief Mouse interaction style allows user to pan volume with all buttons
+   * \brief Mouse interaction style allows user to Translate volume with all buttons
    */
-  virtual void PanInteractorBehavior(bool);
+  virtual void TranslateInteractorBehavior(bool);
 
   /**
    * \brief Mouse interaction style allows user to pick contours
@@ -648,6 +648,9 @@ protected slots:
   variables have been set for the QGoPrintDatabase
   */
   void SetDatabaseContainersAndDelayedConnections();
+
+  void increaseTimePoint();
+  void decreaseTimePoint();
 
 private:
   Q_DISABLE_COPY(QGoTabImageView3DwT);

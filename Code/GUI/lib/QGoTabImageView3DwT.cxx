@@ -33,6 +33,7 @@
 =========================================================================*/
 
 #include "QGoTabImageView3DwT.h"
+#include "QShortcut"
 #include "QDebug"
 
 #include "QGoImageView3D.h"
@@ -236,6 +237,22 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
       new QGoDockWidgetStatus(m_VideoRecorderWidget, Qt::LeftDockWidgetArea, false, true),
       m_VideoRecorderWidget) );
 #endif
+  
+  (void)new QShortcut(
+      QKeySequence(
+          tr("Ctrl+C", "Next time point") ),this,SLOT( increaseTimePoint() ) );
+
+  (void)new QShortcut(
+      QKeySequence(
+          tr("Ctrl+Z", "Previous time point") ),this,SLOT( decreaseTimePoint() ) );
+
+  (void)new QShortcut(
+      QKeySequence(
+          tr("Right Arrow", "Next time point") ),this,SLOT( increaseTimePoint() ) );
+
+  (void)new QShortcut(
+      QKeySequence(
+          tr("Left Arrow", "Previous time point") ),this,SLOT( decreaseTimePoint() ) );
 }
 
 //-------------------------------------------------------------------------
@@ -486,10 +503,11 @@ QGoTabImageView3DwT::ZoomInteractorBehavior(bool iVisible)
 
 //-------------------------------------------------------------------------
 void
-QGoTabImageView3DwT::PanInteractorBehavior(bool iVisible)
+QGoTabImageView3DwT::TranslateInteractorBehavior(bool iVisible)
 {
   if ( iVisible )
     {
+    // pan is translate now, for consistency with the shortcuts
     this->m_ImageView->PanMode();
     }
 }
@@ -1102,6 +1120,7 @@ void QGoTabImageView3DwT::CreateModeActions()
 
   QAction *ContourSegmentationAction =
     m_ContourSegmentationDockWidget->toggleViewAction();
+  ContourSegmentationAction->setShortcut( tr("2", "Contour Segmentation Mode"));
 
   group->addAction(ContourSegmentationAction);
 
@@ -1128,7 +1147,7 @@ void QGoTabImageView3DwT::CreateModeActions()
 
   QAction *MeshSegmentationAction =
     m_MeshSegmentationDockWidget->toggleViewAction();
-    MeshSegmentationAction->setShortcut( tr("Ctrl+M", "Mesh Segmentation Mode"));
+  MeshSegmentationAction->setShortcut( tr("3", "Mesh Segmentation Mode"));
 
   group->addAction(MeshSegmentationAction);
 
@@ -1157,6 +1176,7 @@ void QGoTabImageView3DwT::CreateModeActions()
   //       Actor picking  mode       //
   //---------------------------------//
   QAction *ActorPickingAction = new QAction(tr("Object Picking"), this);
+  ActorPickingAction->setShortcut( tr("P", "Object Picking Mode"));
   ActorPickingAction->setCheckable(true);
   ActorPickingAction->setChecked(false);
 
@@ -3217,5 +3237,22 @@ QGoTabImageView3DwT::GoToLocation(int iX, int iY, int iZ, int iT)
   this->SetSliceViewXZ(iY);
   this->SetSliceViewYZ(iX);
 }
+//-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+increaseTimePoint()
+{
+  m_NavigationDockWidget->MoveToNextTimePoint();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+decreaseTimePoint()
+{
+m_NavigationDockWidget->MoveToPreviousTimePoint();
+}
 //-------------------------------------------------------------------------

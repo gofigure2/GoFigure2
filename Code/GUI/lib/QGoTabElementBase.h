@@ -113,9 +113,9 @@ public:
    */
   virtual void ZoomInteractorBehavior(bool){}
   /**
-   * \brief Mouse interaction style allows user to pan volume with all buttons
+   * \brief Mouse interaction style allows user to Translate volume with all buttons
    */
-  virtual void PanInteractorBehavior(bool){}
+  virtual void TranslateInteractorBehavior(bool){}
 
   void SetStatusBarPointer(QStatusBar* iStatusbar);
 
