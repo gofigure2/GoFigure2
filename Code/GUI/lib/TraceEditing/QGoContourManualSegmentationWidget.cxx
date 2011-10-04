@@ -57,6 +57,16 @@ QGoContourManualSegmentationWidget::QGoContourManualSegmentationWidget(QWidget *
 
   QObject::connect( m_SettingsDialog, SIGNAL( accepted() ),
                     this, SIGNAL( UpdateContourRepresentationProperties() ) );
+
+  // shortcuts
+  this->ValidateBtn->setShortcut(tr("Ctrl + A", "Apply"));
+  this->ValidateBtn->setShortcut(tr("A", "Apply"));
+
+  this->ReinitializeBtn->setShortcut(tr("Ctrl + D", "Delete"));
+  this->ReinitializeBtn->setShortcut(tr("D", "Delete"));
+
+  this->SettingsBtn->setShortcut(tr("Ctrl + S", "Settings"));
+  this->SettingsBtn->setShortcut(tr("S", "Settings"));
 }
 
 //---------------------------------------------------------------------------//

@@ -34,6 +34,7 @@
 
 #include "QGoTabImageView3DwT.h"
 #include "QDebug"
+#include "QShortcut"
 
 #include "QGoImageView3D.h"
 //#include "QGoLUTDialog.h"
@@ -235,24 +236,6 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
         m_NavigationDockWidget, Qt::RightDockWidgetArea, false, true),
       m_NavigationDockWidget) );
 
-  /*m_DockWidgetList.push_back(
-    std::pair< QGoDockWidgetStatus *, QDockWidget * >(
-      new QGoDockWidgetStatus(
-        m_ContourSegmentationDockWidget, Qt::LeftDockWidgetArea, false, true),
-      m_ContourSegmentationDockWidget) );*/
-
-  /*m_DockWidgetList.push_back(
-    std::pair< QGoDockWidgetStatus *, QDockWidget * >(
-      new QGoDockWidgetStatus(
-        this->m_MeshEditingWidget->GetDockWidget(), Qt::LeftDockWidgetArea, true, true),
-        this->m_MeshEditingWidget->GetDockWidget()) ); in setmegacapture/LSM files now */
-
-  /*m_DockWidgetList.push_back(
-    std::pair< QGoDockWidgetStatus *, QDockWidget * >(
-      new QGoDockWidgetStatus(this->m_DataBaseTables->GetTraceSettingsDockWidget(),
-                              Qt::LeftDockWidgetArea, false, true),
-      this->m_DataBaseTables->GetTraceSettingsDockWidget() ) );*/
-
   m_DockWidgetList.push_back(
     std::pair< QGoDockWidgetStatus *, QDockWidget * >(
       new QGoDockWidgetStatus(this->m_TrackViewDockWidget,
@@ -279,6 +262,8 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
       m_VideoRecorderWidget) );
 
 #endif
+
+  SetUpShortcuts();
 }
 
 //-------------------------------------------------------------------------
@@ -420,22 +405,6 @@ QGoTabImageView3DwT::CreateContourEditingDockWidget(
   this->CreateConnectionsTraceEditingWidget<QGoContourEditingWidgetManager>(
     iTimeMin, iTimeMax, this->m_ContourEditingWidget);
 
-  /*QObject::connect( m_ContourSegmentationDockWidget,
-                    SIGNAL( ReinitializeInteractorActivated(bool) ),
-                    this,
-                    SLOT( DefaultInteractorBehavior(bool) ) );
-
-
-  QObject::connect( m_ContourSegmentationDockWidget,
-                    SIGNAL( SemiAutoSegmentationActivated(bool) ),
-                    this,
-                    SLOT( SeedInteractorBehavior(bool) ) );
-
-  QObject::connect( m_ContourSegmentationDockWidget,
-                    SIGNAL( AutoSegmentationActivated(bool) ),
-                    this,
-                    SLOT( DefaultInteractorBehavior(bool) ) );*/
-
   // signals from the manual segmentation
   QObject::connect( m_ContourEditingWidget,
                     SIGNAL( ManualSegmentationActivated(bool) ),
@@ -465,22 +434,6 @@ QGoTabImageView3DwT::CreateContourEditingDockWidget(
 
 
   this->m_ContourEditingWidget->InitializeSettingsForManualMode();
-  /*
-  QObject::connect( m_ContourSegmentationDockWidget,
-                    SIGNAL( SaveAndVisuContour(vtkPolyData *) ),
-                    this,
-                    SLOT( SaveAndVisuContour(vtkPolyData *) ) );
-
-  QObject::connect( m_ContourSegmentationDockWidget,
-                    SIGNAL( ClearAllSeeds() ),
-                    m_ImageView,
-                    SLOT( ClearAllSeeds() ) );
-
-  // signals for the automatic segmentation
-  // ...
-
-  // intialize the widget
-  m_ContourSegmentationDockWidget->Initialize();*/
 }
 
 //-------------------------------------------------------------------------
@@ -510,22 +463,6 @@ QGoTabImageView3DwT::CreateMeshEditingDockWidget(int iTimeMin, int iTimeMax)
 
   this->CreateConnectionsTraceEditingWidget<QGoMeshEditingWidgetManager>(
     iTimeMin, iTimeMax, this->m_MeshEditingWidget);
-  /*
-  QObject::connect(this->m_MeshEditingWidget,
-                   SIGNAL(ClearAllSeeds() ),
-                   this->m_ImageView,
-                   SLOT(ClearAllSeeds() ) ); now on the template method
-
-  m_DockWidgetList.push_back(
-    std::pair< QGoDockWidgetStatus *, QDockWidget * >(
-      new QGoDockWidgetStatus(
-        this->m_MeshEditingWidget->GetDockWidget(), Qt::LeftDockWidgetArea, false, true),
-        this->m_MeshEditingWidget->GetDockWidget()) );
-
-  QObject::connect( this->m_MeshEditingWidget,
-                    SIGNAL( SetSeedInteractorBehaviour(bool) ),
-                    this,
-                    SLOT( SeedInteractorBehavior(bool) ) );*/
 
   QObject::connect( this->m_MeshEditingWidget,
                     SIGNAL(TracesCreatedFromAlgo(std::vector<vtkPolyData *>, int) ),
@@ -562,51 +499,6 @@ QGoTabImageView3DwT::CreateMeshEditingDockWidget(int iTimeMin, int iTimeMax)
                     SIGNAL( RequestedPolydatas(std::list< vtkPolyData* >) ),
                     this->m_MeshEditingWidget,
                     SLOT( RequestedPolydatas(std::list< vtkPolyData* >) ) );
-
-
-  /*QObject::connect( m_MeshSegmentationDockWidget,
-                    SIGNAL( ReinitializeInteractorActivated(bool) ),
-                    this,
-                    SLOT( DefaultInteractorBehavior(bool) ) ); seems useless for now
-    as we are in defaultmode as soon as the seedinteractorbehaviour is called
-
-
-  // we need seeds for the manual mesh segmentation
-  QObject::connect( m_MeshSegmentationDockWidget,
-                    SIGNAL( ManualSegmentationActivated(bool) ),
-                    this,
-                    SLOT( SeedInteractorBehavior(bool) ) );
-
-  QObject::connect( m_MeshSegmentationDockWidget,
-                    SIGNAL( SemiAutoSegmentationActivated(bool) ),
-                    this,
-                    SLOT( SeedInteractorBehavior(bool) ) );
-
-  QObject::connect( m_MeshSegmentationDockWidget,
-                    SIGNAL( AutoSegmentationActivated(bool) ),
-                    this,
-                    SLOT( DefaultInteractorBehavior(bool) ) );
-
-  // signals for manual segmentation
-  QObject::connect( m_MeshSegmentationDockWidget,
-                    SIGNAL ( CreateCorrespondingMesh(int) ),
-                    this->m_DataBaseTables,
-                    SLOT ( SaveNewMeshForMeshToContours(int) ) );
-
-  QObject::connect( m_MeshSegmentationDockWidget,
-                    SIGNAL( AddContourForMeshToContours(vtkPolyData *) ),
-                    this,
-                    SLOT( AddContourForMeshToContours(vtkPolyData *) ) );
-
-  QObject::connect( m_MeshSegmentationDockWidget,
-                    SIGNAL( SaveAndVisuMesh(vtkPolyData *, int) ),
-                    this,
-                    SLOT( SaveAndVisuMeshFromSegmentation(vtkPolyData *, int) ) );
-
-  QObject::connect( m_MeshSegmentationDockWidget,
-                    SIGNAL( ClearAllSeeds() ),
-                    m_ImageView,
-                    SLOT( ClearAllSeeds() ) );*/
 }
 
 //-------------------------------------------------------------------------
@@ -654,7 +546,7 @@ QGoTabImageView3DwT::ZoomInteractorBehavior(bool iVisible)
 
 //-------------------------------------------------------------------------
 void
-QGoTabImageView3DwT::PanInteractorBehavior(bool iVisible)
+QGoTabImageView3DwT::TranslateInteractorBehavior(bool iVisible)
 {
   if ( iVisible )
     {
@@ -3132,6 +3024,7 @@ QMenu* iMenu, QToolBar* iToolBar)
   //Contour Editing
   QAction *ContourSegmentationAction =
     this->m_ContourEditingWidget->GetToggleViewAction();
+  ContourSegmentationAction->setShortcut(tr("2", "Contour Editing Mode"));
   ContourSegmentationAction->setParent(this);
   ContourSegmentationAction->setObjectName("ContourEditingMode");
 
@@ -3144,6 +3037,7 @@ QMenu* iMenu, QToolBar* iToolBar)
   //Mesh Editing
   QAction *MeshSegmentationAction =
     this->m_MeshEditingWidget->GetToggleViewAction();
+  MeshSegmentationAction->setShortcut(tr("3", "Mesh Editing Mode"));
 
   group->addAction(MeshSegmentationAction);
 
@@ -3161,10 +3055,6 @@ QMenu* iMenu, QToolBar* iToolBar)
   TracesToolBar->m_VectorAction.push_back(
     m_QGoLineageViewerWidget->toggleViewAction() );
 
-  //QObject::connect( ContourSegmentationAction,
-  //                  SIGNAL( toggled(bool) ),
-  //                  m_ContourSegmentationDockWidget,
-   //                 SLOT( interactorBehavior(bool) ) );
   QObject::connect( ContourSegmentationAction,
                     SIGNAL( toggled(bool) ),
                     m_ContourEditingWidget,
@@ -3175,10 +3065,6 @@ QMenu* iMenu, QToolBar* iToolBar)
                     this,
                     SLOT( SetTraceSettingsToolBarVisible(bool) ) );
 
-  //QObject::connect( MeshSegmentationAction,
-  //                  SIGNAL( toggled(bool) ),
-  //                  m_MeshSegmentationDockWidget,
-  //                  SLOT( interactorBehavior(bool) ) );
   QObject::connect( MeshSegmentationAction,
                     SIGNAL( toggled(bool) ),
                     m_MeshEditingWidget,
@@ -3260,6 +3146,7 @@ QGoTabImageView3DwT::CreateModeToolBar(QMenu* iMenu, QToolBar* iToolBar)
   //       Actor picking  mode       //
   //---------------------------------//
   QAction *ActorPickingAction = new QAction(tr("Object Picking"), this);
+  ActorPickingAction->setShortcut(tr("P", "Object Picking Mode"));
   ActorPickingAction->setCheckable(true);
   ActorPickingAction->setChecked(false);
 
@@ -3281,6 +3168,7 @@ QGoTabImageView3DwT::CreateModeToolBar(QMenu* iMenu, QToolBar* iToolBar)
   //       Box 3D picking  mode      //
   //---------------------------------//
   QAction *Box3DPickingAction = new QAction(tr("Show/hide objects using Box"), this);
+  Box3DPickingAction->setShortcut(tr("B", "Box Widget Mode"));
   Box3DPickingAction->setCheckable(true);
   Box3DPickingAction->setChecked(false);
 
@@ -3327,7 +3215,6 @@ QGoTabImageView3DwT::CreateModeToolBar(QMenu* iMenu, QToolBar* iToolBar)
   //         Distance    mode        //
   //---------------------------------//
   QAction *DistanceAction = new QAction(tr("Measure a Distance"), this);
-
   DistanceAction->setCheckable(true);
   DistanceAction->setChecked(false);
 
@@ -3581,4 +3468,49 @@ PolydatasRequested(){
   std::list< vtkPolyData* > elements =
       this->m_MeshContainer-> GetHighlightedElements();
   emit RequestedPolydatas(elements);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+SetUpShortcuts(){
+  // move to next time point
+  (void)new QShortcut(
+      QKeySequence(
+          tr("Ctrl+C", "Next Time Point")),
+      this, SLOT(MoveToNextTimePoint()));
+  (void)new QShortcut(
+      QKeySequence(
+          tr("Right Arrow", "Next Time Point")),
+      this, SLOT(MoveToNextTimePoint()));
+
+  // move to previous time point
+  (void)new QShortcut(
+      QKeySequence(
+          tr("Ctrl+Z", "Previous Time Point")),
+      this, SLOT(MoveToPreviousTimePoint()));
+  (void)new QShortcut(
+      QKeySequence(
+          tr("Left Arrow", "Next Time Point")),
+      this, SLOT(MoveToPreviousTimePoint()));
+
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+MoveToNextTimePoint()
+{
+  m_NavigationDockWidget->MoveToNextTimePoint();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+MoveToPreviousTimePoint()
+{
+  m_NavigationDockWidget->MoveToPreviousTimePoint();
 }
