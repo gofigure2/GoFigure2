@@ -44,7 +44,6 @@
 #include <QCloseEvent>
 #include <QPixmap>
 #include <QStatusBar>
-#include <QSettings>
 
 #include <iostream>
 
@@ -225,8 +224,6 @@ void QGoPrintDatabase::FillTableFromDatabase(const int& iThreshold)
           this->m_DatabaseConnector,
           this->m_ImgSessionID,
           "mesh");
-
-  std::cout << "number of traces:    " << nbOfTraces << std::endl;
 
   // if there are more than 5 thousands meshes, only load 3 time points in
   // memory
@@ -1213,8 +1210,10 @@ void QGoPrintDatabase::GetContentAndDisplayAllTracesInfoFor3TPs(
     {
     m_VisibleTimePoints.push_back(*this->m_SelectedTimePoint-1);
     }
+  
   m_VisibleTimePoints.push_back(*this->m_SelectedTimePoint);
   m_VisibleTimePoints.push_back(*this->m_SelectedTimePoint+1);
+
   this->m_ContoursManager->
     DisplayInfoAndLoadVisuContainerForAllContoursForSpecificTPs(iDatabaseConnector,
     m_VisibleTimePoints);
@@ -1993,7 +1992,7 @@ UpdateTableWidgetAndContainersForGivenTimePoint(
 {
   this->OpenDBConnection();
 
-  if(this->m_VisibleTimePoints.size() == 3)
+  if(this->m_VisibleTimePoints.size() > 0)
     {
     // list to be removed
     std::list<unsigned int> listToRemove;
