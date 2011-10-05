@@ -1745,7 +1745,8 @@ QGoTabImageView3DwT::SetTimePoint(const int & iTimePoint)
   // clean table widget and container
   // then load new traces in TW and put polydatas in container
   std::list<unsigned int> timePoints =
-          this->m_DataBaseTables->UpdateTableWidgetAndContainersForGivenTimePoint(
+          this->m_DataBaseTables->
+          UpdateTableWidgetAndContainersForGivenTimePoint(
           m_TCoord);
 
   // create actors
@@ -3369,6 +3370,28 @@ EnableVolumeRendering(bool iEnable)
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
+CreateContoursActorsFromVisuContainer()
+{
+  //check mode from print db
+  std::list<unsigned int> tp = m_DataBaseTables->GetVisibleTimePoints();
+
+  // load all tp
+  if(tp.size() == 0)
+    {
+    unsigned int* time = m_ImageProcessor->getBoundsTime();
+    for(unsigned int i = time[0]; i<time[1]+1; i++)
+      {
+      tp.push_back(i);
+      }
+    }
+
+  CreateContoursActorsFromVisuContainer(tp);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
 CreateContoursActorsFromVisuContainer(std::list<unsigned int> iTPointToLoad)
 {
   if ( this->m_ContourContainer )
@@ -3403,6 +3426,28 @@ CreateContoursActorsFromVisuContainer(std::list<unsigned int> iTPointToLoad)
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
+CreateMeshesActorsFromVisuContainer()
+{
+  //check mode from print db
+  std::list<unsigned int> tp = m_DataBaseTables->GetVisibleTimePoints();
+
+  // load all tp
+  if(tp.size() == 0)
+    {
+    unsigned int* time = m_ImageProcessor->getBoundsTime();
+    for(unsigned int i = time[0]; i<time[1]+1; i++)
+      {
+      tp.push_back(i);
+      }
+    }
+
+  CreateMeshesActorsFromVisuContainer(tp);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
 CreateMeshesActorsFromVisuContainer(std::list<unsigned int> iTPointToLoad)
 {
   if( this->m_MeshContainer)
@@ -3416,20 +3461,24 @@ CreateMeshesActorsFromVisuContainer(std::list<unsigned int> iTPointToLoad)
         //progress.setValue( nb_meshes );
 
       std::list<unsigned int>::iterator it = iTPointToLoad.begin();
+
       while(it != iTPointToLoad.end())
         {
         MeshContainer::MultiIndexContainerType::index< TCoord >::type::iterator
           mesh_list_it = this->m_MeshContainer->m_Container.get< TCoord >().find(*it);
 
-        MeshContainer::MultiIndexContainerType::index< TCoord >::type::iterator
-          mesh_list_end = this->m_MeshContainer->m_Container.get< TCoord >().end();
+        /*MeshContainer::MultiIndexContainerType::index< TCoord >::type::iterator
+          mesh_list_end = this->m_MeshContainer->m_Container.get< TCoord >().end();*/
 
         // we don't need here to save this contour in the database,
         // since they have just been extracted from it!
-        while ( mesh_list_it != mesh_list_end )
+        int i = 0;
+        //while ( mesh_list_it != mesh_list_end )
+        while ( mesh_list_it->TCoord == *it )
           {
           if ( mesh_list_it->Nodes )
             {
+            // bug here, don't use TCoord
             GoFigureMeshAttributes attributes =
               this->ComputeMeshAttributes(
                 mesh_list_it->Nodes, // mesh
@@ -3441,6 +3490,7 @@ CreateMeshesActorsFromVisuContainer(std::list<unsigned int> iTPointToLoad)
             }
           this->AddMeshFromNodes< TCoord >(mesh_list_it);
           ++mesh_list_it;
+          ++i;
           }
         ++it;
         }

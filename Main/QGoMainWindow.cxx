@@ -442,11 +442,7 @@ QGoMainWindow::LoadContoursFromDatabase(const int & iT)
 
   if ( w3t )
     {
-    std::list<unsigned int> timePoints;
-    timePoints.push_back(iT);
-    timePoints.push_back(iT+1);
-    timePoints.push_back(iT+2);
-    w3t->CreateContoursActorsFromVisuContainer(timePoints);
+    w3t->CreateContoursActorsFromVisuContainer();
     }
 }
 
@@ -461,11 +457,7 @@ QGoMainWindow::LoadMeshesFromDatabase(const int & iT)
 
   if ( w3t )
     {
-    std::list<unsigned int> timePoints;
-    timePoints.push_back(iT);
-    timePoints.push_back(iT+1);
-    timePoints.push_back(iT+2);
-    w3t->CreateMeshesActorsFromVisuContainer(timePoints);
+    w3t->CreateMeshesActorsFromVisuContainer();
     }
 }
 

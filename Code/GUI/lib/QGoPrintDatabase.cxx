@@ -225,7 +225,7 @@ void QGoPrintDatabase::FillTableFromDatabase(const int& iThreshold)
           this->m_ImgSessionID,
           "mesh");
 
-  // if there are more than 5 thousands meshes, only load 3 time points in
+  // if there are more than 5000 meshes, only load 3 time points in
   // memory
   if(nbOfTraces > iThreshold)
     {
@@ -1192,7 +1192,8 @@ void QGoPrintDatabase::GetContentAndDisplayAllTracesInfo(
     iDatabaseConnector);
   this->m_TracksManager->DisplayInfoAndLoadVisuContainerForAllTracks(
     iDatabaseConnector);
-  this->m_TracksManager->LoadInfoVisuContainerForTrackFamilies(iDatabaseConnector);
+  this->m_TracksManager->DisplayInfoAndLoadVisuContainerForAllTracks(
+    iDatabaseConnector);
   this->m_LineagesManager->DisplayInfoAndLoadVisuContainerForAllLineages(
     iDatabaseConnector);
 }
@@ -1215,23 +1216,16 @@ void QGoPrintDatabase::GetContentAndDisplayAllTracesInfoFor3TPs(
   m_VisibleTimePoints.push_back(*this->m_SelectedTimePoint+1);
 
   this->m_ContoursManager->
-    DisplayInfoAndLoadVisuContainerForAllContoursForSpecificTPs(iDatabaseConnector,
+    DisplayInfoAndLoadVisuContainerForAllContoursForSpecificTPs(
+    iDatabaseConnector,
     m_VisibleTimePoints);
   this->m_MeshesManager->
     DisplayInfoAndLoadVisuContainerForAllMeshesForSpecificTPs(iDatabaseConnector,
     m_VisibleTimePoints);
-
-  this->m_TracksManager->DisplayInfoAndLoadVisuContainerForAllTracks(iDatabaseConnector);
-  this->m_LineagesManager->DisplayInfoAndLoadVisuContainerForAllLineages(iDatabaseConnector);
-}
-
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void QGoPrintDatabase::AddTracesForSelectedTimePoints(
-  vtkMySQLDatabase *iDatabaseConnector, std::list<unsigned int> iListTimePoints)
-{
-
+  this->m_TracksManager->DisplayInfoAndLoadVisuContainerForAllTracks(
+    iDatabaseConnector);
+  this->m_LineagesManager->DisplayInfoAndLoadVisuContainerForAllLineages(
+    iDatabaseConnector);
 }
 
 //-------------------------------------------------------------------------
@@ -1994,6 +1988,7 @@ UpdateTableWidgetAndContainersForGivenTimePoint(
 
   if(this->m_VisibleTimePoints.size() > 0)
     {
+     std::cout << "in if " << std::endl;
     // list to be removed
     std::list<unsigned int> listToRemove;
     listToRemove = m_VisibleTimePoints;
@@ -2071,8 +2066,15 @@ UpdateTableWidgetAndContainersForGivenTimePoint(
     return listToAdd;
   }
 
-  std::list<unsigned int> listToAdd(0);
-  return listToAdd;
+  return this->m_VisibleTimePoints;
 
 }
 //--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+std::list<unsigned int>
+QGoPrintDatabase::
+GetVisibleTimePoints()
+{
+  return m_VisibleTimePoints;
+}

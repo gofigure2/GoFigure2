@@ -253,6 +253,8 @@ public:
   void CreateContoursActorsFromVisuContainer(
           std::list<unsigned int> iTPointToLoad);
 
+  void CreateContoursActorsFromVisuContainer();
+
   /**
     \brief Creates actors for the meshes which are at the given time points
     in the container. The actors are not visible by default. (see ShowTraces)
@@ -260,6 +262,8 @@ public:
     */
   void CreateMeshesActorsFromVisuContainer(
           std::list<unsigned int> iTPointToLoad);
+
+  void CreateMeshesActorsFromVisuContainer();
 
   /**
     \brief Show traces from container which are at the given time point.
