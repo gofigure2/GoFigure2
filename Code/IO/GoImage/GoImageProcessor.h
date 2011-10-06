@@ -167,7 +167,7 @@ public:
   GoImageProcessor( const GoImageProcessor& iE );
 
   /** Destructor */
-  ~GoImageProcessor();
+  virtual ~GoImageProcessor();
   
   /** Printing one element. std::cout << element << std::endl; */
   friend std::ostream & operator<<

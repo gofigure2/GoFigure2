@@ -131,7 +131,7 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
   m_ZTileCoord(0),
   m_TCoord(-1),
   m_MeshEditingWidget(NULL),
-  m_Seeds( 3, NULL )
+  m_Seeds( 3 )
   //m_TraceWidgetRequiered(false)
 {
   //m_Image = vtkImageData::New();
@@ -2551,7 +2551,7 @@ QGoTabImageView3DwT::SplitInDBAndRenderMeshForVisu(
 
   if( iVectPolydata.size() > 1)
     {
-    for(int i=1; i<iVectPolydata.size(); ++i)
+    for(size_t i=1; i<iVectPolydata.size(); ++i)
       SaveAndVisuMesh(iVectPolydata[i], tCoord.front(), 0);
     }
   
@@ -2852,39 +2852,42 @@ QGoTabImageView3DwT::CreateMeshFromSelectedContours(
   int iMeshID)
 {
   /// \todo Bug iMeshID is not the one it is supposed to be
-  std::list< unsigned int >::iterator contourid_it = iListContourIDs.begin();
+  std::list< unsigned int >::const_iterator contourid_it  = iListContourIDs.begin();
+  std::list< unsigned int >::const_iterator contourid_end = iListContourIDs.end();
 
   std::vector< vtkPolyData * > list_contours;
 
   // get the time point
   unsigned int tcoord = std::numeric_limits< unsigned int >::max();
 
-  while ( contourid_it != iListContourIDs.end() )
+  while ( contourid_it != contourid_end )
     {
-    ContourMeshContainer::MultiIndexContainerTraceIDIterator
-      traceid_it = m_ContourContainer->m_Container.get< TraceID >().find(*contourid_it);
+    ContourMeshContainer::MultiIndexContainerTraceIDIterator it0, it1;
 
-    if ( traceid_it != m_ContourContainer->m_Container.get< TraceID >().end() )
+    boost::tuples::tie(it0, it1) =
+      m_ContourContainer->m_Container.get< TraceID >().equal_range(*contourid_it);
+
+    if ( it0 != it1 )
       {
       if ( tcoord == std::numeric_limits< unsigned int >::max() )
         {
-        tcoord = traceid_it->TCoord;
+        tcoord = it0->TCoord;
         }
       else
         {
-        if ( traceid_it->TCoord != tcoord )
+        if ( it0->TCoord != tcoord )
           {
           QMessageBox::warning(
                 NULL,
                 tr("Generate Mesh From Checked Contours"),
-                tr("Selected contours are at different time point: %1 != %2").arg(tcoord).arg( traceid_it->TCoord) );
+                tr("Selected contours are at different time point: %1 != %2").arg(tcoord).arg( it0->TCoord) );
           return;
           }
         }
 
       list_contours.push_back(
         vtkPolyData::SafeDownCast(
-          traceid_it->ActorXYZ->GetMapper()->GetInput() ) );
+          it0->ActorXYZ->GetMapper()->GetInput() ) );
       }
     ++contourid_it;
     }
@@ -3394,27 +3397,30 @@ void
 QGoTabImageView3DwT::
 CreateContoursActorsFromVisuContainer(std::list<unsigned int> iTPointToLoad)
 {
+  typedef ContourContainer::MultiIndexContainerType::index< TCoord >::type::iterator 
+    ContourContainerTCoordIterator;
+
   if ( this->m_ContourContainer )
     {
     // load everything if no list given
-    if ( iTPointToLoad.size() != 0)
+    if ( !iTPointToLoad.empty() )
       {
-      std::list<unsigned int>::iterator it = iTPointToLoad.begin();
-      while(it != iTPointToLoad.end())
-        {
-        // let's iterate on the container with increasing TraceID
-        ContourContainer::MultiIndexContainerType::index< TCoord >::type::iterator
-        contour_list_it = this->m_ContourContainer->m_Container.get< TCoord >().find(*it);
+      std::list<unsigned int>::const_iterator it  = iTPointToLoad.begin();
+      std::list<unsigned int>::const_iterator end = iTPointToLoad.end();
 
-        ContourContainer::MultiIndexContainerType::index< TCoord >::type::iterator
-        contour_list_end = this->m_ContourContainer->m_Container.get< TCoord >().end();
+      while(it != end)
+        {
+        ContourContainerTCoordIterator it0, it1;
+        // let's iterate on the container with increasing TraceID
+        boost::tuples::tie(it0, it1) 
+          = this->m_ContourContainer->m_Container.get< TCoord >().equal_range(*it);
 
         // we don't need here to save this contour in the database,
         // since they have just been extracted from it!
-        while ( contour_list_it != contour_list_end )
+        while ( it0 != it1 )
           {
-          this->AddContourFromNodes< TCoord >( contour_list_it );
-          ++contour_list_it;
+          this->AddContourFromNodes< TCoord >( it0 );
+          ++it0;
           }
         ++it;
         }
@@ -3432,7 +3438,7 @@ CreateMeshesActorsFromVisuContainer()
   std::list<unsigned int> tp = m_DataBaseTables->GetVisibleTimePoints();
 
   // load all tp
-  if(tp.size() == 0)
+  if( tp.empty() )
     {
     unsigned int* time = m_ImageProcessor->getBoundsTime();
     for(unsigned int i = time[0]; i<time[1]+1; i++)
@@ -3450,49 +3456,50 @@ void
 QGoTabImageView3DwT::
 CreateMeshesActorsFromVisuContainer(std::list<unsigned int> iTPointToLoad)
 {
+  typedef MeshContainer::MultiIndexContainerType::index< TCoord >::type::iterator
+    MeshContainerTCoordIterator;
+
   if( this->m_MeshContainer)
     {
     // load everything if no list given
-    if ( iTPointToLoad.size() != 0)
+    if ( !iTPointToLoad.empty() )
       {
-      //QProgressDialog progress( "Loading Meshes...", QString(), 0, nb_meshes );
-        //progress.setValue( i );
-        //++i;
-        //progress.setValue( nb_meshes );
+      QProgressDialog progress( "Loading Meshes...", QString(), 0, iTPointToLoad.size() );
+      size_t i = 0;
+      progress.setValue( i );
 
-      std::list<unsigned int>::iterator it = iTPointToLoad.begin();
+      std::list<unsigned int>::const_iterator it = iTPointToLoad.begin();
+      std::list<unsigned int>::const_iterator end = iTPointToLoad.end();
 
-      while(it != iTPointToLoad.end())
+      while( it != end )
         {
-        MeshContainer::MultiIndexContainerType::index< TCoord >::type::iterator
-          mesh_list_it = this->m_MeshContainer->m_Container.get< TCoord >().find(*it);
+        MeshContainerTCoordIterator it0, it1;
 
-        /*MeshContainer::MultiIndexContainerType::index< TCoord >::type::iterator
-          mesh_list_end = this->m_MeshContainer->m_Container.get< TCoord >().end();*/
+        boost::tuples::tie(it0, it1) =
+          this->m_MeshContainer->m_Container.get< TCoord >().equal_range(*it);
 
         // we don't need here to save this contour in the database,
         // since they have just been extracted from it!
-        int i = 0;
-        //while ( mesh_list_it != mesh_list_end )
-        while ( mesh_list_it->TCoord == *it )
+        while ( it0 != it1 )
           {
-          if ( mesh_list_it->Nodes )
+          if ( it0->Nodes )
             {
             // bug here, don't use TCoord
             GoFigureMeshAttributes attributes =
               this->ComputeMeshAttributes(
-                mesh_list_it->Nodes, // mesh
+                it0->Nodes, // mesh
                 false, // do not need to compute intensity based measure
-                mesh_list_it->TCoord
+                it0->TCoord
                 );
             this->m_DataBaseTables->PrintVolumeAreaForMesh(
-              &attributes, mesh_list_it->TraceID);
+              &attributes, it0->TraceID);
             }
-          this->AddMeshFromNodes< TCoord >(mesh_list_it);
-          ++mesh_list_it;
-          ++i;
+          this->AddMeshFromNodes< TCoord >( it0 );
+          ++it0;
           }
         ++it;
+        ++i;
+        progress.setValue( i );
         }
       }
     }
