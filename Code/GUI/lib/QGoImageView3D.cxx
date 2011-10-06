@@ -315,9 +315,9 @@ QGoImageView3D::Update()
     }
 
   //Print plane actors....!
-  std::vector<vtkProp3D *> actors = m_Pool->GetPlanesActors();
-  for(int i = 0; i<6; i++)
-    std::cout << "p: " << i << " -> " << actors[i] << std::endl;
+ // std::vector<vtkProp3D *> actors = m_Pool->GetPlanesActors();
+ // for(int i = 0; i<12; i++)
+ //   std::cout << "p: " << i << " -> " << actors[i] << std::endl;
 
 
   QGoImageView::Update();

@@ -127,16 +127,13 @@ vtkViewImage2DCollection::~vtkViewImage2DCollection()
 {
   this->Command->Delete();
 
-  std::vector< vtkProp3D * >::iterator it = PlanesActors.begin();
-  std::vector< vtkProp3D * >::iterator tmp;
-  while(it!=PlanesActors.end())
-    {
-    // necessary trick on windows
-    tmp = it;
-    ++it;
-    (*tmp)->Delete();
-    }
 
+  int n = this->GetNumberOfItems();
+
+  for ( int i = 0; i < n*n; i++ )
+    {
+    PlanesActors[i]->Delete();
+    }
 }
 
 //----------------------------------------------------------------------------
@@ -223,12 +220,16 @@ void vtkViewImage2DCollection::Initialize()
     {
     for ( int j = 0; j < n; j++ )
       {
-//       vtkQuadricLODActor* temp =
       vtkActor *temp =  this->GetItem(j)->AddDataSet(
           this->GetItem(i)->GetSlicePlane(), plane_property, ( i != j ), true);
       //store all slice actors
       this->PlanesActors.push_back(dynamic_cast<vtkProp3D*>(temp));
       }
+    }
+
+  for ( int i = 0; i < n; i++ )
+    {
+    //store image actors
     this->PlanesActors.push_back(
         dynamic_cast<vtkProp3D*>(this->GetItem(i)->GetImageActor()));
     }
