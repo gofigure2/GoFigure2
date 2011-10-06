@@ -258,7 +258,7 @@ vtkInteractorStyleImage3D::OnChar()
             // make sure we don't modify the planes actors
             if ( path != NULL )
               {
-              std::vector< vtkActor * >::iterator it2 = m_PlanesActors.begin();
+              std::vector< vtkProp3D * >::iterator it2 = m_PlanesActors.begin();
               while(it2!=m_PlanesActors.end())
                 {
                 if(path && dynamic_cast<vtkProp*>(*it2) == path->GetLastNode()->GetViewProp())
@@ -304,7 +304,7 @@ vtkInteractorStyleImage3D::OnChar()
             // make sure we don't modify the planes actors
             if ( path != NULL )
               {
-              std::vector< vtkActor * >::iterator it2 = m_PlanesActors.begin();
+              std::vector< vtkProp3D * >::iterator it2 = m_PlanesActors.begin();
               while(it2!=m_PlanesActors.end())
                 {
                 if(path && dynamic_cast<vtkProp*>(*it2) == path->GetLastNode()->GetViewProp())
@@ -400,7 +400,7 @@ vtkInteractorStyleImage3D::HighlightCurrentActor()
     // check if item does does not belong to phantom[]
     if ( path != NULL )
       {
-      std::vector< vtkActor * >::iterator it2 = m_PlanesActors.begin();
+      std::vector< vtkProp3D * >::iterator it2 = m_PlanesActors.begin();
       while(it2!=m_PlanesActors.end())
         {
         if(path && dynamic_cast<vtkProp*>(*it2) == path->GetFirstNode()->GetViewProp())
@@ -460,7 +460,7 @@ vtkInteractorStyleImage3D::EnableDefaultMode()
 //----------------------------------------------------------------------------
 void
 vtkInteractorStyleImage3D::
-SetPlanesActors( std::vector< vtkActor * > iBounds)
+SetPlanesActors( std::vector< vtkProp3D * > iBounds)
 {
   this->m_PlanesActors = iBounds;
 }

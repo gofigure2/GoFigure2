@@ -376,7 +376,7 @@ public:
   /**
    * \brief Get the plane actors
    */
-  std::vector< vtkActor * > GetPlanesActors();
+  std::vector< vtkProp3D * > GetPlanesActors();
 
 protected:
 
@@ -386,7 +386,7 @@ protected:
   vtkViewImage2DCollectionCommand *Command;
   vtkRenderWindow *                ExtraRenderWindow;
 
-  std::vector< vtkActor * > PlanesActors;
+  std::vector< vtkProp3D * > PlanesActors;
 
   unsigned int LinkSliceMove;
   unsigned int LinkColorWindowLevel;
