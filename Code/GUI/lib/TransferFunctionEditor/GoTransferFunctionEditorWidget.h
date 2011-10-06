@@ -78,10 +78,17 @@
 
 #include "QGoGUILibConfigure.h"
 
-#include <QtGui>
+#include <QWidget>
+#include <QBrush>
+
+#include <vector>
+#include <map>
 
 class HoverPoints;
 class GoTransferFunctionWidget;
+
+class QPolygonF;
+class QTextStream;
 
 //vtk
 class vtkLookupTable;

@@ -90,6 +90,7 @@
 #include <QVBoxLayout>
 #include <QColorDialog>
 #include <QInputDialog>
+#include <QProgressDialog>
 
 #include "vtkBox.h"
 #include "vtkClipPolyData.h"
