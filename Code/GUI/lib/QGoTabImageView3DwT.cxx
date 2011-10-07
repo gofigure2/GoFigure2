@@ -3394,6 +3394,7 @@ createTransferFunctionEditor(QString iName)
         m_ImageProcessor->getOpacityTransferFunction(iName.toStdString()));
   // add histogram - should not recalculate all the time...
   editor->AddHistogram(m_ImageProcessor->getHistogram(iName.toStdString()));
+  editor->hide();
 
   //editor->setParent(m_TransferFunctionDockWidget);
   m_TransferFunctionDockWidget->AddTransferFunction(iName, editor);

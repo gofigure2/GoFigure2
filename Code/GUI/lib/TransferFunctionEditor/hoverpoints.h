@@ -171,6 +171,8 @@ private:
     QPen m_pointPen;
     QBrush m_pointBrush;
     QPen m_connectionPen;
+
+    double m_oldSize[2];
 };
 
 

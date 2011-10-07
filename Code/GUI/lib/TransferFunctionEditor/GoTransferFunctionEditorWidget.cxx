@@ -300,12 +300,7 @@ AddPoints( const std::map< unsigned int, unsigned int>& iAlpha)
   // should be sth else
   computePointsFromMap(iAlpha, redPoints);
   m_red_shade->AddGammaPoints(redPoints);
-
-  QPolygonF alphaPoints;
-  // add alpha points
-  computePointsFromMap(iAlpha, alphaPoints);
-  m_red_shade->AddPoints(alphaPoints);
-  //enableHoverPoints();
+  m_red_shade->AddPoints(redPoints);
 
   // update histogram and alpha gradient
   pointsUpdated();

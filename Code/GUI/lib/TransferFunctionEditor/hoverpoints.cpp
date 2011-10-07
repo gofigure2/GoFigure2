@@ -88,6 +88,8 @@ HoverPoints::HoverPoints(QWidget *widget, PointShape shape)
     widget->installEventFilter(this);
     widget->setAttribute(Qt::WA_AcceptTouchEvents);
 
+    m_oldSize[0] = -1;
+    m_oldSize[1] = -1;
     m_connectionType = CurveConnection;
     m_sortType = NoSort;
     m_shape = shape;
@@ -118,11 +120,6 @@ void HoverPoints::setEnabled(bool enabled)
 bool HoverPoints::eventFilter(QObject *object, QEvent *event)
 {
     if (object == m_widget) {
-      qDebug() << "update hover points event" ;
-      qDebug() << "event: " << event;
-      qDebug() << "m_editable: " << m_editable;
-      qDebug() << "m_enabled: " << m_enabled;
-
         switch (event->type()) {
 
         case QEvent::MouseButtonPress:
@@ -295,14 +292,19 @@ bool HoverPoints::eventFilter(QObject *object, QEvent *event)
         case QEvent::Resize:
         {
             QResizeEvent *e = (QResizeEvent *) event;
-            if (e->oldSize().width() == 0 || e->oldSize().height() == 0)
+            if (m_oldSize[0] == 0 || m_oldSize[1] == 0)
                 break;
-            qreal stretch_x = e->size().width() / qreal(e->oldSize().width());
-            qreal stretch_y = e->size().height() / qreal(e->oldSize().height());
+
+            qreal stretch_x = e->size().width() / qreal(m_oldSize[0]);
+            qreal stretch_y = e->size().height() / qreal(m_oldSize[1]);
+
             for (int i=0; i<m_points.size(); ++i) {
                 QPointF p = m_points[i];
                 movePoint(i, QPointF(p.x() * stretch_x, p.y() * stretch_y), false);
             }
+
+            this->m_oldSize[0] = e->size().width();
+            m_oldSize[1] = e->size().height();
             break;
         }
 
@@ -316,11 +318,6 @@ bool HoverPoints::eventFilter(QObject *object, QEvent *event)
             QApplication::sendEvent(object, event);
             m_widget = that_widget;
             paintPoints();
-#ifdef QT_OPENGL_SUPPORT
-            ArthurFrame *af = qobject_cast<ArthurFrame *>(that_widget);
-            if (af && af->usesOpenGL())
-                af->glWidget()->swapBuffers();
-#endif
             return true;
         }
         default:
@@ -334,47 +331,22 @@ bool HoverPoints::eventFilter(QObject *object, QEvent *event)
 
 void HoverPoints::paintPoints()
 {
-
-  qDebug() << "paint...";
     QPainter p;
-#ifdef QT_OPENGL_SUPPORT
-    ArthurFrame *af = qobject_cast<ArthurFrame *>(m_widget);
-    if (af && af->usesOpenGL())
-        p.begin(af->glWidget());
-    else
-        p.begin(m_widget);
-#else
     p.begin(m_widget);
-#endif
 
     p.setRenderHint(QPainter::Antialiasing);
 
-    if (m_connectionPen.style() != Qt::NoPen && m_connectionType != NoConnection) {
-        p.setPen(m_connectionPen);
-
-        if (m_connectionType == CurveConnection) {
-            QPainterPath path;
-            path.moveTo(m_points.at(0));
-            for (int i=1; i<m_points.size(); ++i) {
-                QPointF p1 = m_points.at(i-1);
-                QPointF p2 = m_points.at(i);
-                qreal distance = p2.x() - p1.x();
-
-                path.cubicTo(p1.x() + distance / 2, p1.y(),
-                             p1.x() + distance / 2, p2.y(),
-                             p2.x(), p2.y());
-            }
-            p.drawPath(path);
-        } else {
-            p.drawPolyline(m_points);
-        }
-    }
-
-    p.setPen(m_pointPen);
-    p.setBrush(m_pointBrush);
+    if (m_connectionPen.style() != Qt::NoPen && m_connectionType != NoConnection)
+      {
+      p.setPen(m_connectionPen);
+      p.drawPolyline(m_points);
+      }
 
     if(m_shape != CircleShape)
       return;
+
+    p.setPen(m_pointPen);
+    p.setBrush(m_pointBrush);
 
     for (int i=0; i<m_points.size(); ++i) {
         QRectF bounds = pointBoundingRect(i);
@@ -438,8 +410,6 @@ inline static bool y_less_than(const QPointF &p1, const QPointF &p2)
 
 void HoverPoints::firePointChange()
 {
-//    printf("HoverPoints::firePointChange(), current=%d\n", m_currentIndex);
-
     if (m_sortType != NoSort) {
 
         QPointF oldCurrent;
@@ -461,15 +431,7 @@ void HoverPoints::firePointChange()
                 }
             }
         }
-
-//         printf(" - firePointChange(), current=%d\n", m_currentIndex);
-
     }
-
-//     for (int i=0; i<m_points.size(); ++i) {
-//         printf(" - point(%2d)=[%.2f, %.2f], lock=%d\n",
-//                i, m_points.at(i).x(), m_points.at(i).y(), m_locks.at(i));
-//     }
 
     emit pointsChanged(m_points);
 }
