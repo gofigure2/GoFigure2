@@ -339,7 +339,7 @@ AddChannel(const QString& iName, const QColor& iColor, const unsigned int& iNumb
   QCheckBox *checkBox1 = new QCheckBox(iName, this);
   checkBox1->setObjectName(iName);
   checkBox1->setChecked(iChecked);
-  QString style = "border: 1px solid rgb(%1, %2, %3); background-color: rgba(%1, %2, %3, 100); border-radius: 4px;";
+  QString style = "border: 1px solid black; background-color: rgba(%1, %2, %3, 150); border-radius: 4px;";
   checkBox1->setStyleSheet(
         style.arg(iColor.red()).arg(iColor .green()).arg(iColor.blue()));
   QHBoxLayout *layout = new QHBoxLayout;
@@ -367,7 +367,7 @@ ModifyChannel(QString iName, QColor iColor)
     ++it2;
     }
 
-  QString style = "border: 1px solid rgb(%1, %2, %3); background-color: rgba(%1, %2, %3, 100); border-radius: 4px;";
+  QString style = "border: 1px solid black; background-color: rgba(%1, %2, %3, 150); border-radius: 4px;";
   (*it2)->setStyleSheet(
         style.arg(iColor.red()).arg(iColor .green()).arg(iColor.blue()));
 }

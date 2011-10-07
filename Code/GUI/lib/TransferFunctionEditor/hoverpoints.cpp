@@ -99,9 +99,13 @@ HoverPoints::HoverPoints(QWidget *widget, PointShape shape)
     m_pointSize = QSize(11, 11);
     m_currentIndex = -1;
     m_editable = true;
+    m_enabled = true;
 
-    if(shape != HoverPoints::CircleShape)
-      m_enabled = true;
+    if(shape == HoverPoints::CircleShape){
+      m_pointPen = QPen(QColor(0, 0, 0, 191), 1);
+      m_connectionPen = QPen(QColor(0, 0, 0, 127), 2);
+      m_enabled = false;
+    }
 
     connect(this, SIGNAL(pointsChanged(QPolygonF)),
             m_widget, SLOT(update()));

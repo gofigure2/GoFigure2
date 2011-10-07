@@ -192,20 +192,22 @@ GoTransferFunctionEditorWidget::GoTransferFunctionEditorWidget(QWidget *parent,
 
   QCheckBox* tfCB = new QCheckBox("Color Transfer Function");
   tfCB->setChecked(true);
-  QString style5 = "color: black; border: 1px solid rgb(255, 255, 255); background-color: rgba(255, 255, 255, 100); border-radius: 4px;";
+  QString style5 = "color: black; border: 1px solid rgb(0, 0, 0); background-color: rgba(255, 255, 255, 150); border-radius: 4px;";
   tfCB->setStyleSheet(style5);
 
   connect(tfCB, SIGNAL(clicked(bool)), m_red_shade, SIGNAL(enableGammaPoints(bool)));
 
   QCheckBox* tfoCB = new QCheckBox("Opacity Transfer Function");
   tfoCB->setChecked(false);
-  QString style2 = "color: white; border: 1px solid rgb(0, 0, 0); background-color: rgba(0, 0, 0, 100); border-radius: 4px;";
+  QString style2 = "color: white; border: 1px solid rgb(0, 0, 0); background-color: rgba(0, 0, 0, 150); border-radius: 4px;";
   tfoCB->setStyleSheet(style2);
   connect(tfoCB, SIGNAL(clicked(bool)), m_red_shade, SIGNAL(enableHoverPoints(bool)));
 
-  /*QCheckBox* histoCB = new QCheckBox("Show Log Histogram");
-  histoCB->setChecked(true);
-  histoCB->setEnabled(false);*/
+  QCheckBox* histogramCB = new QCheckBox("Log Histogram");
+  histogramCB->setChecked(true);
+  QString style3 = "border: 1px solid rgb(0, 0, 0); background-color: rgba(0, 0, 0, 0); border-radius: 4px;";
+  histogramCB->setStyleSheet(style3);
+  connect(histogramCB, SIGNAL(clicked(bool)), this, SIGNAL(showHistogram(bool)));
 
   QVBoxLayout* shadeVerticalLayout = new QVBoxLayout;
   shadeVerticalLayout->addWidget(m_MaxSlider);
@@ -228,6 +230,7 @@ GoTransferFunctionEditorWidget::GoTransferFunctionEditorWidget(QWidget *parent,
   vbox->addLayout(gammaLayout);
   vbox->addWidget(tfCB);
   vbox->addWidget(tfoCB);
+  vbox->addWidget(histogramCB);
   /*vbox->addWidget(histoCB);
   vbox->addLayout(lutLayout);
   vbox->addWidget(presetLUTPushButton);*/
@@ -368,6 +371,7 @@ AddHistogram(vtkImageAccumulate* iHistogram)
     histo.push_back(log(value)/log(range[1]));
     }
 
+  m_Histogram = histo;
   m_red_shade->SetHistogram(histo);
 }
 //-------------------------------------------------------------------------
@@ -673,5 +677,21 @@ setColor()
 
   // update LUT
   pointsUpdated();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+GoTransferFunctionEditorWidget::
+showHistogram(bool iEnable){
+  if(iEnable)
+    {
+    m_red_shade->SetHistogram(this->m_Histogram);
+    }
+  else
+    {
+    QVector<qreal> removeHisto;
+    m_red_shade->SetHistogram(removeHisto);
+    }
 }
 //-------------------------------------------------------------------------

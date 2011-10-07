@@ -122,6 +122,7 @@ public slots:
   void saveAll();
   // opacity TF
   void updateOpacityTF();
+  void showHistogram(bool iEnable);
 
 signals:
   void updateVisualization();
@@ -162,6 +163,9 @@ private:
 
   vtkLookupTable           *m_LUT;
   vtkPiecewiseFunction     *m_OpacityTF;
+
+  QVector<qreal>            m_Histogram;
+
 };
 
 #endif
