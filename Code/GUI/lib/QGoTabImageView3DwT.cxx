@@ -3460,15 +3460,15 @@ CreateMeshesActorsFromVisuContainer(std::list<unsigned int> iTPointToLoad)
   typedef MeshContainer::MultiIndexContainerType::index< TCoord >::type::iterator
     MeshContainerTCoordIterator;
 
+  int lastTP = m_ImageProcessor->getBoundsTime()[1];
+  std::stringstream lastTimePoint;
+  lastTimePoint << lastTP;
+
   if( this->m_MeshContainer)
     {
     // load everything if no list given
     if ( !iTPointToLoad.empty() )
       {
-      QProgressDialog progress( "Loading Meshes...", QString(), 0, iTPointToLoad.size() );
-      size_t i = 0;
-      progress.setValue( i );
-
       std::list<unsigned int>::const_iterator it = iTPointToLoad.begin();
       std::list<unsigned int>::const_iterator end = iTPointToLoad.end();
 
@@ -3479,7 +3479,20 @@ CreateMeshesActorsFromVisuContainer(std::list<unsigned int> iTPointToLoad)
         boost::tuples::tie(it0, it1) =
           this->m_MeshContainer->m_Container.get< TCoord >().equal_range(*it);
 
-        // we don't need here to save this contour in the database,
+        // progress bar
+        int size = this->m_DataBaseTables->
+                   GetNumberOfElementForTraceAndTimePoint("mesh", *it);
+        std::stringstream time;
+        time << *it;
+
+        QProgressDialog progress( QString::fromStdString("Loading Meshes from T=" + time.str() +"/" + lastTimePoint.str()),
+                                  QString(),
+                                  0,
+                                  size);
+        size_t i = 0;
+        progress.setValue( i );
+
+        // we don't need here to save this mesh in the database,
         // since they have just been extracted from it!
         while ( it0 != it1 )
           {
@@ -3497,10 +3510,13 @@ CreateMeshesActorsFromVisuContainer(std::list<unsigned int> iTPointToLoad)
             }
           this->AddMeshFromNodes< TCoord >( it0 );
           ++it0;
+
+          ++i;
+          progress.setValue( i );
           }
+
+        progress.setValue(size);
         ++it;
-        ++i;
-        progress.setValue( i );
         }
       }
     }

@@ -2078,3 +2078,19 @@ GetVisibleTimePoints()
 {
   return m_VisibleTimePoints;
 }
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+int
+QGoPrintDatabase::
+GetNumberOfElementForTraceAndTimePoint(std::string iTrace, int iTimePoint)
+{
+  this->OpenDBConnection();
+  int test = NumberOfElementForGivenImagingSessionAndTraceForGivenTimePoint(
+      this->m_DatabaseConnector,
+      this->m_ImgSessionID,
+      iTrace,
+      iTimePoint);
+  this->CloseDBConnection();
+  return test;
+}

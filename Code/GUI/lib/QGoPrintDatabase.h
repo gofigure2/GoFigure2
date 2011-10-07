@@ -281,6 +281,8 @@ public:
 
   std::list<unsigned int> GetVisibleTimePoints();
 
+  int GetNumberOfElementForTraceAndTimePoint(std::string iTrace, int iTimePoint);
+
 public slots:
   void DeleteBookmarks();
 
