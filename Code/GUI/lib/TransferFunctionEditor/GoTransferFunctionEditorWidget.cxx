@@ -207,7 +207,7 @@ GoTransferFunctionEditorWidget::GoTransferFunctionEditorWidget(QWidget *parent,
   histogramCB->setChecked(true);
   QString style3 = "border: 1px solid rgb(0, 0, 0); background-color: rgba(0, 0, 0, 0); border-radius: 4px;";
   histogramCB->setStyleSheet(style3);
-  connect(histogramCB, SIGNAL(clicked(bool)), this, SIGNAL(showHistogram(bool)));
+  connect(histogramCB, SIGNAL(clicked(bool)), this, SLOT(showHistogram(bool)));
 
   QVBoxLayout* shadeVerticalLayout = new QVBoxLayout;
   shadeVerticalLayout->addWidget(m_MaxSlider);
@@ -684,6 +684,7 @@ setColor()
 void
 GoTransferFunctionEditorWidget::
 showHistogram(bool iEnable){
+
   if(iEnable)
     {
     m_red_shade->SetHistogram(this->m_Histogram);
@@ -693,5 +694,7 @@ showHistogram(bool iEnable){
     QVector<qreal> removeHisto;
     m_red_shade->SetHistogram(removeHisto);
     }
+  // or update?
+  m_red_shade->repaint();
 }
 //-------------------------------------------------------------------------

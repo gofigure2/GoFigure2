@@ -102,7 +102,7 @@ HoverPoints::HoverPoints(QWidget *widget, PointShape shape)
     m_enabled = true;
 
     if(shape == HoverPoints::CircleShape){
-      m_pointPen = QPen(QColor(0, 0, 0, 191), 1);
+      m_pointPen = QPen(QColor(50, 50, 50, 191), 1);
       m_connectionPen = QPen(QColor(0, 0, 0, 127), 2);
       m_enabled = false;
     }
