@@ -396,7 +396,7 @@ protected:
   /**
   \brief get the rgba values from the iTWRowContainer and display them in the
   column NameGroupColorID
-  \param[in] iTWRowContainer contains the data to be displayed 
+  \param[in] iTWRowContainer contains the data to be displayed
   \param[in] iIndexColorRowContainer index of the iTWRowContainer to find the
   rgba values
   \param[in] iNameGroupColor name of the trace for which the color needs to
@@ -429,7 +429,7 @@ protected:
 
   void DisplayDataForOneRow(TWContainerType iTWRowContainer,
                             unsigned int iIndexTWRowContainer,
-                            unsigned int iIndexTWRow,
+                            int iIndexTWRow,
                             std::vector< int > iIndexColorTraceRowContainer,
                             std::vector< int > iIndexColorCollectionRowContainer,
                             std::string iTraceName, std::string iCollectionName);

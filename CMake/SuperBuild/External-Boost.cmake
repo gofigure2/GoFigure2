@@ -13,6 +13,7 @@ ExternalProject_Add(${proj}
   CMAKE_ARGS
     ${ep_common_args}
     # can generate erros on Mac 10.6
+#    -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_BINARY_DIR}/${proj}-INSTALL
     -DBUILD_PROJECTS:STRING=NONE
     -DWITH_PYTHON:BOOL=OFF
     -DWITH_DOXYGEN:BOOL=OFF
@@ -26,7 +27,5 @@ ExternalProject_Add(${proj}
     ${BOOST_DEPENDENCIES}
 )
 
-INCLUDE_DIRECTORIES( BEFORE ${Boost_INCLUDE_DIRS} )
-
-set(BOOST_LIBRARY ${CMAKE_BINARY_DIR}/${proj}-build/lib )
-set(BOOST_INCLUDE_DIR ${CMAKE_BINARY_DIR}/${proj}/ )
+set(Boost_LIBRARY ${CMAKE_BINARY_DIR}/${proj}-INSTALL/lib )
+set(Boost_INCLUDE_DIR ${CMAKE_BINARY_DIR}/${proj}-INSTALL/include )

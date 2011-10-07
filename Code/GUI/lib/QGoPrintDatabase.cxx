@@ -83,7 +83,7 @@ QGoPrintDatabase::QGoPrintDatabase(QWidget *iParent) :
   m_IsDatabaseUsed(false),
   m_ReeditMode(false),
   m_MeshGenerationMode(false)
-{ 
+{
   this->SetUpUi();
 
   this->m_CellTypeManager = new QGoDBCellTypeManager(this);
@@ -217,7 +217,7 @@ void QGoPrintDatabase::CloseDBConnection()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoPrintDatabase::FillTableFromDatabase(const unsigned int& iThreshold)
+void QGoPrintDatabase::FillTableFromDatabase(const int& iThreshold)
 {
   OpenDBConnection();
   // Get number of meshes to be loaded
@@ -243,12 +243,12 @@ void QGoPrintDatabase::FillTableFromDatabase(const unsigned int& iThreshold)
 
   QString title = QString("Table for: %1 ").arg( m_ImgSessionName.c_str() );
   this->setWindowTitle(title);
-  
+
   this->m_StackedTables->addWidget(this->m_ContoursManager->GetTableWidget());
   this->m_StackedTables->addWidget(this->m_MeshesManager->GetTableWidget());
   this->m_StackedTables->addWidget(this->m_TracksManager->GetTableWidget());
   this->m_StackedTables->addWidget(this->m_LineagesManager->GetTableWidget());
-  
+
   m_IsDatabaseUsed = true;
   emit PrintDBReady();
 }
@@ -347,7 +347,7 @@ QGoPrintDatabase::SaveMeshFromVisuInDB(unsigned int iXCoordMin,
       emit PrintMessage(MessageToPrint);
       }
     std::list<unsigned int> MotherTrackDivisionToUpdate;
-    MessageToPrint = this->m_TracksManager->CheckMeshCanBeAddedToTrack(this->m_DatabaseConnector, TrackID, 
+    MessageToPrint = this->m_TracksManager->CheckMeshCanBeAddedToTrack(this->m_DatabaseConnector, TrackID,
       *this->m_SelectedTimePoint, MotherTrackDivisionToUpdate).c_str();
     unsigned int NewMeshID;
     if (!MessageToPrint.isEmpty() )
@@ -397,7 +397,7 @@ QGoPrintDatabase::SaveMeshFromVisuInDB(unsigned int iXCoordMin,
     if (!MotherTrackDivisionToUpdate.empty() )
       {
       this->m_TracksManager->UpdateDivisions(MotherTrackDivisionToUpdate);
-      }  
+      }
     }
   else //for mesh generated from contours:
     {
@@ -1238,7 +1238,7 @@ void QGoPrintDatabase::CreateContextMenu(const QPoint & iPos)
   TraceSettings->setCheckable(true);
   TraceSettings->setChecked(this->m_TraceSettingsVisible);
 
-  QObject::connect( TraceSettings, SIGNAL( triggered (bool) ), this, 
+  QObject::connect( TraceSettings, SIGNAL( triggered (bool) ), this,
     SLOT( ShowHideTraceSettingsFromContextMenu(bool) ) );
 
   ContextMenu->addAction(TraceSettings);
@@ -1571,10 +1571,10 @@ void QGoPrintDatabase::SetTracksManager()
 void QGoPrintDatabase::SetLineagesManager()
 {
   this->m_LineagesManager = new QGoDBLineageManager(m_ImgSessionID, this);
-                    
-  QObject::connect( this->m_LineagesManager, 
+
+  QObject::connect( this->m_LineagesManager,
                     SIGNAL( NeedToGetDatabaseConnection() ),
-                    this, 
+                    this,
                     SLOT( PassDBConnectionToLineagesManager() ) );
   QObject::connect( this->m_LineagesManager,
                     SIGNAL( DBConnectionNotNeededAnymore() ),
@@ -1915,13 +1915,13 @@ void QGoPrintDatabase::SplitMergeTracksWithWidget(
 
 //--------------------------------------------------------------------------
 void QGoPrintDatabase::AddCheckedTracksToSelectedLineage(
-  std::list<unsigned int> iListDaughters, unsigned int iLineageID, 
+  std::list<unsigned int> iListDaughters, unsigned int iLineageID,
   std::list<unsigned int> iListLineagesToDelete)
 {
   if (!iListLineagesToDelete.empty() )
     {
     this->DeleteListTraces< QGoDBLineageManager, QGoDBLineageManager > (
-      this->m_LineagesManager, this->m_LineagesManager, this->m_TracksManager, 
+      this->m_LineagesManager, this->m_LineagesManager, this->m_TracksManager,
       iListLineagesToDelete, true);
     }
 

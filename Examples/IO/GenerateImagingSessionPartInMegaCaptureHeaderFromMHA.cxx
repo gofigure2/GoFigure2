@@ -98,19 +98,32 @@ int main(int argc, char **argv)
     }
   else
     {
-    file << "DimensionCH 3" << std::endl;
-    int red = 255;
-    int green = 0;
-    int blue = 0;
-    file << "ChannelColor00 " << red * 256 * 256 + green * 256 + blue << std::endl;
-    red = 0;
-    green = 255;
-    blue = 0;
-    file << "ChannelColor01 " << red * 256 * 256 + green * 256 + blue << std::endl;
-    red = 0;
-    green = 0;
-    blue = 255;
-    file << "ChannelColor02 " << red * 256 * 256 + green * 256 + blue << std::endl;
+      if( iNumberOfChannels == 2 )
+      {
+        file << "DimensionCH 2" << std::endl;
+        int green = 255;
+        int blue = 0;
+        file << "ChannelColor00 " << green * 256 + blue << std::endl;
+        green = 0;
+        blue = 255;
+        file << "ChannelColor01 " << green * 256 + blue << std::endl;
+      }
+      else
+      {
+        file << "DimensionCH 3" << std::endl;
+        int red = 255;
+        int green = 0;
+        int blue = 0;
+        file << "ChannelColor00 " << red * 256 * 256 + green * 256 + blue << std::endl;
+        red = 0;
+        green = 255;
+        blue = 0;
+        file << "ChannelColor01 " << red * 256 * 256 + green * 256 + blue << std::endl;
+        red = 0;
+        green = 0;
+        blue = 255;
+        file << "ChannelColor02 " << red * 256 * 256 + green * 256 + blue << std::endl;
+      }
     }
 
   file << "ChannelDepth 8" << std::endl;

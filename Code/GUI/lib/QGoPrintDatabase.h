@@ -86,7 +86,7 @@ public:
 
   typedef GoDBCollectionOfTraces::TWContainerType            TWContainerType;
   typedef QGoDBBookmarkManager::NamesDescrContainerType      NamesDescrContainerType;
-  typedef QGoTraceSettingsWidget::ItemColorComboboxData  ItemColorComboboxData; 
+  typedef QGoTraceSettingsWidget::ItemColorComboboxData  ItemColorComboboxData;
   typedef std::pair< int, QColor >                           IDWithColorData;
 
   /** \brief set all the values needed for the database*/
@@ -98,7 +98,7 @@ public:
   /** \brief Create the QTableWidgetChild,get the columns names and the
  * values stored in the database, display them in the QTableWidgetChild
  * and fill the info for the contours and meshes*/
-  void FillTableFromDatabase( const unsigned int& iTreshold);
+  void FillTableFromDatabase( const int& iTreshold);
 
   /** \brief Return a vector of all the contours for the given timepoint*/
   std::vector< ContourMeshStructure > GetContoursForAGivenTimepoint(
@@ -193,7 +193,7 @@ public:
 
   /**
   \brief display in the table widget the volume and area from iMeshAttributes
-  for iMeshID 
+  for iMeshID
   \param[in] iMeshAttributes contains the values to be displayed
   \param[in] iMeshID ID of the mesh
   */
@@ -202,7 +202,7 @@ public:
 
   /**
   \brief display in the table widget the values from iTrackAttributes
-  for iTrackID 
+  for iTrackID
   \param[in] iTrackAttributes contains the values to be displayed
   \param[in] iTrackID ID of the track
   */
@@ -343,7 +343,7 @@ protected:
 
   void SetUpUi();
 
-  /** 
+  /**
   \brief set the tracesettings widget to be in the mainwindow toolbar and the connection
   between the 2 instances of tracesettingswidget
   */
@@ -515,8 +515,8 @@ protected:
   /** todo once lineage container is set up, the bool track needs to be
     removed*/
   /**
-  \brief delete the checked traces from the database,TW,visu container, 
-  udpate the collectionof collectionID in database and TW and update the 
+  \brief delete the checked traces from the database,TW,visu container,
+  udpate the collectionof collectionID in database and TW and update the
   bounding box of the collection
   \param[in] iTraceManager the manager for the trace expl: mesh_manager
   \param[in] iCollectionManager the manager for the collection expl: track
@@ -533,7 +533,7 @@ protected:
   {
     std::list< unsigned int > ListTracesToDelete =
       iTraceManager->GetListHighlightedIDs();
-    std::list<unsigned int> ListCollectionsIDs = 
+    std::list<unsigned int> ListCollectionsIDs =
       this->UpdateCollectionDataForTracesToBeDeleted<TTrace, TCollectionOf>
       (iTraceManager, iCollectionOfManager, ListTracesToDelete);
     this->OpenDBConnection();
@@ -549,7 +549,7 @@ protected:
 
   /**
   \brief delete the traces of iListTracesToDelete from the database,TW,
-  visu container, udpate the collectionof collectionID in database and TW and update the 
+  visu container, udpate the collectionof collectionID in database and TW and update the
   bounding box of the collection
   \param[in] iTraceManager the manager for the trace expl: mesh_manager
   \param[in] iCollectionManager the manager for the collection expl: track
@@ -578,7 +578,7 @@ protected:
     this->CloseDBConnection();
   }
   /**
-  \brief udpate the collectionof collectionID in database and TW 
+  \brief udpate the collectionof collectionID in database and TW
   \param[in] iTraceManager the manager for the trace expl: mesh_manager
   \param[in] iCollectionOfManager the manager for the collectioof expl: contour
   \param[in] iListTracesToDelete list of the traceIDs to be deleted
@@ -639,14 +639,14 @@ protected:
   }
 
   void UpdateSelectedCollectionForTableWidget(std::string iTableName);
-  
+
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 protected slots:
   void CreateContextMenu(const QPoint & iPos);
 
-  /** 
+  /**
   \brief show/hide the Trace Settings widget depending on the checkstate of
   the action in the context menu of the dockwidget
   */
@@ -777,7 +777,7 @@ protected slots:
   */
   void AddCheckedMeshesToSelectedTrack(std::list< unsigned int > iListCheckedMeshes);
 
-  /** 
+  /**
   \brief call the AddCheckedTracesToCollection template and give the info to the
   lineages manager to create the division in the visu
   \param[in] iLineageID
@@ -786,7 +786,7 @@ protected slots:
   don't have any tracks belonging to them anymore
   */
   void AddCheckedTracksToSelectedLineage(
-    std::list<unsigned int> iListDaughters, unsigned int iLineageID, 
+    std::list<unsigned int> iListDaughters, unsigned int iLineageID,
     std::list<unsigned int> iListLineagesToDelete);
 
   /**
@@ -813,8 +813,8 @@ protected slots:
 
   /**
   \brief slot called after signal TrackIDToBeModifiedWithWidget sent by
-  tracksManager, display the checked tracks in a widget allowing the user to 
-  split and merge them and save the results in the database if the user clicks 
+  tracksManager, display the checked tracks in a widget allowing the user to
+  split and merge them and save the results in the database if the user clicks
   the OK button
   \param[in] iTrackIDs checked tracks
   */

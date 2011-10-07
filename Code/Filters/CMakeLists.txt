@@ -94,6 +94,11 @@ ADD_LIBRARY( GoFilters
 TARGET_LINK_LIBRARIES( GoFilters
   vtkCommon
   vtkRendering
+  vtkWidgets
+  vtkVolumeRendering
+  vtkHybrid
+  vtkImaging
+ ${ITK_LIBRARIES}
 )
 
 SET_TARGET_PROPERTIES( GoFilters PROPERTIES VERSION ${GOFIGURE2_LIB_VERSION} SOVERSION ${GOFIGURE2_LIB_VERSION} )
