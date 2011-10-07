@@ -117,7 +117,7 @@ QPolygonF GoTransferFunctionWidget::points() const
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void GoTransferFunctionWidget::paintEvent(QPaintEvent *)
+void GoTransferFunctionWidget::paintEvent(QPaintEvent * event)
 {
   // generate shade, if necessary
   if (m_shade.isNull() || m_shade.size() != size())
