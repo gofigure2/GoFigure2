@@ -291,6 +291,9 @@ signals:
   void StartContourSegmentation(vtkPoints *iPoints);
 
 public slots:
+
+  void AdjustWindowLevel(double iMin, double iMax);
+
   void SetTimePoint(const int &);
 
   void TakeSnapshot();

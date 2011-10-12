@@ -312,6 +312,18 @@ void vtkViewImage2DCollection::SyncResetWindowLevel(void)
 }
 
 //----------------------------------------------------------------------------
+void vtkViewImage2DCollection::SyncUpdateWindowLevel(void)
+{
+  this->InitTraversal();
+  vtkViewImage2D *item = this->GetNextItem();
+  while ( item )
+    {
+    item->UpdateWindowLevel();
+    item = this->GetNextItem();
+    }
+}
+
+//----------------------------------------------------------------------------
 void vtkViewImage2DCollection::SyncPan()
 {
   this->InitTraversal();

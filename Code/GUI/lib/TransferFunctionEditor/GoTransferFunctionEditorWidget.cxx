@@ -705,7 +705,17 @@ showHistogram(bool iEnable){
 void
 GoTransferFunctionEditorWidget::
 AdjustWindowLevel(double iMin, double iMax){
+  qDebug() << "min: " << iMin;
+  qDebug() << "max: " << iMax;
+
+  // 2 signals instead of 1...
+  this->m_MinSlider->blockSignals(true);
   this->m_MinSlider->setValue(iMin);
+  this->m_MinSlider->blockSignals(false);
+  this->m_MaxSlider->blockSignals(true);
   this->m_MaxSlider->setValue(iMax);
+  this->m_MaxSlider->blockSignals(false);
+
+  pointsUpdated();
 }
 //-------------------------------------------------------------------------

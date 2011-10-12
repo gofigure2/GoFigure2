@@ -62,5 +62,7 @@ public:
   ~QGoTransferFunctionDockWidget();
 
   void AddTransferFunction(QString iName, GoTransferFunctionEditorWidget* iTF);
+
+  QWidget* GetCurrentWidget();
 };
 #endif

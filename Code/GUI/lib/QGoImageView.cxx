@@ -316,7 +316,7 @@ QGoImageView::SetLookupTable(vtkLookupTable *iLut)
   if ( this->m_Image->GetNumberOfScalarComponents() == 1 )
     {
     m_Pool->SyncSetLookupTable(iLut);
-    m_Pool->SyncResetWindowLevel();
+    m_Pool->SyncUpdateWindowLevel();
     m_Pool->SyncRender();
     }
 }

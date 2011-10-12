@@ -65,3 +65,12 @@ AddTransferFunction(QString iName, GoTransferFunctionEditorWidget* iTF)
 {
   this->tabWidget->addTab(iTF, iName);
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+QWidget*
+QGoTransferFunctionDockWidget::
+GetCurrentWidget()
+{
+  return this->tabWidget->currentWidget();
+}

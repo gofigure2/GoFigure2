@@ -1204,9 +1204,9 @@ void
 QGoImageView3D::UpdateLUT()
 {
   // update tf function by modifying the widget
-  double min = m_Pool->GetItem(0)->GetLookupTable()->GetRange()[0];
-  double max = m_Pool->GetItem(0)->GetLookupTable()->GetRange()[1];
-  emit NewWindowLevel(min, max);
+  double window = m_Pool->GetItem(0)->GetWindow();
+  double color = m_Pool->GetItem(0)->GetLevel();
+  emit NewWindowLevel(window, color);
 }
 //-------------------------------------------------------------------------
 

@@ -1769,10 +1769,10 @@ QGoTabImageView3DwT::UpdateImage()
     //update Image
     m_ImageView->SetImage(m_ImageProcessor->getImageBW());
     // update LUT
-    vtkSmartPointer<vtkLookupTable> lut = vtkSmartPointer<vtkLookupTable>::New();
-    lut->DeepCopy(m_ImageProcessor->getLookuptable());
+    /*vtkSmartPointer<vtkLookupTable> lut = vtkSmartPointer<vtkLookupTable>::New();
+    lut->DeepCopy(m_ImageProcessor->getLookuptable());*/
     // WHEN WE MODIFY WE WANT TO KEEP THE MODIF (FROM ANDREA)
-    m_ImageView->SetLookupTable(lut);
+    m_ImageView->SetLookupTable(m_ImageProcessor->getLookuptable());
 
     // CONFIGURE LUT
     this->findChild<QAction*>("LUT")->setEnabled(true);
@@ -3386,7 +3386,7 @@ createTransferFunctionEditor(QString iName)
                                        int)) );
 
   QObject::connect(this->m_ImageView, SIGNAL(NewWindowLevel(double, double)),
-                   editor, SLOT(AdjustWindowLevel(double, double)));
+                   this, SLOT(AdjustWindowLevel(double, double)));
 
   // show editor - to have consistent geomerty to add the points
   editor->show();
@@ -3567,4 +3567,16 @@ ShowTraces(const unsigned int& iTimePoint)
   // several time points
   this->m_ContourContainer->ShowActorsWithGivenTimePoint(iTimePoint);
   this->m_MeshContainer->ShowActorsWithGivenTimePoint(iTimePoint);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+AdjustWindowLevel(double iMin, double iMax)
+{
+  GoTransferFunctionEditorWidget* widget =
+      dynamic_cast<GoTransferFunctionEditorWidget*>(
+      this->m_TransferFunctionDockWidget->GetCurrentWidget());
+  widget->AdjustWindowLevel(iMin, iMax);
 }

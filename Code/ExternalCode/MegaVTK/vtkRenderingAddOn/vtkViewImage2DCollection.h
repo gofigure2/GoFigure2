@@ -253,6 +253,8 @@ public:
   /// Description: Synchronize reset window level between views
   virtual void SyncResetWindowLevel(void);
 
+  void SyncUpdateWindowLevel(void);
+
   /// Description: Synchronize reset camera between views
   virtual void SyncResetCamera(void);
 

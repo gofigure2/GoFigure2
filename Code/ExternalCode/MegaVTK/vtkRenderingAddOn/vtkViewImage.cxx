@@ -149,6 +149,9 @@ vtkViewImage::vtkViewImage()
 
   this->IsColor = false;
 
+  this->Window = -1;
+  this->Level  = -1;
+
   // default DirectionAnnotation
   this->DirectionAnnotationMatrix[0][0] = "R";
   this->DirectionAnnotationMatrix[0][1] = "L";
@@ -174,6 +177,7 @@ void vtkViewImage::SetInput(vtkImageData *in)
       // because of rescaling
       int type = in->GetScalarSize();
       double threshold = pow(2, 8*type) - 1;
+      // reset window level in viewer!
       this->WindowLevel->SetWindow(threshold);
       this->WindowLevel->SetLevel(threshold/2);
       this->ShowScalarBar = false;
@@ -183,8 +187,10 @@ void vtkViewImage::SetInput(vtkImageData *in)
       {
       this->ImageActor->SetInput(this->WindowLevel->GetOutput());
       this->WindowLevel->SetLookupTable(this->LookupTable);
-      this->WindowLevel->SetWindow(in->GetScalarRange()[1]-in->GetScalarRange()[0]);
-      this->WindowLevel->SetLevel(in->GetScalarRange()[0]+(in->GetScalarRange()[1]-in->GetScalarRange()[0])/2);
+      this->WindowLevel->SetWindow(this->LookupTable->GetRange()[1] - this->LookupTable->GetRange()[0]);
+      this->WindowLevel->SetLevel(this->LookupTable->GetRange()[0] + (this->LookupTable->GetRange()[1]-this->LookupTable->GetRange()[0])/2);
+      this->SetWindow(this->LookupTable->GetRange()[0]);
+      this->SetLevel(this->LookupTable->GetRange()[1]);
       }
     }
 }
@@ -450,8 +456,21 @@ void vtkViewImage::ResetWindowLevel(void)
 
  if ( !this->IsColor )
     {
-    // LookupTable->GetRange();
     double *range = input->GetScalarRange();
+    double  window = range[1] - range[0];
+    double  level = 0.5 * ( range[1] + range[0] );
+
+    this->SetColorWindow(window);
+    this->SetColorLevel(level);
+    }
+}
+
+//----------------------------------------------------------------------------
+void vtkViewImage::UpdateWindowLevel(void)
+{
+ if ( !this->IsColor )
+    {
+    double *range = LookupTable->GetRange();
     double  window = range[1] - range[0];
     double  level = 0.5 * ( range[1] + range[0] );
 
@@ -666,4 +685,31 @@ void vtkViewImage::SetShowAnnotations(const int & iShowAnnotations)
 {
   this->ShowAnnotations = iShowAnnotations;
   this->CornerAnnotation->SetVisibility (iShowAnnotations);
+}
+//----------------------------------------------------------------------------
+void
+vtkViewImage::SetWindow(double iWindow)
+{
+  this->Window = iWindow;
+}
+
+//----------------------------------------------------------------------------
+double
+vtkViewImage::GetWindow()
+{
+  return this->Window;
+}
+
+//----------------------------------------------------------------------------
+void
+vtkViewImage::SetLevel(double iLevel)
+{
+  this->Level = iLevel;
+}
+
+//----------------------------------------------------------------------------
+double
+vtkViewImage::GetLevel()
+{
+  return this->Level;
 }

@@ -126,8 +126,9 @@ vtkViewImage2DCommand::Execute( vtkObject *caller,
   // Start
   if ( event == vtkCommand::StartWindowLevelEvent )
     {
-    this->InitialWindow = this->Viewer->GetColorWindow();
-    this->InitialLevel = this->Viewer->GetColorLevel();
+    //no since it is min an max now...!
+    this->InitialWindow = (this->Viewer->GetLevel() - this->Viewer->GetWindow())/2;
+    this->InitialLevel = this->Viewer->GetLevel() - this->InitialWindow;
     return;
     }
 
@@ -211,6 +212,9 @@ vtkViewImage2DCommand::Windowing(vtkInteractorStyleImage2D *isi)
   double window = this->InitialWindow;
   double level = this->InitialLevel;
 
+  std::cout << "initial window: " << this->InitialWindow << std::endl;
+  std::cout << "initial level: " << this->InitialLevel << std::endl;
+
   // Compute normalized delta
   double dx = 4.0
     * ( isi->GetWindowLevelCurrentPosition()[0]
@@ -243,11 +247,26 @@ vtkViewImage2DCommand::Windowing(vtkInteractorStyleImage2D *isi)
   if ( fabs(newWindow) < 0.01 ) { newWindow = 0.01 * ( newWindow < 0 ? -1 : 1 ); }
   if ( fabs(newLevel) < 0.01 ) { newLevel = 0.01 * ( newLevel < 0 ? -1 : 1 ); }
 
-  this->Viewer->SetColorWindow(newWindow);
-  this->Viewer->SetColorLevel(newLevel);
+  std::cout << "new window: " << newWindow << std::endl;
+  std::cout << "new level: " << newLevel << std::endl;
 
-  // send signals to the image3d
-  this->Viewer->Render();
+  // compute new window
+  double min = 0.0;
+  if(newWindow - newLevel > 0)
+    min = newWindow - newLevel;
+
+  double max = this->Viewer->GetInput()->GetScalarRange()[1];
+  if(newWindow + newLevel < this->Viewer->GetInput()->GetScalarRange()[1])
+    max = newWindow + newLevel;
+
+  if(min >= max)
+    min = max - 1;
+
+  if(max <= min)
+    max = min + 1;
+
+  this->Viewer->SetWindow(min);
+  this->Viewer->SetLevel(max);
 }
 //----------------------------------------------------------------------------
 
