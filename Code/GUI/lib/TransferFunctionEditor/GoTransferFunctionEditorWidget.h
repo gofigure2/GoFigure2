@@ -94,7 +94,8 @@ class GoTransferFunctionEditorWidget : public QWidget
 public:
   GoTransferFunctionEditorWidget(QWidget *parent, QString iChannel,
                                  const std::vector<double>& iColor,
-                                 std::vector<int> iLUTParameters);
+                                 std::vector<int> iLUTParameters,
+                                 double iMax);
 
   void setGradientStops(const QGradientStops &stops);
 
@@ -123,6 +124,7 @@ public slots:
   // opacity TF
   void updateOpacityTF();
   void showHistogram(bool iEnable);
+  void AdjustWindowLevel(double, double);
 
 signals:
   void updateVisualization();
@@ -165,6 +167,8 @@ private:
   vtkPiecewiseFunction     *m_OpacityTF;
 
   QVector<qreal>            m_Histogram;
+
+  double m_Max;
 
 };
 

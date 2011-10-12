@@ -58,7 +58,7 @@ QGoTraceEditingWidgetManager::QGoTraceEditingWidgetManager(
   this->m_Images = iImages;
   this->m_CurrentTimePoint = iCurrentTimePoint;
 
-  this->m_MaxThreshold = iImages->getMaxThreshold();
+  this->m_MaxThreshold = iImages->getMaxImage();
 
   this->SetTheTraceWidget(iVectChannels, iTimeMin, iTimeMax, iParent);
   this->SetTheDockWidget(iParent);

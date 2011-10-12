@@ -100,10 +100,11 @@
 GoTransferFunctionEditorWidget::GoTransferFunctionEditorWidget(QWidget *parent,
                                                                QString iChannel,
                                                                const std::vector<double>& iColor,
-                                                               std::vector<int> iLUTParameters)
+                                                               std::vector<int> iLUTParameters,
+                                                               double iMax)
     : QWidget(parent )
 {
-  // needs a minimum size
+  m_Max = iMax;
 
   // update color
   m_Color.setRedF(iColor[0]/255);
@@ -119,6 +120,7 @@ GoTransferFunctionEditorWidget::GoTransferFunctionEditorWidget(QWidget *parent,
 
   m_red_shade = new GoTransferFunctionWidget(
         m_Color,
+        m_Max,
         this);
 
   QHBoxLayout *m_red_shade_layout = new QHBoxLayout(this);
@@ -176,14 +178,14 @@ GoTransferFunctionEditorWidget::GoTransferFunctionEditorWidget(QWidget *parent,
 
   m_MinSlider = new QSlider(this);
   m_MinSlider->setOrientation(Qt::Horizontal);
-  m_MinSlider->setMaximum(255);
+  m_MinSlider->setMaximum(m_Max);
   m_MinSlider->setValue(iLUTParameters[1]);
   m_MinSlider->setStyleSheet("QSlider::groove:horizontal {border: 1px solid #bbb;background: rgba(0, 0, 0, 0);height: 4px;position: absolute; right: 10px;left: 10px; }QSlider::handle:horizontal {image: url(/home/nr52/gitroot/gofigure/Resources/widget/arrow_up.png);width: 20px;height: 6px;margin-top: -2px;margin-bottom: -2px; right: -10px; left:-10px; border: 1px solid black; background: rgba(255, 255, 255, 200); border-radius: 4px;}QSlider::sub-page:horizontal {background: #909090;border: 1px solid black;}QSlider::add-page:horizontal {background: rgba(0, 0, 0, 0);border: 1px solid black;}");
   connect(m_MinSlider, SIGNAL(valueChanged(int)), this, SLOT(pointsUpdated()));
 
   m_MaxSlider = new QSlider(this);
   m_MaxSlider->setOrientation(Qt::Horizontal);
-  m_MaxSlider->setMaximum(255);
+  m_MaxSlider->setMaximum(m_Max);
   m_MaxSlider->setValue(iLUTParameters[2]);
   m_MaxSlider->setStyleSheet("QSlider::groove:horizontal {border: 1px solid #bbb;background: rgba(0, 0, 0, 0);height: 4px;position: absolute; right: 10px;left: 10px; }QSlider::handle:horizontal {image: url(/home/nr52/gitroot/gofigure/Resources/widget/arrow_down.png);width: 20px;height: 6px;margin-top: -2px;margin-bottom: -2px; right: -10px; left:-10px; border: 1px solid black; background: rgba(255, 255, 255, 200); border-radius: 4px;}QSlider::sub-page:horizontal {background: rgba(0, 0, 0, 0);border: 1px solid black;}QSlider::add-page:horizontal {background: #909090;border: 1px solid black;}");
 
@@ -327,8 +329,8 @@ computePointsFromMap(const std::map< unsigned int, unsigned int>& iMap, QPolygon
   // check x and y
   while(it0!=it255)
     {
-    iPoints << QPointF((qreal)(it0->first)*width/255,
-                         height*(1-(qreal)(it0->second)/255));
+    iPoints << QPointF((qreal)(it0->first)*width/m_Max,
+                         height*(1-(qreal)(it0->second)/m_Max));
     ++it0;
     }
 }
@@ -443,7 +445,7 @@ resetLUT()
   // update transfer function
   m_GammaSlider->setValue(100);
   m_MinSlider->setValue(0);
-  m_MaxSlider->setValue(255);
+  m_MaxSlider->setValue(m_Max);
   pointsUpdated();
 
   //update opacity TF
@@ -485,7 +487,7 @@ computeMapFromPoints(std::map< unsigned int, unsigned int>& iMap, const QPolygon
   qreal height = m_red_shade->height();
   int numberOfPoints = iPoints.size();
 
-  if(numberOfPoints>255)
+  if(numberOfPoints>m_Max)
   {
     qDebug() << "Too many points: " << numberOfPoints << " points";
     return;
@@ -493,8 +495,8 @@ computeMapFromPoints(std::map< unsigned int, unsigned int>& iMap, const QPolygon
 
   for(int i=0; i<numberOfPoints; ++i)
     {
-    unsigned int x = (iPoints.at(i).x())*255/width;
-    unsigned int y = (1-(iPoints.at(i).y())/height)*255;
+    unsigned int x = (iPoints.at(i).x())*m_Max/width;
+    unsigned int y = (1-(iPoints.at(i).y())/height)*m_Max;
     iMap[x]  = y;
     }
 }
@@ -566,8 +568,8 @@ WriteLUTComponent(GoTransferFunctionWidget* iTFWidget, QTextStream& iStream)
 
   for(int i=0; i<numberOfPoints; ++i)
     {
-    unsigned int x = (iTFWidget->points().at(i).x())*255/width;
-    unsigned int y = (1-(iTFWidget->points().at(i).y())/height)*255;
+    unsigned int x = (iTFWidget->points().at(i).x())*m_Max/width;
+    unsigned int y = (1-(iTFWidget->points().at(i).y())/height)*m_Max;
     iStream << x  << " " << y << " ";
     }
 }
@@ -644,7 +646,7 @@ updateOpacityTF()
   for(int i=0; i<numberOfPoints; ++i)
     {
     // x 0 to 255
-    double x = (m_red_shade->points().at(i).x())*255/width;
+    double x = (m_red_shade->points().at(i).x())*m_Max/width;
     // y 0 to 1
     double y = (1-(m_red_shade->points().at(i).y())/height);
     m_OpacityTF->AddPoint(x, y);
@@ -696,5 +698,14 @@ showHistogram(bool iEnable){
     }
   // or update?
   m_red_shade->repaint();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+GoTransferFunctionEditorWidget::
+AdjustWindowLevel(double iMin, double iMax){
+  this->m_MinSlider->setValue(iMin);
+  this->m_MaxSlider->setValue(iMax);
 }
 //-------------------------------------------------------------------------

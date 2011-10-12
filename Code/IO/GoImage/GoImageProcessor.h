@@ -346,6 +346,7 @@ public:
    * \note Used to compute the mesh attributes at load time
    * \return raw image.
    **/
+  vtkSmartPointer<vtkImageData> getImageBW(const std::string& iName);
   vtkSmartPointer<vtkImageData> getImageBW(const unsigned int& iIndex);
 
   /**
@@ -447,6 +448,8 @@ public:
 
   int getMaxThreshold();
 
+  int getMaxImage();
+
 protected:
   /*
    * \brief Color an image given the original image and a lookuptable (LUT)
@@ -467,6 +470,7 @@ protected:
   int          m_Extent[6];
   unsigned int m_TimeInterval;
   int          m_MaxThreshold;
+  int          m_MaxImage;
   //--------------------
 
   // Doppler view parameters

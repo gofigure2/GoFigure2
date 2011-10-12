@@ -77,6 +77,8 @@
 #include "vtkImplicitPlaneWidget.h"
 #include "vtkPlane.h"
 
+#include "vtkLookupTable.h"
+
 #include "vtkPiecewiseFunction.h"
 
 #include <cstdlib>
@@ -498,8 +500,18 @@ QGoImageView3D::SetupVTKtoQtConnections()
   // when contours picked, send a signal
   VtkEventQtConnector->Connect(
     reinterpret_cast< vtkObject * >( View1->GetInteractorStyle() ),
-    vtkViewImage2DCommand::WindowLevelEvent,
-    this, SLOT( UpdateScalarBarIn3DView() ) );
+    vtkCommand::WindowLevelEvent,
+    this, SLOT( UpdateLUT() ) );
+
+  VtkEventQtConnector->Connect(
+    reinterpret_cast< vtkObject * >( View2->GetInteractorStyle() ),
+    vtkCommand::WindowLevelEvent,
+    this, SLOT( UpdateLUT() ) );
+
+  VtkEventQtConnector->Connect(
+    reinterpret_cast< vtkObject * >( View3->GetInteractorStyle() ),
+    vtkCommand::WindowLevelEvent,
+    this, SLOT( UpdateLUT() ) );
 
   ////////////////////////////////////////////////////////////////////////////
 
@@ -516,6 +528,8 @@ QGoImageView3D::SetupVTKtoQtConnections()
     reinterpret_cast< vtkObject * >( View3D ),
     vtkViewImage3DCommand::UpdateRenderEvent,
     this, SLOT( UpdateRenderWindows() ) );
+
+  ////////////////////////////////////////////////////////////////////////////
 }
 
 //--------------------------------------------------------------------------
@@ -1187,11 +1201,13 @@ QGoImageView3D::EnablePlaneWidget(bool iValue)
 
 //-------------------------------------------------------------------------
 void
-QGoImageView3D::UpdateScalarBarIn3DView()
+QGoImageView3D::UpdateLUT()
 {
-  m_View3D->SetLookupTable( m_Pool->GetItem(0)->GetLookupTable() );
+  // update tf function by modifying the widget
+  double min = m_Pool->GetItem(0)->GetLookupTable()->GetRange()[0];
+  double max = m_Pool->GetItem(0)->GetLookupTable()->GetRange()[1];
+  emit NewWindowLevel(min, max);
 }
-
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------

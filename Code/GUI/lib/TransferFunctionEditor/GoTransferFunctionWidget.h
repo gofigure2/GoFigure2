@@ -90,6 +90,7 @@ class GoTransferFunctionWidget : public QWidget
 public:
 
     GoTransferFunctionWidget(QColor iColor,
+                             double iMax,
                              QWidget *parent);
 
     void paintEvent(QPaintEvent *e);
@@ -131,6 +132,7 @@ private:
     HoverPoints *m_gammaPoints;
     QLinearGradient m_alpha_gradient;
     QVector<qreal> m_Histogram;
+    double m_Max;
 };
 
 #endif

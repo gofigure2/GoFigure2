@@ -83,10 +83,13 @@
 //-------------------------------------------------------------------------
 
 GoTransferFunctionWidget::GoTransferFunctionWidget(QColor iColor,
+                                                   double iMax,
                                                    QWidget *parent)
     : QWidget(parent), m_color(iColor),
     m_alpha_gradient(QLinearGradient(0, 0, 0, 0))
 {
+
+  m_Max = iMax;
 
   this->setMinimumWidth(50);
   this->setMinimumHeight(50);
@@ -193,20 +196,15 @@ GoTransferFunctionWidget::
 UpdateLookupTable(vtkLookupTable* iLUT, qreal iGamma, qreal iMin, qreal iMax)
 {
   QPolygonF iPoints;
-  int numTableValues = iLUT->GetNumberOfTableValues();
+  int numTableValues = m_Max;
   qreal width = this->width();
   qreal height = this->height();
-
-  // before window
-  for(int i=0; i<iMin; ++i)
-    {
-    iPoints << QPointF((qreal)(i)*(width-1)/numTableValues, height-1);
-
-    QColor color(m_shade.pixel(i*(width-1)/numTableValues, height-1));
-    iLUT->SetTableValue(i, color.redF(), color.greenF(), color.blueF());
-    }
+  iLUT->SetNumberOfTableValues(iMax-iMin);
+  // update LUT to modify visualization
 
   // points affected with gamma correction, in the window
+
+  int count = 0;
   for(int i=iMin; i<iMax; ++i)
     {
     qreal input = ((qreal)i - iMin)/((iMax-iMin));
@@ -221,20 +219,13 @@ UpdateLookupTable(vtkLookupTable* iLUT, qreal iGamma, qreal iMin, qreal iMax)
       iPoints << QPointF((qreal)(i)*(width-1)/numTableValues,temp_height);
 
       QColor color(m_shade.pixel(i*(width-1)/numTableValues, temp_height));
-      iLUT->SetTableValue(i, color.redF(), color.greenF(), color.blueF());
+      iLUT->SetTableValue(count, color.redF(), color.greenF(), color.blueF());
+      count++;
       }
   }
 
-  // after window
-  for(int i=iMax; i<255; ++i)
-    {
-    iPoints << QPointF((qreal)(i)*(width-1)/numTableValues, 0);
+  iLUT->SetRange(iMin, iMax);
 
-    QColor color(m_shade.pixel(i*(width-1)/numTableValues, 0));
-    iLUT->SetTableValue(i, color.redF(), color.greenF(), color.blueF());
-    }
-
-  // update LUT to modify visualization
   iLUT->Modified();
 
   // print new curve

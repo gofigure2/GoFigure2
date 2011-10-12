@@ -93,11 +93,11 @@ struct QGOIO_EXPORT GoMegaImageStructure
     // min
     Min = 0;
     // max
-    Max = 255;
+    Max = LUT->GetRange()[1];
 
     OpacityTF = vtkSmartPointer<vtkPiecewiseFunction>::New();
     OpacityTF->AddPoint(0, 0);
-    OpacityTF->AddPoint(255, Color[3]/255);
+    OpacityTF->AddPoint(LUT->GetRange()[1], Color[3]/255);
 
     //compute histogram
     double* range;

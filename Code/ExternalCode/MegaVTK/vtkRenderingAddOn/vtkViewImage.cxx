@@ -171,6 +171,7 @@ void vtkViewImage::SetInput(vtkImageData *in)
       {
       this->ImageActor->SetInput(this->WindowLevel->GetOutput());
       this->WindowLevel->SetLookupTable(NULL);
+      // because of rescaling
       int type = in->GetScalarSize();
       double threshold = pow(2, 8*type) - 1;
       this->WindowLevel->SetWindow(threshold);
@@ -449,6 +450,7 @@ void vtkViewImage::ResetWindowLevel(void)
 
  if ( !this->IsColor )
     {
+    // LookupTable->GetRange();
     double *range = input->GetScalarRange();
     double  window = range[1] - range[0];
     double  level = 0.5 * ( range[1] + range[0] );

@@ -77,6 +77,7 @@
 #include <vtkCamera.h>
 #include <vtkRenderer.h>
 #include "vtkProperty.h"
+
 #include "vtkViewImage2DCommand.h"
 
 

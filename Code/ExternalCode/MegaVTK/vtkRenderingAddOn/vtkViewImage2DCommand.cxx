@@ -245,6 +245,8 @@ vtkViewImage2DCommand::Windowing(vtkInteractorStyleImage2D *isi)
 
   this->Viewer->SetColorWindow(newWindow);
   this->Viewer->SetColorLevel(newLevel);
+
+  // send signals to the image3d
   this->Viewer->Render();
 }
 //----------------------------------------------------------------------------

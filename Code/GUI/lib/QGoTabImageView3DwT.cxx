@@ -760,6 +760,7 @@ QGoTabImageView3DwT::CreateVisuDockWidget()
   QObject::connect( m_NavigationDockWidget, SIGNAL( visibilityChanged(QString, bool) ),
                     this, SLOT( visibilityChanged(QString, bool) ) );
 
+  // not needed anymore
   QObject::connect( m_NavigationDockWidget, SIGNAL( createTransferFunctionEditor(QString) ),
                     this, SLOT( openTransferFunctionEditor(QString) ) );
 }
@@ -3360,7 +3361,8 @@ createTransferFunctionEditor(QString iName)
       new GoTransferFunctionEditorWidget(NULL,
                                          iName,
                                          m_ImageProcessor->getColor(iName.toStdString()),
-                                         lutParameters);
+                                         lutParameters,
+                                         m_ImageProcessor->getImageBW(iName.toStdString())->GetScalarRange()[1]);
   // connect signals
 
   QObject::connect( editor,
@@ -3382,6 +3384,9 @@ createTransferFunctionEditor(QString iName)
                                        int,
                                        int,
                                        int)) );
+
+  QObject::connect(this->m_ImageView, SIGNAL(NewWindowLevel(double, double)),
+                   editor, SLOT(AdjustWindowLevel(double, double)));
 
   // show editor - to have consistent geomerty to add the points
   editor->show();
