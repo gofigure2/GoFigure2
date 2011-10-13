@@ -360,8 +360,10 @@ GoTransferFunctionEditorWidget::
 AddHistogram(vtkImageAccumulate* iHistogram)
 {
   int x_range = iHistogram->GetOutput()->GetNumberOfPoints();
+  qDebug() << "x range: " << x_range;
   vtkDataArray* scalars = iHistogram->GetOutput()->GetPointData()->GetScalars();
   double* range = iHistogram->GetOutput()->GetScalarRange();
+  qDebug() << "y range: " << range[0] << " to " << range[1];
 
   QVector<qreal> histo;
 
@@ -436,7 +438,7 @@ resetLUT()
   // reset shade color
   m_red_shade->Reset();
   m_red_shade->setColor(m_Color);
-  
+
   // reset button color
   QString style = "background: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 0,stop: 0 black, stop: 1 rgb(%1, %2, %3)); border-radius: 4px;";
   m_ColorPushButton->setStyleSheet(
@@ -719,3 +721,11 @@ AdjustWindowLevel(double iMin, double iMax){
   pointsUpdated();
 }
 //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+GoTransferFunctionEditorWidget::
+SetMax( double iMax)
+{
+  m_Max = iMax;
+}

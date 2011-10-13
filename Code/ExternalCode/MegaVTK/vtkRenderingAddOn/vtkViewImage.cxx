@@ -186,11 +186,17 @@ void vtkViewImage::SetInput(vtkImageData *in)
     else
       {
       this->ImageActor->SetInput(this->WindowLevel->GetOutput());
+      std::cout << "set input" << std::endl;
       this->WindowLevel->SetLookupTable(this->LookupTable);
+      std::cout << "input window: " << this->LookupTable->GetRange()[1] - this->LookupTable->GetRange()[0] << std::endl;
       this->WindowLevel->SetWindow(this->LookupTable->GetRange()[1] - this->LookupTable->GetRange()[0]);
+      std::cout << "input level: " << this->LookupTable->GetRange()[0] + (this->LookupTable->GetRange()[1]-this->LookupTable->GetRange()[0])/2 << std::endl;
       this->WindowLevel->SetLevel(this->LookupTable->GetRange()[0] + (this->LookupTable->GetRange()[1]-this->LookupTable->GetRange()[0])/2);
       this->SetWindow(this->LookupTable->GetRange()[0]);
       this->SetLevel(this->LookupTable->GetRange()[1]);
+
+      std::cout << "input min: " << this->LookupTable->GetRange()[0] << std::endl;
+      std::cout << "input max: " << this->LookupTable->GetRange()[1] << std::endl;
       }
     }
 }

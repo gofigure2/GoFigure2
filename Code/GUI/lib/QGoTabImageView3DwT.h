@@ -271,6 +271,8 @@ public:
     */
   void ShowTraces(const unsigned int& iTimePoint);
 
+  void UpdateTFEditor();
+
 signals:
   void TimePointChanged(int TimePoint);
 

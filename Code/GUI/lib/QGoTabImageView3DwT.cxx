@@ -241,7 +241,7 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
         m_NavigationDockWidget, Qt::RightDockWidgetArea, false, true, this),
       m_NavigationDockWidget) );
 
-  
+
   m_DockWidgetList.push_back(
     std::pair< QGoDockWidgetStatus *, QDockWidget * >(
       new QGoDockWidgetStatus(
@@ -1351,8 +1351,8 @@ QGoTabImageView3DwT::CreateToolsActions()
   group->addAction(ContourSegmentationAction);
   //group->addAction(this->m_ContourSegmentationDockWidget->GetActionForToggle() );
 
-  this->m_TracesActions->m_VectorAction.push_back(ContourSegmentationAction); 
-  //this->m_TracesActions.push_back(this->m_ContourSegmentationDockWidget->GetActionForToggle()); 
+  this->m_TracesActions->m_VectorAction.push_back(ContourSegmentationAction);
+  //this->m_TracesActions.push_back(this->m_ContourSegmentationDockWidget->GetActionForToggle());
 
   QObject::connect( ContourSegmentationAction,
                     SIGNAL( toggled(bool) ),
@@ -1850,6 +1850,9 @@ QGoTabImageView3DwT::SetTimePoint(const int & iTimePoint)
     }
 
   UpdateImage();
+
+  // update TF editor (histogram and max value)
+  UpdateTFEditor();
 
   EnableVolumeRendering(this->m_ViewActions.at(13)->isChecked());
 
@@ -3580,3 +3583,26 @@ AdjustWindowLevel(double iMin, double iMax)
       this->m_TransferFunctionDockWidget->GetCurrentWidget());
   widget->AdjustWindowLevel(iMin, iMax);
 }
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+UpdateTFEditor()
+{
+ /* unsigned int NumberOfChannels = m_ImageProcessor->getNumberOfChannels();
+
+  for ( unsigned int i = 0; i < NumberOfChannels; i++ )
+    {
+    std::string name = m_ImageProcessor->getChannelName(i);
+    GoTransferFunctionEditorWidget* widget =
+      dynamic_cast<GoTransferFunctionEditorWidget*>(
+        m_TransferFunctionDockWidget->GetWidget(i) );
+
+    // update histogram
+    widget->AddHistogram(m_ImageProcessor->getHistogram(name) );
+    // update max value
+    widget->SetMax(m_ImageProcessor->getImageBW(name)->GetScalarRange()[1]);
+    }*/
+}
+//------------------------------------------------------------------------------

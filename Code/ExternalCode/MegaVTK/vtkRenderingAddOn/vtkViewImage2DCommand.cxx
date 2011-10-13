@@ -127,8 +127,8 @@ vtkViewImage2DCommand::Execute( vtkObject *caller,
   if ( event == vtkCommand::StartWindowLevelEvent )
     {
     //no since it is min an max now...!
-    this->InitialWindow = (this->Viewer->GetLevel() - this->Viewer->GetWindow())/2;
-    this->InitialLevel = this->Viewer->GetLevel() - this->InitialWindow;
+    this->InitialWindow = this->Viewer->GetLevel() - this->Viewer->GetWindow();
+    this->InitialLevel = this->Viewer->GetLevel() - this->InitialWindow/2;
     return;
     }
 
@@ -252,18 +252,21 @@ vtkViewImage2DCommand::Windowing(vtkInteractorStyleImage2D *isi)
 
   // compute new window
   double min = 0.0;
-  if(newWindow - newLevel > 0)
-    min = newWindow - newLevel;
+  if(newLevel - newWindow /2 > 0)
+    min = newLevel - newWindow /2;
 
   double max = this->Viewer->GetInput()->GetScalarRange()[1];
-  if(newWindow + newLevel < this->Viewer->GetInput()->GetScalarRange()[1])
-    max = newWindow + newLevel;
-
+  if(newLevel + newWindow /2 < this->Viewer->GetInput()->GetScalarRange()[1])
+    max = newLevel + newWindow /2;
+/*
   if(min >= max)
     min = max - 1;
 
   if(max <= min)
-    max = min + 1;
+    max = min + 1;*/
+
+  std::cout << "new min: " << min << std::endl;
+  std::cout << "new max: " << max << std::endl;
 
   this->Viewer->SetWindow(min);
   this->Viewer->SetLevel(max);

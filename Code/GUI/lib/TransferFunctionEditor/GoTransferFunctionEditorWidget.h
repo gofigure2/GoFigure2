@@ -111,6 +111,8 @@ public:
 
   void AddOpacityTransferFunction(vtkPiecewiseFunction* iOpacity);
 
+  void SetMax( double iMax);
+
 public slots:
   void pointsUpdated();
   // color

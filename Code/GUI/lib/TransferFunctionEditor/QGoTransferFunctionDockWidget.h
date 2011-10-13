@@ -64,5 +64,6 @@ public:
   void AddTransferFunction(QString iName, GoTransferFunctionEditorWidget* iTF);
 
   QWidget* GetCurrentWidget();
+  QWidget* GetWidget(int iIndex);
 };
 #endif
