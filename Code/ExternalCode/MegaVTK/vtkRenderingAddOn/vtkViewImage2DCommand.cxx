@@ -224,31 +224,28 @@ vtkViewImage2DCommand::Windowing(vtkInteractorStyleImage2D *isi)
         - isi->GetWindowLevelCurrentPosition()[1] ) / size[1];
 
   // Scale by current values
-  if ( fabs(window) > 0.01 ) { dx = dx * window; }
+  if ( fabs(window) > 0.01 ) { dy = dy * window; }
   else
     {
-    dx = dx * ( window < 0 ? -0.01 : 0.01 );
+    dy = dy * ( window < 0 ? -0.01 : 0.01 );
     }
-  if ( fabs(level) > 0.01 ) { dy = dy * level; }
+  if ( fabs(level) > 0.01 ) { dx = dx * level; }
   else
     {
-    dy = dy * ( level < 0 ? -0.01 : 0.01 );
+    dx = dx * ( level < 0 ? -0.01 : 0.01 );
     }
 
   // Abs so that direction does not flip
-  if ( window < 0.0 ) { dx = -1 * dx; }
-  if ( level < 0.0 ) { dy = -1 * dy; }
+  if ( window < 0.0 ) { dy = -1 * dy; }
+  if ( level < 0.0 ) { dx = -1 * dx; }
 
   // Compute new window level
-  double newWindow = dx + window;
-  double newLevel = level - dy;
+  double newWindow = window - dy;
+  double newLevel = level + dx;
 
   // Stay away from zero and really
   if ( fabs(newWindow) < 0.01 ) { newWindow = 0.01 * ( newWindow < 0 ? -1 : 1 ); }
   if ( fabs(newLevel) < 0.01 ) { newLevel = 0.01 * ( newLevel < 0 ? -1 : 1 ); }
-
-  std::cout << "new window: " << newWindow << std::endl;
-  std::cout << "new level: " << newLevel << std::endl;
 
   // compute new window
   double min = 0.0;
@@ -258,15 +255,13 @@ vtkViewImage2DCommand::Windowing(vtkInteractorStyleImage2D *isi)
   double max = this->Viewer->GetInput()->GetScalarRange()[1];
   if(newLevel + newWindow /2 < this->Viewer->GetInput()->GetScalarRange()[1])
     max = newLevel + newWindow /2;
-/*
-  if(min >= max)
+
+  // can happen if we move too fast
+  if(min >= max -1 )
     min = max - 1;
 
-  if(max <= min)
-    max = min + 1;*/
-
-  std::cout << "new min: " << min << std::endl;
-  std::cout << "new max: " << max << std::endl;
+  if(max <= min +1 )
+    max = min + 1;
 
   this->Viewer->SetWindow(min);
   this->Viewer->SetLevel(max);
