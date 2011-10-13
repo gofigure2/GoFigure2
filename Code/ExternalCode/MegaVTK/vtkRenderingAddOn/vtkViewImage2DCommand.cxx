@@ -212,9 +212,6 @@ vtkViewImage2DCommand::Windowing(vtkInteractorStyleImage2D *isi)
   double window = this->InitialWindow;
   double level = this->InitialLevel;
 
-  std::cout << "initial window: " << this->InitialWindow << std::endl;
-  std::cout << "initial level: " << this->InitialLevel << std::endl;
-
   // Compute normalized delta
   double dx = 4.0
     * ( isi->GetWindowLevelCurrentPosition()[0]
@@ -257,11 +254,8 @@ vtkViewImage2DCommand::Windowing(vtkInteractorStyleImage2D *isi)
     max = newLevel + newWindow /2;
 
   // can happen if we move too fast
-  if(min >= max -1 )
-    min = max - 1;
-
-  if(max <= min +1 )
-    max = min + 1;
+  if(min > max || max < min)
+    return;
 
   this->Viewer->SetWindow(min);
   this->Viewer->SetLevel(max);

@@ -177,19 +177,21 @@ GoTransferFunctionEditorWidget::GoTransferFunctionEditorWidget(QWidget *parent,
   gammaLayout->addWidget(m_GammaSlider);
 
   m_MinSlider = new QSlider(this);
+  m_MinSlider->setObjectName("min");
   m_MinSlider->setOrientation(Qt::Horizontal);
   m_MinSlider->setMaximum(m_Max);
   m_MinSlider->setValue(iLUTParameters[1]);
   m_MinSlider->setStyleSheet("QSlider::groove:horizontal {border: 1px solid #bbb;background: rgba(0, 0, 0, 0);height: 4px;position: absolute; right: 10px;left: 10px; }QSlider::handle:horizontal {image: url(/home/nr52/gitroot/gofigure/Resources/widget/arrow_up.png);width: 20px;height: 6px;margin-top: -2px;margin-bottom: -2px; right: -10px; left:-10px; border: 1px solid black; background: rgba(255, 255, 255, 200); border-radius: 4px;}QSlider::sub-page:horizontal {background: #909090;border: 1px solid black;}QSlider::add-page:horizontal {background: rgba(0, 0, 0, 0);border: 1px solid black;}");
-  connect(m_MinSlider, SIGNAL(valueChanged(int)), this, SLOT(pointsUpdated()));
+  connect(m_MinSlider, SIGNAL(valueChanged(int)), this, SLOT(updateSliders(int)));
 
   m_MaxSlider = new QSlider(this);
+  m_MaxSlider->setObjectName("max");
   m_MaxSlider->setOrientation(Qt::Horizontal);
   m_MaxSlider->setMaximum(m_Max);
   m_MaxSlider->setValue(iLUTParameters[2]);
   m_MaxSlider->setStyleSheet("QSlider::groove:horizontal {border: 1px solid #bbb;background: rgba(0, 0, 0, 0);height: 4px;position: absolute; right: 10px;left: 10px; }QSlider::handle:horizontal {image: url(/home/nr52/gitroot/gofigure/Resources/widget/arrow_down.png);width: 20px;height: 6px;margin-top: -2px;margin-bottom: -2px; right: -10px; left:-10px; border: 1px solid black; background: rgba(255, 255, 255, 200); border-radius: 4px;}QSlider::sub-page:horizontal {background: rgba(0, 0, 0, 0);border: 1px solid black;}QSlider::add-page:horizontal {background: #909090;border: 1px solid black;}");
 
-  connect(m_MaxSlider, SIGNAL(valueChanged(int)), this, SLOT(pointsUpdated()));
+  connect(m_MaxSlider, SIGNAL(valueChanged(int)), this, SLOT(updateSliders(int)));
 
 
   QCheckBox* tfCB = new QCheckBox("Color Transfer Function");
@@ -707,15 +709,32 @@ showHistogram(bool iEnable){
 void
 GoTransferFunctionEditorWidget::
 AdjustWindowLevel(double iMin, double iMax){
-  qDebug() << "min: " << iMin;
-  qDebug() << "max: " << iMax;
 
-  // 2 signals instead of 1...
+  double max = iMax;
+  double min = iMin;
+
+  if(max - min < 2)
+    {
+    if(max < this->m_MinSlider->minimum() + 1)
+      {
+      max += 2;
+      }
+    else if(min < this->m_MaxSlider->maximum() - 1)
+      {
+      min -= 2;
+      }
+    else
+      {
+      max++;
+      min--;
+      }
+    }
+
   this->m_MinSlider->blockSignals(true);
-  this->m_MinSlider->setValue(iMin);
+  this->m_MinSlider->setValue(min);
   this->m_MinSlider->blockSignals(false);
   this->m_MaxSlider->blockSignals(true);
-  this->m_MaxSlider->setValue(iMax);
+  this->m_MaxSlider->setValue(max);
   this->m_MaxSlider->blockSignals(false);
 
   pointsUpdated();
@@ -729,3 +748,27 @@ SetMax( double iMax)
 {
   m_Max = iMax;
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+GoTransferFunctionEditorWidget::
+updateSliders( int iValue)
+{
+  if(m_MinSlider->value() > m_MaxSlider->value() - 2)
+    {
+    QString name = QObject::sender()->objectName();
+    if(! name.compare("min") )
+      {
+      m_MinSlider->setValue(iValue - 1);
+      }
+    else
+      {
+      m_MaxSlider->setValue(iValue + 1);
+      }
+      return;
+    }
+
+  pointsUpdated();
+}
+

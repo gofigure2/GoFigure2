@@ -127,6 +127,7 @@ public slots:
   void updateOpacityTF();
   void showHistogram(bool iEnable);
   void AdjustWindowLevel(double, double);
+  void updateSliders(int);
 
 signals:
   void updateVisualization();
