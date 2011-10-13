@@ -101,7 +101,8 @@ QGoMainWindow::QGoMainWindow(QWidget *iParent, Qt::WindowFlags iFlags) :
   setCorner(Qt::BottomRightCorner, Qt::RightDockWidgetArea);
 
   QRect screen = QApplication::desktop()->availableGeometry(this);
-  QSize MaximumSize = screen.size();
+  int numberOfScreens = QApplication::desktop()->numScreens();
+  QSize MaximumSize = screen.size() * numberOfScreens;
   this->setMaximumSize(MaximumSize);
   // QSize IconSize = this->iconSize();
   QSize SizeIcon(22, 22);
@@ -1000,7 +1001,7 @@ void QGoMainWindow::on_actionReport_a_bug_triggered()
   search_dir << app_up_dir + "/share/doc/gofigure2/Resources";
   // on mac without install
   search_dir << app_up_up_up_dir + "/Resources";
- 
+
   QDir::setSearchPaths("BugEntryPath", search_dir);
 
   QFile file("BugEntryPath:BugEntry.txt");
