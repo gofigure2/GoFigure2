@@ -51,8 +51,11 @@ int main(int argc, char **argv)
     "http://gofigure2.sourceforge.net");
   QCoreApplication::setApplicationName("GoFigure2");
 
-  QString inputfilename;
+  bool limited_memory = true;
+  unsigned int max_number_of_meshes = 0;
 
+  QString inputfilename;
+  
   if ( argc > 1 )
     {
     for ( int i = 1; i < argc; i++ )
@@ -74,9 +77,18 @@ int main(int argc, char **argv)
         std::cout << std::endl;
         std::cout << "gofigure [options]" << std::endl;
         std::cout << "--i input file (single file)" << std::endl;
+        std::cout << "--max_number_of_meshes N (if 0: everything loaded)" << std::endl;
         std::cout << "--help list of all options" << std::endl;
         std::cout << "--version get the version number" << std::endl;
         return EXIT_SUCCESS;
+        }
+      if ( temp == "--max-meshes" )
+        {
+        max_number_of_meshes = ss_atoi< unsigned int >( std::string( argv[++i] ) );
+        if( max_number_of_meshes == 0 )
+          {
+          limited_memory = false;
+          }
         }
       }
     }
@@ -97,6 +109,14 @@ int main(int argc, char **argv)
   if ( ( !inputfilename.isEmpty() ) && ( !inputfilename.isNull() ) )
     {
     form->SetSingleFileName(inputfilename);
+    }
+  if( ( limited_memory ) && ( max_number_of_meshes != 0 ) )
+    {
+    form->SetMaxNumberOfTraces( max_number_of_meshes );
+    }
+  if( !limited_memory )
+    {
+    form->SetMaxNumberOfTraces( 0 );
     }
   form->show();
 

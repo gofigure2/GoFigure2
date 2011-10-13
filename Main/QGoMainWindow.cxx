@@ -199,6 +199,19 @@ QGoMainWindow::~QGoMainWindow()
 }
 
 //--------------------------------------------------------------------------
+void
+QGoMainWindow::SetMaxNumberOfTraces( unsigned int iN )
+{
+  if( iN != 0 )
+    {
+    this->m_MaxNumberOfTraces = iN;
+    }
+  else
+    {
+    this->m_MaxNumberOfTraces = std::numeric_limits< unsigned int >::max();
+    }
+}
+
 
 //--------------------------------------------------------------------------
 void QGoMainWindow::CreateSignalSlotsConnection()

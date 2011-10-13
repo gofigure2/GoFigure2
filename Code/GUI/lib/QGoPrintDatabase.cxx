@@ -218,6 +218,8 @@ void QGoPrintDatabase::CloseDBConnection()
 //--------------------------------------------------------------------------
 void QGoPrintDatabase::FillTableFromDatabase(const int& iThreshold)
 {
+  bool limitedMemory = ( iThreshold == std::numeric_limits< unsigned int >::max() );
+
   OpenDBConnection();
   // Get number of meshes to be loaded
   int nbOfTraces = NumberOfElementForGivenImagingSessionAndTrace(
@@ -225,17 +227,18 @@ void QGoPrintDatabase::FillTableFromDatabase(const int& iThreshold)
           this->m_ImgSessionID,
           "mesh");
 
-  // if there are more than 5000 meshes, only load 3 time points in
-  // memory
-  if(nbOfTraces > iThreshold)
-    {
-    this->m_VisibleTimePoints.resize(3);
-    this->GetContentAndDisplayAllTracesInfoFor3TPs(this->m_DatabaseConnector);
-    }
-  else
+  if( ( nbOfTraces <= iThreshold ) || !limitedMemory )
     {
     this->m_VisibleTimePoints.resize(0);
     this->GetContentAndDisplayAllTracesInfo(this->m_DatabaseConnector);
+    }
+  else
+    {
+    // if there are more than 5000 meshes, only load 3 time points in
+    // memory
+
+    this->m_VisibleTimePoints.resize(3);
+    this->GetContentAndDisplayAllTracesInfoFor3TPs(this->m_DatabaseConnector);
     }
 
   CloseDBConnection();
