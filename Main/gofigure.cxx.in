@@ -40,6 +40,8 @@
 
 #include <iostream>
 
+#include "boost/program_options.hpp"
+
 #include "QGoMainWindow.h"
 
 int main(int argc, char **argv)
@@ -51,34 +53,27 @@ int main(int argc, char **argv)
     "http://gofigure2.sourceforge.net");
   QCoreApplication::setApplicationName("GoFigure2");
 
-  QString inputfilename;
+  boost::program_options::options_description description( "Usage" );
+  description.add_options()
+      ("help,h", "produce help message")
+      ("input,i", boost::program_options::value< std::vector< std::string > >(), "input file (single file)" )
+      ("version,v", "get the version number");
 
-  if ( argc > 1 )
+  boost::program_options::variables_map vm;
+  boost::program_options::store(
+        boost::program_options::parse_command_line( argc, argv, description ), vm );
+  boost::program_options::notify( vm );
+
+  if( vm.count( "help" ) )
     {
-    for ( int i = 1; i < argc; i++ )
-      {
-      std::string temp = argv[i];
-      if ( temp == "--version" )
-        {
-        std::cout << "@GOFIGURE2_VERSION@" << std::endl;
-        return EXIT_SUCCESS;
-        }
-      if ( temp == "--i" )
-        {
-        inputfilename = argv[++i];
-        std::cout << inputfilename.toStdString().c_str() << std::endl;
-        }
-      if ( temp == "--help" )
-        {
-        std::cout << "GoFigure2 version @GOFIGURE2_VERSION@" << std::endl;
-        std::cout << std::endl;
-        std::cout << "gofigure [options]" << std::endl;
-        std::cout << "--i input file (single file)" << std::endl;
-        std::cout << "--help list of all options" << std::endl;
-        std::cout << "--version get the version number" << std::endl;
-        return EXIT_SUCCESS;
-        }
-      }
+    std::cout << description << "\n";
+    return EXIT_SUCCESS;
+    }
+
+  if( vm.count( "version" ) )
+    {
+    std::cout << "GoFigure2-v@GOFIGURE2_VERSION@" << std::endl;
+    return EXIT_SUCCESS;
     }
 
   QPixmap pixmap( QString::fromUtf8(":/fig/splash.png") );
@@ -94,10 +89,26 @@ int main(int argc, char **argv)
   splash->showMessage("Application loading... please wait");
 
   QGoMainWindow *form = new QGoMainWindow;
-  if ( ( !inputfilename.isEmpty() ) && ( !inputfilename.isNull() ) )
+
+  QString inputfilename;
+
+  if( vm.count( "input" ) )
     {
-    form->SetSingleFileName(inputfilename);
+    std::vector< std::string > temp_filename =vm["input"].as< std::vector< std::string > >();
+
+    for( std::vector< std::string >::const_iterator it = temp_filename.begin();
+         it != temp_filename.end();
+         ++it )
+      {
+      inputfilename = QString::fromStdString( *it );
+
+      if ( ( !inputfilename.isEmpty() ) && ( !inputfilename.isNull() ) )
+        {
+        form->SetSingleFileName(inputfilename);
+        }
+      }
     }
+
   form->show();
 
   splash->showMessage("Application ready");
@@ -107,7 +118,7 @@ int main(int argc, char **argv)
   splash->finish(form);
 
   int output;
-  
+
   try
     {
     output = app.exec();

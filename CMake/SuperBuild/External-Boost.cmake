@@ -14,7 +14,7 @@ ExternalProject_Add(${proj}
     ${ep_common_args}
     # can generate erros on Mac 10.6
 #    -DCMAKE_INSTALL_PREFIX:PATH=${CMAKE_BINARY_DIR}/${proj}-INSTALL
-    -DBUILD_PROJECTS:STRING=NONE
+    -DBUILD_PROJECTS:STRING=program_options
     -DWITH_PYTHON:BOOL=OFF
     -DWITH_DOXYGEN:BOOL=OFF
     -DWITH_EXPAT:BOOL=OFF
