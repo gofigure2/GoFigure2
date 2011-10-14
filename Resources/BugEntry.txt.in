@@ -1,18 +1,18 @@
 Please send this email at: gofigure2-developers@lists.sourceforge.net
 
->>> IMPORTANT: a precise description of the steps to reproduce the bug is primordial.
+>>> IMPORTANT: a precise description of the steps to reproduce the bug is important.
 >>> IMPORTANT: if the bug is non-trivial or if it doesn't always occur, please let us know and try to describe it.
 >>> IMPORTANT: let us know if the dataset you are using is public. Many bugs result from a corrupted dataset.
 
 ------------------------------------------
 * System information:
-Version: @GOFIGURE2_VERSION@
+GoFigure2 Version: @GOFIGURE2_VERSION@
 OS: @OS@
-Flavor:(ubuntu 10.04, xp sp2, lion, etc.)
+OS Version:(ubuntu 10.04, xp sp2, lion, etc.)
 !!!!! write flavor here !!!!!
 
 ------------------------------------------
-* severity: (Defect, Minor, Major, Critical)
+* severity: (Minor, Medium, Major)
 !!!!! write severity here !!!!!
 
 ------------------------------------------
