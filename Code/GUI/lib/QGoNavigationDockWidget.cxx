@@ -453,3 +453,22 @@ QGoNavigationDockWidget:: DeleteDopplerWidgets()
   m_ListDoppler.clear();
 }
 //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+int
+QGoNavigationDockWidget::
+GetFirstVisibleChannel()
+{
+  int index = 0;
+  QList<QCheckBox*>::iterator it2 = m_ListCheckBoxes.begin();
+  while( it2 != m_ListCheckBoxes.end() )
+    {
+    if((*it2)->isChecked())
+      {
+      return index;
+      }
+    ++index;
+    ++it2;
+    }
+  return -1;
+}

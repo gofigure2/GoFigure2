@@ -130,6 +130,8 @@ public slots:
 
   void visibilityChanged(bool);
 
+  int GetFirstVisibleChannel();
+
 signals:
   void XSliceChanged(int Slice);
 

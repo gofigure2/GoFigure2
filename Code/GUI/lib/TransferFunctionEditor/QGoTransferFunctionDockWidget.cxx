@@ -83,3 +83,13 @@ GetWidget(int iIndex)
 {
   return this->tabWidget->widget(iIndex);
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTransferFunctionDockWidget::
+SetCurrentWidget(int iIndex)
+{
+  return this->tabWidget->setCurrentIndex(iIndex);
+}
+//-------------------------------------------------------------------------

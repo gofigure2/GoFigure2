@@ -170,6 +170,7 @@ void vtkViewImage::SetInput(vtkImageData *in)
 
     this->IsColor = ( in->GetNumberOfScalarComponents() > 1 );
 
+    //multi channel
     if ( this->IsColor )
       {
       this->ImageActor->SetInput(this->WindowLevel->GetOutput());
@@ -183,7 +184,8 @@ void vtkViewImage::SetInput(vtkImageData *in)
       this->ShowScalarBar = false;
       this->ScalarBarActor->SetVisibility(this->ShowScalarBar);
       }
-    else
+    // single channel
+    else if(this->LookupTable)
       {
       this->ImageActor->SetInput(this->WindowLevel->GetOutput());
       this->WindowLevel->SetLookupTable(this->LookupTable);
@@ -191,6 +193,16 @@ void vtkViewImage::SetInput(vtkImageData *in)
       this->WindowLevel->SetLevel(this->LookupTable->GetRange()[0] + (this->LookupTable->GetRange()[1]-this->LookupTable->GetRange()[0])/2);
       this->SetWindow(this->LookupTable->GetRange()[0]);
       this->SetLevel(this->LookupTable->GetRange()[1]);
+      }
+    // no channel
+    else
+      {
+      //this->ImageActor->SetInput(this->WindowLevel->GetOutput());
+      this->WindowLevel->SetLookupTable(NULL);
+      this->WindowLevel->SetWindow(0);
+      this->WindowLevel->SetLevel(0);
+      this->SetWindow(0);
+      this->SetLevel(0);
       }
     }
 }
@@ -468,7 +480,10 @@ void vtkViewImage::ResetWindowLevel(void)
 //----------------------------------------------------------------------------
 void vtkViewImage::UpdateWindowLevel(void)
 {
- if ( !this->IsColor )
+ if (this->IsColor)
+   return;
+
+ if ( LookupTable )
     {
     double *range = LookupTable->GetRange();
     double  window = range[1] - range[0];
@@ -476,6 +491,11 @@ void vtkViewImage::UpdateWindowLevel(void)
 
     this->SetColorWindow(window);
     this->SetColorLevel(level);
+    }
+  else
+    {
+    this->SetColorWindow(0);
+    this->SetColorLevel(0);
     }
 }
 

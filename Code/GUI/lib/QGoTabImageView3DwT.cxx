@@ -1695,13 +1695,9 @@ QGoTabImageView3DwT::UpdateImage()
     }
   else if( NumberOfVisibleChannels == 1)
     {
-    // BUG HERE - 2 update + hide actors if opacity <1
     //update Image
     m_ImageView->SetImage(m_ImageProcessor->getImageBW());
     // update LUT
-    /*vtkSmartPointer<vtkLookupTable> lut = vtkSmartPointer<vtkLookupTable>::New();
-    lut->DeepCopy(m_ImageProcessor->getLookuptable());*/
-    // WHEN WE MODIFY WE WANT TO KEEP THE MODIF (FROM ANDREA)
     m_ImageView->SetLookupTable(m_ImageProcessor->getLookuptable());
 
     // CONFIGURE LUT
@@ -3303,8 +3299,6 @@ QGoTabImageView3DwT::CreateModeToolBar(QMenu* iMenu, QToolBar* iToolBar)
 
   QObject::connect( AngleAction, SIGNAL( toggled(bool) ),
                     this, SLOT( AngleWidgetInteractorBehavior(bool) ) );
-
-  //this->m_ToolBarList.push_back(this->m_ModeToolBar);
 }
 //-------------------------------------------------------------------------
 
@@ -3641,9 +3635,11 @@ void
 QGoTabImageView3DwT::
 AdjustWindowLevel(double iMin, double iMax)
 {
+  int index = m_NavigationDockWidget->GetFirstVisibleChannel();
+  this->m_TransferFunctionDockWidget->SetCurrentWidget(index);
   GoTransferFunctionEditorWidget* widget =
       dynamic_cast<GoTransferFunctionEditorWidget*>(
-      this->m_TransferFunctionDockWidget->GetCurrentWidget());
+      this->m_TransferFunctionDockWidget->GetWidget(index));
   widget->AdjustWindowLevel(iMin, iMax);
 }
 //------------------------------------------------------------------------------

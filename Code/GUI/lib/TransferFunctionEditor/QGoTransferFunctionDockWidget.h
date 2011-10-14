@@ -65,5 +65,6 @@ public:
 
   QWidget* GetCurrentWidget();
   QWidget* GetWidget(int iIndex);
+  void     SetCurrentWidget(int iIndex);
 };
 #endif
