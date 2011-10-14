@@ -113,6 +113,8 @@ public:
 
     void setColor(QColor iColor);
 
+    void setMax(double iMax);
+
 signals:
     void opacityChanged();
     void enableHoverPoints(bool);

@@ -362,10 +362,8 @@ GoTransferFunctionEditorWidget::
 AddHistogram(vtkImageAccumulate* iHistogram)
 {
   int x_range = iHistogram->GetOutput()->GetNumberOfPoints();
-  qDebug() << "x range: " << x_range;
   vtkDataArray* scalars = iHistogram->GetOutput()->GetPointData()->GetScalars();
   double* range = iHistogram->GetOutput()->GetScalarRange();
-  qDebug() << "y range: " << range[0] << " to " << range[1];
 
   QVector<qreal> histo;
 
@@ -379,6 +377,7 @@ AddHistogram(vtkImageAccumulate* iHistogram)
 
   m_Histogram = histo;
   m_red_shade->SetHistogram(histo);
+  m_red_shade->update();
 }
 //-------------------------------------------------------------------------
 
@@ -727,6 +726,10 @@ GoTransferFunctionEditorWidget::
 SetMax( double iMax)
 {
   m_Max = iMax;
+  m_red_shade->setMax(m_Max);
+
+  m_MinSlider->setMaximum(m_Max);
+  m_MaxSlider->setMaximum(m_Max);
 }
 //-------------------------------------------------------------------------
 

@@ -3653,7 +3653,7 @@ void
 QGoTabImageView3DwT::
 UpdateTFEditor()
 {
- /* unsigned int NumberOfChannels = m_ImageProcessor->getNumberOfChannels();
+  unsigned int NumberOfChannels = m_ImageProcessor->getNumberOfChannels();
 
   for ( unsigned int i = 0; i < NumberOfChannels; i++ )
     {
@@ -3666,7 +3666,7 @@ UpdateTFEditor()
     widget->AddHistogram(m_ImageProcessor->getHistogram(name) );
     // update max value
     widget->SetMax(m_ImageProcessor->getImageBW(name)->GetScalarRange()[1]);
-    }*/
+    }
 }
 //------------------------------------------------------------------------------
 
