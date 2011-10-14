@@ -30,6 +30,8 @@ ENDIF( SUPER_SHARED_LIBS )
 SET(ep_install_dir ${CMAKE_INSTALL_PREFIX})
 SET(ep_common_c_flags "${CMAKE_C_FLAGS_INIT} ${ADDITIONAL_C_FLAGS}")
 SET(ep_common_cxx_flags "${CMAKE_CXX_FLAGS_INIT} ${ADDITIONAL_CXX_FLAGS}")
+SET(ep_common_cxx_compiler "${CMAKE_CXX_COMPILER}" )
+SET(ep_common_c_compiler "${CMAKE_C_COMPILER}" )
 
 SET(ep_common_args
   -DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}
@@ -37,7 +39,9 @@ SET(ep_common_args
   -DBUILD_TESTING:BOOL=OFF
   -DBUILD_EXAMPLES:BOOL=OFF
   -DCMAKE_INSTALL_PREFIX:PATH=${ep_install_dir}
+  -DCMAKE_CXX_COMPILER:FILEPATH=${ep_common_cxx_compiler}
   -DCMAKE_CXX_FLAGS:STRING=${ep_common_cxx_flags}
+  -DCMAKE_C_COMPILER:FILEPATH=${ep_common_c_compiler}
   -DCMAKE_C_FLAGS:STRING=${ep_common_c_flags}
   )
 
