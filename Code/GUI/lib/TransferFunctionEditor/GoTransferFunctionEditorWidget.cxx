@@ -710,31 +710,11 @@ void
 GoTransferFunctionEditorWidget::
 AdjustWindowLevel(double iMin, double iMax){
 
-  double max = iMax;
-  double min = iMin;
-
-  if(max - min < 2)
-    {
-    if(max < this->m_MinSlider->minimum() + 1)
-      {
-      max += 2;
-      }
-    else if(min < this->m_MaxSlider->maximum() - 1)
-      {
-      min -= 2;
-      }
-    else
-      {
-      max++;
-      min--;
-      }
-    }
-
   this->m_MinSlider->blockSignals(true);
-  this->m_MinSlider->setValue(min);
+  this->m_MinSlider->setValue(iMin);
   this->m_MinSlider->blockSignals(false);
   this->m_MaxSlider->blockSignals(true);
-  this->m_MaxSlider->setValue(max);
+  this->m_MaxSlider->setValue(iMax);
   this->m_MaxSlider->blockSignals(false);
 
   pointsUpdated();
