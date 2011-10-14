@@ -712,6 +712,7 @@ void QGoMainWindow::OpenLSMImage(const QString & iFile, const int & iTimePoint)
       CreateNewTabFor3DImage(m_LSMReader.back()->GetOutput(), iFile);
       break;
       }
+    default:
     case 4:
       {
       CreateNewTabFor3DwtImage(m_LSMReader.back(), iFile);
@@ -992,7 +993,7 @@ void QGoMainWindow::on_actionReport_a_bug_triggered()
   search_dir << app_up_dir + "/share/doc/gofigure2/Resources";
   // on mac without install
   search_dir << app_up_up_up_dir + "/Resources";
- 
+
   QDir::setSearchPaths("BugEntryPath", search_dir);
 
   QFile file("BugEntryPath:BugEntry.txt");
