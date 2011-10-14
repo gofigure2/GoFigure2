@@ -184,9 +184,6 @@ GoTransferFunctionWidget::
 AddGammaPoints(const QPolygonF& iPoints)
 {
   m_gammaPoints->setPoints(iPoints);
-  m_gammaPoints->setPointLock(0, HoverPoints::LockToLeft);
-  m_gammaPoints->setPointLock(iPoints.size()-1, HoverPoints::LockToRight);
-  m_gammaPoints->setSortType(HoverPoints::XSort);
 }
 //-------------------------------------------------------------------------
 
@@ -222,7 +219,7 @@ UpdateLookupTable(vtkLookupTable* iLUT, qreal iGamma, qreal iMin, qreal iMax)
     QColor color(m_shade.pixel(i*(width-1)/numTableValues, temp_height));
     iLUT->SetTableValue(count, color.redF(), color.greenF(), color.blueF());
     count++;
-  }
+    }
 
 
   // last point
@@ -235,7 +232,8 @@ UpdateLookupTable(vtkLookupTable* iLUT, qreal iGamma, qreal iMin, qreal iMax)
   iLUT->Modified();
 
   // print new curve
-  UpdateGamma(iPoints);
+  m_gammaPoints->setPoints(iPoints);
+  update();
 }
 //-------------------------------------------------------------------------
 
@@ -253,26 +251,14 @@ void
 GoTransferFunctionWidget::
 Reset()
 {
-// reset alpha
-QPolygonF points;
-points << QPointF(0, height())
-       << QPointF(width(),0);
-m_hoverPoints->setPoints(points);
-m_hoverPoints->setPointLock(0, HoverPoints::LockToLeft);
-m_hoverPoints->setPointLock(1, HoverPoints::LockToRight);
-m_hoverPoints->setSortType(HoverPoints::XSort);
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-GoTransferFunctionWidget::
-UpdateGamma( QPolygonF& iPoints)
-{
-m_gammaPoints->setPoints(iPoints);
-m_gammaPoints->setSortType(HoverPoints::XSort);
-
-update();
+  // reset alpha
+  QPolygonF points;
+  points << QPointF(0, height())
+         << QPointF(width(),0);
+  m_hoverPoints->setPoints(points);
+  m_hoverPoints->setPointLock(0, HoverPoints::LockToLeft);
+  m_hoverPoints->setPointLock(1, HoverPoints::LockToRight);
+  m_hoverPoints->setSortType(HoverPoints::XSort);
 }
 //-------------------------------------------------------------------------
 
