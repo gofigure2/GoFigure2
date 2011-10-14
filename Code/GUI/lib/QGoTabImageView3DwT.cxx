@@ -1679,9 +1679,6 @@ InitializeImageRelatedWidget()
 }
 //-------------------------------------------------------------------------
 
-//#########################################################################
-//#########################################################################
-
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::UpdateImage()
@@ -1699,15 +1696,21 @@ QGoTabImageView3DwT::UpdateImage()
     m_ImageView->SetImage(m_ImageProcessor->getImageBW());
     // update LUT
     m_ImageView->SetLookupTable(m_ImageProcessor->getLookuptable());
-
     // CONFIGURE LUT
     this->findChild<QAction*>("LUT")->setEnabled(true);
     this->findChild<QAction*>("ScalarBar")->setEnabled(true);
     }
   else
     {
-    m_ImageView->SetImage(NULL);
-    m_ImageView->SetLookupTable(NULL);
+    // Start by creating a black lookup table.
+    vtkSmartPointer<vtkLookupTable> bwLut =
+      vtkSmartPointer<vtkLookupTable>::New();
+    bwLut->SetTableRange (0, 1);
+    bwLut->SetSaturationRange (0, 0);
+    bwLut->SetHueRange (0, 0);
+    bwLut->SetValueRange (0, 0);
+    bwLut->Build();
+    m_ImageView->SetLookupTable(bwLut);
     }
 }
 
@@ -3636,11 +3639,16 @@ QGoTabImageView3DwT::
 AdjustWindowLevel(double iMin, double iMax)
 {
   int index = m_NavigationDockWidget->GetFirstVisibleChannel();
-  this->m_TransferFunctionDockWidget->SetCurrentWidget(index);
-  GoTransferFunctionEditorWidget* widget =
-      dynamic_cast<GoTransferFunctionEditorWidget*>(
-      this->m_TransferFunctionDockWidget->GetWidget(index));
-  widget->AdjustWindowLevel(iMin, iMax);
+  // if one channel is checked
+  // (if no channel selected, index == -1, we don't do anything)
+  if(index >= 0)
+    {
+    this->m_TransferFunctionDockWidget->SetCurrentWidget(index);
+    GoTransferFunctionEditorWidget* widget =
+        dynamic_cast<GoTransferFunctionEditorWidget*>(
+        this->m_TransferFunctionDockWidget->GetWidget(index));
+    widget->AdjustWindowLevel(iMin, iMax);
+    }
 }
 //------------------------------------------------------------------------------
 

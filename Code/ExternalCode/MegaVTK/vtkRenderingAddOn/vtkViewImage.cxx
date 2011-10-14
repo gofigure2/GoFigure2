@@ -185,7 +185,7 @@ void vtkViewImage::SetInput(vtkImageData *in)
       this->ScalarBarActor->SetVisibility(this->ShowScalarBar);
       }
     // single channel
-    else if(this->LookupTable)
+    else
       {
       this->ImageActor->SetInput(this->WindowLevel->GetOutput());
       this->WindowLevel->SetLookupTable(this->LookupTable);
@@ -193,16 +193,6 @@ void vtkViewImage::SetInput(vtkImageData *in)
       this->WindowLevel->SetLevel(this->LookupTable->GetRange()[0] + (this->LookupTable->GetRange()[1]-this->LookupTable->GetRange()[0])/2);
       this->SetWindow(this->LookupTable->GetRange()[0]);
       this->SetLevel(this->LookupTable->GetRange()[1]);
-      }
-    // no channel
-    else
-      {
-      //this->ImageActor->SetInput(this->WindowLevel->GetOutput());
-      this->WindowLevel->SetLookupTable(NULL);
-      this->WindowLevel->SetWindow(0);
-      this->WindowLevel->SetLevel(0);
-      this->SetWindow(0);
-      this->SetLevel(0);
       }
     }
 }

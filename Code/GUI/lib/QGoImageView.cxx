@@ -385,7 +385,6 @@ QGoImageView::SetInterpolate(const int & val)
 void
 QGoImageView::EnableContourPickingMode()
 {
-  // qDebug() << "Contour Picking Mode";
   //Change cursor
   ChangeCursorShape(Qt::ArrowCursor);
   // Change mode in the collection
