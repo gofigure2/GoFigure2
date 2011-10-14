@@ -53,20 +53,26 @@ int main(int argc, char **argv)
     "http://gofigure2.sourceforge.net");
   QCoreApplication::setApplicationName("GoFigure2");
 
-  boost::program_options::options_description description( "Usage" );
-  description.add_options()
-      ("help,h", "produce help message")
-      ("input,i", boost::program_options::value< std::vector< std::string > >(), "input file (single file)" )
-      ("version,v", "get the version number");
+  boost::program_options::options_description general_options( "Generic Options" );
+  general_options.add_options()
+      ("help,h", "Display this information")
+      ("version,v", "Display GoFigure2 version information" );
+
+  boost::program_options::options_description config_options( "Configuration" );
+  config_options.add_options()
+      ("input,i", boost::program_options::value< std::vector< std::string > >(), "input file (single file)" );
+
+  boost::program_options::options_description all_options( "Usage:\n  gofigure [options]" );
+  all_options.add( general_options ).add( config_options );
 
   boost::program_options::variables_map vm;
   boost::program_options::store(
-        boost::program_options::parse_command_line( argc, argv, description ), vm );
+        boost::program_options::parse_command_line( argc, argv, all_options ), vm );
   boost::program_options::notify( vm );
 
   if( vm.count( "help" ) )
     {
-    std::cout << description << "\n";
+    std::cout << all_options << "\n";
     return EXIT_SUCCESS;
     }
 
