@@ -127,16 +127,13 @@ vtkViewImage2DCollection::~vtkViewImage2DCollection()
 {
   this->Command->Delete();
 
-  std::vector< vtkActor * >::iterator it = PlanesActors.begin();
-  std::vector< vtkActor * >::iterator tmp;
-  while(it!=PlanesActors.end())
-    {
-    // necessary trick on windows
-    tmp = it;
-    ++it;
-    (*tmp)->Delete();
-    }
 
+  int n = this->GetNumberOfItems();
+
+  for ( int i = 0; i < n*n; i++ )
+    {
+    PlanesActors[i]->Delete();
+    }
 }
 
 //----------------------------------------------------------------------------
@@ -223,12 +220,18 @@ void vtkViewImage2DCollection::Initialize()
     {
     for ( int j = 0; j < n; j++ )
       {
-//       vtkQuadricLODActor* temp =
       vtkActor *temp =  this->GetItem(j)->AddDataSet(
           this->GetItem(i)->GetSlicePlane(), plane_property, ( i != j ), true);
       //store all slice actors
-      this->PlanesActors.push_back(temp);
+      this->PlanesActors.push_back(dynamic_cast<vtkProp3D*>(temp));
       }
+    }
+
+  for ( int i = 0; i < n; i++ )
+    {
+    //store image actors
+    this->PlanesActors.push_back(
+        dynamic_cast<vtkProp3D*>(this->GetItem(i)->GetImageActor()));
     }
 }
 
@@ -351,7 +354,7 @@ void
 vtkViewImage2DCollection::SetSplinePlaneActorsVisibility(bool iVisibility)
 {
   // vtkstd::vector<vtkQuadricLODActor*>::iterator
-  std::vector< vtkActor * >::iterator PlanesActorsIterator =
+  std::vector< vtkProp3D * >::iterator PlanesActorsIterator =
     PlanesActors.begin();
 
   while ( PlanesActorsIterator != PlanesActors.end() )
@@ -670,7 +673,7 @@ void vtkViewImage2DCollection::SynchronizeViews( bool iSynchronize)
     }
 }
 //----------------------------------------------------------------------------
-std::vector< vtkActor * >
+std::vector< vtkProp3D * >
 vtkViewImage2DCollection::
 GetPlanesActors()
 {

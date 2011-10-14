@@ -253,6 +253,8 @@ public:
   void CreateContoursActorsFromVisuContainer(
           std::list<unsigned int> iTPointToLoad);
 
+  void CreateContoursActorsFromVisuContainer();
+
   /**
     \brief Creates actors for the meshes which are at the given time points
     in the container. The actors are not visible by default. (see ShowTraces)
@@ -260,6 +262,8 @@ public:
     */
   void CreateMeshesActorsFromVisuContainer(
           std::list<unsigned int> iTPointToLoad);
+
+  void CreateMeshesActorsFromVisuContainer();
 
   /**
     \brief Show traces from container which are at the given time point.
@@ -686,9 +690,9 @@ protected slots:
   virtual void ZoomInteractorBehavior(bool);
 
   /**
-   * \brief Mouse interaction style allows user to pan volume with all buttons
+   * \brief Mouse interaction style allows user to Translate volume with all buttons
    */
-  virtual void PanInteractorBehavior(bool);
+  virtual void TranslateInteractorBehavior(bool);
 
   /**
    * \brief Mouse interaction style allows user to pick contours
@@ -737,8 +741,12 @@ protected slots:
 
   void EnableVolumeRendering(bool iEnable);
 
+  void MoveToNextTimePoint();
+  void MoveToPreviousTimePoint();
+
 private:
   void InitializeImageRelatedWidget();
+  void SetUpShortcuts();
 
   Q_DISABLE_COPY(QGoTabImageView3DwT);
 };

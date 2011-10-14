@@ -186,7 +186,7 @@ public:
    *  wireframe mode. and surface mode
    * \param[in] iSynchronize Enable/disable synchronization
    */
-  void SetPlanesActors( std::vector< vtkActor * > iBounds);
+  void SetPlanesActors( std::vector< vtkProp3D * > iBounds);
 
 protected:
   vtkInteractorStyleImage2D();
@@ -204,7 +204,7 @@ private:
   unsigned int m_Mode;
   bool         m_LeftButtonDown;
   bool         m_SynchronizeViews;
-  std::vector< vtkActor * > m_PlanesActors;
+  std::vector< vtkProp3D * > m_PlanesActors;
 };
 
 #endif

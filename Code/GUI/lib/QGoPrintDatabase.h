@@ -279,6 +279,10 @@ public:
   std::list<unsigned int> UpdateTableWidgetAndContainersForGivenTimePoint(
           const unsigned int& iNewTimePoint);
 
+  std::list<unsigned int> GetVisibleTimePoints();
+
+  int GetNumberOfElementForTraceAndTimePoint(std::string iTrace, int iTimePoint);
+
 public slots:
   void DeleteBookmarks();
 
@@ -451,9 +455,6 @@ protected:
   void GetContentAndDisplayAllTracesInfo(vtkMySQLDatabase *iDatabaseConnector);
 
   void GetContentAndDisplayAllTracesInfoFor3TPs(vtkMySQLDatabase *iDatabaseConnector);
-
-  void AddTracesForSelectedTimePoints(
-  vtkMySQLDatabase *iDatabaseConnector, std::list<unsigned int> iListTimePoints);
 
   void RemoveTracesFromListTimePoints(
   vtkMySQLDatabase *iDatabaseConnector, std::list<unsigned int> iListTimePoints);

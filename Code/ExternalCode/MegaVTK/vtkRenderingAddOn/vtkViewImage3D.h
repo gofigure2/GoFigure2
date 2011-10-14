@@ -266,7 +266,7 @@ public:
    * */
   void ComputeDistancesToSquare(vtkPlanes *planes);
 
-  std::vector< vtkActor * > GetPlanesActors();
+  std::vector< vtkProp3D * > GetPlanesActors();
 
 protected:
 

@@ -561,7 +561,6 @@ protected:
     this->DisplayInfoForAllTraces(iDatabaseConnector);
     /** \todo Lydie: modify the TWContainer to return a list of unsigned int*/
     std::vector< int >           VectorIDs = iTWContainer->GetAllTraceIDsInContainer();
-    //std::vector< int >::iterator iter = VectorIDs.begin();
     std::list<unsigned int> ListIDs(VectorIDs.begin(), VectorIDs.end());
     this->GetTracesInfoFromDBAndModifyContainerForVisu(iDatabaseConnector,ListIDs);
   }
@@ -574,17 +573,12 @@ protected:
                                                     C* iContainerForVisu,
                                                     std::list<unsigned int> iListTPs)
   {
-   //iContainerForVisu->Clear();
-   //this->m_Table->DeleteRowsAndColumns();
    this->DisplayInfoForTracesForSpecificTPs( iDatabaseConnector, iListTPs);
 
     std::list<unsigned int> ListIDs = 
       this->m_CollectionOfTraces->GetTraceIDsBelongingToListTimePoints(
         iDatabaseConnector,  iListTPs);
 
-    /**
-       \todo shouldnt have to check it-> bug after somewhere
-       */
     if(ListIDs.size() > 0)
       {
       this->GetTracesInfoFromDBAndModifyContainerForVisu(iDatabaseConnector,ListIDs);
