@@ -1,3 +1,4 @@
+
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
  at Megason Lab, Systems biology, Harvard Medical school, 2009-11
@@ -31,46 +32,59 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
+#include "QGoSplitSegmentationAlgo.h"
 
-#ifndef __itkvtkMeshMergeConvexHullFilter_h
-#define __itkvtkMeshMergeConvexHullFilter_h
+//-------------------------------------------------------------------------
+QGoSplitSegmentationAlgo::
+QGoSplitSegmentationAlgo(
+  std::vector< vtkPoints* >* iSeeds,
+  QWidget *iParent) : QGoSegmentationAlgo( iParent ), m_Seeds( iSeeds )
+{}
+//-------------------------------------------------------------------------
 
-#include "GoFiltersConfigure.h"
-
-#include "itkvtkMeshMergeFilterBase.h"
-
-#include "itkObjectFactory.h"
-
-namespace itk
+//-------------------------------------------------------------------------
+QGoSplitSegmentationAlgo::~QGoSplitSegmentationAlgo()
 {
-template< class TFeatureImage, class TPolyDataContainer >
-class GOFILTERS_EXPORT vtkMeshMergeConvexHullFilter :
-    public vtkMeshMergeFilterBase< TFeatureImage, TPolyDataContainer >
-{
-public:
-  typedef vtkMeshMergeFilterBase< TFeatureImage, TPolyDataContainer > Superclass;
-  typedef vtkMeshMergeConvexHullFilter Self;
-  typedef SmartPointer< Self > Pointer;
-  typedef SmartPointer< const Self > ConstPointer;
 
-  /** Run-time type information (and related methods). */
-  itkTypeMacro( vtkMeshMergeConvexHullFilter,
-               vtkMeshMergeFilterBase );
-
-  /** Method for creation through the object factory. */
-  itkNewMacro(Self);
-
-protected:
-  vtkMeshMergeConvexHullFilter();
-  ~vtkMeshMergeConvexHullFilter() {}
-
-  void GenerateData();
-  void SetRequiredAttributeComputationFlags();
-
-private:
-  vtkMeshMergeConvexHullFilter( const Self& );
-  void operator = ( const Self& );
-};
 }
-#include "itkvtkMeshMergeConvexHullFilter.txx"
-#endif // __itkvtkMeshMergeConvexHullFilter_h
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoSplitSegmentationAlgo::SetAlgoWidget(QWidget* iParent)
+{
+
+}
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::vector<double>
+QGoSplitSegmentationAlgo::
+GetBounds(const std::vector<double>& iCenter,
+          const double& iRadius,
+          const unsigned int& iOrientation)
+{
+  assert( iCenter.size() == 3 );
+  assert( iRadius >= 0. );
+  assert( iOrientation < 4 );
+
+  std::vector<double> boundingBox( 6, 0. );
+  unsigned int k = 0;
+
+  for(unsigned int i=0; i<3; i++)
+    {
+    if(i == iOrientation)
+      {
+      boundingBox[k++] = iCenter[i];
+      boundingBox[k++] = iCenter[i];
+      }
+    else
+      {
+      boundingBox[k++] = iCenter[i] - iRadius;
+      boundingBox[k++] = iCenter[i] + iRadius;
+      }
+    }
+
+ return boundingBox;
+}
+//-------------------------------------------------------------------------

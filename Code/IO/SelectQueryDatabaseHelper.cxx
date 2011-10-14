@@ -1559,6 +1559,42 @@ int NumberOfElementForGivenImagingSessionAndTrace(
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
+int NumberOfElementForGivenImagingSessionAndTraceForGivenTimePoint(
+  vtkMySQLDatabase *DatabaseConnector,
+  unsigned int iImagingSession, std::string iTrace, int iTimePoint)
+{
+  // What
+  std::string What = "COUNT(*)";
+
+  // Where
+  FieldWithValue CoordIDMin =
+      { "CoordIDMin",
+        "CoordID",
+        "=" };
+  std::string Where = GetLeftJoinTwoTables(iTrace,
+                                           "coordinate",
+                                           CoordIDMin);
+
+  // Condition
+  std::string Condition = "(ImagingSessionID = ";
+  std::stringstream s;
+  s << iImagingSession;
+  Condition += s.str();
+  Condition += " AND TCoord = ";
+  std::stringstream timePoint;
+  timePoint << iTimePoint;
+  Condition += timePoint.str() + ")";
+
+  std::string QueryString = SelectGeneralQueryConditions(What,Where,Condition);
+
+  int test = ExecuteSelectQueryOneValue< int >(DatabaseConnector,
+                                               QueryString);
+
+  return test;
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
 /*
 int NumberOfTimePointsForGivenImagingSession(
         vtkMySQLDatabase *DatabaseConnector,

@@ -114,6 +114,18 @@ public:
                                    vtkMySQLDatabase *iDatabaseConnector,
                                    GoFigureMeshAttributes *iMeshAttributes);
 
+  unsigned int SaveNewMeshFromVisu(unsigned int iXCoordMin,
+                                   unsigned int iYCoordMin,
+                                   unsigned int iZCoordMin,
+                                   unsigned int iXCoordMax,
+                                   unsigned int iYCoordMax,
+                                   unsigned int iZCoordMax,
+                                   int iTShift,
+                                   vtkPolyData *iTraceNodes,
+                                   vtkMySQLDatabase *iDatabaseConnector,
+                                   GoFigureMeshAttributes *iMeshAttributes,
+                                   unsigned int iTrackID);
+
   unsigned int SaveNewMeshWithNoTrackFromVisu(unsigned int iXCoordMin, 
                                               unsigned int iYCoordMin, 
                                               unsigned int iZCoordMin,
@@ -198,6 +210,10 @@ public:
 
   void CleanTWAndContainerForGivenTimePoint(vtkMySQLDatabase *iDatabaseConnector,
                                             const std::list<unsigned int>& iTimePoints);
+
+  void ModifyTrackIDInVisuContainer(unsigned int iTrackID,
+                                    std::list< unsigned int > iToTrack,
+                                    std::list< unsigned int > iToNull);
 
 
 public slots:
@@ -327,14 +343,6 @@ protected:
   */
   std::pair<unsigned int, unsigned int> GetInfoForTheOnlyOneCheckedMeshOfTheTrack(
     vtkMySQLDatabase* iDatabaseConnector, unsigned int iTrackID);
-
-  unsigned int SaveNewMeshFromVisu(
-    unsigned int iXCoordMin, unsigned int iYCoordMin, unsigned int iZCoordMin,
-    unsigned int iXCoordMax, unsigned int iYCoordMax,
-    unsigned int iZCoordMax, int iTShift, vtkPolyData *iTraceNodes,
-    vtkMySQLDatabase *iDatabaseConnector,
-    GoFigureMeshAttributes *iMeshAttributes,
-    unsigned int iTrackID);
 
 protected slots:
   //virtual pure method in QGoDBTraceManager

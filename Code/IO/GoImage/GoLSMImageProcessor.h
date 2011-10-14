@@ -52,6 +52,9 @@
 class QGOIO_EXPORT GoLSMImageProcessor:public GoImageProcessor
 {
 public:
+  GoLSMImageProcessor() {}
+  virtual ~GoLSMImageProcessor() {}
+
   /**
    * \brief Set the reader.
    * \param[in] iReader Pointer to the reader
@@ -65,8 +68,6 @@ public:
   virtual void setDoppler(const unsigned int& iTime, const unsigned int& iPrevious);
 
 private:
-
-  ~GoLSMImageProcessor();
 
   vtkLSMReader *m_LSMReader;
 };

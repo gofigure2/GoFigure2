@@ -44,7 +44,6 @@
 #include <QCloseEvent>
 #include <QPixmap>
 #include <QStatusBar>
-#include <QSettings>
 
 #include <iostream>
 
@@ -226,7 +225,7 @@ void QGoPrintDatabase::FillTableFromDatabase(const int& iThreshold)
           this->m_ImgSessionID,
           "mesh");
 
-  // if there are more than 5 thousands meshes, only load 3 time points in
+  // if there are more than 5000 meshes, only load 3 time points in
   // memory
   if(nbOfTraces > iThreshold)
     {
@@ -320,12 +319,23 @@ QGoPrintDatabase::SaveMeshFromVisuInDB(unsigned int iXCoordMin,
                                        unsigned int iZCoordMax,
                                        int iTCoord,
                                        vtkPolyData *iMeshNodes,
-                                       GoFigureMeshAttributes *iMeshAttributes)
+                                       GoFigureMeshAttributes *iMeshAttributes,
+                                       int iTrackID)
 {
   OpenDBConnection();
-  if ( !this->m_MeshGenerationMode )
+  if ( !this->m_MeshGenerationMode)
     {
-    unsigned int TrackID = this->m_TraceSettingsWidget->GetCurrentSelectedCollectionID();
+    unsigned int TrackID = 0;
+
+    if(iTrackID != -1)
+      {
+      TrackID = iTrackID;
+      }
+    else
+      {
+      TrackID = this->m_TraceSettingsWidget->GetCurrentSelectedCollectionID();
+      }
+
     //check that there isn't an existing mesh with the same timepoint in the
     // track,if so, set its trackID to 0:
     /** \todo print a different message if several meshes are created at the
@@ -376,7 +386,8 @@ QGoPrintDatabase::SaveMeshFromVisuInDB(unsigned int iXCoordMin,
                                                            iTCoord,
                                                            iMeshNodes,
                                                            this->m_DatabaseConnector,
-                                                           iMeshAttributes);
+                                                           iMeshAttributes,
+                                                           TrackID);
 
     std::list< unsigned int > ListNewMeshes;
     ListNewMeshes.push_back(NewMeshID);
@@ -715,16 +726,18 @@ void QGoPrintDatabase::ExportMeshes()
 //-------------------------------------------------------------------------
 void QGoPrintDatabase::ImportContours()
 {
-  QString p = QFileDialog::getOpenFileName( this,
+  QStringList p = QFileDialog::getOpenFileNames( this,
                                             tr("Open Contours Export File"), "",
                                             tr("TextFile (*.txt)") );
 
+  QStringList::Iterator it = p.begin();
+
   //refactoring
-  if ( !p.isNull() )
+  while ( it != p.end() )
     {
     emit        PrintMessage( tr("Warning: Close and reopen your imagingsession once the import is done !!") );
-    QFileInfo   pathInfo(p);
-    std::string filename = p.toStdString();
+    QFileInfo   pathInfo(*it);
+    std::string filename = (*it).toStdString();
     //import into the database:
     GoDBImport ImportHelper(this->m_Server, this->m_User,
                             this->m_Password, this->m_ImgSessionID, filename,
@@ -746,6 +759,8 @@ void QGoPrintDatabase::ImportContours()
     //as in the import contours file, there are data such as colors,celltype
     //and subcelltype, the lists may have been updated in the database:
     this->InitializeTheComboboxesNotTraceRelated();
+
+    ++it;
     }
 }
 
@@ -754,17 +769,17 @@ void QGoPrintDatabase::ImportContours()
 //-------------------------------------------------------------------------
 void QGoPrintDatabase::ImportMeshes()
 {
-  QString p = QFileDialog::getOpenFileName( this,
-                                            tr("Open Meshes Export File"), "",
+  QStringList p = QFileDialog::getOpenFileNames( this,
+                                            tr("Open Meshes Export Files"), "",
                                             tr("TextFile (*.txt)") );
 
-  //refactoring
+  QStringList::Iterator it = p.begin();
 
-  if ( !p.isNull() )
+  while ( it != p.end() )
     {
     emit        PrintMessage( tr("Warning: Close and reopen your imagingsession once the import is done !!") );
-    QFileInfo   pathInfo(p);
-    std::string filename = p.toStdString();
+    QFileInfo   pathInfo(*it);
+    std::string filename = (*it).toStdString();
     //import into the database:
     GoDBImport ImportHelper(this->m_Server, this->m_User,
                             this->m_Password, this->m_ImgSessionID, filename,
@@ -781,6 +796,8 @@ void QGoPrintDatabase::ImportMeshes()
                                                                  this->m_DatabaseConnector);
     this->CloseDBConnection();
     this->InitializeTheComboboxesNotTraceRelated();
+
+    ++it;
     }
 }
 
@@ -1175,7 +1192,8 @@ void QGoPrintDatabase::GetContentAndDisplayAllTracesInfo(
     iDatabaseConnector);
   this->m_TracksManager->DisplayInfoAndLoadVisuContainerForAllTracks(
     iDatabaseConnector);
-  this->m_TracksManager->LoadInfoVisuContainerForTrackFamilies(iDatabaseConnector);
+  this->m_TracksManager->DisplayInfoAndLoadVisuContainerForAllTracks(
+    iDatabaseConnector);
   this->m_LineagesManager->DisplayInfoAndLoadVisuContainerForAllLineages(
     iDatabaseConnector);
 }
@@ -1193,26 +1211,21 @@ void QGoPrintDatabase::GetContentAndDisplayAllTracesInfoFor3TPs(
     {
     m_VisibleTimePoints.push_back(*this->m_SelectedTimePoint-1);
     }
+  
   m_VisibleTimePoints.push_back(*this->m_SelectedTimePoint);
   m_VisibleTimePoints.push_back(*this->m_SelectedTimePoint+1);
+
   this->m_ContoursManager->
-    DisplayInfoAndLoadVisuContainerForAllContoursForSpecificTPs(iDatabaseConnector,
+    DisplayInfoAndLoadVisuContainerForAllContoursForSpecificTPs(
+    iDatabaseConnector,
     m_VisibleTimePoints);
   this->m_MeshesManager->
     DisplayInfoAndLoadVisuContainerForAllMeshesForSpecificTPs(iDatabaseConnector,
     m_VisibleTimePoints);
-
-  this->m_TracksManager->DisplayInfoAndLoadVisuContainerForAllTracks(iDatabaseConnector);
-  this->m_LineagesManager->DisplayInfoAndLoadVisuContainerForAllLineages(iDatabaseConnector);
-}
-
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void QGoPrintDatabase::AddTracesForSelectedTimePoints(
-  vtkMySQLDatabase *iDatabaseConnector, std::list<unsigned int> iListTimePoints)
-{
-
+  this->m_TracksManager->DisplayInfoAndLoadVisuContainerForAllTracks(
+    iDatabaseConnector);
+  this->m_LineagesManager->DisplayInfoAndLoadVisuContainerForAllLineages(
+    iDatabaseConnector);
 }
 
 //-------------------------------------------------------------------------
@@ -1845,6 +1858,11 @@ AddListMeshesToATrack(std::list< unsigned int > iListMeshes, unsigned int iTrack
   this->AddCheckedTracesToCollection< QGoDBMeshManager, QGoDBTrackManager >(
     this->m_MeshesManager, this->m_TracksManager,
     iTrackID, ListMeshToBelongToTheTrack);
+
+  // update the visualization container!
+  this->m_MeshesManager->ModifyTrackIDInVisuContainer(iTrackID,
+                                                      ListMeshToBelongToTheTrack,
+                                                      ListNullMeshToBelongToTheTrack);
   this->CloseDBConnection();
 }
 
@@ -1968,8 +1986,9 @@ UpdateTableWidgetAndContainersForGivenTimePoint(
 {
   this->OpenDBConnection();
 
-  if(this->m_VisibleTimePoints.size() == 3)
+  if(this->m_VisibleTimePoints.size() > 0)
     {
+     std::cout << "in if " << std::endl;
     // list to be removed
     std::list<unsigned int> listToRemove;
     listToRemove = m_VisibleTimePoints;
@@ -2047,8 +2066,31 @@ UpdateTableWidgetAndContainersForGivenTimePoint(
     return listToAdd;
   }
 
-  std::list<unsigned int> listToAdd(0);
-  return listToAdd;
+  return this->m_VisibleTimePoints;
 
 }
 //--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+std::list<unsigned int>
+QGoPrintDatabase::
+GetVisibleTimePoints()
+{
+  return m_VisibleTimePoints;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+int
+QGoPrintDatabase::
+GetNumberOfElementForTraceAndTimePoint(std::string iTrace, int iTimePoint)
+{
+  this->OpenDBConnection();
+  int test = NumberOfElementForGivenImagingSessionAndTraceForGivenTimePoint(
+      this->m_DatabaseConnector,
+      this->m_ImgSessionID,
+      iTrace,
+      iTimePoint);
+  this->CloseDBConnection();
+  return test;
+}

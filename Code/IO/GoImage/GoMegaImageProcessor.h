@@ -50,6 +50,9 @@
 class QGOIO_EXPORT GoMegaImageProcessor:public GoImageProcessor
 {
 public:
+  GoMegaImageProcessor() {}
+  virtual ~GoMegaImageProcessor() {}
+
   /**
    * \brief Set the reader.
    * \param[in] iReader Pointer to the reader

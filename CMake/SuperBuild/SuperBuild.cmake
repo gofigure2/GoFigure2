@@ -138,6 +138,7 @@ ENDIF( SUPER_BOOST )
 #---------------------------------------------------------------------------
 
 set(proj GoFigure2)
+option( GOFIGURE2_EXAMPLE "Force building GoFigure2's example" OFF )
 
 ExternalProject_Add(${proj}
   DEPENDS ${GoFigure2_DEPENDENCIES}
@@ -155,6 +156,7 @@ ExternalProject_Add(${proj}
     -DVTK_DIR:PATH=${VTK_DIR}
     # QT (From VTK)
     -DQT_QMAKE_EXECUTABLE:PATH=${QT_QMAKE_EXECUTABLE}
+    -DBUILD_EXAMPLES:BOOL=${GOFIGURE2_EXAMPLE}
   INSTALL_COMMAND ""
   )
 

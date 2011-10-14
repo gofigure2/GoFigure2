@@ -76,10 +76,10 @@ void QGoAlgorithmsManagerWidget::Initialize(std::vector<QString> iVectChannels,
     QLabel* Label= new QLabel("TSlice",this);
     HBox->addWidget(Label);
     HBox->addWidget(this->m_TimeComboBox);
-    this->m_InvertBox = new QCheckBox("Invert", this);
-    HBox->addWidget(this->m_InvertBox);
-    //FormLayout->addRow(tr("TSlice:"), this->m_TimeComboBox);
     }
+
+  this->m_InvertBox = new QCheckBox("Invert", this);
+  HBox->addWidget(this->m_InvertBox);
 
   this->m_VBoxLayout->addLayout(HBox);
   if (!iVectChannels.empty() )
@@ -113,7 +113,13 @@ void QGoAlgorithmsManagerWidget::Initialize(std::vector<QString> iVectChannels,
     {
     QHBoxLayout* ButtonLayout = new QHBoxLayout;
     QPushButton* ApplyButton = new QPushButton(tr("Apply"),this);
-    QPushButton* ResetButton = new QPushButton(tr("Reset"), this);
+    ApplyButton->setShortcut(tr("A", "Apply Algorithm"));
+    ApplyButton->setShortcut(tr("Ctrl+A", "Apply Algorithm"));
+    ApplyButton->setToolTip("Apply Algorithm");
+    QPushButton* ResetButton = new QPushButton(tr("Delete"), this);
+    ResetButton->setShortcut(tr("D", "Delete the seeds"));
+    ResetButton->setShortcut(tr("Ctrl+D", "Delete the seeds"));
+    ResetButton->setToolTip("Delete the seeds");
     ButtonLayout->addWidget(ApplyButton);
     ButtonLayout->addWidget(ResetButton);
     this->m_VBoxLayout->addLayout(ButtonLayout);

@@ -53,8 +53,6 @@ QGoNavigationDockWidget( QWidget *iParent,
   QIcon Navigation;
   Navigation.addPixmap(QPixmap( QString::fromUtf8(":/fig/navigation.png") ),
                        QIcon::Normal, QIcon::Off);
-  //temp->setIcon(Navigation);
-  //this->toggleViewAction()->setIcon(Navigation);
   this->m_ToggleAction->setIcon(Navigation);
 
   switch ( m_Dimension )
@@ -256,13 +254,6 @@ void QGoNavigationDockWidget::SetTMinimumAndMaximum(const int & iMin, const int 
 
     QObject::connect( this->t, SIGNAL( valueChanged(int) ),
                       this, SIGNAL( DopplerSizeChanged(int) ) );
-
-
-    // shortcuts to move through time
-    (void)new QShortcut( QKeySequence( tr("Ctrl+Z", "Move to previous") ),
-                        this, SLOT( MoveToPreviousTimePoint() ) );
-    (void)new QShortcut( QKeySequence( tr("Ctrl+C", "Move to next") ),
-                        this, SLOT( MoveToNextTimePoint() ) );
     }
   else
     {

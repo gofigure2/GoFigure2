@@ -31,46 +31,38 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
+#include "QGoSplitDanielssonDistanceAlgo.h"
 
-#ifndef __itkvtkMeshMergeConvexHullFilter_h
-#define __itkvtkMeshMergeConvexHullFilter_h
 
-#include "GoFiltersConfigure.h"
-
-#include "itkvtkMeshMergeFilterBase.h"
-
-#include "itkObjectFactory.h"
-
-namespace itk
+QGoSplitDanielssonDistanceAlgo::QGoSplitDanielssonDistanceAlgo(std::vector< vtkPoints* >* iSeeds, QWidget* iParent)
+  :QGoSplitSegmentationAlgo(iSeeds, iParent)
 {
-template< class TFeatureImage, class TPolyDataContainer >
-class GOFILTERS_EXPORT vtkMeshMergeConvexHullFilter :
-    public vtkMeshMergeFilterBase< TFeatureImage, TPolyDataContainer >
-{
-public:
-  typedef vtkMeshMergeFilterBase< TFeatureImage, TPolyDataContainer > Superclass;
-  typedef vtkMeshMergeConvexHullFilter Self;
-  typedef SmartPointer< Self > Pointer;
-  typedef SmartPointer< const Self > ConstPointer;
-
-  /** Run-time type information (and related methods). */
-  itkTypeMacro( vtkMeshMergeConvexHullFilter,
-               vtkMeshMergeFilterBase );
-
-  /** Method for creation through the object factory. */
-  itkNewMacro(Self);
-
-protected:
-  vtkMeshMergeConvexHullFilter();
-  ~vtkMeshMergeConvexHullFilter() {}
-
-  void GenerateData();
-  void SetRequiredAttributeComputationFlags();
-
-private:
-  vtkMeshMergeConvexHullFilter( const Self& );
-  void operator = ( const Self& );
-};
+  this->SetAlgoWidget(iParent);
 }
-#include "itkvtkMeshMergeConvexHullFilter.txx"
-#endif // __itkvtkMeshMergeConvexHullFilter_h
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+QGoSplitDanielssonDistanceAlgo::~QGoSplitDanielssonDistanceAlgo()
+{
+  this->DeleteParameters();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoSplitDanielssonDistanceAlgo::DeleteParameters()
+{
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoSplitDanielssonDistanceAlgo::SetAlgoWidget(QWidget* iParent)
+{
+  this->m_AlgoWidget =
+    new QGoAlgorithmWidget("Danielsson", iParent);
+
+  QGoSplitSegmentationAlgo::SetAlgoWidget();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+

@@ -81,10 +81,10 @@ public:
   /**
   \brief return the vtkpolydata created by the algorithm
   */
-  virtual std::vector<vtkPolyData*> ApplyAlgo(
+  /*virtual std::vector<vtkPolyData*> ApplyAlgo(
     GoImageProcessor* iImages,
     std::string iChannel,
-    bool iIsInvertedOn = false) = 0;
+    bool iIsInvertedOn = false) = 0;*/
 
   /*
    * \note Nicolas-shouldnt be public-move to protected

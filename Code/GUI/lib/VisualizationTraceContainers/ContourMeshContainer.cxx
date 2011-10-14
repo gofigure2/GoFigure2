@@ -403,3 +403,27 @@ Clear( const std::list<unsigned int>& iTraceIDs)
   m_ImageView->UpdateRenderWindows();
 }
 //-------------------------------------------------------------------------
+// move up
+//-------------------------------------------------------------------------
+void
+ContourMeshContainer::
+AssignToGivenCollection(unsigned int iCollection,
+                        std::list< unsigned int > iToBeAssigned)
+{
+  std::list< unsigned int >::iterator listIt = iToBeAssigned.begin();
+  MultiIndexContainerTraceIDIterator  containerIt;
+
+  while ( listIt != iToBeAssigned.end() )
+    {
+    containerIt = m_Container.get< TraceID >().find(*listIt);
+
+    //if element found
+    if ( containerIt != m_Container.get< TraceID >().end() )
+      {
+      m_Container.get< TraceID >().modify(
+            containerIt, change_collectionID(iCollection));
+      }
+    ++listIt;
+    }
+}
+//-------------------------------------------------------------------------

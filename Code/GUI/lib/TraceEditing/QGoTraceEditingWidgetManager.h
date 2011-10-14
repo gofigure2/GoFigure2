@@ -102,6 +102,8 @@ signals:
   vizu, return the TSlice selected in the TSlice combobox
   */
   void TracesCreatedFromAlgo(std::vector<vtkPolyData *> iVectPolydata, int iTCoord);
+  void TracesSplittedFromAlgo(std::vector<vtkPolyData *> iVectPolydata);
+  void TracesMergedFromAlgo(vtkPolyData * iPolydata);
 
 protected:
   QGoDockWidget*              m_TraceEditingDockWidget;

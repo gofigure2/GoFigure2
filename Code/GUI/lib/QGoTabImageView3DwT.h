@@ -255,6 +255,8 @@ public:
   void CreateContoursActorsFromVisuContainer(
           std::list<unsigned int> iTPointToLoad);
 
+  void CreateContoursActorsFromVisuContainer();
+
   /**
     \brief Creates actors for the meshes which are at the given time points
     in the container. The actors are not visible by default. (see ShowTraces)
@@ -262,6 +264,8 @@ public:
     */
   void CreateMeshesActorsFromVisuContainer(
           std::list<unsigned int> iTPointToLoad);
+
+  void CreateMeshesActorsFromVisuContainer();
 
   /**
     \brief Show traces from container which are at the given time point.
@@ -291,6 +295,8 @@ signals:
   void StartMeshSegmentation(vtkPoints *iPoints);
 
   void StartContourSegmentation(vtkPoints *iPoints);
+
+  void RequestedPolydatas(std::list< vtkPolyData* >);
 
 public slots:
 
@@ -363,14 +369,23 @@ public slots:
 
   /** \brief Save a mesh in the database and render the mesh
    * at the given time point.
+   * \param[in] iCollection Collection ID we want the mesh to belong to.
+   * if -1, we get the collection ID from the trace editing widget.
   \todo to be renamed */
-  void  SaveAndVisuMesh(vtkPolyData *iView, unsigned int iTCoord);
+  void  SaveAndVisuMesh(vtkPolyData *iView,
+                        unsigned int iTCoord,
+                        int iCollection = -1);
 
   /** \brief Save a mesh in the database and render the mesh.
    * at the current time point
   */
   void SaveInDBAndRenderMeshForVisu(
     std::vector<vtkPolyData *> iVectPolydata, int iTCoord);
+
+  void SplitInDBAndRenderMeshForVisu(
+    std::vector<vtkPolyData *> iVectPolydata);
+
+  void MergeInDBAndRenderMeshForVisu( vtkPolyData * iVectPolydata);
 
   void SaveInDBAndRenderSetOfContoursForVisu(
     std::vector<std::vector<vtkPolyData*> >, int);
@@ -399,6 +414,8 @@ public slots:
   void openTransferFunctionEditor(QString iName);
 
   void updateSlot();
+
+  void PolydatasRequested();
 
 protected:
   QGoImageView3D *                               m_ImageView;
@@ -594,7 +611,7 @@ protected:
    * \param[in] iMesh mesh to be saved
    * \param[in] iTCoord
    */
-  void SaveMesh(vtkPolyData *iMesh, int iTCoord);
+  void SaveMesh(vtkPolyData *iMesh, int iTCoord, int iCollectionID = -1);
 
   void GetBackgroundColorFromImageViewer();
 
@@ -687,9 +704,9 @@ protected slots:
   virtual void ZoomInteractorBehavior(bool);
 
   /**
-   * \brief Mouse interaction style allows user to pan volume with all buttons
+   * \brief Mouse interaction style allows user to Translate volume with all buttons
    */
-  virtual void PanInteractorBehavior(bool);
+  virtual void TranslateInteractorBehavior(bool);
 
   /**
    * \brief Mouse interaction style allows user to pick contours
@@ -738,8 +755,12 @@ protected slots:
 
   void EnableVolumeRendering(bool iEnable);
 
+  void MoveToNextTimePoint();
+  void MoveToPreviousTimePoint();
+
 private:
   void InitializeImageRelatedWidget();
+  void SetUpShortcuts();
 
   //std::vector<GoTransferFunctionEditorWidget*> m_TransferFunctionVector;
 

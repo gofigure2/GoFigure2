@@ -106,7 +106,20 @@ int main(int argc, char **argv)
 
   splash->finish(form);
 
-  int output = app.exec();
+  int output;
+  
+  try
+    {
+    output = app.exec();
+    }
+  catch( const std::bad_alloc & )
+    {
+    // clean up here, e.g. save the session
+    // and close all config files.
+
+    // exit
+    output = 0;
+    }
 
   delete splash;
   delete form;

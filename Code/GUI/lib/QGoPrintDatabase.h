@@ -124,6 +124,8 @@ public:
   visualization, if the mesh is an updated mesh which already exists(for
   example a new contour is added to this mesh, the NewMesh has to be set
   to false
+  \param[in] iTrackID Track ID we want the mesh to belong to.
+   if -1, we get the track ID from the trace editing widget.
   */
   void SaveMeshFromVisuInDB(unsigned int iXCoordMin,
                             unsigned int iYCoordMin,
@@ -132,7 +134,9 @@ public:
                             unsigned int iYCoordMax,
                             unsigned int iZCoordMax,
                             int iTCoord,
-                            vtkPolyData *iMeshNodes, GoFigureMeshAttributes *iMeshAttributes);
+                            vtkPolyData *iMeshNodes,
+                            GoFigureMeshAttributes *iMeshAttributes,
+                            int iTrackID = -1);
 
   /**
   \brief save a new contour in the database, the TW and the container for the contours to sphere
@@ -274,6 +278,10 @@ public:
     */
   std::list<unsigned int> UpdateTableWidgetAndContainersForGivenTimePoint(
           const unsigned int& iNewTimePoint);
+
+  std::list<unsigned int> GetVisibleTimePoints();
+
+  int GetNumberOfElementForTraceAndTimePoint(std::string iTrace, int iTimePoint);
 
 public slots:
   void DeleteBookmarks();
@@ -447,9 +455,6 @@ protected:
   void GetContentAndDisplayAllTracesInfo(vtkMySQLDatabase *iDatabaseConnector);
 
   void GetContentAndDisplayAllTracesInfoFor3TPs(vtkMySQLDatabase *iDatabaseConnector);
-
-  void AddTracesForSelectedTimePoints(
-  vtkMySQLDatabase *iDatabaseConnector, std::list<unsigned int> iListTimePoints);
 
   void RemoveTracesFromListTimePoints(
   vtkMySQLDatabase *iDatabaseConnector, std::list<unsigned int> iListTimePoints);

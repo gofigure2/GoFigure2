@@ -416,7 +416,7 @@ vtkInteractorStyleImage2D::OnChar()
             // make sure we don't modify the planes actors
             if ( path != NULL )
               {
-              std::vector< vtkActor * >::iterator it2 = m_PlanesActors.begin();
+              std::vector< vtkProp3D * >::iterator it2 = m_PlanesActors.begin();
               while(it2!=m_PlanesActors.end())
                 {
                 if(path && dynamic_cast<vtkProp*>(*it2) == path->GetLastNode()->GetViewProp())
@@ -462,7 +462,7 @@ vtkInteractorStyleImage2D::OnChar()
             // make sure we don't modify the planes actors
             if ( path != NULL )
               {
-              std::vector< vtkActor * >::iterator it2 = m_PlanesActors.begin();
+              std::vector< vtkProp3D * >::iterator it2 = m_PlanesActors.begin();
               while(it2!=m_PlanesActors.end())
                 {
                 if(path && dynamic_cast<vtkProp*>(*it2) == path->GetLastNode()->GetViewProp())
@@ -634,7 +634,7 @@ vtkInteractorStyleImage2D::HighlightCurrentActor()
     // make sure we don't modify the planes actors
     if ( path != NULL )
       {
-      std::vector< vtkActor * >::iterator it2 = m_PlanesActors.begin();
+      std::vector< vtkProp3D * >::iterator it2 = m_PlanesActors.begin();
       while(it2!=m_PlanesActors.end())
         {
         if(path && dynamic_cast<vtkProp*>(*it2) == path->GetFirstNode()->GetViewProp())
@@ -701,7 +701,7 @@ vtkInteractorStyleImage2D::SynchronizeViews( bool iSynchronize)
 //----------------------------------------------------------------------------
 void
 vtkInteractorStyleImage2D::
-SetPlanesActors( std::vector< vtkActor * > iBounds)
+SetPlanesActors( std::vector< vtkProp3D * > iBounds)
 {
   this->m_PlanesActors= iBounds;
 }

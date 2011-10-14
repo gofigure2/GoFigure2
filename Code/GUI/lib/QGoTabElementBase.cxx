@@ -173,6 +173,7 @@ void QGoTabElementBase::CreateModeToolBar(
 
   // Create/initialize the default action
   QAction *DefaultAction = new QAction(tr("Default"), this);
+  DefaultAction->setShortcut(tr("1", "Default Mode"));
   DefaultAction->setObjectName("DefaultMode");
 
   DefaultAction->setCheckable(true);
@@ -196,6 +197,7 @@ void QGoTabElementBase::CreateModeToolBar(
   //---------------------------------//
 
   QAction *ZoomAction = new QAction(tr("Zoom"), this);
+  ZoomAction->setShortcut(tr("Z", "Zoom Mode"));
   ZoomAction->setCheckable(true);
   ZoomAction->setChecked(false);
 
@@ -212,24 +214,25 @@ void QGoTabElementBase::CreateModeToolBar(
                     this, SLOT( ZoomInteractorBehavior(bool) ) );
 
   //---------------------------------//
-  //            Pan  mode            //
+  //            Translate  mode            //
   //---------------------------------//
 
-  QAction *PanAction = new QAction(tr("Pan"), this);
-  PanAction->setCheckable(true);
-  PanAction->setChecked(false);
+  QAction *TranslateAction = new QAction(tr("Translate"), this);
+  TranslateAction->setShortcut(tr("T", "Translate Mode"));
+  TranslateAction->setCheckable(true);
+  TranslateAction->setChecked(false);
 
-  QIcon PanIcon;
-  PanIcon.addPixmap(QPixmap( QString::fromUtf8(":/fig/Hand.png") ),
+  QIcon TranslateIcon;
+  TranslateIcon.addPixmap(QPixmap( QString::fromUtf8(":/fig/Hand.png") ),
                     QIcon::Normal, QIcon::Off);
-  PanAction->setIcon(PanIcon);
+  TranslateAction->setIcon(TranslateIcon);
 
-  ModeGroup->addAction(PanAction);
+  ModeGroup->addAction(TranslateAction);
 
-  this->m_ModeToolBar->m_VectorAction.push_back(PanAction);
+  this->m_ModeToolBar->m_VectorAction.push_back(TranslateAction);
   // it also updates the interactor behaviour
-  QObject::connect( PanAction, SIGNAL( toggled(bool) ),
-                    this, SLOT( PanInteractorBehavior(bool) ) );
+  QObject::connect( TranslateAction, SIGNAL( toggled(bool) ),
+                    this, SLOT( TranslateInteractorBehavior(bool) ) );
 
   this->m_ToolBarList.push_back(this->m_ModeToolBar);
 }

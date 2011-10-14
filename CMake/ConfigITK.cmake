@@ -5,6 +5,8 @@ IF( ITK_FOUND )
   #----------------------------------------------------------
   INCLUDE( ${ITK_USE_FILE} )
 
+  MESSAGE(STATUS "ITK libs: ${ITK_LIBRARIES}")
+
   #----------------------------------------------------------
   # Check the version of ITK
   # ( by checking the existence of a variable

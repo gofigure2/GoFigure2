@@ -107,13 +107,17 @@ SET( QGoGUILIB_SRC
   TraceEditing/QGoMeshShapeAlgo.cxx
   TraceEditing/QGoMeshWaterShedAlgo.cxx
   TraceEditing/QGoMeshSplitDanielssonDistanceAlgo.cxx
+  TraceEditing/QGoMeshMergeConvexHullAlgo.cxx
   TraceEditing/QGoWaterShedAlgo.cxx
   TraceEditing/QGoSetOfContoursWaterShedAlgo.cxx
   TraceEditing/QGoSetOfContoursLevelSetAlgo.cxx
   TraceEditing/QGoLevelSetAlgo.cxx
   TraceEditing/QGoShapeAlgo.cxx
+  TraceEditing/QGoSplitDanielssonDistanceAlgo.cxx
+  TraceEditing/QGoMergeConvexHullAlgo.cxx
   TraceEditing/QGoSetOfContoursShapeAlgo.cxx
   TraceEditing/QGoSemiAutoSegmentationAlgo.cxx
+  TraceEditing/QGoSplitSegmentationAlgo.cxx
   TraceEditing/QGoFilterSemiAutoBase.cxx
 
   # transfer function widget
@@ -257,6 +261,7 @@ SET( QGoGUILIB_HDRS
   TraceEditing/QGoFilterChanAndVese.h
   TraceEditing/QGoFilterShape.h
   TraceEditing/QGoFilterWatershed.h
+  TraceEditing/QGoFilterWatershed.h
   TraceEditing/QGoTraceEditingWidget.h
   TraceEditing/QGoModesManagerWidget.h
   TraceEditing/QGoAlgorithmsManagerWidget.h
@@ -265,6 +270,7 @@ SET( QGoGUILIB_HDRS
   TraceEditing/QGoContourEditingWidgetManager.h
   TraceEditing/QGoSegmentationAlgo.h
   TraceEditing/QGoSemiAutoSegmentationAlgo.h
+  TraceEditing/QGoSplitSegmentationAlgo.h
   TraceEditing/QGoTraceEditingWidgetManager.h
   TraceEditing/QGoFilterSemiAutoBase.h
 
@@ -389,13 +395,13 @@ ADD_LIBRARY( QGoGui
 )
 
 SET( QGoGUI_LIBS
+  ${ITK_LIBRARIES}
   QVTK
   QGoIO
   GoFilters
   vtkRenderingAddOn2
   PoissonReconstruction
   ctk
-  ${ITK_LIBRARIES}
   )
 
 TARGET_LINK_LIBRARIES( QGoGui

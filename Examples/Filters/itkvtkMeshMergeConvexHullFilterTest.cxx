@@ -92,10 +92,12 @@ int main( int argc, char* argv[] )
   sphere_source2->SetRadius( radius );
   sphere_source2->Update();
 
-  typedef itk::vtkMeshMergeConvexHullFilter< ImageType > MergerType;
+  typedef std::list< vtkPolyData* > PolyDataListType;
+
+  typedef itk::vtkMeshMergeConvexHullFilter< ImageType, PolyDataListType > MergerType;
   MergerType::Pointer filter = MergerType::New();
 
-  std::list< vtkPolyData* > meshes;
+  PolyDataListType meshes;
   meshes.push_back( sphere_source->GetOutput() );
   meshes.push_back( sphere_source2->GetOutput() );
 

@@ -254,7 +254,7 @@ vtkViewImage2DCommand::Windowing(vtkInteractorStyleImage2D *isi)
     max = newLevel + newWindow /2;
 
   // can happen if we move too fast
-  if(min > max || max < min)
+  if(min > max - 2 || max < min + 2)
     return;
 
   this->Viewer->SetWindow(min);

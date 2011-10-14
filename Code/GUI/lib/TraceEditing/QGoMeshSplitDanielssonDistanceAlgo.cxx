@@ -33,12 +33,16 @@
 =========================================================================*/
 #include "QGoMeshSplitDanielssonDistanceAlgo.h"
 
+#include "itkvtkMeshSplitterDanielssonDistanceImageFilter.h"
 #include "GoImageProcessor.h"
 
+//temp
+#include "vtkPolyDataWriter.h"
 
-QGoMeshSplitDanielssonDistanceAlgo::QGoMeshSplitDanielssonDistanceAlgo(QWidget* iParent)
+QGoMeshSplitDanielssonDistanceAlgo::QGoMeshSplitDanielssonDistanceAlgo(std::vector< vtkPoints* >* iSeeds, QWidget* iParent)
+    :QGoSplitDanielssonDistanceAlgo(iSeeds, iParent)
 {
-  this->SetAlgoWidget(iParent);
+  this->setObjectName("Split");
 }
 //-------------------------------------------------------------------------
 
@@ -49,34 +53,85 @@ QGoMeshSplitDanielssonDistanceAlgo::~QGoMeshSplitDanielssonDistanceAlgo()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoMeshSplitDanielssonDistanceAlgo::DeleteParameters()
-{
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void QGoMeshSplitDanielssonDistanceAlgo::SetAlgoWidget(QWidget* iParent)
-{
-  this->m_AlgoWidget = 
-    new QGoAlgorithmWidget("Danielsson", iParent);
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
 std::vector<vtkPolyData*> QGoMeshSplitDanielssonDistanceAlgo::ApplyAlgo(
-  GoImageProcessor* iImages,
-    std::string iChannel, 
+    GoImageProcessor* iImages,
+    std::string iChannel,
+    std::vector<vtkPolyData*> iPolyData,
     bool iIsInvertedOn)
 {
-  std::vector<vtkPolyData*> NewMeshes = std::vector<vtkPolyData*> ();
-  /*QGoFilterChanAndVese LevelSetFilter;
+  const unsigned int Dimension = 3;
+  typedef unsigned char PixelType;
+  typedef itk::Image< PixelType, Dimension >  ImageType;
+  typedef itk::vtkMeshSplitterDanielssonDistanceImageFilter< ImageType >
+      SplitterType;
 
-  std::vector<vtkPolyData*> NewMeshes = 
-    LevelSetFilter.ApplyFilterLevelSet3D(m_Radius->GetValue(), 
-    iSeeds, m_Iterations->GetValue(),
-    m_Curvature->GetValue(), iImages, iChannel);*/
- 
-  return NewMeshes;
+  std::vector<vtkPolyData*> oVector;
+
+  std::vector< double > bounds(6);
+  double* boundsPointer = iPolyData[0]->GetBounds();
+  for(int i = 0; i<Dimension; ++i)
+    {
+    bounds[i*2] = static_cast<int>(boundsPointer[i*2]);
+    bounds[i*2+1] = static_cast<int>(boundsPointer[i*2+1]);
+    }
+
+  typedef SplitterType::PointSetType PointSetType;
+  PointSetType::Pointer seeds = PointSetType::New();
+
+  ImageType::PointType itk_pt;
+  double vtk_pt[3];
+  int position = 0;
+  for( size_t id = 0; id < this->m_Seeds->size(); id++ )
+    {
+    for ( int i = 0; i < (*this->m_Seeds)[id]->GetNumberOfPoints(); i++ )
+      {
+      (*this->m_Seeds)[id]->GetPoint(i, vtk_pt);
+      // if seed is inside the bounding box, use it!
+      if(    vtk_pt[0] > bounds[0] && vtk_pt[0] < bounds[1]
+          && vtk_pt[1] > bounds[2] && vtk_pt[1] < bounds[3]
+          && vtk_pt[2] > bounds[4] && vtk_pt[2] < bounds[5])
+        {
+        itk_pt[0] = vtk_pt[0];
+        itk_pt[1] = vtk_pt[1];
+        itk_pt[2] = vtk_pt[2];
+        std::cout << itk_pt[0] << "-" << itk_pt[1] << "-" << itk_pt[2] << std::endl;
+        seeds->SetPoint( position, itk_pt );
+        ++position;
+        }
+      }
+    }
+
+  if( position >= 2)
+    {
+    ImageType::Pointer ITK_Full_Image = iImages->getImageITK<PixelType, Dimension>(
+        iImages->getChannelName(0));
+
+    itk::Vector<double> spacing = ITK_Full_Image->GetSpacing();
+
+    // work on smaller region
+    // increase size of bounding box by 20*spacing... bug itk?
+    for(int i = 0; i<Dimension; ++i)
+      {
+      bounds[i*2] = bounds[i*2] - 10*spacing[i];
+      bounds[i*2+1] = bounds[i*2+1] + 10*spacing[i];
+      }
+
+    // then let's extract the Region of Interest
+    ImageType::Pointer ITK_ROI_Image =
+        this->ITKExtractROI< PixelType, Dimension >( bounds, ITK_Full_Image);
+
+    SplitterType::Pointer filter = SplitterType::New();
+    // size_t nb_ch = iImages->getNumberOfChannels();
+    filter->SetNumberOfImages( 1 );
+    filter->SetMesh( iPolyData[0] );
+    filter->SetFeatureImage( 0,
+                             ITK_ROI_Image);
+
+    filter->SetSeeds( seeds );
+    filter->Update();
+    oVector = filter->GetOutputs();
+  }
+  return oVector;
 }
 //-------------------------------------------------------------------------
 

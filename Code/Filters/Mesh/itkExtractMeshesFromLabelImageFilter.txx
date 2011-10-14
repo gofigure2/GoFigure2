@@ -221,7 +221,12 @@ ThreadedExtractMesh( const unsigned int& startLabel,
   while( ( label <= endLabel ) && ( l_it != l_end ) )
     {
     LabelType i = l_it->first;
+    #ifdef ITKv4
     region = m_ShapeLabelMap->GetLabelObject ( i )->GetBoundingBox();
+    #else
+    region = m_ShapeLabelMap->GetLabelObject ( i )->GetRegion();
+    #endif
+
     index = region.GetIndex();
     size = region.GetSize();
 
@@ -243,7 +248,11 @@ ThreadedExtractMesh( const unsigned int& startLabel,
     // Extract mesh
     MeshSourcePointer meshSource = MeshSourceType::New();
     meshSource->SetInput( m_Input );
+    #ifdef ITKv4
     meshSource->SetRegionOfInterest ( region );
+    #else
+    //no region, the whole image will be processed
+    #endif
     meshSource->SetObjectValue( i );
     meshSource->Update();
 
