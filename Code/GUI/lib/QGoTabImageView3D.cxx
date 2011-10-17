@@ -372,6 +372,7 @@ void QGoTabImageView3D::setupUi(QWidget *iParent)
     }
 
   m_ImageView = new QGoImageView3D(this);
+  this->setCentralWidget(m_ImageView);
   m_ImageView->SetBackgroundColor(m_BackgroundColor);
 
   QObject::connect( m_ImageView, SIGNAL( SliceViewXYChanged(int) ),

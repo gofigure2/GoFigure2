@@ -451,7 +451,7 @@ TrackContainer::
 UpdateElementHighlightingWithGivenTraceIDs(const QStringList & iList,
                                            const Qt::CheckState & iCheck)
 {
- 
+
   Superclass::UpdateElementHighlightingWithGivenTraceIDsBase(iList,
                                                                iCheck);
 }
@@ -1266,7 +1266,7 @@ GetRootIterator(MultiIndexContainerTraceIDIterator& iMotherIterator)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-GoFigureLineageAttributes 
+GoFigureLineageAttributes
 TrackContainer::
 UpdateDivisionsForALineage(unsigned int iTrackIDRoot, double* color)
 {
@@ -1295,7 +1295,7 @@ UpdateCollectionScalars(const unsigned int& iTrackID)
   GoFigureLineageAttributes oAttributes;
   if( motherIt != m_Container.get< TraceID >().end() )
     {
-    UpdateDivisionScalar(motherIt, 0); 
+    UpdateDivisionScalar(motherIt, 0);
     oAttributes = this->GetLineageAttributes(iTrackID);
       // 0=depth of the root
     }
@@ -1619,7 +1619,7 @@ GetLineageAttributes(unsigned int iTrackRootID)
 {
   //check if possible to iterate on the tree only once
   GoFigureLineageAttributes LineageAttributes;
-  
+
   LineageAttributes.MaxDepth = this->GetCollectionMaxDepth(iTrackRootID);
   LineageAttributes.MinDepth = this->GetCollectionMinDepth(iTrackRootID);
   LineageAttributes.NumberOfDivisions = this->GetCollectionNumberOfDivisions(iTrackRootID);
@@ -1693,6 +1693,7 @@ ExportLineage(const unsigned int& iTrackID)
   // delete array
   id->Delete();
   depth->Delete();
+  cellType->Delete();
 
   return graph;
 }

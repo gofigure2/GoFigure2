@@ -82,7 +82,7 @@ void QGoDBMeshManager::SetCollectionsTraceNames()
 void QGoDBMeshManager::DisplayInfoAndLoadVisuContainerForAllMeshes(
   vtkMySQLDatabase *iDatabaseConnector)
 {
-  this->DisplayInfoAndLoadVisuContainerWithAllTraces< 
+  this->DisplayInfoAndLoadVisuContainerWithAllTraces<
     GoDBTWContainerForMesh >(this->m_TWContainer, iDatabaseConnector);
 }
 
@@ -105,7 +105,7 @@ void QGoDBMeshManager::DisplayInfoAndLoadVisuContainerForAllMeshesForSpecificTPs
    //  (iDatabaseConnector, this->m_ContourContainerInfoForVisu, iListTPs);
 
    this->AddInfoForMeshesInTWForSpecificTPs(iDatabaseConnector, iListTPs);
-   std::list<unsigned int> ListIDs = 
+   std::list<unsigned int> ListIDs =
       this->m_CollectionOfTraces->GetTraceIDsBelongingToListTimePoints(
         iDatabaseConnector,  iListTPs);
     std::list<ContourMeshContainer::MultiIndexContainerElementType> list_of_traces =
@@ -119,7 +119,7 @@ void QGoDBMeshManager::DisplayInfoAndLoadVisuContainerForAllMeshesForSpecificTPs
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoDBMeshManager::AddInfoForMeshesInTWForSpecificTPs(vtkMySQLDatabase *iDatabaseConnector, 
+void QGoDBMeshManager::AddInfoForMeshesInTWForSpecificTPs(vtkMySQLDatabase *iDatabaseConnector,
     std::list<unsigned int> iListTPs)
 {
   int IndexShowColumn = this->m_TWContainer->GetIndexShowColumn();
@@ -129,13 +129,16 @@ void QGoDBMeshManager::AddInfoForMeshesInTWForSpecificTPs(vtkMySQLDatabase *iDat
     iDatabaseConnector, Qt::Unchecked, IndexShowColumn );*/
   //load the container with the traces infos for the TW for the TimePoints contained
     //in iListTPs:
-    TWContainerType RowContainer =
+  TWContainerType RowContainer =
       this->m_TWContainer->GetContainerLoadedWithAllFromDB(iDatabaseConnector, iListTPs);
-    this->m_Table->InsertNewRows(RowContainer,
-                                 this->m_TWContainer->GetIndexForGroupColor(this->m_TraceName),
-                                 this->m_TWContainer->GetIndexForGroupColor(this->m_CollectionName),
-                                 this->m_TraceName, this->m_CollectionName,Qt::Unchecked);
-}
+
+  this->m_Table->InsertNewRows(RowContainer,
+                               this->m_TWContainer->GetIndexForGroupColor(this->m_TraceName),
+                               this->m_TWContainer->GetIndexForGroupColor(this->m_CollectionName),
+                               this->m_TraceName,
+                               this->m_CollectionName,
+                               Qt::Unchecked);
+  }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -250,7 +253,7 @@ void QGoDBMeshManager::AddActionsContextMenu(QMenu *iMenu)
 unsigned int QGoDBMeshManager::SaveNewMeshFromVisu(
   unsigned int iXCoordMin, unsigned int iYCoordMin, unsigned int iZCoordMin,
   unsigned int iXCoordMax, unsigned int iYCoordMax,
-  unsigned int iZCoordMax, int iTCoord,//int iTShift, 
+  unsigned int iZCoordMax, int iTCoord,//int iTShift,
   vtkPolyData *iTraceNodes,
   vtkMySQLDatabase *iDatabaseConnector,
   GoFigureMeshAttributes *iMeshAttributes,
@@ -286,8 +289,8 @@ unsigned int QGoDBMeshManager::SaveNewMeshFromVisu(
   vtkMySQLDatabase *iDatabaseConnector,
   GoFigureMeshAttributes *iMeshAttributes)
 {
-  return SaveNewMeshFromVisu(iXCoordMin, iYCoordMin, iZCoordMin, iXCoordMax, iYCoordMax, 
-    iZCoordMax, iTCoord, iTraceNodes, iDatabaseConnector, iMeshAttributes, 
+  return SaveNewMeshFromVisu(iXCoordMin, iYCoordMin, iZCoordMin, iXCoordMax, iYCoordMax,
+    iZCoordMax, iTCoord, iTraceNodes, iDatabaseConnector, iMeshAttributes,
     ss_atoi<unsigned int>(this->m_SelectedCollectionData->first) );
 }
 
@@ -301,7 +304,7 @@ unsigned int QGoDBMeshManager::SaveNewMeshWithNoTrackFromVisu(
   vtkMySQLDatabase *iDatabaseConnector,
   GoFigureMeshAttributes *iMeshAttributes)
 {
-  return SaveNewMeshFromVisu(iXCoordMin, iYCoordMin, iZCoordMin, iXCoordMax, iYCoordMax, 
+  return SaveNewMeshFromVisu(iXCoordMin, iYCoordMin, iZCoordMin, iXCoordMax, iYCoordMax,
     iZCoordMax, iTShift, iTraceNodes, iDatabaseConnector, iMeshAttributes, 0 );
 }
 //-------------------------------------------------------------------------
@@ -626,7 +629,7 @@ unsigned int QGoDBMeshManager::ReassignTrackIDForPreviousMeshWithSameTimePoint(v
 
 //-------------------------------------------------------------------------
 QString QGoDBMeshManager::CheckExistingMeshesForTheTrack(
-  unsigned int iTrackID, vtkMySQLDatabase *iDatabaseConnector, 
+  unsigned int iTrackID, vtkMySQLDatabase *iDatabaseConnector,
   int iTCoord)
 {
   QString MessageToPrint("");

@@ -1241,8 +1241,8 @@ QGoTabImageView3DwT::CreateToolsActions()
   group->addAction(ContourSegmentationAction);
   //group->addAction(this->m_ContourSegmentationDockWidget->GetActionForToggle() );
 
-  this->m_TracesActions->m_VectorAction.push_back(ContourSegmentationAction); 
-  //this->m_TracesActions.push_back(this->m_ContourSegmentationDockWidget->GetActionForToggle()); 
+  this->m_TracesActions->m_VectorAction.push_back(ContourSegmentationAction);
+  //this->m_TracesActions.push_back(this->m_ContourSegmentationDockWidget->GetActionForToggle());
 
   QObject::connect( ContourSegmentationAction,
                     SIGNAL( toggled(bool) ),
@@ -1458,9 +1458,9 @@ QGoTabImageView3DwT::setupUi(QWidget *iParent)
     iParent->resize(800, 800);
     }
 
-  m_ImageView = new QGoImageView3D;
+  m_ImageView = new QGoImageView3D( this );
   this->setCentralWidget(m_ImageView);
-  m_DataBaseTables = new QGoPrintDatabase;
+  m_DataBaseTables = new QGoPrintDatabase( this );
   this->addDockWidget(Qt::TopDockWidgetArea, m_DataBaseTables);
   m_DataBaseTables->hide();
 
@@ -2555,7 +2555,7 @@ QGoTabImageView3DwT::SplitInDBAndRenderMeshForVisu(
     for(size_t i=1; i<iVectPolydata.size(); ++i)
       SaveAndVisuMesh(iVectPolydata[i], tCoord.front(), 0);
     }
-  
+
 }
 //-------------------------------------------------------------------------
 
@@ -3398,7 +3398,7 @@ void
 QGoTabImageView3DwT::
 CreateContoursActorsFromVisuContainer(std::list<unsigned int> iTPointToLoad)
 {
-  typedef ContourContainer::MultiIndexContainerType::index< TCoord >::type::iterator 
+  typedef ContourContainer::MultiIndexContainerType::index< TCoord >::type::iterator
     ContourContainerTCoordIterator;
 
   if ( this->m_ContourContainer )
@@ -3413,7 +3413,7 @@ CreateContoursActorsFromVisuContainer(std::list<unsigned int> iTPointToLoad)
         {
         ContourContainerTCoordIterator it0, it1;
         // let's iterate on the container with increasing TraceID
-        boost::tuples::tie(it0, it1) 
+        boost::tuples::tie(it0, it1)
           = this->m_ContourContainer->m_Container.get< TCoord >().equal_range(*it);
 
         // we don't need here to save this contour in the database,

@@ -230,7 +230,7 @@ public:
         {
         startOfROI[dim] = 0;
         }
-      if( startOfROI[dim] > sizeOfLargeImage[dim] )
+      if( static_cast< ImageSizeValueType >( startOfROI[dim] ) > sizeOfLargeImage[dim] )
         {
         startOfROI[dim] = sizeOfLargeImage[dim] - 1;
         }
@@ -239,7 +239,7 @@ public:
         {
         endOfROI[dim] = 0;
         }
-      if( endOfROI[dim] > sizeOfLargeImage[dim] )
+      if( static_cast< ImageSizeValueType >( endOfROI[dim] ) > sizeOfLargeImage[dim] )
         {
         endOfROI[dim] = sizeOfLargeImage[dim] - 1;
         }
@@ -316,7 +316,7 @@ public:
 #ifdef ITKv4
     oImageOffsetType  new_offset;
 #else
-    long int* new_offset;
+    long int* new_offset = new long int[3];
 #endif
 
 
@@ -328,7 +328,7 @@ public:
         {
         startOfROI[dim] = 0;
         }
-      if( startOfROI[dim] > sizeOfLargeImage[dim] )
+      if( static_cast< ImageSizeValueType >( startOfROI[dim] ) > sizeOfLargeImage[dim] )
         {
         startOfROI[dim] = sizeOfLargeImage[dim] - 1;
         }
@@ -337,7 +337,7 @@ public:
         {
         endOfROI[dim] = 0;
         }
-      if( endOfROI[dim] > sizeOfLargeImage[dim] )
+      if( static_cast< ImageSizeValueType >( endOfROI[dim] ) > sizeOfLargeImage[dim] )
         {
         endOfROI[dim] = sizeOfLargeImage[dim] - 1;
         }

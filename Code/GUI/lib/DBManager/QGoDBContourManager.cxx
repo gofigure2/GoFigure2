@@ -109,7 +109,7 @@ void QGoDBContourManager::DisplayInfoAndLoadVisuContainerForAllContoursForSpecif
    //  (iDatabaseConnector, this->m_ContourContainerInfoForVisu, iListTPs);
 
    this->AddInfoForContoursInTWForSpecificTPs(iDatabaseConnector, iListTPs);
-   std::list<unsigned int> ListIDs = 
+   std::list<unsigned int> ListIDs =
       this->m_CollectionOfTraces->GetTraceIDsBelongingToListTimePoints(
         iDatabaseConnector,  iListTPs);
     std::list<ContourMeshContainer::MultiIndexContainerElementType> list_of_traces =
@@ -123,7 +123,7 @@ void QGoDBContourManager::DisplayInfoAndLoadVisuContainerForAllContoursForSpecif
  //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoDBContourManager::AddInfoForContoursInTWForSpecificTPs(vtkMySQLDatabase *iDatabaseConnector, 
+void QGoDBContourManager::AddInfoForContoursInTWForSpecificTPs(vtkMySQLDatabase *iDatabaseConnector,
     std::list<unsigned int> iListTPs)
 {
   int IndexShowColumn = this->m_TWContainer->GetIndexShowColumn();
@@ -133,12 +133,15 @@ void QGoDBContourManager::AddInfoForContoursInTWForSpecificTPs(vtkMySQLDatabase 
     iDatabaseConnector, Qt::Unchecked, IndexShowColumn );*/
   //load the container with the traces infos for the TW for the TimePoints contained
     //in iListTPs:
-    TWContainerType RowContainer =
+  TWContainerType RowContainer =
       this->m_TWContainer->GetContainerLoadedWithAllFromDB(iDatabaseConnector, iListTPs);
-    this->m_Table->InsertNewRows(RowContainer,
-                                 this->m_TWContainer->GetIndexForGroupColor(this->m_TraceName),
-                                 this->m_TWContainer->GetIndexForGroupColor(this->m_CollectionName),
-                                 this->m_TraceName, this->m_CollectionName,Qt::Unchecked);
+
+  this->m_Table->InsertNewRows(RowContainer,
+                               this->m_TWContainer->GetIndexForGroupColor(this->m_TraceName),
+                               this->m_TWContainer->GetIndexForGroupColor(this->m_CollectionName),
+                               this->m_TraceName,
+                               this->m_CollectionName,
+                               Qt::Unchecked);
 }
 //-------------------------------------------------------------------------
 

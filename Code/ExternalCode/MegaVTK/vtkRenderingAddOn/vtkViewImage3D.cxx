@@ -812,12 +812,12 @@ GetPlanesActors()
 {
   std::vector<vtkProp3D*> planeActors;
 
-  for(int i =0; i < this->BoundsActor.size(); i++)
+  for( size_t i =0; i < this->BoundsActor.size(); i++ )
     {
     planeActors.push_back(dynamic_cast<vtkProp3D*>(this->BoundsActor[i]));
     }
 
-  for(int i =0; i < this->Phantom.size(); i++)
+  for(size_t i =0; i < this->Phantom.size(); i++)
     {
     planeActors.push_back(dynamic_cast<vtkProp3D*>(this->Phantom[i]));
     }

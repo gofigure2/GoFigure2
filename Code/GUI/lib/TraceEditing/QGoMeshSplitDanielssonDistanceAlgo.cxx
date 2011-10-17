@@ -69,7 +69,7 @@ std::vector<vtkPolyData*> QGoMeshSplitDanielssonDistanceAlgo::ApplyAlgo(
 
   std::vector< double > bounds(6);
   double* boundsPointer = iPolyData[0]->GetBounds();
-  for(int i = 0; i<Dimension; ++i)
+  for(unsigned int i = 0; i<Dimension; ++i)
     {
     bounds[i*2] = static_cast<int>(boundsPointer[i*2]);
     bounds[i*2+1] = static_cast<int>(boundsPointer[i*2+1]);
@@ -110,7 +110,7 @@ std::vector<vtkPolyData*> QGoMeshSplitDanielssonDistanceAlgo::ApplyAlgo(
 
     // work on smaller region
     // increase size of bounding box by 20*spacing... bug itk?
-    for(int i = 0; i<Dimension; ++i)
+    for(unsigned int i = 0; i<Dimension; ++i)
       {
       bounds[i*2] = bounds[i*2] - 10*spacing[i];
       bounds[i*2+1] = bounds[i*2+1] + 10*spacing[i];
