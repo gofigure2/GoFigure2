@@ -78,15 +78,19 @@
 
 #include "QGoGUILibConfigure.h"
 
+// Qt
 #include <QWidget>
 #include <QBrush>
 
+//std
 #include <vector>
 #include <map>
 
+// gofigure
 class HoverPoints;
 class GoTransferFunctionWidget;
 
+// qt
 class QPolygonF;
 class QTextStream;
 class QPushButton;
@@ -106,32 +110,72 @@ public:
                                  std::vector<int> iLUTParameters,
                                  double iMax);
 
-  void setGradientStops(const QGradientStops &stops);
+  /**
+   * \brief Add points to both LUT and Opacity transfer function
+   * \param[in] iPoints map containing the points. The key is the "X" poisition,
+   * the value is the "Y" position.
+   */
+  void AddPoints( const std::map<unsigned int, unsigned int >& iPoints);
 
-  void AddPoints( const std::map<unsigned int, unsigned int >& iRGBA);
-
+  /**
+   * \brief Add LUT to the GoTransferFunctionEditorWidget
+   * \param[in] iLUT the vtk Look Up Table
+   */
   void AddLookupTable(vtkLookupTable* iLUT);
 
+  /**
+   * \brief 1- Add Histogram to the GoTransferFunctionEditorWidget
+   * 2- Convert it to QVector<qreal>
+   * 3- Add it to the m_TFWidget
+   * 4- Update the m_TFWidget
+   * \param[in] iHistogram a vtkImage Accumulate
+   */
   void AddHistogram(vtkImageAccumulate* iHistogram);
 
+  /**
+   * \brief Add color of the channel to the GoTransferFunctionEditorWidget.
+   It modifies m_Color. m_Color is necessary for reset and to initialize the
+   m_TFWidget;
+   \param[in] iColor is a vector of size 4 (RGBA), with values between 0 and 255.
+   Add color then normalize the values between 0 and 1.
+   */
   void AddColor(const std::vector<double>& iColor);
 
+  /**
+   * \brief Add name of the channel to the GoTransferFunctionEditorWidget.
+   * \param[in] iChannel name of the channel
+   */
   void AddName(QString iChannel);
 
+  /**
+    * \brief Add pointer to the opacity TF for a direct access.
+    */
   void AddOpacityTransferFunction(vtkPiecewiseFunction* iOpacity);
 
-  void SetMax( double iMax);
+  /**
+    * \bried Set maximum value of the current channel. Useful to adjust
+    the range of the LUT.
+    */
+  void SetMaximumValue( double iMax);
 
 public slots:
-  void pointsUpdated();
-  // color
-  void setColor();
-  // LUT
-  void presetLUT();
+  /**
+    * \brief Update the LUT based on the min, max and gamma.
+    * It updates the m_TFWidget and the visualition.
+    */
+  void UpdateLUT();
+  /**
+    * \brief Opens a QColorDialog. If chosen color is valid, then:
+    1- Modify push button color
+    2- Modify m_TFWidget color
+    3- Update LUT
+    */
+  void ChangeColor();
+
   void resetLUT();
-  void saveLUT();
-  void readLUT();
+
   void saveAll();
+
   // opacity TF
   void updateOpacityTF();
   void showHistogram(bool iEnable);
@@ -153,7 +197,7 @@ private:
 
   void computeMapFromPoints(
     std::map< unsigned int, unsigned int>& iMap, const QPolygonF& iPoints);
-  void computePointsFromMap(
+  void ConvertSTDMapToQPolygonF(
     const std::map< unsigned int, unsigned int>& iMap, QPolygonF& iPoints);
 
   void WriteLUTComponent(GoTransferFunctionWidget* iTFWidget,
@@ -164,7 +208,7 @@ private:
 
   QPushButton* m_ColorPushButton;
 
-  GoTransferFunctionWidget *m_red_shade;
+  GoTransferFunctionWidget *m_TFWidget;
 
   QSlider* m_GammaSlider;
   QSlider* m_MinSlider;

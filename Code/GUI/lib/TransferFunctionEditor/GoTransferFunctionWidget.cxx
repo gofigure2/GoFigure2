@@ -97,25 +97,25 @@ GoTransferFunctionWidget::GoTransferFunctionWidget(QColor iColor,
   setAttribute(Qt::WA_NoBackground);
 
   // gamma TF
-  m_gammaPoints = new HoverPoints(this, HoverPoints::RectangleShape);
-  m_gammaPoints->setConnectionType(HoverPoints::LineConnection);
-  connect(this, SIGNAL(enableGammaPoints(bool)), m_gammaPoints, SLOT(setEnabled(bool)));
+  m_LUTPoints = new HoverPoints(this, HoverPoints::RectangleShape);
+  m_LUTPoints->setConnectionType(HoverPoints::LineConnection);
+  connect(this, SIGNAL(enableGammaPoints(bool)), m_LUTPoints, SLOT(setEnabled(bool)));
 
   // opacity TF
-  m_hoverPoints = new HoverPoints(this, HoverPoints::CircleShape);
-  m_hoverPoints->setConnectionType(HoverPoints::LineConnection);
-  connect(this, SIGNAL(enableHoverPoints(bool)), m_hoverPoints, SLOT(setEnabled(bool)));
+  m_OpacityTFPoints = new HoverPoints(this, HoverPoints::CircleShape);
+  m_OpacityTFPoints->setConnectionType(HoverPoints::LineConnection);
+  connect(this, SIGNAL(enableHoverPoints(bool)), m_OpacityTFPoints, SLOT(setEnabled(bool)));
 
   setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
 
-  connect(m_hoverPoints, SIGNAL(pointsChanged(QPolygonF)), this, SIGNAL(opacityChanged()));
+  connect(m_OpacityTFPoints, SIGNAL(pointsChanged(QPolygonF)), this, SIGNAL(opacityChanged()));
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 QPolygonF GoTransferFunctionWidget::points() const
 {
-  return m_hoverPoints->points();
+  return m_OpacityTFPoints->points();
 }
 //-------------------------------------------------------------------------
 
@@ -169,21 +169,21 @@ void GoTransferFunctionWidget::generateShade()
 //-------------------------------------------------------------------------
 void
 GoTransferFunctionWidget::
-AddPoints(const QPolygonF& iPoints)
+AddPointsToOpacityTF(const QPolygonF& iPoints)
 {
-  m_hoverPoints->setPoints(iPoints);
-  m_hoverPoints->setPointLock(0, HoverPoints::LockToLeft);
-  m_hoverPoints->setPointLock(iPoints.size()-1, HoverPoints::LockToRight);
-  m_hoverPoints->setSortType(HoverPoints::XSort);
+  m_OpacityTFPoints->setPoints(iPoints);
+  m_OpacityTFPoints->setPointLock(0, HoverPoints::LockToLeft);
+  m_OpacityTFPoints->setPointLock(iPoints.size()-1, HoverPoints::LockToRight);
+  m_OpacityTFPoints->setSortType(HoverPoints::XSort);
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
 GoTransferFunctionWidget::
-AddGammaPoints(const QPolygonF& iPoints)
+AddPointsToLUT(const QPolygonF& iPoints)
 {
-  m_gammaPoints->setPoints(iPoints);
+  m_LUTPoints->setPoints(iPoints);
 }
 //-------------------------------------------------------------------------
 
@@ -232,7 +232,7 @@ UpdateLookupTable(vtkLookupTable* iLUT, qreal iGamma, qreal iMin, qreal iMax)
   iLUT->Modified();
 
   // print new curve
-  m_gammaPoints->setPoints(iPoints);
+  m_LUTPoints->setPoints(iPoints);
   update();
 }
 //-------------------------------------------------------------------------
@@ -255,10 +255,10 @@ Reset()
   QPolygonF points;
   points << QPointF(0, height())
          << QPointF(width(),0);
-  m_hoverPoints->setPoints(points);
-  m_hoverPoints->setPointLock(0, HoverPoints::LockToLeft);
-  m_hoverPoints->setPointLock(1, HoverPoints::LockToRight);
-  m_hoverPoints->setSortType(HoverPoints::XSort);
+  m_OpacityTFPoints->setPoints(points);
+  m_OpacityTFPoints->setPointLock(0, HoverPoints::LockToLeft);
+  m_OpacityTFPoints->setPointLock(1, HoverPoints::LockToRight);
+  m_OpacityTFPoints->setSortType(HoverPoints::XSort);
 }
 //-------------------------------------------------------------------------
 

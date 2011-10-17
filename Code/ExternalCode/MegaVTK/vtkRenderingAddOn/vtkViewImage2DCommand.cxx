@@ -207,8 +207,6 @@ vtkViewImage2DCommand::Windowing(vtkInteractorStyleImage2D *isi)
     return;
     }
 
-    std::cout << "is not colored image" << std::endl;
-
   int *  size = this->Viewer->GetRenderWindow()->GetSize();
 
   double window = this->InitialWindow;

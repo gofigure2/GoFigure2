@@ -3670,7 +3670,8 @@ UpdateTFEditor()
     // update histogram
     widget->AddHistogram(m_ImageProcessor->getHistogram(name) );
     // update max value
-    widget->SetMax(m_ImageProcessor->getImageBW(name)->GetScalarRange()[1]);
+    widget->SetMaximumValue(
+        m_ImageProcessor->getImageBW(name)->GetScalarRange()[1]);
     }
 }
 //------------------------------------------------------------------------------

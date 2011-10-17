@@ -98,10 +98,10 @@ public:
     QSize sizeHint() const { return QSize(150, 40); }
     QPolygonF points() const;
 
-    HoverPoints *hoverPoints() const { return m_hoverPoints; }
+    HoverPoints *hoverPoints() const { return m_OpacityTFPoints; }
 
-    void AddPoints(const QPolygonF& iPoints);
-    void AddGammaPoints(const QPolygonF& iPoints);
+    void AddPointsToOpacityTF(const QPolygonF& iPoints);
+    void AddPointsToLUT(const QPolygonF& iPoints);
 
     void UpdateLookupTable(vtkLookupTable* iLUT,
                            qreal iGamma, qreal iMin, qreal iMax);
@@ -129,8 +129,8 @@ private:
 
     QColor m_color;
     QImage m_shade;
-    HoverPoints *m_hoverPoints;
-    HoverPoints *m_gammaPoints;
+    HoverPoints *m_OpacityTFPoints;
+    HoverPoints *m_LUTPoints;
     QLinearGradient m_alpha_gradient;
     QVector<qreal> m_Histogram;
     double m_Max;
