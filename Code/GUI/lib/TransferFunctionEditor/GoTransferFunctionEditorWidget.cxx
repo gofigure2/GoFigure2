@@ -119,7 +119,7 @@ GoTransferFunctionEditorWidget(QWidget *parent,QString iChannel,
   // set channel name
   m_Channel = iChannel;
 
-  // layout of the widget
+  // global layout of the widget
   QVBoxLayout *vbox = new QVBoxLayout(this);
   vbox->setSpacing(1);
   vbox->setMargin(1);
@@ -132,8 +132,6 @@ GoTransferFunctionEditorWidget(QWidget *parent,QString iChannel,
   |                         |
   ---------------------------
   */
-  // layout
-  QHBoxLayout *colorLayout = new QHBoxLayout(this);
   // items
   //label
   QLabel *color = new QLabel("Color: ");
@@ -144,6 +142,7 @@ GoTransferFunctionEditorWidget(QWidget *parent,QString iChannel,
   m_ColorPushButton->setStyleSheet(
         style.arg(m_Color.red()).arg(m_Color .green()).arg(m_Color.blue()));
   // add items to layout
+  QHBoxLayout *colorLayout = new QHBoxLayout(this);
   colorLayout->addWidget(color);
   colorLayout->addWidget(m_ColorPushButton);
   // connect signals
@@ -167,12 +166,6 @@ GoTransferFunctionEditorWidget(QWidget *parent,QString iChannel,
   |  |---|-----------------|  |
   -----------------------------
   */
-  // layout 1
-  QHBoxLayout *m_TFWidget_layout = new QHBoxLayout(this);
-  // layout 2
-  QVBoxLayout* shadeVerticalLayout = new QVBoxLayout;
-  // layout 3
-  QHBoxLayout* shadeHorizontalLayout=  new QHBoxLayout;
   // items
   // Left spacer
   QSpacerItem* spacer_red1 = new QSpacerItem(10, 10, QSizePolicy::Minimum, QSizePolicy::Minimum);
@@ -207,76 +200,110 @@ GoTransferFunctionEditorWidget(QWidget *parent,QString iChannel,
   connect(m_MinSlider, SIGNAL(valueChanged(int)), this, SLOT(updateSliders(int)));
   connect(m_MaxSlider, SIGNAL(valueChanged(int)), this, SLOT(updateSliders(int)));
   // add items to layout 1
+  QHBoxLayout *m_TFWidget_layout = new QHBoxLayout(this);
   m_TFWidget_layout->addSpacerItem(spacer_red1);
   m_TFWidget_layout->addWidget(m_TFWidget);
   m_TFWidget_layout->addSpacerItem(spacer_red2);
   // add items to layout 2
+  QVBoxLayout* shadeVerticalLayout = new QVBoxLayout;
   shadeVerticalLayout->addWidget(m_MaxSlider);
   shadeVerticalLayout->addLayout(m_TFWidget_layout);
   shadeVerticalLayout->addWidget(m_MinSlider);
   // add items to layout 3
+  QHBoxLayout* shadeHorizontalLayout=  new QHBoxLayout;
   shadeHorizontalLayout->addItem(spacerShade1);
   shadeHorizontalLayout->addLayout(shadeVerticalLayout);
   shadeHorizontalLayout->addItem(spacerShade2);
+  // connect signals
+  connect(m_TFWidget, SIGNAL(opacityChanged()), this, SLOT(updateOpacityTF()));
 
   // add layout to the widget
   vbox->addLayout(shadeHorizontalLayout);
 
-  QPushButton *okPushButton = new QPushButton("Apply", this);
-  QPushButton *resetLUTPushButton = new QPushButton("Reset", this);
 
-  QHBoxLayout *layout = new QHBoxLayout;
-  layout->addWidget(okPushButton);
-  layout->addWidget(resetLUTPushButton);
-
+  // third part:  the gamma slider
+  /*
+  ------------------------------
+  | Gamma: |---|------------|  |
+  ------------------------------
+  */
+  // items
+  // gamma label
   QLabel* gammaName = new QLabel((QChar)(0x0263));
+  // gamma slider
   m_GammaSlider = new QSlider(this);
   m_GammaSlider->setOrientation(Qt::Horizontal);
   m_GammaSlider->setMaximum(199);
   m_GammaSlider->setMinimum(1);
   m_GammaSlider->setValue(iLUTParameters[0]);
+  // connect signals
   connect(m_GammaSlider, SIGNAL(valueChanged(int)), this, SLOT(UpdateLUT()));
-
+  // add items to layout
   QHBoxLayout *gammaLayout = new QHBoxLayout;
   gammaLayout->addWidget(gammaName);
   gammaLayout->addWidget(m_GammaSlider);
 
+  // add layout to the widget
+  vbox->addLayout(gammaLayout);
+
+
+  // fourth part:  the visibility checkboxes
+  /*
+  ------------------------------
+  | + Color TF                 |
+  | - Opacity TF               |
+  | + Log Histogram            |
+  ------------------------------
+  */
+  // items
+  // color TF checkbox
   QCheckBox* tfCB = new QCheckBox("Color Transfer Function");
   tfCB->setChecked(true);
   QString style5 = "color: black; border: 1px solid rgb(0, 0, 0); background-color: rgba(255, 255, 255, 150); border-radius: 4px;";
   tfCB->setStyleSheet(style5);
-
-  connect(tfCB, SIGNAL(clicked(bool)), m_TFWidget, SIGNAL(enableGammaPoints(bool)));
-
+  // opacity TF checkbox
   QCheckBox* tfoCB = new QCheckBox("Opacity Transfer Function");
   tfoCB->setChecked(false);
   QString style2 = "color: white; border: 1px solid rgb(0, 0, 0); background-color: rgba(0, 0, 0, 150); border-radius: 4px;";
   tfoCB->setStyleSheet(style2);
-  connect(tfoCB, SIGNAL(clicked(bool)), m_TFWidget, SIGNAL(enableHoverPoints(bool)));
-
+  // histogram checkbox
   QCheckBox* histogramCB = new QCheckBox("Log Histogram");
   histogramCB->setChecked(true);
   QString style3 = "border: 1px solid rgb(0, 0, 0); background-color: rgba(0, 0, 0, 0); border-radius: 4px;";
   histogramCB->setStyleSheet(style3);
+  // connect signals
+  connect(tfoCB, SIGNAL(clicked(bool)), m_TFWidget, SIGNAL(enableHoverPoints(bool)));
+  connect(tfCB, SIGNAL(clicked(bool)), m_TFWidget, SIGNAL(enableGammaPoints(bool)));
   connect(histogramCB, SIGNAL(clicked(bool)), this, SLOT(showHistogram(bool)));
 
-
-
-  vbox->addLayout(gammaLayout);
+  // add items to the widget
   vbox->addWidget(tfCB);
   vbox->addWidget(tfoCB);
   vbox->addWidget(histogramCB);
-  vbox->addLayout(layout);
 
-  connect(m_TFWidget, SIGNAL(opacityChanged()), this, SLOT(updateOpacityTF()));
-
+  // fith part: apply/reset pushbutton
+  /*
+  ---------------------------
+  |  _________   _________  |
+  | |_A_PPL_Y_| |_R_ESE_T_| |
+  |                         |
+  ---------------------------
+  */
+  // items
+  // apply pushbutton
+  QPushButton *okPushButton = new QPushButton("Apply", this);
+  // reset pushbutton
+  QPushButton *resetLUTPushButton = new QPushButton("Reset", this);
+  // connect signals
   connect(okPushButton, SIGNAL(released()), this, SLOT(saveAll()));
-
   connect(resetLUTPushButton, SIGNAL(pressed()), this, SLOT(resetLUT()));
+  // layout
+  QHBoxLayout *layout = new QHBoxLayout;
+  layout->addWidget(okPushButton);
+  layout->addWidget(resetLUTPushButton);
 
-
-  // enable event filter
-  this->installEventFilter(this);
+  // add layout to widget
+  vbox->addLayout(layout);
 }
 //-------------------------------------------------------------------------
 
