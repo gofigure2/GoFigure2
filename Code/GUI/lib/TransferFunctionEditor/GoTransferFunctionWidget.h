@@ -93,46 +93,116 @@ public:
                              double iMax,
                              QWidget *parent);
 
+    /**
+      * \brief Paint event:
+      1- generate new shade is size of the widget changed
+      2- draw the shade
+      3- draw the histogram
+      */
     void paintEvent(QPaintEvent *e);
 
     QSize sizeHint() const { return QSize(150, 40); }
     QPolygonF points() const;
 
-    HoverPoints *hoverPoints() const { return m_OpacityTFPoints; }
 
+    /**
+      * \brief Add points to the opacity transfer function.
+      * Called at initialization or reset.
+      * \param[in] iPoints points to create the opacity transfer function
+      */
     void AddPointsToOpacityTF(const QPolygonF& iPoints);
+
+
+    /**
+      * \brief Add points to the LUT.
+      * Called at initialization or reset.
+      * \param[in] iPoints points to create the opacity transfer function
+      */
     void AddPointsToLUT(const QPolygonF& iPoints);
 
+    /**
+      * \brief Modify LUT with given parameters.
+      * \param[in] iLUT pointere to the LUT
+      * \param[in] iGamma gamma value
+      * \param[in] iMin min window value
+      * \param[in] iMin max window value
+      */
     void UpdateLookupTable(vtkLookupTable* iLUT,
                            qreal iGamma, qreal iMin, qreal iMax);
 
+    /**
+      * \brief Set the histogram
+      */
     void SetHistogram(QVector<qreal> iHistogram);
 
-    void Reset();
+    /**
+      * \brief Reset the opacity TF from min to max, from 0 to 1
+      */
+    void ResetOpacity();
 
+    /**
+      * \brief Set the color of the channel.
+      * 1- Modify the color
+      * 2- Update the shade
+      * 3- Update the visualization
+      */
     void setColor(QColor iColor);
 
+    /**
+      * \brief Set maximum pixel intensity for current channel at current T point
+      */
     void setMax(double iMax);
 
 signals:
+    /**
+      * \brief Point added in the Opacity TF then update the visualization
+      */
     void opacityChanged();
-    void enableHoverPoints(bool);
-    void enableGammaPoints(bool);
+
+    /**
+      * \brief enable/disable opacity TF
+      */
+    void enableOpacityTF(bool);
+
+    /**
+      * \brief enable/disable LUT curve
+      */
+    void enableLUTCurve(bool);
 
 private:
-    // shade
+    /**
+      * \brief Generate the shade when the color changed.
+      */
     void generateShade();
-    //LUT
-    // generateLUT()
-    //opacity
-    // generateOpacity
 
+    /**
+      * \brief Color of the current channel
+      */
     QColor m_color;
+
+    /**
+      * \brief Shade generated, based on the color
+      */
     QImage m_shade;
+
+    /**
+      * \brief Opacity transfer function points
+      */
     HoverPoints *m_OpacityTFPoints;
+
+    /**
+      * \brief LUT points
+      */
     HoverPoints *m_LUTPoints;
-    QLinearGradient m_alpha_gradient;
+
+    /**
+      * \brief the histogram
+      */
     QVector<qreal> m_Histogram;
+
+    /**
+      * \brief Maximum pixel value in the current channel at given time point
+      */
     double m_Max;
 };
 

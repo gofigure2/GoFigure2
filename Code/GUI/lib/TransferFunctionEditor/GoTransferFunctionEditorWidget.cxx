@@ -462,8 +462,9 @@ ResetLUT()
 {
   // reset the color
   m_Color = m_Color_original;
-  // reset shade color
-  m_TFWidget->Reset();
+  // reset the opacity TF
+  m_TFWidget->ResetOpacity();
+  // reset the color
   m_TFWidget->setColor(m_Color);
 
   // reset button color

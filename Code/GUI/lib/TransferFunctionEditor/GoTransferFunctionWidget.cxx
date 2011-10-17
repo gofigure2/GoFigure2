@@ -85,30 +85,33 @@
 GoTransferFunctionWidget::GoTransferFunctionWidget(QColor iColor,
                                                    double iMax,
                                                    QWidget *parent)
-    : QWidget(parent), m_color(iColor),
-    m_alpha_gradient(QLinearGradient(0, 0, 0, 0))
+    : QWidget(parent), m_color(iColor)
 {
 
+  // set max value
   m_Max = iMax;
 
+  // set minimum size to avoid bad appearance
   this->setMinimumWidth(50);
   this->setMinimumHeight(50);
 
   setAttribute(Qt::WA_NoBackground);
 
-  // gamma TF
+  // LUT curve
   m_LUTPoints = new HoverPoints(this, HoverPoints::RectangleShape);
   m_LUTPoints->setConnectionType(HoverPoints::LineConnection);
-  connect(this, SIGNAL(enableGammaPoints(bool)), m_LUTPoints, SLOT(setEnabled(bool)));
+  // connect signal
+  connect(this, SIGNAL(enableLUTCurve(bool)), m_LUTPoints, SLOT(setEnabled(bool)));
 
   // opacity TF
   m_OpacityTFPoints = new HoverPoints(this, HoverPoints::CircleShape);
   m_OpacityTFPoints->setConnectionType(HoverPoints::LineConnection);
-  connect(this, SIGNAL(enableHoverPoints(bool)), m_OpacityTFPoints, SLOT(setEnabled(bool)));
-
-  setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-
+  // connect signal
+  connect(this, SIGNAL(enableOpacityTF(bool)), m_OpacityTFPoints, SLOT(setEnabled(bool)));
   connect(m_OpacityTFPoints, SIGNAL(pointsChanged(QPolygonF)), this, SIGNAL(opacityChanged()));
+
+  // set size policy
+  setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
 }
 //-------------------------------------------------------------------------
 
@@ -249,9 +252,9 @@ SetHistogram(QVector<qreal> iHistogram)
 //-------------------------------------------------------------------------
 void
 GoTransferFunctionWidget::
-Reset()
+ResetOpacity()
 {
-  // reset alpha
+  // reset opacity TF
   QPolygonF points;
   points << QPointF(0, height())
          << QPointF(width(),0);
@@ -267,9 +270,11 @@ void
 GoTransferFunctionWidget::
 setColor(QColor iColor)
 {
+  // modify color
   m_color = iColor;
   // generate new shade
   generateShade();
+  // update the shade
   update();
 }
 //-------------------------------------------------------------------------
