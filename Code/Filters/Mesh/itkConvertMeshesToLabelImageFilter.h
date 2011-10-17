@@ -107,8 +107,13 @@ public:
   itkSetObjectMacro( Input , ImageType );
   itkGetConstMacro( NumberOfMeshes, size_t );
 
-  itkGetConstMacro( NumberOfThreads, unsigned int );
-  itkSetMacro( NumberOfThreads, unsigned int );
+#ifdef ITKv4
+  itkGetConstMacro( NumberOfThreads, ThreadIdType );
+  itkSetMacro( NumberOfThreads, ThreadIdType );
+#else
+  itkGetConstMacro( NumberOfThreads, int );
+  itkSetMacro( NumberOfThreads, int );
+#endif
 
   void SetMeshes( const MeshVectorType& iMeshes );
 

@@ -68,7 +68,7 @@ std::vector<vtkPolyData*> QGoMeshMergeConvexHullAlgo::ApplyAlgo(
 
   // init bounding box
   std::vector< double > bounds(Dimension*2);
-  for(int i = 0; i<Dimension; ++i)
+  for(unsigned int i = 0; i<Dimension; ++i)
     {
     bounds[i*2] = std::numeric_limits<int>::max();
     bounds[i*2+1] = std::numeric_limits<int>::min();
@@ -79,7 +79,7 @@ std::vector<vtkPolyData*> QGoMeshMergeConvexHullAlgo::ApplyAlgo(
   while(iterator != iPolyData.end())
     {
     double* boundsPointer = (*iterator)->GetBounds();
-    for(int i = 0; i<Dimension; ++i)
+    for(unsigned int i = 0; i<Dimension; ++i)
       {
       if(boundsPointer[i*2] < bounds[i*2])
           bounds[i*2] = static_cast<int>(boundsPointer[i*2]);
@@ -97,7 +97,7 @@ std::vector<vtkPolyData*> QGoMeshMergeConvexHullAlgo::ApplyAlgo(
 
   // work on smaller region
   // increase size of bounding box by 20*spacing... bug itk?
-  for(int i = 0; i<Dimension; ++i)
+  for(unsigned int i = 0; i<Dimension; ++i)
     {
     bounds[i*2] = bounds[i*2] - 10*spacing[i];
     bounds[i*2+1] = bounds[i*2+1] + 10*spacing[i];

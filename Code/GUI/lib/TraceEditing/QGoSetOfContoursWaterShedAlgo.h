@@ -112,7 +112,7 @@ protected:
 
     ImageSpacingType spacing = iImages->GetSpacing();
 
-    for(unsigned int i= 0; i<this->m_Sampling->GetValue(); ++i)
+    for(int i= 0; i<this->m_Sampling->GetValue(); ++i)
       {
       // let's compute the bounds of the region of interest
       double radius = this->m_Radius->GetValue();

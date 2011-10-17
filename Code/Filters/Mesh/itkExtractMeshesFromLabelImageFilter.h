@@ -223,8 +223,13 @@ public:
   itkSetMacro( SmoothingRelaxationFactor, double );
   itkGetConstMacro( SmoothingRelaxationFactor, double );
 
-  itkGetConstMacro( NumberOfThreads, unsigned int );
-  itkSetMacro( NumberOfThreads, unsigned int );
+#ifdef ITKv4
+  itkGetConstMacro( NumberOfThreads, ThreadIdType );
+  itkSetMacro( NumberOfThreads, ThreadIdType );
+#else
+  itkGetConstMacro( NumberOfThreads, int );
+  itkSetMacro( NumberOfThreads, int );
+#endif
 
   itkGetObjectMacro( ShapeLabelMap, ShapeLabelMapType );
   std::vector< StatLabelMapPointer > GetStatLabelMap()
