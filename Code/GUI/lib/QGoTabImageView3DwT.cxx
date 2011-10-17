@@ -1778,6 +1778,7 @@ QGoTabImageView3DwT::SetTimePoint(const int & iTimePoint)
     BuildDopplerWidget();
     }
 
+  // update image container
   UpdateImage();
 
   // update TF editor (histogram and max value)

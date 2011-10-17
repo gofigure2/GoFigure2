@@ -728,6 +728,11 @@ SetMax( double iMax)
   m_Max = iMax;
   m_red_shade->setMax(m_Max);
 
+  if(m_MaxSlider->maximum() > m_Max)
+    {
+    m_MaxSlider->setValue(iMax);
+    }
+
   m_MinSlider->setMaximum(m_Max);
   m_MaxSlider->setMaximum(m_Max);
 }
