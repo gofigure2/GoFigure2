@@ -103,7 +103,7 @@ private slots:
   void on_actionGoFigure2_Website_triggered();
 
   void on_actionReport_a_bug_triggered();
-  
+
   void on_actionUser_mailing_list_triggered();
 
   void on_actionDeveloper_mailing_list_triggered();
@@ -200,7 +200,11 @@ private:
 
   QGoTabImageView3D * CreateNewTabFor3DImage(vtkImageData *, const QString &);
 
+  QGoTabImageView3D * CreateNewTabFor3DImage(vtkLSMReader *, const QString &);
+
   QGoTabImageView2D * CreateNewTabFor2DImage(vtkImageData *, const QString &);
+
+  QGoTabImageView2D * CreateNewTabFor2DImage(vtkLSMReader *, const QString &);
 
   /* \brief Open Image with given iFileName
   \param[in] iFileName  */

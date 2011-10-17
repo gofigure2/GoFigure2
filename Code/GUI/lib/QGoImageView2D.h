@@ -69,6 +69,8 @@ public:
 
   void retranslateUi(QWidget *parent);
 
+  void UpdateImage();
+
   virtual void ChangeCursorShape(QCursor iCursorShape);
 
 public slots:

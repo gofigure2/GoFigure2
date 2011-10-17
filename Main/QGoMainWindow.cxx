@@ -705,12 +705,12 @@ void QGoMainWindow::OpenLSMImage(const QString & iFile, const int & iTimePoint)
     {
     case 2:
       {
-      CreateNewTabFor2DImage(m_LSMReader.back()->GetOutput(), iFile);
+      CreateNewTabFor2DImage(m_LSMReader.back(), iFile);
       break;
       }
     case 3:
       {
-      CreateNewTabFor3DImage(m_LSMReader.back()->GetOutput(), iFile);
+      CreateNewTabFor3DImage(m_LSMReader.back(), iFile);
       break;
       }
     case 4:
@@ -896,6 +896,40 @@ QGoMainWindow::CreateNewTabFor3DwtImage(vtkLSMReader *iReader, const QString & i
 
 //--------------------------------------------------------------------------
 QGoTabImageView3D *
+QGoMainWindow::CreateNewTabFor3DImage(vtkLSMReader *iReader, const QString & iFile)
+{
+  QGoTabImageView3D *w3 = new QGoTabImageView3D;
+  w3->setWindowTitle( QFileInfo(iFile).fileName() );
+  w3->SetLSMReader(iReader, 0);
+  w3->Update();
+
+  //SetupMenusFromTab(w3);
+  this->SetUpGeneralMenusToolBars(w3);
+  this->SetupPluginsAndDockWidgetFromTab(w3);
+
+  return w3;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+QGoTabImageView2D *
+QGoMainWindow::CreateNewTabFor2DImage(vtkLSMReader *iReader, const QString & iFile)
+{
+  QGoTabImageView2D *w2 = new QGoTabImageView2D;
+  w2->setWindowTitle( QFileInfo(iFile).fileName() );
+  w2->SetLSMReader(iReader, 0);
+  w2->Update();
+
+  //SetupMenusFromTab(w2);
+  this->SetUpGeneralMenusToolBars(w2);
+  this->SetupPluginsAndDockWidgetFromTab(w2);
+
+  return w2;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+QGoTabImageView3D *
 QGoMainWindow::CreateNewTabFor3DImage(vtkImageData *iInput, const QString & iFile)
 {
   QGoTabImageView3D *w3 = new QGoTabImageView3D;
@@ -910,7 +944,6 @@ QGoMainWindow::CreateNewTabFor3DImage(vtkImageData *iInput, const QString & iFil
 
   return w3;
 }
-
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
@@ -929,7 +962,6 @@ QGoMainWindow::CreateNewTabFor2DImage(vtkImageData *iInput, const QString & iFil
 
   return w2;
 }
-
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------------

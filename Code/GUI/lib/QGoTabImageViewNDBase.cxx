@@ -39,10 +39,15 @@
 #include "vtkSmartPointer.h"
 #include "vtkImageExtractComponents.h"
 
+#include "vtkLSMReader.h"
+
+#include "GoImageProcessor.h"
+#include "GoLSMImageProcessor.h"
+
 //--------------------------------------------------------------------------
 QGoTabImageViewNDBase::QGoTabImageViewNDBase(QWidget *iParent) :
   QGoTabImageViewElementBase(iParent),
-  m_Image(0)
+  m_Image(0), m_ImageProcessor(NULL)
 {
 }
 
@@ -110,12 +115,25 @@ void QGoTabImageViewNDBase::SetImage(vtkImageData *iImage)
   this->m_NavigationDockWidget->SetZMinimumAndMaximum(extent[4], extent[5]);
   this->m_NavigationDockWidget->SetZSlice( ( extent[4] + extent[5] ) / 2 );
 }
+//--------------------------------------------------------------------------
 
+//--------------------------------------------------------------------------
+void
+QGoTabImageViewNDBase::
+SetLSMReader(vtkLSMReader *iReader, const int & iTimePoint)
+{
+  GoLSMImageProcessor* processor = new GoLSMImageProcessor;
+  processor->setReader(iReader);
+  m_ImageProcessor = processor;
+  //update images
+  UpdateImage();
+}
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 vtkImageData *
-QGoTabImageViewNDBase::GetImage()
+QGoTabImageViewNDBase::
+GetImage()
 {
   return m_Image;
 }

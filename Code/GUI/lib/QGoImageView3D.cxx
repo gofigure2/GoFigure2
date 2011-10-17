@@ -1382,3 +1382,4 @@ QGoImageView3D::SynchronizeViews( bool iSynchronize)
     viewer->SynchronizeViews( iSynchronize );
     }
 }
+//-------------------------------------------------------------------------

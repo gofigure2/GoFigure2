@@ -79,6 +79,8 @@ public:
 
   void CreateModeToolBar(QMenu* iMenu, QToolBar* iToolBar);
 
+  void UpdateImage();
+
 signals:
   void SliceViewXYChanged(int Slice);
 
