@@ -387,9 +387,6 @@ void QGoTabImageView3D::setupUi(QWidget *iParent)
   QObject::connect( m_ImageView, SIGNAL( FullScreenViewChanged(int) ),
                     this, SIGNAL( FullScreenViewChanged(int) ) );
 
-  this->m_LayOut = new QHBoxLayout(iParent);
-  this->m_LayOut->addWidget(m_ImageView);
-
   retranslateUi(iParent);
 
   QMetaObject::connectSlotsByName(iParent);

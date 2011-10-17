@@ -166,10 +166,8 @@ QGoTabImageView2D::setupUi(QWidget *iParent)
     }
 
   m_ImageView = new QGoImageView2D(this);
+  this->setCentralWidget(m_ImageView);
   m_ImageView->SetBackgroundColor(m_BackgroundColor);
-
-  this->m_LayOut = new QHBoxLayout(iParent);
-  this->m_LayOut->addWidget(m_ImageView);
 
   retranslateUi(iParent);
 
