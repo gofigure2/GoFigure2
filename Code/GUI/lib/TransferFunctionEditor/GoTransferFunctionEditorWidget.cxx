@@ -274,7 +274,7 @@ GoTransferFunctionEditorWidget(QWidget *parent,QString iChannel,
   // connect signals
   connect(tfoCB, SIGNAL(clicked(bool)), m_TFWidget, SIGNAL(enableHoverPoints(bool)));
   connect(tfCB, SIGNAL(clicked(bool)), m_TFWidget, SIGNAL(enableGammaPoints(bool)));
-  connect(histogramCB, SIGNAL(clicked(bool)), this, SLOT(showHistogram(bool)));
+  connect(histogramCB, SIGNAL(clicked(bool)), this, SLOT(ShowHistogram(bool)));
 
   // add items to the widget
   vbox->addWidget(tfCB);
@@ -293,14 +293,14 @@ GoTransferFunctionEditorWidget(QWidget *parent,QString iChannel,
   // apply pushbutton
   QPushButton *okPushButton = new QPushButton("Apply", this);
   // reset pushbutton
-  QPushButton *resetLUTPushButton = new QPushButton("Reset", this);
+  QPushButton *ResetLUTPushButton = new QPushButton("Reset", this);
   // connect signals
-  connect(okPushButton, SIGNAL(released()), this, SLOT(saveAll()));
-  connect(resetLUTPushButton, SIGNAL(pressed()), this, SLOT(resetLUT()));
+  connect(okPushButton, SIGNAL(released()), this, SLOT(ApplyChanges()));
+  connect(ResetLUTPushButton, SIGNAL(pressed()), this, SLOT(ResetLUT()));
   // layout
   QHBoxLayout *layout = new QHBoxLayout;
   layout->addWidget(okPushButton);
-  layout->addWidget(resetLUTPushButton);
+  layout->addWidget(ResetLUTPushButton);
 
   // add layout to widget
   vbox->addLayout(layout);
@@ -457,8 +457,9 @@ AddName(QString iChannel)
 //-------------------------------------------------------------------------
 void
 GoTransferFunctionEditorWidget::
-resetLUT()
+ResetLUT()
 {
+  // reset the color
   m_Color = m_Color_original;
   // reset shade color
   m_TFWidget->Reset();
@@ -469,13 +470,14 @@ resetLUT()
   m_ColorPushButton->setStyleSheet(
         style.arg(m_Color.red()).arg(m_Color .green()).arg(m_Color.blue()));
 
-  // update transfer function
+  // Reset Gamma, Min and Max
   m_GammaSlider->setValue(100);
   m_MinSlider->setValue(0);
   m_MaxSlider->setValue(m_Max);
+  // Update LUT
   UpdateLUT();
 
-  //update opacity TF
+  // might be buggy
   updateOpacityTF();
 }
 //-------------------------------------------------------------------------
@@ -483,24 +485,20 @@ resetLUT()
 //-------------------------------------------------------------------------
 void
 GoTransferFunctionEditorWidget::
-saveAll()
+ApplyChanges()
 {
+  // opacity
   std::map< unsigned int, unsigned int> pointsVector;
+  QPolygonF opacityPoints = m_TFWidget->points();
+  computeMapFromPoints(pointsVector, opacityPoints);
 
-  // opacity ------------------------------
-  QPolygonF redPoints = m_TFWidget->points();
-  computeMapFromPoints(pointsVector, redPoints);
-
-  // color
-
-  // gamma, min and max
-
-  emit updatePoints(m_Channel,
-                    pointsVector,
-                    m_Color,
-                    m_MinSlider->value(),
-                    m_MaxSlider->value(),
-                    m_GammaSlider->value());
+  // send values to the image structure
+  emit UpdateImageStructure(m_Channel,
+                            pointsVector,
+                            m_Color,
+                            m_MinSlider->value(),
+                            m_MaxSlider->value(),
+                            m_GammaSlider->value());
 }
 //-------------------------------------------------------------------------
 
@@ -620,9 +618,9 @@ ChangeColor()
 //-------------------------------------------------------------------------
 void
 GoTransferFunctionEditorWidget::
-showHistogram(bool iEnable){
+ShowHistogram(bool iShow){
 
-  if(iEnable)
+  if(iShow)
     {
     m_TFWidget->SetHistogram(this->m_Histogram);
     }
@@ -631,7 +629,9 @@ showHistogram(bool iEnable){
     QVector<qreal> removeHisto;
     m_TFWidget->SetHistogram(removeHisto);
     }
-  // or update?
+
+  // to be tested might be buggy
+  // update might be better?
   m_TFWidget->repaint();
 }
 //-------------------------------------------------------------------------
@@ -675,6 +675,13 @@ void
 GoTransferFunctionEditorWidget::
 updateSliders( int iValue)
 {
+  // min and max must be separated by at least 2 to create a consitent LUT
+  // since a consistent LUT need 2 values at least.
+  /*
+                      need value in between
+                              ^
+     LUT: MIN VALUE | color 1 | color 2 | MAX VALUE
+  */
   if(m_MinSlider->value() > m_MaxSlider->value() - 2)
     {
     QString name = QObject::sender()->objectName();

@@ -172,29 +172,63 @@ public slots:
     */
   void ChangeColor();
 
-  void resetLUT();
+  /**
+    * \brief Reset the channel to its original state (color, LUT, opacity)
+    */
+  void ResetLUT();
 
-  void saveAll();
+  /**
+    * \brief Apply changes (color, min, manx, gamma, opacity TF) to the channel.
+    It modifies informations relative to the given channel in the QGoImageStructure.
+    */
+  void ApplyChanges();
 
   // opacity TF
+  // might be buggy, to be checked
   void updateOpacityTF();
-  void showHistogram(bool iEnable);
-  void AdjustWindowLevel(double, double);
-  void updateSliders(int);
+
+  /**
+    * \brief Show/hide histogram in m_TFWidget
+    * \param[in] iShow true: paint current histogram, false paint an empty histogram
+    */
+  void ShowHistogram(bool iShow);
+
+  /**
+    * \brief Adjust window/level between the input values.
+    * LUT (using the gamma value) will be calculated between those 2 points.
+    * Before iMin, LUT = (0, 0, 0)
+    * After iMax, LUT = ChannelColor.
+    * It modifies the values of the sliders then update the LUT.
+    * \param[in] iMin pixel intensity below which the pixels will be mapped to black
+    * \param[in] iMax pixel intensity above which the pixels will be mapped to the channel color
+    */
+  void AdjustWindowLevel(double iMin, double iMax);
+
+
+  /**
+    * \brief When Min and Max sliders change, update the value of the one which
+    * sent the signal, if it doesn't overlap with the other one.
+    * param[in] iValue new value. Else modify its value back to original.
+    */
+  void updateSliders(int iValue);
 
 signals:
+  /**
+    * \brief Modify the visualization when the LUT or opacity changed
+    */
   void updateVisualization();
-  void updatePoints(QString,
-                    std::map< unsigned int, unsigned int>,
-                    QColor,
-                    int,
-                    int,
-                    int);
+
+  /**
+  * \brief Modify the image structure when apply clicked
+  */
+  void UpdateImageStructure(QString,
+                            std::map< unsigned int, unsigned int>,
+                            QColor,
+                            int,
+                            int,
+                            int);
 
 private:
-
-  bool eventFilter(QObject *object, QEvent *event);
-
   void computeMapFromPoints(
     std::map< unsigned int, unsigned int>& iMap, const QPolygonF& iPoints);
   void ConvertSTDMapToQPolygonF(

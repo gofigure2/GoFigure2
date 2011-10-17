@@ -3366,7 +3366,7 @@ createTransferFunctionEditor(QString iName)
                     SLOT( updateSlot()) );
 
   QObject::connect( editor,
-                    SIGNAL( updatePoints(QString,
+                    SIGNAL( UpdateImageStructure(QString,
                                          std::map< unsigned int, unsigned int>,
                                          QColor,
                                          int,
