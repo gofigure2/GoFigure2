@@ -1200,6 +1200,10 @@ QGoImageView3D::EnablePlaneWidget(bool iValue)
 void
 QGoImageView3D::UpdateLUT()
 {
+  if(m_Pool->GetItem(0)->GetIsColor())
+    {
+    return;
+    }
   // update tf function by modifying the widget
   double window = m_Pool->GetItem(0)->GetWindow();
   double color = m_Pool->GetItem(0)->GetLevel();
