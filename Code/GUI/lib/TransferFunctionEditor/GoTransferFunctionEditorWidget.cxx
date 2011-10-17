@@ -141,6 +141,7 @@ GoTransferFunctionEditorWidget(QWidget *parent,QString iChannel,
   QString style = "background: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 0,stop: 0 black, stop: 1 rgb(%1, %2, %3)); border-radius: 4px;";
   m_ColorPushButton->setStyleSheet(
         style.arg(m_Color.red()).arg(m_Color .green()).arg(m_Color.blue()));
+  m_ColorPushButton->setToolTip("Click to modify the color of this channel");
   // add items to layout
   QHBoxLayout *colorLayout = new QHBoxLayout(this);
   colorLayout->addWidget(color);
@@ -490,7 +491,7 @@ ApplyChanges()
   // opacity
   std::map< unsigned int, unsigned int> pointsVector;
   QPolygonF opacityPoints = m_TFWidget->points();
-  computeMapFromPoints(pointsVector, opacityPoints);
+  ConvertQPolygonFToSTDMap(opacityPoints, pointsVector);
 
   // send values to the image structure
   emit UpdateImageStructure(m_Channel,
@@ -505,9 +506,8 @@ ApplyChanges()
 //-------------------------------------------------------------------------
 void
 GoTransferFunctionEditorWidget::
-computeMapFromPoints(std::map< unsigned int, unsigned int>& iMap, const QPolygonF& iPoints)
+ConvertQPolygonFToSTDMap(const QPolygonF& iPoints, std::map< unsigned int, unsigned int>& iMap)
 {
-  // all shades have same width and height
   qreal width = m_TFWidget->width();
   qreal height = m_TFWidget->height();
   int numberOfPoints = iPoints.size();
@@ -523,43 +523,6 @@ computeMapFromPoints(std::map< unsigned int, unsigned int>& iMap, const QPolygon
     unsigned int x = (iPoints.at(i).x())*m_Max/width;
     unsigned int y = (1-(iPoints.at(i).y())/height)*m_Max;
     iMap[x]  = y;
-    }
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-bool
-GoTransferFunctionEditorWidget::
-eventFilter(QObject *object, QEvent *event)
-{
-      switch (event->type()) {
-
-      case QEvent::Resize:
-        {
-        return true;
-        }
-      default:
-        break;
-      }
-      return false;
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-GoTransferFunctionEditorWidget::
-WriteLUTComponent(GoTransferFunctionWidget* iTFWidget, QTextStream& iStream)
-{
-  qreal width = iTFWidget->width();
-  qreal height = iTFWidget->height();
-
-  int numberOfPoints = iTFWidget->points().size();
-
-  for(int i=0; i<numberOfPoints; ++i)
-    {
-    unsigned int x = (iTFWidget->points().at(i).x())*m_Max/width;
-    unsigned int y = (1-(iTFWidget->points().at(i).y())/height)*m_Max;
-    iStream << x  << " " << y << " ";
     }
 }
 //-------------------------------------------------------------------------

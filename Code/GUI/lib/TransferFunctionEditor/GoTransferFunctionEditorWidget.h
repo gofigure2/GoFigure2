@@ -229,35 +229,80 @@ signals:
                             int);
 
 private:
-  void computeMapFromPoints(
-    std::map< unsigned int, unsigned int>& iMap, const QPolygonF& iPoints);
+  /**
+    * \brief Convenience method to convert a QPolygonF to a std::map
+    * \param[in] iPoints QPolygonF to be converted
+    * \param[out] iMap std::map to be filled
+    */
+  void ConvertQPolygonFToSTDMap(
+    const QPolygonF& iPoints, std::map< unsigned int, unsigned int>& iMap);
+
+  /**
+    * \brief Convenience method to convert a std::map to a QPolygonF
+    * \param[in] iMap std::map to be converted
+    * \param[out] iPoints QPolygonF to be filled
+    */
   void ConvertSTDMapToQPolygonF(
     const std::map< unsigned int, unsigned int>& iMap, QPolygonF& iPoints);
 
-  void WriteLUTComponent(GoTransferFunctionWidget* iTFWidget,
-                         QTextStream& iStream);
-  void ReadLUTComponent(GoTransferFunctionWidget* iTFWidget,
-                        QTextStream& iStream,
-                        const QString& iBalise);
-
+  /**
+    * \brief Push button to modify the color
+    */
   QPushButton* m_ColorPushButton;
 
+  /**
+    * \brief The widget containing the shade, histogram, LUT and opacity TF
+    */
   GoTransferFunctionWidget *m_TFWidget;
 
+  /**
+    * \brief Slider to modify the value of gamma
+    */
   QSlider* m_GammaSlider;
+
+  /**
+    * \brief Slider to modify the min value
+    */
   QSlider* m_MinSlider;
+
+  /**
+    * \brief Slider to modify the max value
+    */
   QSlider* m_MaxSlider;
 
+  /**
+    * \brief Current color of the channel
+    */
   QColor                    m_Color;
-  // for reset
+
+  /**
+    * \brief Original color of the channel
+    */
   QColor                    m_Color_original;
+
+  /**
+    * \brief Name of the channel
+    */
   QString                   m_Channel;
 
+  /**
+    * \brief Pointer to the channel LUT
+    */
   vtkLookupTable           *m_LUT;
+
+  /**
+    * \brief Pointer to the channel opacity LUT
+    */
   vtkPiecewiseFunction     *m_OpacityTF;
 
+  /**
+    * \brief Histogram of the current channel for current time point
+    */
   QVector<qreal>            m_Histogram;
 
+  /**
+    * \brief Maximum pixel intensity for the channel at current time point
+    */
   double m_Max;
 };
 
