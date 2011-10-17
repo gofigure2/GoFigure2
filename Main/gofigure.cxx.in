@@ -89,11 +89,45 @@ int main(int argc, char **argv)
     // -----------------------------------------------------
 
     std::cout <<  "GoFigure2 Shortcuts"         << std::endl;
+    std::cout <<  "*******************" << std::endl;
+    std::cout <<  "CTRL+O : Open one image"   << std::endl;
+    std::cout <<  "CTRL+W : Close active tab" << std::endl;
+    std::cout <<  "CTRL+Q : Quit"             << std::endl;
     std::cout <<  std::endl;
-    std::cout <<  "CTRL+O   : Open one image"   << std::endl;
-    std::cout <<  "CTRL+W   : Close active tab" << std::endl;
-    std::cout <<  "CTRL+Q   : Quit"             << std::endl;
+    // -----------------------------------------------------
 
+    std::cout <<  "Navigation" <<std::endl;
+    std::cout <<  "**********" << std::endl;
+    std::cout << "UP ARROW              : change slice upward" << std::endl;
+    std::cout << "DOWN ARROW            : change slice downward" << std::endl;
+    std::cout << "CTRL+Z or LEFT ARROW  : previous time point" << std::endl;
+    std::cout << "CTRL+C or RIGHT ARROW : next time point" << std::endl;
+    std::cout <<  std::endl;
+    // -----------------------------------------------------
+
+    std::cout <<  "Editing Mode" << std::endl;
+    std::cout <<  "************" << std::endl;
+    std::cout <<  "1: Default mode" << std::endl;
+    std::cout <<  "2: Contour editing" << std::endl;
+    std::cout <<  "3: Mesh editing" << std::endl;
+    std::cout <<  std::endl;
+    // -----------------------------------------------------
+
+    std::cout <<  "Visualization" << std::endl;
+    std::cout <<  "*************" << std::endl;
+    std::cout <<  "t or T: Translate (Pan)" << std::endl;
+    std::cout <<  "b or B: Box" << std::endl;
+    std::cout <<  "z or Z: Zoom" << std::endl;
+    std::cout <<  "r or R: Reset window / level" << std::endl;
+    std::cout <<  "o or O: Reset to Origin" << std::endl;
+    std::cout <<  "p or P: trace picking" << std::endl;
+    std::cout <<  std::endl;
+    // -----------------------------------------------------
+
+    std::cout <<  "Editing" << std::endl;
+    std::cout <<  "*******" << std::endl;
+    std::cout <<  "A or CTRL+A: Apply" << std::endl;
+    std::cout <<  "D or CTRL+D: Reset / Delete" <<std::endl;
     // -----------------------------------------------------
 
     std::cout <<  std::endl;
