@@ -39,7 +39,6 @@ namespace itk
 //--------------------------------------------------------------------------------
 MegaCaptureImport::MegaCaptureImport()
 {
-//   this->IsProgressBarSet = false;
 }
 
 //-----------------------------------------------------------------------------
@@ -74,11 +73,6 @@ MegaCaptureImport::SetFileName(const std::string & iName)
 void
 MegaCaptureImport::CreateOutput()
 {
-//   if( this->IsProgressBarSet )
-//     {
-//     this->/*m_ProgressBar*/->setValue( 60 );
-//     }
-
   size_t counter = 0;
 
   std::vector< std::string >::iterator nit;
@@ -97,8 +91,6 @@ MegaCaptureImport::CreateOutput()
 
     IntVectorType::reverse_iterator numGroupStartItr  =
       m_StartAndLengthNumGroup.first.rbegin();
-
-    // int NbNumericalGroupsInFilename = m_StartAndLengthNumGroup.second.size();
 
     std::vector< unsigned int > NumericalValues(m_NbSignificantMegaCaptureNumGroup, 0);
 
@@ -151,40 +143,13 @@ MegaCaptureImport::CreateOutput()
       m_OutputFileList.insert(tempInfo);
       }
 
-//     if( this->IsProgressBarSet )
-//       {
-//       int value = 60 + 30 * ( (float)(counter) / (float)(m_FileNameS.size())
-// );
-//       this->m_ProgressBar->setValue( value );
-//       }
-
     ++counter;
+    this->SetProgress( 0.25 +
+                       0.75 * static_cast< float >( counter ) / static_cast< float >( m_FileNameS.size() ) );
     } // end for each filename
 
   m_FileNameS.clear();
 
-//   GoFigureFileInfoHelperTimeBasedCompare comparison;
-//   std::sort(
-//     m_OutputFileList.begin(), m_OutputFileList.end(), comparison );
-
-//   if( this->IsProgressBarSet )
-//     {
-//     this->m_ProgressBar->setValue( 99 );
-//     }
-
-// #if !defined(ITK_LEAN_AND_MEAN) && !defined(__BORLANDC__) && !defined(NDEBUG)
-//   GoFigureFileInfoHelperMultiIndexContainer::iterator myIt =
-// m_OutputFileList.begin();
-//   while( myIt != m_OutputFileList.end() )
-//     {
-//     itkDebugMacro(
-//         << (*myIt).m_Filename
-//         << " " << (*myIt).m_Channel
-//         << " " << (*myIt).m_TCoord
-//         << " " << (*myIt).m_ZCoord );
-//       myIt++;
-//     }
-// #endif
 }
 
 //-----------------------------------------------------------------------------
@@ -210,11 +175,6 @@ MegaCaptureImport::Update()
 void
 MegaCaptureImport::Glob()
 {
-//   if( this->IsProgressBarSet )
-//     {
-//     this->m_ProgressBar->show();
-//     this->m_ProgressBar->setValue( 1 );
-//     }
   std::string FilenameModified = CleanFileName(m_FileName);
 
   m_StartAndLengthNumGroup = GetStartAndLengthOfNumericalGroupFilename(FilenameModified);
@@ -246,10 +206,7 @@ MegaCaptureImport::Glob()
     ++megaCaptureNumericalGroupCounter;
     }
 
-//   if( this->IsProgressBarSet )
-//     {
-//     this->m_ProgressBar->setValue( 5 );
-//     }
+  this->SetProgress( 0.05 );
 
   // Include only filenames that exactly match this regular expression.  Don't
   // match filenames that have this string as a substring (ie. that have extra
@@ -277,10 +234,7 @@ MegaCaptureImport::Glob()
 
   m_FileNameS = fit->GetFileNames();
 
-//   if( this->IsProgressBarSet )
-//     {
-//     this->m_ProgressBar->setValue( 45 );
-//     }
+  this->SetProgress( 0.15 );
 
   // re parse the indexes and length without the escape caracters
   std::string::iterator s_start = origFileName.begin();
@@ -313,10 +267,7 @@ MegaCaptureImport::Glob()
     ++s_it;
     }
 
-//   if( this->IsProgressBarSet )
-//     {
-//     this->m_ProgressBar->setValue( 55 );
-//     }
+  this->SetProgress( 0.25 );
 }
 
 //-----------------------------------------------------------------------------
