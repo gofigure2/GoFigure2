@@ -33,7 +33,6 @@
 =========================================================================*/
 
 #include "GoDBRow.h"
-#include <map>
 #include <iostream>
 
 GoDBRow::GoDBRow()
@@ -50,7 +49,7 @@ GoDBRow::~GoDBRow()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void GoDBRow::SetField(std::string key, std::string value)
+void GoDBRow::SetField(const std::string& key, const std::string& value)
 {
   StringMapIterator it = m_MapRow.find(key);
 
@@ -187,7 +186,7 @@ GoDBRow::ConstMapEnd()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-std::string GoDBRow::GetMapValue(std::string key)
+std::string GoDBRow::GetMapValue(const std::string& key)
 {
   std::string oMapValue = "noValue";
 
@@ -277,7 +276,7 @@ std::string GoDBRow::GetTableIDName()
 
 //-------------------------------------------------------------------------
 void GoDBRow::AddConditions(
-  std::string iNameOfField, std::vector< FieldWithValue > & ioFieldWithValue)
+  const std::string& iNameOfField, std::vector< FieldWithValue > & ioFieldWithValue)
 {
   FieldWithValue temp = { iNameOfField, this->GetMapValue(iNameOfField), "=" };
 
