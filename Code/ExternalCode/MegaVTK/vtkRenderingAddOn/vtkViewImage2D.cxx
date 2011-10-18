@@ -714,9 +714,9 @@ vtkViewImage2D::ResetCamera(void)
 void
 vtkViewImage2D::Reset(void)
 {
-  this->ResetPosition();
-  this->ResetWindowLevel();
-  this->ResetCamera();
+  //this->ResetPosition();
+  //this->ResetWindowLevel();
+  //this->ResetCamera();
 }
 
 //----------------------------------------------------------------------------

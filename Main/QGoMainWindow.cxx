@@ -101,7 +101,8 @@ QGoMainWindow::QGoMainWindow(QWidget *iParent, Qt::WindowFlags iFlags) :
   setCorner(Qt::BottomRightCorner, Qt::RightDockWidgetArea);
 
   QRect screen = QApplication::desktop()->availableGeometry(this);
-  QSize MaximumSize = screen.size();
+  int numberOfScreens = QApplication::desktop()->numScreens();
+  QSize MaximumSize = screen.size() * numberOfScreens;
   this->setMaximumSize(MaximumSize);
   // QSize IconSize = this->iconSize();
   QSize SizeIcon(22, 22);

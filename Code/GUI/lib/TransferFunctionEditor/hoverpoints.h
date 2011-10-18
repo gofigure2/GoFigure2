@@ -140,7 +140,6 @@ public:
 
 public slots:
     void setEnabled(bool enabled);
-    void setDisabled(bool disabled) { setEnabled(!disabled); }
 
 signals:
     void pointsChanged(const QPolygonF &points);
@@ -172,6 +171,8 @@ private:
     QPen m_pointPen;
     QBrush m_pointBrush;
     QPen m_connectionPen;
+
+    double m_oldSize[2];
 };
 
 

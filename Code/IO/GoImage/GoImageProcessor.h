@@ -83,6 +83,49 @@ private:
 
 //-----------------------------------------------------------------------------
 /**
+  \struct set_color
+  \brief change color of given structure
+  \sa GoMegaImageStructure
+  */
+struct set_color
+{
+  set_color(std::vector<double> iColor):color(iColor){}
+
+  void operator()(GoMegaImageStructure& iStructure)
+  {
+    iStructure.setColor(color);
+  }
+
+private:
+  std::vector<double> color;
+};
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
+/**
+  \struct set_LUT_Parameters
+  \brief change parameters of LUT
+  \sa GoMegaImageStructure
+  */
+struct set_LUT_Parameters
+{
+  set_LUT_Parameters(int iGamma, int iMin, int iMax):
+      gamma(iGamma), min(iMin), max(iMax){}
+
+  void operator()(GoMegaImageStructure& iStructure)
+  {
+    iStructure.setLUTParameters(gamma, min, max);
+  }
+
+private:
+  int gamma;
+  int min;
+  int max;
+};
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
+/**
   \struct set_image
   \brief change visibility of given structure
   \sa GoMegaImageStructure
@@ -107,17 +150,17 @@ private:
   \brief change visibility of given structure
   \sa GoMegaImageStructure
   */
-struct set_PointsRGBA
+struct set_PointsAlpha
 {
-  set_PointsRGBA(std::vector< std::map< unsigned int, unsigned int> > iPoints):points(iPoints){}
+  set_PointsAlpha(std::map< unsigned int, unsigned int> iPoints):points(iPoints){}
 
   void operator()(GoMegaImageStructure& iStructure)
   {
-    iStructure.setPointsRGBA(points);
+    iStructure.set_PointsAlpha(points);
   }
 
 private:
-  std::vector< std::map< unsigned int, unsigned int> > points;
+  std::map< unsigned int, unsigned int> points;
 };
 //-----------------------------------------------------------------------------
 
@@ -187,14 +230,12 @@ public:
    * \param[in] iGreen green value
    * \param[in] iBlue blue value
    * \param[in] iAlpha alpha value
-   * \param[in] iRange scalar range
    * \return new LUT
    **/
   vtkSmartPointer<vtkLookupTable> createLUT(const double& iRed,
                                             const double& iGreen,
                                             const double& iBlue,
-                                            const double& iAlpha,
-                                            const double* iRange);
+                                            const double& iAlpha);
 
   /**
    * \brief get LUT from channel name. Useful for the Transfer function editor.
@@ -241,13 +282,19 @@ public:
    **/
   std::vector<double> getColor(const std::string& iName) const;
 
+  void setColor(const std::string& iName, std::vector<double>& iColor);
+
+  void setLUTParameters(const std::string& iName, int iGamma, int iMin, int iMax);
+
+  std::vector<int> getLUTParameters(const std::string& iName);
+
   /**
    * \brief get points to update r, g, b and a TFs in TF editor.
    * \param[in] iName channel of interest.
    * (See getChannelName(index) to get channel name from index.)
    * \return vector of map.1 vector: rgba, map: position/value
    **/
-  std::vector<std::map<unsigned int, unsigned int> > getRGBA(
+  std::map<unsigned int, unsigned int> getAlpha(
     const std::string& iName) const;
 
   /**
@@ -256,7 +303,7 @@ public:
    * \param[in] iPointsRGBA new points
    **/
   void updatePoints(std::string iChannel,
-                    std::vector< std::map< unsigned int, unsigned int> > iPointsRGBA);
+                    std::map< unsigned int, unsigned int> iPointsAlpha);
 
   /**
    * \brief get histogram from 1 channel image
@@ -299,6 +346,7 @@ public:
    * \note Used to compute the mesh attributes at load time
    * \return raw image.
    **/
+  vtkSmartPointer<vtkImageData> getImageBW(const std::string& iName);
   vtkSmartPointer<vtkImageData> getImageBW(const unsigned int& iIndex);
 
   /**
@@ -400,6 +448,8 @@ public:
 
   int getMaxThreshold();
 
+  int getMaxImage();
+
 protected:
   /*
    * \brief Color an image given the original image and a lookuptable (LUT)
@@ -420,6 +470,7 @@ protected:
   int          m_Extent[6];
   unsigned int m_TimeInterval;
   int          m_MaxThreshold;
+  int          m_MaxImage;
   //--------------------
 
   // Doppler view parameters

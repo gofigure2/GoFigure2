@@ -669,6 +669,15 @@ void QGoTabImageView3D::SetBackgroundColorToImageViewer()
 void QGoTabImageView3D::SetImageToImageViewer(vtkImageData *image)
 {
   m_ImageView->SetImage(image);
+  // create LUT for the image
+  vtkSmartPointer<vtkLookupTable> bwLut =
+    vtkSmartPointer<vtkLookupTable>::New();
+  double*  range = image->GetScalarRange();
+  bwLut->SetTableRange (0, range[1]);
+  bwLut->SetValueRange (0, 1);
+  bwLut->SetSaturationRange(0.0, 0.0);
+  bwLut->Build();
+  m_ImageView->SetLookupTable(bwLut);
   m_ImageView->Update();
 
   for ( unsigned int i = 0; i < this->m_ContourWidget.size(); i++ )

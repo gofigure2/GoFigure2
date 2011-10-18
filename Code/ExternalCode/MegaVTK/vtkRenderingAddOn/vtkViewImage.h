@@ -453,6 +453,8 @@ public:
   */
   virtual void ResetWindowLevel(void);
 
+  void UpdateWindowLevel();
+
   /**
    * \brief Get the current position in world coordinate.
    * \return double pointer to the current position in world coordinates
@@ -489,6 +491,12 @@ public:
 
   /** \brief Get the linewidth for added dataset in the scene (when using AddDataSet) */
   vtkGetMacro( IntersectionLineWidth, float );
+
+  void SetWindow(double iWindow);
+  double GetWindow();
+
+  void SetLevel(double iLevel);
+  double GetLevel();
 
 protected:
 
@@ -558,6 +566,9 @@ protected:
   double CurrentPoint[3];
 
   bool IsColor;
+
+  double Window;
+  double Level;
 };
 
 #endif /* _vtkViewImage_h_ */

@@ -88,9 +88,16 @@ initTimePoint(const unsigned int& iTime)
     vtkSmartPointer<vtkImageData> image =
         m_MegaImageReader->GetOutput(numberOfChannels);
 
-    //
+    // capacity of image -> rescale in multichannelmode
     int type = image->GetScalarSize();
-    m_MaxThreshold = pow(2, 8*type) - 1;
+    double threshold = pow(2, 8*type) - 1;
+    m_MaxImage = threshold;
+    // max pixel in image
+    double range = image->GetScalarRange()[1];
+    if(m_MaxThreshold < range)
+      {
+      m_MaxThreshold = range;
+      }
 
     // Get Color
     std::vector<std::vector<int> >channelColor =
@@ -116,8 +123,7 @@ initTimePoint(const unsigned int& iTime)
     vtkSmartPointer<vtkLookupTable> lut = createLUT(color[0],
                                                     color[1],
                                                     color[2],
-                                                    color[3],
-                                                    image->GetScalarRange());
+                                                    color[3]);
 
     // create name...
     std::stringstream channelName;
@@ -164,6 +170,17 @@ setTimePoint(const unsigned int& iTime)
     // Nicolas Get Image or get output...?
     vtkSmartPointer<vtkImageData> image =
         m_MegaImageReader->GetOutput(numberOfChannels);
+
+    // capacity of image -> rescale in multichannelmode
+    int type = image->GetScalarSize();
+    double threshold = pow(2, 8*type) - 1;
+    m_MaxImage = threshold;
+    // max pixel in image
+    double range = image->GetScalarRange()[1];
+    if(m_MaxThreshold < range)
+      {
+      m_MaxThreshold = range;
+      }
 
     GoMegaImageStructureMultiIndexContainer::index<Index>::type::iterator it =
         m_MegaImageContainer.get< Index >().find(numberOfChannels);
@@ -226,8 +243,7 @@ setDoppler(const unsigned int& iTime, const unsigned int& iPrevious)
     vtkSmartPointer<vtkLookupTable> lut = createLUT(color[0],
                                                     color[1],
                                                     color[2],
-                                                    color[3],
-                                                    image->GetScalarRange());
+                                                    color[3]);
 
     // channel name
     std::stringstream channelName;

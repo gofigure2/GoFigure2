@@ -39,6 +39,7 @@
 #include "QGoImageView3D.h"
 //#include "QGoLUTDialog.h"
 #include "QGoNavigationDockWidget.h"
+#include "QGoTransferFunctionDockWidget.h"
 
 #if defined ( ENABLEFFMPEG ) || defined ( ENABLEAVI )
 
@@ -177,6 +178,11 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
 
   CreateVisuDockWidget();
 
+  // create TF dockwidget
+  m_TransferFunctionDockWidget =
+    new QGoTransferFunctionDockWidget(this);
+
+
   // segmentation dockwidgets
   //CreateContourSegmentationDockWidget();
   //CreateMeshSegmentationDockWiget();in setmegacapture/LSM files now
@@ -228,20 +234,45 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
   m_DockWidgetList.push_back(
     std::pair< QGoDockWidgetStatus *, QDockWidget * >(
       new QGoDockWidgetStatus(
-        m_NavigationDockWidget, Qt::RightDockWidgetArea, false, true),
+        m_NavigationDockWidget, Qt::RightDockWidgetArea, false, true, this),
       m_NavigationDockWidget) );
 
   m_DockWidgetList.push_back(
     std::pair< QGoDockWidgetStatus *, QDockWidget * >(
-      new QGoDockWidgetStatus(this->m_TrackViewDockWidget,
+      new QGoDockWidgetStatus(
+        m_TransferFunctionDockWidget,
+        Qt::RightDockWidgetArea, false, true, this),
+      m_TransferFunctionDockWidget) );
+
+  /*m_DockWidgetList.push_back(
+    std::pair< QGoDockWidgetStatus *, QDockWidget * >(
+      new QGoDockWidgetStatus(
+        m_ContourSegmentationDockWidget, Qt::LeftDockWidgetArea, false, true),
+      m_ContourSegmentationDockWidget) );*/
+
+  /*m_DockWidgetList.push_back(
+    std::pair< QGoDockWidgetStatus *, QDockWidget * >(
+      new QGoDockWidgetStatus(
+        this->m_MeshEditingWidget->GetDockWidget(), Qt::LeftDockWidgetArea, true, true),
+        this->m_MeshEditingWidget->GetDockWidget()) ); in setmegacapture/LSM files now */
+
+  /*m_DockWidgetList.push_back(
+    std::pair< QGoDockWidgetStatus *, QDockWidget * >(
+      new QGoDockWidgetStatus(this->m_DataBaseTables->GetTraceSettingsDockWidget(),
                               Qt::LeftDockWidgetArea, false, true),
+      this->m_DataBaseTables->GetTraceSettingsDockWidget() ) );*/
+
+  m_DockWidgetList.push_back(
+    std::pair< QGoDockWidgetStatus *, QDockWidget * >(
+      new QGoDockWidgetStatus(this->m_TrackViewDockWidget,
+                              Qt::LeftDockWidgetArea, false, true, this),
       this->m_TrackViewDockWidget) );
 
 
   m_DockWidgetList.push_back(
     std::pair< QGoDockWidgetStatus *, QDockWidget * >(
       new QGoDockWidgetStatus(this->m_LineageViewDockWidget,
-                              Qt::LeftDockWidgetArea, false, true),
+                              Qt::LeftDockWidgetArea, false, true, this),
       this->m_LineageViewDockWidget) );
 
   m_DockWidgetList.push_back(
@@ -253,7 +284,7 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
 #if defined ( ENABLEFFMPEG ) || defined ( ENABLEAVI )
   m_DockWidgetList.push_back(
     std::pair< QGoDockWidgetStatus *, QDockWidget * >(
-      new QGoDockWidgetStatus(m_VideoRecorderWidget, Qt::LeftDockWidgetArea, false, true),
+      new QGoDockWidgetStatus(m_VideoRecorderWidget, Qt::LeftDockWidgetArea, false, true, this),
       m_VideoRecorderWidget) );
 
 #endif
@@ -373,6 +404,12 @@ QGoTabImageView3DwT::CreateContourEditingDockWidget(
   this->m_ContourEditingWidget = new QGoContourEditingWidgetManager(
     channelNames, iTimeMin, iTimeMax, &m_Seeds,
     m_ImageProcessor, &m_TCoord, this);
+
+  m_DockWidgetList.push_back(
+    std::pair< QGoDockWidgetStatus *, QDockWidget * >(
+      new QGoDockWidgetStatus(
+        this->m_ContourEditingWidget->GetDockWidget(), Qt::LeftDockWidgetArea, false, true, this),
+        this->m_ContourEditingWidget->GetDockWidget()) );
 
   this->CreateConnectionsTraceEditingWidget<QGoContourEditingWidgetManager>(
     iTimeMin, iTimeMax, this->m_ContourEditingWidget);
@@ -617,7 +654,8 @@ QGoTabImageView3DwT::CreateVisuDockWidget()
   QObject::connect( m_NavigationDockWidget, SIGNAL( visibilityChanged(QString, bool) ),
                     this, SLOT( visibilityChanged(QString, bool) ) );
 
-  QObject::connect( m_NavigationDockWidget, SIGNAL( openTransferFunctionEditor(QString) ),
+  // not needed anymore
+  QObject::connect( m_NavigationDockWidget, SIGNAL( createTransferFunctionEditor(QString) ),
                     this, SLOT( openTransferFunctionEditor(QString) ) );
 }
 
@@ -905,6 +943,8 @@ QGoTabImageView3DwT::CreateAllViewActions()
   this->m_ViewActions.push_back(separator4);
 
   this->m_ViewActions.push_back( m_NavigationDockWidget->toggleViewAction() );
+
+  this->m_ViewActions.push_back( m_TransferFunctionDockWidget->toggleViewAction() );
 
   this->m_ViewActions.push_back( m_DataBaseTables->toggleViewAction() );
 
@@ -1568,8 +1608,11 @@ InitializeImageRelatedWidget()
                  color[3]),
           i,
           true); // all checkboxes are check edwhen we start
+    // create TF editor
+    // add it in the vector
+    GoTransferFunctionEditorWidget* widget =
+        createTransferFunctionEditor(QString::fromStdString(name));
     }
-
 
   m_NavigationDockWidget->SetXMinimumAndMaximum(extent[0], extent[1]);
   m_NavigationDockWidget->SetXSlice( ( extent[0] + extent[1] ) / 2 );
@@ -1600,9 +1643,6 @@ InitializeImageRelatedWidget()
 }
 //-------------------------------------------------------------------------
 
-//#########################################################################
-//#########################################################################
-
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::UpdateImage()
@@ -1616,23 +1656,25 @@ QGoTabImageView3DwT::UpdateImage()
     }
   else if( NumberOfVisibleChannels == 1)
     {
-    // BUG HERE - 2 update + hide actors if opacity <1
     //update Image
     m_ImageView->SetImage(m_ImageProcessor->getImageBW());
     // update LUT
-    vtkSmartPointer<vtkLookupTable> lut = vtkSmartPointer<vtkLookupTable>::New();
-    lut->DeepCopy(m_ImageProcessor->getLookuptable());
-    // WHEN WE MODIFY WE WANT TO KEEP THE MODIF (FROM ANDREA)
-    m_ImageView->SetLookupTable(lut);
-
+    m_ImageView->SetLookupTable(m_ImageProcessor->getLookuptable());
     // CONFIGURE LUT
     this->findChild<QAction*>("LUT")->setEnabled(true);
     this->findChild<QAction*>("ScalarBar")->setEnabled(true);
     }
   else
     {
-    m_ImageView->SetImage(NULL);
-    m_ImageView->SetLookupTable(NULL);
+    // Start by creating a black lookup table.
+    vtkSmartPointer<vtkLookupTable> bwLut =
+      vtkSmartPointer<vtkLookupTable>::New();
+    bwLut->SetTableRange (0, 1);
+    bwLut->SetSaturationRange (0, 0);
+    bwLut->SetHueRange (0, 0);
+    bwLut->SetValueRange (0, 0);
+    bwLut->Build();
+    m_ImageView->SetLookupTable(bwLut);
     }
 }
 
@@ -1700,7 +1742,11 @@ QGoTabImageView3DwT::SetTimePoint(const int & iTimePoint)
     BuildDopplerWidget();
     }
 
+  // update image container
   UpdateImage();
+
+  // update TF editor (histogram and max value)
+  UpdateTFEditor();
 
   EnableVolumeRendering( this->m_VolumeRenderingEnabled );
 
@@ -3223,8 +3269,6 @@ QGoTabImageView3DwT::CreateModeToolBar(QMenu* iMenu, QToolBar* iToolBar)
 
   QObject::connect( AngleAction, SIGNAL( toggled(bool) ),
                     this, SLOT( AngleWidgetInteractorBehavior(bool) ) );
-
-  //this->m_ToolBarList.push_back(this->m_ModeToolBar);
 }
 //-------------------------------------------------------------------------
 
@@ -3237,6 +3281,7 @@ visibilityChanged(QString iName, bool iVisibility)
   UpdateImage();
   //if we are in volume rendering
   EnableVolumeRendering( this->m_VolumeRenderingEnabled );
+
   // update visu
   m_ImageView->Update();
 }
@@ -3265,13 +3310,21 @@ DopplerSizeChanged(int iDopplerSize)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void
+GoTransferFunctionEditorWidget*
 QGoTabImageView3DwT::
-openTransferFunctionEditor(QString iName)
+createTransferFunctionEditor(QString iName)
 {
   // create editor
+  // get LUT parameters (gamma, min, max)
+  std::vector<int> lutParameters =
+      m_ImageProcessor->getLUTParameters(iName.toStdString());
+
   GoTransferFunctionEditorWidget* editor =
-      new GoTransferFunctionEditorWidget(NULL, iName );
+      new GoTransferFunctionEditorWidget(NULL,
+                                         iName,
+                                         m_ImageProcessor->getColor(iName.toStdString()),
+                                         lutParameters,
+                                         m_ImageProcessor->getImageBW(iName.toStdString())->GetScalarRange()[1]);
   // connect signals
 
   QObject::connect( editor,
@@ -3280,16 +3333,27 @@ openTransferFunctionEditor(QString iName)
                     SLOT( updateSlot()) );
 
   QObject::connect( editor,
-                    SIGNAL( updatePoints(QString, std::vector< std::map< unsigned int, unsigned int> >) ),
+                    SIGNAL( UpdateImageStructure(QString,
+                                         std::map< unsigned int, unsigned int>,
+                                         QColor,
+                                         int,
+                                         int,
+                                         int) ),
                     this,
-                    SLOT( updatePoints(QString, std::vector< std::map< unsigned int, unsigned int> >)) );
+                    SLOT( updatePoints(QString,
+                                       std::map< unsigned int, unsigned int>,
+                                       QColor,
+                                       int,
+                                       int,
+                                       int)) );
+
+  QObject::connect(this->m_ImageView, SIGNAL(NewWindowLevel(double, double)),
+                   this, SLOT(AdjustWindowLevel(double, double)));
 
   // show editor - to have consistent geomerty to add the points
   editor->show();
-  // add color
-  editor->AddColor(m_ImageProcessor->getColor(iName.toStdString()));
   // add points
-  editor->AddPoints(m_ImageProcessor->getRGBA(iName.toStdString()));
+  editor->AddPoints(m_ImageProcessor->getAlpha(iName.toStdString()));
   // add LUT
   editor->AddLookupTable(m_ImageProcessor->getLookuptable(iName.toStdString()));
   // add Opacity TF
@@ -3297,6 +3361,22 @@ openTransferFunctionEditor(QString iName)
         m_ImageProcessor->getOpacityTransferFunction(iName.toStdString()));
   // add histogram - should not recalculate all the time...
   editor->AddHistogram(m_ImageProcessor->getHistogram(iName.toStdString()));
+  editor->hide();
+
+  //editor->setParent(m_TransferFunctionDockWidget);
+  m_TransferFunctionDockWidget->AddTransferFunction(iName, editor);
+
+  return editor;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+openTransferFunctionEditor(QString iName)
+{
+  //show TF widget
+  //add item  to it if not there
 }
 //-------------------------------------------------------------------------
 
@@ -3307,6 +3387,7 @@ QGoTabImageView3DwT::updateSlot()
 {
   UpdateImage();
   EnableVolumeRendering( this->m_VolumeRenderingEnabled );
+
   m_ImageView->Update();
 }
 //-------------------------------------------------------------------------
@@ -3314,9 +3395,29 @@ QGoTabImageView3DwT::updateSlot()
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
-updatePoints(QString iName, std::vector< std::map< unsigned int, unsigned int> > iPoints)
+updatePoints(QString iName,
+             std::map< unsigned int, unsigned int> iPoints,
+             QColor iColor,
+             int iMin,
+             int iMax,
+             int iGamma)
 {
+  // update opacity TF points
   m_ImageProcessor->updatePoints(iName.toStdString(), iPoints);
+
+  //color
+  std::vector<double> color;
+  color.push_back(iColor.redF()*255);
+  color.push_back(iColor.greenF()*255);
+  color.push_back(iColor.blueF()*255);
+
+  m_ImageProcessor->setColor(iName.toStdString(), color);
+
+  //LUT parameters
+  m_ImageProcessor->setLUTParameters(iName.toStdString(), iGamma, iMin, iMax);
+
+  // color of button in navigation widget
+  m_NavigationDockWidget->ModifyChannel(iName, iColor);
 }
 //-------------------------------------------------------------------------
 
@@ -3502,6 +3603,48 @@ ShowTraces(const unsigned int& iTimePoint)
   this->m_MeshContainer->ShowActorsWithGivenTimePoint(iTimePoint);
 }
 //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+AdjustWindowLevel(double iMin, double iMax)
+{
+  int index = m_NavigationDockWidget->GetFirstVisibleChannel();
+  // if one channel is checked
+  // (if no channel selected, index == -1, we don't do anything)
+  if(index >= 0)
+    {
+    this->m_TransferFunctionDockWidget->SetCurrentWidget(index);
+    GoTransferFunctionEditorWidget* widget =
+        dynamic_cast<GoTransferFunctionEditorWidget*>(
+        this->m_TransferFunctionDockWidget->GetWidget(index));
+    widget->AdjustWindowLevel(iMin, iMax);
+    }
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+UpdateTFEditor()
+{
+  unsigned int NumberOfChannels = m_ImageProcessor->getNumberOfChannels();
+
+  for ( unsigned int i = 0; i < NumberOfChannels; i++ )
+    {
+    std::string name = m_ImageProcessor->getChannelName(i);
+    GoTransferFunctionEditorWidget* widget =
+      dynamic_cast<GoTransferFunctionEditorWidget*>(
+        m_TransferFunctionDockWidget->GetWidget(i) );
+
+    // update histogram
+    widget->AddHistogram(m_ImageProcessor->getHistogram(name) );
+    // update max value
+    widget->SetMaximumValue(
+        m_ImageProcessor->getImageBW(name)->GetScalarRange()[1]);
+    }
+}
+//------------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void

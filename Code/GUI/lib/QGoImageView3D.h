@@ -184,6 +184,8 @@ signals:
 
   void UpdateRenderEvent();
 
+  void NewWindowLevel(double, double);
+
 public slots:
   QString SnapshotViewXY( const GoFigure::FileType & iType,
                           const QString & iBaseName = QString("snapshot-xy-") );
@@ -207,7 +209,7 @@ public slots:
 
   void SetCamera(int);
 
-  void UpdateScalarBarIn3DView();
+  void UpdateLUT();
 
   void ShowSplinePlane();
 

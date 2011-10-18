@@ -39,7 +39,6 @@
 **
 ****************************************************************************/
 
-
 /*=========================================================================
  Modifications were made by the GoFigure Dev. Team.
  while at Megason Lab, Systems biology, Harvard Medical school, 2009-11
@@ -83,88 +82,58 @@
 
 //-------------------------------------------------------------------------
 
-GoTransferFunctionWidget::GoTransferFunctionWidget(ShadeType type, QWidget *parent)
-    : QWidget(parent), m_shade_type(type), m_alpha_gradient(QLinearGradient(0, 0, 0, 0))
+GoTransferFunctionWidget::GoTransferFunctionWidget(QColor iColor,
+                                                   double iMax,
+                                                   QWidget *parent)
+    : QWidget(parent), m_color(iColor)
 {
-  // Checkers background
-  if (m_shade_type == ARGBShade) {
-      QPixmap pm(20, 20);
-      QPainter pmp(&pm);
-      pmp.fillRect(0, 0, 10, 10, Qt::lightGray);
-      pmp.fillRect(10, 10, 10, 10, Qt::lightGray);
-      pmp.fillRect(0, 10, 10, 10, Qt::darkGray);
-      pmp.fillRect(10, 0, 10, 10, Qt::darkGray);
-      pmp.end();
-      QPalette pal = palette();
-      pal.setBrush(backgroundRole(), QBrush(pm));
-      setAutoFillBackground(true);
-      setPalette(pal);
 
-  } else {
-      setAttribute(Qt::WA_NoBackground);
+  // set max value
+  m_Max = iMax;
 
-  }
+  // set minimum size to avoid bad appearance
+  this->setMinimumWidth(50);
+  this->setMinimumHeight(50);
 
-  m_hoverPoints = new HoverPoints(this, HoverPoints::CircleShape);
-  m_hoverPoints->setConnectionType(HoverPoints::LineConnection);
+  setAttribute(Qt::WA_NoBackground);
 
+  // LUT curve
+  m_LUTPoints = new HoverPoints(this, HoverPoints::RectangleShape);
+  m_LUTPoints->setConnectionType(HoverPoints::LineConnection);
+  // connect signal
+  connect(this, SIGNAL(enableLUTCurve(bool)), m_LUTPoints, SLOT(setEnabled(bool)));
+
+  // opacity TF
+  m_OpacityTFPoints = new HoverPoints(this, HoverPoints::CircleShape);
+  m_OpacityTFPoints->setConnectionType(HoverPoints::LineConnection);
+  // connect signal
+  connect(this, SIGNAL(enableOpacityTF(bool)), m_OpacityTFPoints, SLOT(setEnabled(bool)));
+  connect(m_OpacityTFPoints, SIGNAL(pointsChanged(QPolygonF)), this, SIGNAL(opacityChanged()));
+
+  // set size policy
   setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-
-  connect(m_hoverPoints, SIGNAL(pointsChanged(QPolygonF)), this, SIGNAL(colorsChanged()));
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 QPolygonF GoTransferFunctionWidget::points() const
 {
-  return m_hoverPoints->points();
+  return m_OpacityTFPoints->points();
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-uint GoTransferFunctionWidget::colorAt(int x)
+void GoTransferFunctionWidget::paintEvent(QPaintEvent * event)
 {
-  generateShade();
+  // generate shade, if necessary
+  if (m_shade.isNull() || m_shade.size() != size())
+    {
+    generateShade();
+    }
 
-  QPolygonF pts = m_hoverPoints->points();
-  for (int i=1; i < pts.size(); ++i) {
-      if (pts.at(i-1).x() <= x && pts.at(i).x() >= x) {
-          QLineF l(pts.at(i-1), pts.at(i));
-          l.setLength(l.length() * ((x - l.x1()) / l.dx()));
-          return m_shade.pixel(qRound(qMin(l.x2(), (qreal(m_shade.width() - 1)))),
-                               qRound(qMin(l.y2(), qreal(m_shade.height() - 1))));
-      }
-  }
-  return 0;
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void GoTransferFunctionWidget::setGradientStops(const QGradientStops &stops)
-{
-  if (m_shade_type == ARGBShade) {
-      m_alpha_gradient = QLinearGradient(0, 0, width(), 0);
-
-      for (int i=0; i<stops.size(); ++i) {
-          QColor c = stops.at(i).second;
-          m_alpha_gradient.setColorAt(stops.at(i).first, QColor(c.red(), c.green(), c.blue()));
-      }
-
-      m_shade = QImage();
-      generateShade();
-      update();
-  }
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void GoTransferFunctionWidget::paintEvent(QPaintEvent *)
-{
-  generateShade();
-
+  // draw shade
   QPainter p(this);
   p.drawImage(0, 0, m_shade);
-
   p.setPen(QColor(146, 146, 146));
   p.drawRect(0, 0, width() - 1, height() - 1);
 
@@ -181,7 +150,6 @@ void GoTransferFunctionWidget::paintEvent(QPaintEvent *)
       listOfPoints.push_back(point2);
       listOfPoints.push_back(point);
       }
-
     p.drawLines(listOfPoints);
     }
 }
@@ -190,63 +158,85 @@ void GoTransferFunctionWidget::paintEvent(QPaintEvent *)
 //-------------------------------------------------------------------------
 void GoTransferFunctionWidget::generateShade()
 {
-  if (m_shade.isNull() || m_shade.size() != size()) {
+  m_shade = QImage(size(), QImage::Format_RGB32);
+  QLinearGradient shade(0, 0, 0, height());
+  shade.setColorAt(1, Qt::black);
 
-      if (m_shade_type == ARGBShade) {
-          m_shade = QImage(size(), QImage::Format_ARGB32_Premultiplied);
-          m_shade.fill(0);
+  shade.setColorAt(0, m_color);
 
-          QPainter p(&m_shade);
-          p.fillRect(rect(), m_alpha_gradient);
-
-          p.setCompositionMode(QPainter::CompositionMode_DestinationIn);
-          QLinearGradient fade(0, 0, 0, height());
-          fade.setColorAt(0, QColor(0, 0, 0, 255));
-          fade.setColorAt(1, QColor(0, 0, 0, 0));
-          p.fillRect(rect(), fade);
-
-      } else {
-          m_shade = QImage(size(), QImage::Format_RGB32);
-          QLinearGradient shade(0, 0, 0, height());
-          shade.setColorAt(1, Qt::black);
-
-          if (m_shade_type == RedShade)
-              shade.setColorAt(0, Qt::red);
-          else if (m_shade_type == GreenShade)
-              shade.setColorAt(0, Qt::green);
-          else
-              shade.setColorAt(0, Qt::blue);
-
-          QPainter p(&m_shade);
-          p.fillRect(rect(), shade);
-      }
-  }
+  QPainter p(&m_shade);
+  p.fillRect(rect(), shade);
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
 GoTransferFunctionWidget::
-AddPoints(const QPolygonF& iPoints)
+AddPointsToOpacityTF(const QPolygonF& iPoints)
 {
-  m_hoverPoints->setPoints(iPoints);
-  m_hoverPoints->setPointLock(0, HoverPoints::LockToLeft);
-  m_hoverPoints->setPointLock(iPoints.size()-1, HoverPoints::LockToRight);
-  m_hoverPoints->setSortType(HoverPoints::XSort);
+  m_OpacityTFPoints->setPoints(iPoints);
+  m_OpacityTFPoints->setPointLock(0, HoverPoints::LockToLeft);
+  m_OpacityTFPoints->setPointLock(iPoints.size()-1, HoverPoints::LockToRight);
+  m_OpacityTFPoints->setSortType(HoverPoints::XSort);
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
 GoTransferFunctionWidget::
-UpdateLookupTable(vtkLookupTable* iLUT)
+AddPointsToLUT(const QPolygonF& iPoints)
 {
-  for(int i=0; i<iLUT->GetNumberOfTableValues();++i)
+  m_LUTPoints->setPoints(iPoints);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+GoTransferFunctionWidget::
+UpdateLookupTable(vtkLookupTable* iLUT, qreal iGamma, qreal iMin, qreal iMax)
+{
+  QPolygonF iPoints;
+  int numTableValues = m_Max;
+  qreal width = this->width();
+  qreal height = this->height();
+  iLUT->SetNumberOfTableValues(iMax-iMin);
+  // update LUT to modify visualization
+
+  // points affected with gamma correction, in the window
+  int count = 0;
+
+  // first point
+  iPoints << QPointF((qreal)(iMin)*(width-1)/numTableValues, height - 1);
+  QColor colorMin(m_shade.pixel(iMin*(width-1)/numTableValues, height - 1));
+  iLUT->SetTableValue(count, colorMin.redF(), colorMin.greenF(), colorMin.blueF());
+  count++;
+
+  for(int i=iMin+1; i<iMax-1; ++i)
     {
-    QColor color(m_shade.pixel(i*(m_shade.width()-1)/iLUT->GetNumberOfTableValues(), 0));
-    iLUT->SetTableValue(i, color.redF(), color.greenF(), color.blueF());
-    iLUT->Modified();
+    qreal input = ((qreal)i - iMin)/((iMax-iMin));
+    qreal power = (qreal)(pow(input, iGamma));
+    qreal temp_height = (height-1)*(1-power);
+
+    iPoints << QPointF((qreal)(i)*(width-1)/numTableValues,temp_height);
+
+    QColor color(m_shade.pixel(i*(width-1)/numTableValues, temp_height));
+    iLUT->SetTableValue(count, color.redF(), color.greenF(), color.blueF());
+    count++;
     }
+
+
+  // last point
+  iPoints << QPointF((qreal)(iMax)*(width-1)/numTableValues,0);
+  QColor colorMax(m_shade.pixel(iMax*(width-1)/numTableValues, 0));
+  iLUT->SetTableValue(count, colorMax.redF(), colorMax.greenF(), colorMax.blueF());
+
+  iLUT->SetRange(iMin, iMax);
+
+  iLUT->Modified();
+
+  // print new curve
+  m_LUTPoints->setPoints(iPoints);
+  update();
 }
 //-------------------------------------------------------------------------
 
@@ -262,16 +252,38 @@ SetHistogram(QVector<qreal> iHistogram)
 //-------------------------------------------------------------------------
 void
 GoTransferFunctionWidget::
-Reset(const qreal& iValue)
+ResetOpacity()
 {
-QPolygonF points;
-points << QPointF(0, height())
-       << QPointF(width(),(height())*(1-iValue));
-m_hoverPoints->setPoints(points);
-m_hoverPoints->setPointLock(0, HoverPoints::LockToLeft);
-m_hoverPoints->setPointLock(1, HoverPoints::LockToRight);
-m_hoverPoints->setSortType(HoverPoints::XSort);
+  // reset opacity TF
+  QPolygonF points;
+  points << QPointF(0, height())
+         << QPointF(width(),0);
+  m_OpacityTFPoints->setPoints(points);
+  m_OpacityTFPoints->setPointLock(0, HoverPoints::LockToLeft);
+  m_OpacityTFPoints->setPointLock(1, HoverPoints::LockToRight);
+  m_OpacityTFPoints->setSortType(HoverPoints::XSort);
+}
+//-------------------------------------------------------------------------
 
-update();
+//-------------------------------------------------------------------------
+void
+GoTransferFunctionWidget::
+setColor(QColor iColor)
+{
+  // modify color
+  m_color = iColor;
+  // generate new shade
+  generateShade();
+  // update the shade
+  update();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+GoTransferFunctionWidget::
+setMax(double iMax)
+{
+  m_Max = iMax;
 }
 //-------------------------------------------------------------------------

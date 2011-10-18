@@ -126,8 +126,9 @@ vtkViewImage2DCommand::Execute( vtkObject *caller,
   // Start
   if ( event == vtkCommand::StartWindowLevelEvent )
     {
-    this->InitialWindow = this->Viewer->GetColorWindow();
-    this->InitialLevel = this->Viewer->GetColorLevel();
+    //no since it is min an max now...!
+    this->InitialWindow = this->Viewer->GetLevel() - this->Viewer->GetWindow();
+    this->InitialLevel = this->Viewer->GetLevel() - this->InitialWindow/2;
     return;
     }
 
@@ -220,32 +221,44 @@ vtkViewImage2DCommand::Windowing(vtkInteractorStyleImage2D *isi)
         - isi->GetWindowLevelCurrentPosition()[1] ) / size[1];
 
   // Scale by current values
-  if ( fabs(window) > 0.01 ) { dx = dx * window; }
+  if ( fabs(window) > 0.01 ) { dy = dy * window; }
   else
     {
-    dx = dx * ( window < 0 ? -0.01 : 0.01 );
+    dy = dy * ( window < 0 ? -0.01 : 0.01 );
     }
-  if ( fabs(level) > 0.01 ) { dy = dy * level; }
+  if ( fabs(level) > 0.01 ) { dx = dx * level; }
   else
     {
-    dy = dy * ( level < 0 ? -0.01 : 0.01 );
+    dx = dx * ( level < 0 ? -0.01 : 0.01 );
     }
 
   // Abs so that direction does not flip
-  if ( window < 0.0 ) { dx = -1 * dx; }
-  if ( level < 0.0 ) { dy = -1 * dy; }
+  if ( window < 0.0 ) { dy = -1 * dy; }
+  if ( level < 0.0 ) { dx = -1 * dx; }
 
   // Compute new window level
-  double newWindow = dx + window;
-  double newLevel = level - dy;
+  double newWindow = window - dy;
+  double newLevel = level + dx;
 
   // Stay away from zero and really
   if ( fabs(newWindow) < 0.01 ) { newWindow = 0.01 * ( newWindow < 0 ? -1 : 1 ); }
   if ( fabs(newLevel) < 0.01 ) { newLevel = 0.01 * ( newLevel < 0 ? -1 : 1 ); }
 
-  this->Viewer->SetColorWindow(newWindow);
-  this->Viewer->SetColorLevel(newLevel);
-  this->Viewer->Render();
+  // compute new window
+  double min = 0.0;
+  if(newLevel - newWindow /2 > 0)
+    min = newLevel - newWindow /2;
+
+  double max = this->Viewer->GetInput()->GetScalarRange()[1];
+  if(newLevel + newWindow /2 < this->Viewer->GetInput()->GetScalarRange()[1])
+    max = newLevel + newWindow /2;
+
+  // can happen if we move too fast
+  if(min > max - 2)
+    return;
+
+  this->Viewer->SetWindow(min);
+  this->Viewer->SetLevel(max);
 }
 //----------------------------------------------------------------------------
 

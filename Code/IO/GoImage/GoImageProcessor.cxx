@@ -55,7 +55,7 @@
 
 //--------------------------------------------------------------------------
 GoImageProcessor::GoImageProcessor():m_Output(NULL),
-  m_MaxThreshold(0),
+  m_MaxThreshold(0),m_MaxImage(0),
   m_DopplerMode(false), m_DopplerStep(1), m_DopplerChannel(0), m_DopplerSize(3)
 {
   m_BoundsTime[0] = 0;
@@ -109,7 +109,7 @@ GoImageProcessor::
 vtkSmartPointer<vtkLookupTable>
 GoImageProcessor::
 createLUT(const double& iRed, const double& iGreen, const double& iBlue,
-          const double& iAlpha, const double* iRange)
+          const double& iAlpha)
 {
   vtkSmartPointer<vtkLookupTable> lut = vtkSmartPointer<vtkLookupTable>::New();
   double* HSV = vtkMath::RGBToHSV(iRed,iGreen,iBlue);
@@ -117,8 +117,15 @@ createLUT(const double& iRed, const double& iGreen, const double& iBlue,
   lut->SetHueRange(HSV[0], HSV[0]);
   lut->SetSaturationRange(1, 1);
   lut->SetValueRange(0, 1);
-  lut->SetRange(const_cast<double*>(iRange));
+  lut->SetNumberOfTableValues(m_MaxThreshold);
+  double* range = new double[2];
+  range[0] = 0;
+  range[1] = m_MaxThreshold;
+  lut->SetRange(range);
+
   lut->Build();
+  delete range;
+
   return lut;
 }
 //--------------------------------------------------------------------------
@@ -207,16 +214,68 @@ getColor(const std::string& iName) const
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-std::vector<std::map<unsigned int, unsigned int> >
+void
 GoImageProcessor::
-getRGBA(const std::string& iName) const
+setColor(const std::string& iName, std::vector<double>& iColor)
+{
+  GoMegaImageStructureMultiIndexContainer::index<Name>::type::iterator it =
+      m_MegaImageContainer.get< Name >().find(iName);
+
+  if(it!=m_MegaImageContainer.get< Name >().end())
+    {
+    m_MegaImageContainer.get< Name >().modify( it , set_color(iColor));
+    }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+GoImageProcessor::
+setLUTParameters(const std::string& iName, int iGamma, int iMin, int iMax)
+{
+  GoMegaImageStructureMultiIndexContainer::index<Name>::type::iterator it =
+      m_MegaImageContainer.get< Name >().find(iName);
+
+  if(it!=m_MegaImageContainer.get< Name >().end())
+    {
+    m_MegaImageContainer.get< Name >().modify( it , set_LUT_Parameters(iGamma,
+                                                                       iMin,
+                                                                       iMax));
+    }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+std::vector<int>
+GoImageProcessor::
+getLUTParameters(const std::string& iName)
 {
   GoMegaImageStructureMultiIndexContainer::index<Name>::type::iterator it =
       m_MegaImageContainer.get< Name >().find(iName);
 
   assert(it!=m_MegaImageContainer.get< Name >().end());
 
-  return it->RGBA;
+  std::vector<int> parameters;
+
+  parameters.push_back(it->Gamma);
+  parameters.push_back(it->Min);
+  parameters.push_back(it->Max);
+
+  return parameters;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+std::map<unsigned int, unsigned int>
+GoImageProcessor::
+getAlpha(const std::string& iName) const
+{
+  GoMegaImageStructureMultiIndexContainer::index<Name>::type::iterator it =
+      m_MegaImageContainer.get< Name >().find(iName);
+
+  assert(it!=m_MegaImageContainer.get< Name >().end());
+
+  return it->Alpha;
 }
 //--------------------------------------------------------------------------
 
@@ -250,6 +309,20 @@ colorImage(vtkSmartPointer<vtkImageData> iImage,
   coloredImage->Update();
 
   return coloredImage->GetOutput();
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+vtkSmartPointer<vtkImageData>
+GoImageProcessor::
+getImageBW(const std::string& iName)
+{
+  GoMegaImageStructureMultiIndexContainer::index<Name>::type::iterator it =
+      m_MegaImageContainer.get< Name >().find(iName);
+
+  assert(it!=m_MegaImageContainer.get< Name >().end());
+
+  return it->Image;
 }
 //--------------------------------------------------------------------------
 
@@ -350,7 +423,7 @@ getVisibleImages()
     vtkSmartPointer<vtkImageShiftScale> scale =
         vtkSmartPointer<vtkImageShiftScale>::New();
     scale->SetInput(blendedImage->GetOutput());
-    scale->SetScale(m_MaxThreshold/range);
+    scale->SetScale(m_MaxImage/range);
     scale->SetOutputScalarTypeToUnsignedChar();
     scale->ReleaseDataFlagOn();
     scale->SetNumberOfThreads(VTK_MAX_THREADS);
@@ -573,14 +646,14 @@ getNumberOfVisibleChannels()
 //--------------------------------------------------------------------------
 void
 GoImageProcessor::
-updatePoints(std::string iName, std::vector< std::map< unsigned int, unsigned int> > iVector)
+updatePoints(std::string iName, std::map< unsigned int, unsigned int> iPointsAlpha)
 {
   GoMegaImageStructureMultiIndexContainer::index<Name>::type::iterator it =
       m_MegaImageContainer.get< Name >().find(iName);
 
   if(it!=m_MegaImageContainer.get< Name >().end())
     {
-    m_MegaImageContainer.get< Name >().modify( it , set_PointsRGBA(iVector));
+    m_MegaImageContainer.get< Name >().modify( it , set_PointsAlpha(iPointsAlpha));
     }
 }
 //--------------------------------------------------------------------------
@@ -591,5 +664,14 @@ GoImageProcessor::
 getMaxThreshold()
 {
   return m_MaxThreshold;
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+int
+GoImageProcessor::
+getMaxImage()
+{
+  return m_MaxImage;
 }
 //--------------------------------------------------------------------------

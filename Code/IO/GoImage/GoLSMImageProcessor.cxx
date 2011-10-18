@@ -94,8 +94,15 @@ initTimePoint(const unsigned int& iTime)
    // get image
     vtkSmartPointer<vtkImageData> image = reader->GetOutput();
 
+    // capacity of image -> rescale in multichannelmode
     int type = image->GetScalarSize();
-    m_MaxThreshold = pow(2, 8*type) - 1;
+    double threshold = pow(2, 8*type) - 1;
+    m_MaxImage = threshold;
+    // max pixel in image
+    double range = image->GetScalarRange()[1];
+    if(m_MaxThreshold < range){
+      m_MaxThreshold = range;
+      }
 
     // Get Color
     double random1 = reader->
@@ -120,8 +127,7 @@ initTimePoint(const unsigned int& iTime)
     vtkSmartPointer<vtkLookupTable> lut = createLUT(color[0],
                                                     color[1],
                                                     color[2],
-                                                    color[3],
-                                                    image->GetScalarRange());
+                                                    color[3]);
     // create name...
     std::stringstream channelName;
     channelName << "Channel ";
@@ -228,8 +234,7 @@ setDoppler(const unsigned int& iTime, const unsigned int& iPrevious)
       vtkSmartPointer<vtkLookupTable> lut = createLUT(color[0],
                                                       color[1],
                                                       color[2],
-                                                      color[3],
-                                                      image->GetScalarRange());
+                                                      color[3]);
 
       // channel name
       std::stringstream channelName;

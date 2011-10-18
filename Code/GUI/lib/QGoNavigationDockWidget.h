@@ -94,6 +94,8 @@ public:
   void AddChannel(const QString& iName, const QColor& iColor,const unsigned int& iNumber,
                   const bool& iChecked);
 
+  void ModifyChannel(QString iName, QColor iColor);
+
   void VisibilityListChannels(const bool& iVisibility);
 
   void AddDoppler(const QString& iName, const QColor& iColor,const unsigned int& iNumber,
@@ -128,7 +130,7 @@ public slots:
 
   void visibilityChanged(bool);
 
-  void changeColor();
+  int GetFirstVisibleChannel();
 
 signals:
   void XSliceChanged(int Slice);

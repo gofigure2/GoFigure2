@@ -330,26 +330,37 @@ AddChannel(const QString& iName, const QColor& iColor, const unsigned int& iNumb
   QCheckBox *checkBox1 = new QCheckBox(iName, this);
   checkBox1->setObjectName(iName);
   checkBox1->setChecked(iChecked);
-  QPushButton *pushButton = new QPushButton(this);
-  pushButton->setObjectName(iName);
-  QString style = "background: rgb(%1, %2, %3);";
-  pushButton->setStyleSheet(
+  QString style = "border: 1px solid black; background-color: rgba(%1, %2, %3, 150); border-radius: 4px;";
+  checkBox1->setStyleSheet(
         style.arg(iColor.red()).arg(iColor .green()).arg(iColor.blue()));
- // pushButton->setStyleSheet("QPushButton { background: red } ");
   QHBoxLayout *layout = new QHBoxLayout;
   layout->addWidget(checkBox1);
-  layout->addWidget(pushButton);
   // to be modified - 7
   this->gridLayout_2->addLayout(layout, 7+iNumber, 0, 0);
   //create signals connections
   QObject::connect( checkBox1, SIGNAL( clicked(bool) ),
                     this, SLOT( visibilityChanged(bool) ) );
-  QObject::connect( pushButton, SIGNAL( pressed() ),
-                    this, SLOT( changeColor() ) );
 
   // vector of widget so we can remove it from layout efficiently
   m_ListCheckBoxes.push_back(checkBox1);
-  m_ListPushButtons.push_back(pushButton);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoNavigationDockWidget::
+ModifyChannel(QString iName, QColor iColor)
+{
+  //modify color of bg of checkbox!
+  QList<QCheckBox*>::iterator it2 = m_ListCheckBoxes.begin();
+  while(iName.compare((*it2)->objectName()) != 0)
+    {
+    ++it2;
+    }
+
+  QString style = "border: 1px solid black; background-color: rgba(%1, %2, %3, 150); border-radius: 4px;";
+  (*it2)->setStyleSheet(
+        style.arg(iColor.red()).arg(iColor .green()).arg(iColor.blue()));
 }
 //-------------------------------------------------------------------------
 
@@ -394,27 +405,20 @@ AddDoppler(const QString& iName, const QColor& iColor, const unsigned int& iNumb
   QCheckBox *checkBox1 = new QCheckBox(iName, this);
   checkBox1->setObjectName(iName);
   checkBox1->setChecked(iChecked);
-  QPushButton *pushButton = new QPushButton(this);
-  pushButton->setObjectName(iName);
-  QString style = "background: rgb(%1, %2, %3);";
-  pushButton->setStyleSheet(
+  QString style = "border: 1px solid rgb(%1, %2, %3); background-color: rgba(%1, %2, %3, 100); border-radius: 4px;";
+  checkBox1->setStyleSheet(
         style.arg(iColor.red()).arg(iColor .green()).arg(iColor.blue()));
- // pushButton->setStyleSheet("QPushButton { background: red } ");
   QHBoxLayout *layout = new QHBoxLayout;
   layout->addWidget(checkBox1);
-  layout->addWidget(pushButton);
   // to be modified - 7
   this->gridLayout_2->addLayout(layout, 7+iNumber, 0, 0);
   //create signals connections
   QObject::connect( checkBox1, SIGNAL( clicked(bool) ),
                     this, SLOT( visibilityChanged(bool) ) );
-  QObject::connect( pushButton, SIGNAL( pressed() ),
-                    this, SLOT( changeColor() ) );
   // more signals for modify LUT
 
   // vector of widget so we can remove it from layout efficiently
   m_ListDoppler.push_back(checkBox1);
-  m_ListDoppler.push_back(pushButton);
 }
 //-------------------------------------------------------------------------
 
@@ -451,8 +455,20 @@ QGoNavigationDockWidget:: DeleteDopplerWidgets()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void
-QGoNavigationDockWidget:: changeColor()
+int
+QGoNavigationDockWidget::
+GetFirstVisibleChannel()
 {
-  emit openTransferFunctionEditor(QObject::sender()->objectName());
+  int index = 0;
+  QList<QCheckBox*>::iterator it2 = m_ListCheckBoxes.begin();
+  while( it2 != m_ListCheckBoxes.end() )
+    {
+    if((*it2)->isChecked())
+      {
+      return index;
+      }
+    ++index;
+    ++it2;
+    }
+  return -1;
 }

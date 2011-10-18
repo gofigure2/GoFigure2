@@ -77,6 +77,8 @@
 #include "vtkImplicitPlaneWidget.h"
 #include "vtkPlane.h"
 
+#include "vtkLookupTable.h"
+
 #include "vtkPiecewiseFunction.h"
 
 #include <cstdlib>
@@ -314,12 +316,6 @@ QGoImageView3D::Update()
     this->m_Pool->SyncRender();
     }
 
-  //Print plane actors....!
- // std::vector<vtkProp3D *> actors = m_Pool->GetPlanesActors();
- // for(int i = 0; i<12; i++)
- //   std::cout << "p: " << i << " -> " << actors[i] << std::endl;
-
-
   QGoImageView::Update();
 }
 
@@ -505,8 +501,18 @@ QGoImageView3D::SetupVTKtoQtConnections()
   // when contours picked, send a signal
   VtkEventQtConnector->Connect(
     reinterpret_cast< vtkObject * >( View1->GetInteractorStyle() ),
-    vtkViewImage2DCommand::WindowLevelEvent,
-    this, SLOT( UpdateScalarBarIn3DView() ) );
+    vtkCommand::WindowLevelEvent,
+    this, SLOT( UpdateLUT() ) );
+
+  VtkEventQtConnector->Connect(
+    reinterpret_cast< vtkObject * >( View2->GetInteractorStyle() ),
+    vtkCommand::WindowLevelEvent,
+    this, SLOT( UpdateLUT() ) );
+
+  VtkEventQtConnector->Connect(
+    reinterpret_cast< vtkObject * >( View3->GetInteractorStyle() ),
+    vtkCommand::WindowLevelEvent,
+    this, SLOT( UpdateLUT() ) );
 
   ////////////////////////////////////////////////////////////////////////////
 
@@ -523,6 +529,8 @@ QGoImageView3D::SetupVTKtoQtConnections()
     reinterpret_cast< vtkObject * >( View3D ),
     vtkViewImage3DCommand::UpdateRenderEvent,
     this, SLOT( UpdateRenderWindows() ) );
+
+  ////////////////////////////////////////////////////////////////////////////
 }
 
 //--------------------------------------------------------------------------
@@ -531,14 +539,10 @@ QGoImageView3D::SetupVTKtoQtConnections()
 void
 QGoImageView3D::SetImage(vtkImageData *input)
 {
-  /**
-    \todo Nicolas-unecessary checks-temp solution
-    */
   if ( !input )
     {
     vtkSmartPointer<vtkImageData> test = vtkSmartPointer<vtkImageData>::New();
     this->m_Image->ShallowCopy(test);
-    return;
     }
   else
     {
@@ -1190,11 +1194,17 @@ QGoImageView3D::EnablePlaneWidget(bool iValue)
 
 //-------------------------------------------------------------------------
 void
-QGoImageView3D::UpdateScalarBarIn3DView()
+QGoImageView3D::UpdateLUT()
 {
-  m_View3D->SetLookupTable( m_Pool->GetItem(0)->GetLookupTable() );
+  if(m_Pool->GetItem(0)->GetIsColor())
+    {
+    return;
+    }
+  // update tf function by modifying the widget
+  double window = m_Pool->GetItem(0)->GetWindow();
+  double color = m_Pool->GetItem(0)->GetLevel();
+  emit NewWindowLevel(window, color);
 }
-
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------

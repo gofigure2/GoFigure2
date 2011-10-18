@@ -73,6 +73,8 @@ class QGoLineageViewerWidget;
 
 class QGoImageView3D;
 class QGoNavigationDockWidget;
+class QGoTransferFunctionDockWidget;
+class GoTransferFunctionEditorWidget;
 class QGoPrintDatabase;
 
 #if defined ENABLEFFMPEG || defined ENABLEAVI
@@ -273,6 +275,8 @@ public:
     */
   void ShowTraces(const unsigned int& iTimePoint);
 
+  void UpdateTFEditor();
+
 signals:
   void TimePointChanged(int TimePoint);
 
@@ -295,6 +299,9 @@ signals:
   void RequestedPolydatas(std::list< vtkPolyData* >);
 
 public slots:
+
+  void AdjustWindowLevel(double iMin, double iMax);
+
   void SetTimePoint(const int &);
 
   void TakeSnapshot();
@@ -303,7 +310,12 @@ public slots:
 
   void GoToDefaultMenu(bool iEnable = false);
 
-  void updatePoints(QString, std::vector< std::map< unsigned int, unsigned int> >);
+  void updatePoints(QString,
+                    std::map< unsigned int, unsigned int >,
+                    QColor,
+                    int,
+                    int,
+                    int);
 
 #if defined ( ENABLEFFMPEG ) || defined ( ENABLEAVI )
   void SetRendererWindow(int);
@@ -398,6 +410,7 @@ public slots:
 
   void visibilityChanged(QString iName, bool iVisibility);
 
+  GoTransferFunctionEditorWidget* createTransferFunctionEditor(QString iName);
   void openTransferFunctionEditor(QString iName);
 
   void updateSlot();
@@ -431,6 +444,7 @@ protected:
   int m_TCoord;
 
   QGoNavigationDockWidget *m_NavigationDockWidget;
+  QGoTransferFunctionDockWidget *m_TransferFunctionDockWidget;
 
   // base segmentation dockwidget for contours
   //QGoContourSegmentationBaseDockWidget *m_ContourSegmentationDockWidget;

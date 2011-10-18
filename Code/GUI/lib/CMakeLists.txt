@@ -121,6 +121,7 @@ SET( QGoGUILIB_SRC
   TraceEditing/QGoFilterSemiAutoBase.cxx
 
   # transfer function widget
+  TransferFunctionEditor/QGoTransferFunctionDockWidget.cxx
   TransferFunctionEditor/GoTransferFunctionEditorWidget.cxx
   TransferFunctionEditor/GoTransferFunctionWidget.cxx
   TransferFunctionEditor/hoverpoints.cpp
@@ -274,6 +275,7 @@ SET( QGoGUILIB_HDRS
   TraceEditing/QGoFilterSemiAutoBase.h
 
   # transfer function widget
+  TransferFunctionEditor/QGoTransferFunctionDockWidget.h
   TransferFunctionEditor/GoTransferFunctionEditorWidget.h
   TransferFunctionEditor/GoTransferFunctionWidget.h
   TransferFunctionEditor/hoverpoints.h
@@ -329,6 +331,7 @@ SET( QGoGUILIB_UI
 
   # other
   Resources/NavigationDockWidget.ui
+  Resources/TransferFunctionDockWidget.ui
   Resources/LsmToMegaExportDialog.ui
   Resources/QNameDescriptionInputDialog.ui
 
