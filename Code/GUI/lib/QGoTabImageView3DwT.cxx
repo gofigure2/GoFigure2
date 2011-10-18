@@ -2937,13 +2937,13 @@ void
 QGoTabImageView3DwT::
 AddTraceIDIntoPolydata( vtkPolyData* iPolydata, unsigned int iTraceID, const char* iTrace)
 {
-vtkSmartPointer<vtkIntArray> trackIDArray = vtkSmartPointer<vtkIntArray>::New();
-trackIDArray->SetNumberOfComponents(1);
-trackIDArray->SetNumberOfValues(1);
-trackIDArray->SetName(iTrace);
-trackIDArray->SetValue(0, iTraceID);
+  vtkSmartPointer<vtkIntArray> trackIDArray = vtkSmartPointer<vtkIntArray>::New();
+  trackIDArray->SetNumberOfComponents(1);
+  trackIDArray->SetNumberOfValues(1);
+  trackIDArray->SetName(iTrace);
+  trackIDArray->SetValue(0, iTraceID);
 
-iPolydata->GetFieldData()->AddArray(trackIDArray);
+  iPolydata->GetFieldData()->AddArray(trackIDArray);
 }
 //-------------------------------------------------------------------------
 
@@ -2953,25 +2953,27 @@ QGoTabImageView3DwT::SetTraceSettingsToolBarVisible(bool IsVisible)
 {
   if (!IsVisible)
     {
-      if (!this->m_ContourEditingWidget->GetToggleViewAction()->isChecked() &&
+    if (!this->m_ContourEditingWidget->GetToggleViewAction()->isChecked() &&
         !this->m_MeshEditingWidget->GetToggleViewAction()->isChecked() &&
-      !this->m_DataBaseTables->toggleViewAction()->isChecked() )
+        !this->m_DataBaseTables->toggleViewAction()->isChecked() )
       {
       this->m_TraceSettingsToolBar->setVisible(IsVisible);
       }
     }
   else
     {
-      if (this->m_ContourEditingWidget->GetToggleViewAction()->isChecked())
+    if (this->m_ContourEditingWidget->GetToggleViewAction()->isChecked())
       {
       this->m_DataBaseTables->SetTraceNameForTableWidget("contour");
       }
-      if (this->m_MeshEditingWidget->GetToggleViewAction()->isChecked() )
+    if (this->m_MeshEditingWidget->GetToggleViewAction()->isChecked() )
       {
       this->m_DataBaseTables->SetTraceNameForTableWidget("mesh");
       }
-    if(this->m_DataBaseTables->NeedTraceSettingsToolBarVisible() ) //if the dockwidget is not on floating mode
-      //or if the trace settings widget is not already visible in the dockwidget or if the TW is not visible
+    if(this->m_DataBaseTables->NeedTraceSettingsToolBarVisible() )
+      // if the dockwidget is not on floating mode
+      // or if the trace settings widget is not already visible in the dockwidget
+      // or if the TW is not visible
       {
       this->m_TraceSettingsToolBar->setVisible(IsVisible);
       }
