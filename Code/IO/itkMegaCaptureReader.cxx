@@ -257,9 +257,10 @@ MegaCaptureReader::AddToVTKVolumeBuilder(const int & iCounter,
 void
 MegaCaptureReader::Update()
 {
-  std::cout << __FILE__ << " START building new IMAGE" << std::endl;
   if ( m_Modified )
     {
+    this->InvokeEvent( StartEvent() );
+
     std::map< unsigned int, std::list< std::string > > filelistperchannel;
 
     if ( m_TimeBased )
@@ -281,6 +282,9 @@ MegaCaptureReader::Update()
     std::map< unsigned int, std::list< std::string > >::iterator
       fch_end = filelistperchannel.end();
 
+    size_t kk = 0;
+    size_t size = filelistperchannel.size() * fch_it->second.size();
+
     while ( fch_it != fch_end )
       {
       int counter = 0;
@@ -297,6 +301,9 @@ MegaCaptureReader::Update()
         {
         AddToVTKVolumeBuilder(counter, *f_it, volumeBuilder);
 
+        this->SetProgress( static_cast< float >( kk ) / static_cast< float >( size ) );
+
+        ++kk;
         ++f_it;
         ++counter;
         }
@@ -332,8 +339,9 @@ MegaCaptureReader::Update()
 
       ++fch_it;
       }
-    std::cout << __FILE__ << " FINISH building new IMAGE" << std::endl;
     m_TimeInterval = m_HeaderReader->m_TimeInterval;
+
+    this->InvokeEvent( EndEvent() );
     }
 }
 
