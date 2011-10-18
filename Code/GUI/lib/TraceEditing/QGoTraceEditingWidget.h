@@ -40,6 +40,7 @@
 #include <QVBoxLayout>
 #include <QStackedLayout>
 #include <QComboBox>
+#include <QHash>
 #include "QGoModesManagerWidget.h"
 #include "QGoAlgorithmsManagerWidget.h"
 
@@ -49,14 +50,14 @@ class QGoTraceEditingWidget:
 {
   Q_OBJECT
 public:
-  explicit QGoTraceEditingWidget(std::string iTraceName , 
-    std::vector<QString> iVectChannels, 
+  explicit QGoTraceEditingWidget(std::string iTraceName ,
+    std::vector<QString> iVectChannels,
     QStringList iListTimePoints, QWidget *iParent = 0 );
   ~QGoTraceEditingWidget();
 
   /**
   \brief add iModeWidget as a widget to be displayed when iModeName is selected
-  in the combobox of m_ModeEditingWidget 
+  in the combobox of m_ModeEditingWidget
   \param[in] iModeName name of the mode corresponding to iModeWidget
   \param[in] iModeWidget Widget corresponding to iModeName
   */
@@ -65,7 +66,7 @@ public:
   void AddMode(QGoAlgorithmsManagerWidget* iAlgoModeWidget, bool ModeNeedSeeds);
 
   /**
-  \brief replace the existing m_ModeEditingWidget with iModeWidget: all the 
+  \brief replace the existing m_ModeEditingWidget with iModeWidget: all the
   previous mode will be erased
   \param[in] iModeWidget modes manager
   */
@@ -81,7 +82,7 @@ public:
   std::string GetCurrentImageName();
   int GetSelectedTimePoint();
   bool GetIsInvertedOn();
- 
+
   /**
   \brief check which mode is selected and if the seeds are needed or not and
   emit the corresponding signals based on the visibility of the widget
@@ -90,7 +91,7 @@ public:
 
   void SetTSliceForClassicView(int iTimePoint);
   void SetTSliceForDopplerView(
-    std::map<QString, QColor> iListTimePoints, int iChannelNumber);
+    QHash<QString, QColor> iListTimePoints, int iChannelNumber);
 
   /**
   \brief return the name of the current mode in the combobox
@@ -103,7 +104,7 @@ signals:
   void ResetClicked();
 
 protected:
-  void Initialize(std::vector<QString> iVectChannels, 
+  void Initialize(std::vector<QString> iVectChannels,
   QStringList iListTimePoints, QWidget *iParent = 0);
   QGoModesManagerWidget* m_ModeEditingWidget;
   QVBoxLayout*           m_VLayout;

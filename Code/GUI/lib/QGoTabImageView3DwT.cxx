@@ -2953,7 +2953,7 @@ QGoTabImageView3DwT::UpdateTracesEditingWidget()
       }
     else
       {
-      std::map<QString, QColor> ListTimePoints;
+      QHash<QString, QColor> ListTimePoints;
       std::vector<int> dopplerT =
           this->m_ImageProcessor->getDopplerTime(this->m_TCoord);
 

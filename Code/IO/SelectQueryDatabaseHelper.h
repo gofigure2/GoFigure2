@@ -36,7 +36,7 @@
 
 #include <vector>
 #include <string>
-#include <map>
+#include "boost/unordered_map.hpp"
 #include <list>
 #include "itkMacro.h"
 #include "vtkMySQLDatabase.h"
@@ -72,7 +72,7 @@ ColumnName ASC
 \param[in] ColumnNameTwo second value of the pair
 \param[in] TableName name of the database table
 \param{in] OrderByColumnName sorting
-\return all the values sorted by OrderByColumnName in a vector of pair 
+\return all the values sorted by OrderByColumnName in a vector of pair
 */
 QGOIO_EXPORT
 std::vector< std::pair< std::string, std::string > >
@@ -90,7 +90,7 @@ VectorTwoColumnsFromTable(vtkMySQLDatabase *DatabaseConnector,
 \return map[Value from ColumnName1] = Value from ColumnName2
 */
 QGOIO_EXPORT
-std::map< std::string, std::string > MapTwoColumnsFromTable(
+boost::unordered_map< std::string, std::string > MapTwoColumnsFromTable(
   vtkMySQLDatabase *DatabaseConnector,std::vector<std::string> iColumnNames,
   std::string iTableName, std::string iField = "", std::string iValue = "");
 
@@ -112,7 +112,7 @@ std::vector< std::string > ListSpecificValuesForRow(
 \param[in] ColumnName name of the field in the database
 \param[in] field field for the condition
 \param[in] value value of the condition
-\return only one ID 
+\return only one ID
 */
 QGOIO_EXPORT
 int FindOneID(vtkMySQLDatabase *DatabaseConnector,
@@ -120,7 +120,7 @@ int FindOneID(vtkMySQLDatabase *DatabaseConnector,
               std::string field, std::string value);
 
 /**
-\overload 
+\overload
 \param[in] iConditions vector of fields = values
 */
 QGOIO_EXPORT
@@ -139,11 +139,11 @@ AND field2 = value2...);
 */
 QGOIO_EXPORT
 std::vector< std::string > FindSeveralIDs(
-  vtkMySQLDatabase * iDatabaseConnector,std::string TableName, 
+  vtkMySQLDatabase * iDatabaseConnector,std::string TableName,
   std::string ColumnName, std::vector<FieldWithValue> iConditions);
 
 /**
-\brief SELECT ColumnName FROM TableName WHERE field = value and 
+\brief SELECT ColumnName FROM TableName WHERE field = value and
 ColumnName <> 0 (if excludezero)
 \param[in] iDatabaseConnector connection to the database
 \param[in] TableName name of the database table
@@ -151,7 +151,7 @@ ColumnName <> 0 (if excludezero)
 \param[in] field field for the condition
 \param[in] value value of the condition
 \param[in] distinct set to true if doublon are not allowed
-\param[in] ExcludeZero set to true if ColumnName has to be 
+\param[in] ExcludeZero set to true if ColumnName has to be
 different than 0
 \return all the values in ColumnName that fit the conditions
 */
@@ -353,14 +353,14 @@ void ExecuteQueryAndModifyListStructure(vtkMySQLDatabase* iDatabaseConnector,
       unsigned int SpecifiedValue;
       if (iTableOne == "lineage")
         {
-        SpecifiedValue = query->DataValue(1).ToUnsignedInt();   
+        SpecifiedValue = query->DataValue(1).ToUnsignedInt();
         }
       else
         {
-        temp.CollectionID = query->DataValue(1).ToUnsignedInt(); 
+        temp.CollectionID = query->DataValue(1).ToUnsignedInt();
         SpecifiedValue = query->DataValue(7).ToUnsignedInt();
-        }    
-       ModifyStructureWithSpecificities(temp, SpecifiedValue,  
+        }
+       ModifyStructureWithSpecificities(temp, SpecifiedValue,
          query->DataValue(6).ToString(), iTableOne);
       /// \note For the visualization rgba values are supposed to be double in
       /// between 0 and 1; whereas in the database these values are in between
@@ -369,8 +369,8 @@ void ExecuteQueryAndModifyListStructure(vtkMySQLDatabase* iDatabaseConnector,
       temp.rgba[1]      = ( query->DataValue(3).ToDouble() ) / 255.;
       temp.rgba[2]      = ( query->DataValue(4).ToDouble() ) / 255.;
       temp.rgba[3]      = ( query->DataValue(5).ToDouble() ) / 255.;
-   
-      //ModifyStructureWithTCoordAndPoints(temp, query->DataValue(7).ToUnsignedInt(),  
+
+      //ModifyStructureWithTCoordAndPoints(temp, query->DataValue(7).ToUnsignedInt(),
       //    query->DataValue(6).ToString(), iTableOne);
       ioListStructure.push_back(temp);
       }
@@ -403,10 +403,10 @@ void GetInfoFromDBAndModifyListStructure(
   FieldWithValue iJoinConditionOne, FieldWithValue iJoinConditionTwo, std::string iFieldOne,
   unsigned int iValueFieldOne, std::string iIDFieldName, std::list< unsigned int > iListIDs)
 {
-  std::string QueryString = SelectForTracesInfo(iSelectedAttributes, iTableOne, iTableTwo, 
-    iTableThree, iJoinConditionOne, iJoinConditionTwo, iFieldOne, iValueFieldOne, iIDFieldName, 
+  std::string QueryString = SelectForTracesInfo(iSelectedAttributes, iTableOne, iTableTwo,
+    iTableThree, iJoinConditionOne, iJoinConditionTwo, iFieldOne, iValueFieldOne, iIDFieldName,
     iListIDs);
-  ExecuteQueryAndModifyListStructure<T>( 
+  ExecuteQueryAndModifyListStructure<T>(
     iDatabaseConnector, QueryString, ioListStructure, iTableOne);
 }
 
@@ -601,7 +601,7 @@ QGOIO_EXPORT
 std::list< unsigned int > GetAllSelectedValuesFromTwoTables(vtkMySQLDatabase *iDatabaseConnector,
   std::string iTableOne, std::string iTableTwo,
   std::string iColumn, FieldWithValue iJoinCondition,
-  std::string iField, std::vector<std::string> iVectorValues, bool Distinct = false , 
+  std::string iField, std::vector<std::string> iVectorValues, bool Distinct = false ,
   bool NonNULLRows = false);
 
 QGOIO_EXPORT
