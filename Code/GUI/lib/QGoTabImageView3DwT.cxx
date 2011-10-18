@@ -133,21 +133,10 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
   m_TCoord(-1),
   m_MeshEditingWidget(NULL),
   m_Seeds( 3 )
-  //m_TraceWidgetRequiered(false)
 {
-  //m_Image = vtkImageData::New();
-
   m_Seeds[0] = vtkPoints::New();
   m_Seeds[1] = vtkPoints::New();
   m_Seeds[2] = vtkPoints::New();
-  // new
-
-//  vtkPoints* xy = vtkPoints::New();
-//  vtkPoints* xz = vtkPoints::New();
-//  vtkPoints* yz = vtkPoints::New();
-//  m_OrderedSeeds.push_back(xy);
-//  m_OrderedSeeds.push_back(xz);
-//  m_OrderedSeeds.push_back(yz);
 
   m_HighlightedContoursProperty = vtkProperty::New();
   m_HighlightedContoursProperty->SetColor(1., 0., 0.);
@@ -3538,9 +3527,10 @@ ShowTraces(const unsigned int& iTimePoint)
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
-PolydatasRequested(){
-  std::list< vtkPolyData* > elements =
-      this->m_MeshContainer-> GetHighlightedElements();
+PolydatasRequested()
+{
+  std::list< vtkPolyData* > elements = this->m_MeshContainer-> GetHighlightedElements();
+
   emit RequestedPolydatas(elements);
 }
 //-------------------------------------------------------------------------
@@ -3548,43 +3538,24 @@ PolydatasRequested(){
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
-SetUpShortcuts(){
+SetUpShortcuts()
+{
   // move to next time point
   (void)new QShortcut(
-      QKeySequence(
-          tr("Ctrl+C", "Next Time Point")),
-      this, SLOT(MoveToNextTimePoint()));
+      QKeySequence( tr("Ctrl+C", "Next Time Point") ),
+      m_NavigationDockWidget, SLOT(MoveToNextTimePoint()));
   (void)new QShortcut(
-      QKeySequence(
-          tr("Right Arrow", "Next Time Point")),
-      this, SLOT(MoveToNextTimePoint()));
+      QKeySequence( tr("Right Arrow", "Next Time Point") ),
+      m_NavigationDockWidget, SLOT(MoveToNextTimePoint()));
 
   // move to previous time point
   (void)new QShortcut(
-      QKeySequence(
-          tr("Ctrl+Z", "Previous Time Point")),
-      this, SLOT(MoveToPreviousTimePoint()));
+      QKeySequence( tr("Ctrl+Z", "Previous Time Point") ),
+      m_NavigationDockWidget, SLOT(MoveToPreviousTimePoint()));
   (void)new QShortcut(
-      QKeySequence(
-          tr("Left Arrow", "Next Time Point")),
-      this, SLOT(MoveToPreviousTimePoint()));
+      QKeySequence( tr("Left Arrow", "Next Time Point") ),
+      m_NavigationDockWidget, SLOT(MoveToPreviousTimePoint()));
 
 }
 //-------------------------------------------------------------------------
 
-//-------------------------------------------------------------------------
-void
-QGoTabImageView3DwT::
-MoveToNextTimePoint()
-{
-  m_NavigationDockWidget->MoveToNextTimePoint();
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-QGoTabImageView3DwT::
-MoveToPreviousTimePoint()
-{
-  m_NavigationDockWidget->MoveToPreviousTimePoint();
-}

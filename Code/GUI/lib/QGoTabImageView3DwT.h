@@ -741,9 +741,6 @@ protected slots:
 
   void EnableVolumeRendering(bool iEnable);
 
-  void MoveToNextTimePoint();
-  void MoveToPreviousTimePoint();
-
 private:
   void InitializeImageRelatedWidget();
   void SetUpShortcuts();
