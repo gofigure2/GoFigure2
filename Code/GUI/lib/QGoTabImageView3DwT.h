@@ -748,6 +748,10 @@ private:
   void InitializeImageRelatedWidget();
   void SetUpShortcuts();
 
+  std::vector< QString > GetChannelNames();
+
+  bool m_VolumeRenderingEnabled;
+
   Q_DISABLE_COPY(QGoTabImageView3DwT);
 };
 

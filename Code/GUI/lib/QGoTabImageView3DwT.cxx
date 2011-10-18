@@ -140,14 +140,8 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
   m_Seeds[0] = vtkPoints::New();
   m_Seeds[1] = vtkPoints::New();
   m_Seeds[2] = vtkPoints::New();
-  // new
 
-//  vtkPoints* xy = vtkPoints::New();
-//  vtkPoints* xz = vtkPoints::New();
-//  vtkPoints* yz = vtkPoints::New();
-//  m_OrderedSeeds.push_back(xy);
-//  m_OrderedSeeds.push_back(xz);
-//  m_OrderedSeeds.push_back(yz);
+  m_VolumeRenderingEnabled = false;
 
   m_HighlightedContoursProperty = vtkProperty::New();
   m_HighlightedContoursProperty->SetColor(1., 0., 0.);
@@ -337,47 +331,32 @@ QGoTabImageView3DwT::
 void
 QGoTabImageView3DwT::UpdateSeeds()
 {
-  // should be used now
-  // clean the ordered seeds
-  /*
-  std::vector<vtkPoints*>::iterator it = m_OrderedSeeds.begin();
-  while(it != m_OrderedSeeds.end())
-  {
-    (*it)->Initialize();
-    ++it;
-  }
-  m_ImageView->GetSeeds(m_OrderedSeeds);*/
-
   for( size_t id = 0; id < m_Seeds.size(); id++ )
     {
     m_Seeds[id]->Initialize();
     }
 
   m_ImageView->GetSeeds( m_Seeds );
-
-//    vtkPoints *temp = m_ImageView->GetAllSeeds();
-
-//  // deep copy vtkPoints not properly working (warning)
-//  for(int l = 0; l< temp->GetNumberOfPoints(); l++)
-//    {
-//    double p[3];
-//    temp->GetPoint(l,p);
-//    m_Seeds->InsertNextPoint(p);
-//    }
-//  m_Seeds->GetData()->DeepCopy( temp->GetData() );
-
-//  /*
-//  for(int l = 0; l<m_Seeds->GetData()->GetNumberOfTuples(); l++)
-//    {
-//    double* value = m_Seeds->GetData()->GetTuple(l);
-//    std::cout << "m_Seeds: " << l << " orientation: " << value[0] << std::endl;
-//    }
-//    */
-
-//  temp->Delete();
 }
 
 //-------------------------------------------------------------------------
+
+std::vector< QString >
+QGoTabImageView3DwT::GetChannelNames()
+{
+  // build channel vector
+  unsigned int numberOfChannels = m_ImageProcessor->getNumberOfChannels();
+
+  std::vector< QString > channelNames;
+  channelNames.resize( numberOfChannels );
+
+  for(unsigned int i =0; i<numberOfChannels; ++i)
+    {
+    channelNames[i] = QString::fromStdString( m_ImageProcessor->getChannelName(i));
+    }
+
+  return channelNames;
+}
 
 //-------------------------------------------------------------------------
 void
@@ -389,15 +368,7 @@ QGoTabImageView3DwT::CreateContourEditingDockWidget(
   // basic interactor connections
   //----------------------------------------------------------------
 
-  // build channel vector
-  unsigned int numberOfChannels = m_ImageProcessor->getNumberOfChannels();
-  std::vector< QString > channelNames;
-  channelNames.resize( numberOfChannels );
-  for(unsigned int i =0; i<numberOfChannels; ++i)
-    {
-    channelNames[i] = QString::fromStdString(
-          m_ImageProcessor->getChannelName(i));
-    }
+  std::vector< QString > channelNames = this->GetChannelNames();
 
   this->m_ContourEditingWidget = new QGoContourEditingWidgetManager(
     channelNames, iTimeMin, iTimeMax, &m_Seeds,
@@ -449,14 +420,7 @@ QGoTabImageView3DwT::CreateMeshEditingDockWidget(int iTimeMin, int iTimeMax)
   //----------------------------------------------------------------
 
   // build channel vector
-  unsigned int numberOfChannels = m_ImageProcessor->getNumberOfChannels();
-  std::vector< QString > channelNames;
-  channelNames.resize( numberOfChannels );
-  for(unsigned int i =0; i<numberOfChannels; ++i)
-    {
-    channelNames[i] = QString::fromStdString(
-          m_ImageProcessor->getChannelName(i));
-    }
+  std::vector< QString > channelNames = this->GetChannelNames();
 
   this->m_MeshEditingWidget = new QGoMeshEditingWidgetManager(
     channelNames, iTimeMin, iTimeMax, &m_Seeds,
@@ -1738,7 +1702,7 @@ QGoTabImageView3DwT::SetTimePoint(const int & iTimePoint)
 
   UpdateImage();
 
-  EnableVolumeRendering(this->m_ViewActions.at(12)->isChecked());
+  EnableVolumeRendering( this->m_VolumeRenderingEnabled );
 
   // for the trace widget, navigation widget and table widget
   emit TimePointChanged(m_TCoord);
@@ -3270,7 +3234,7 @@ visibilityChanged(QString iName, bool iVisibility)
   m_ImageProcessor->visibilityChanged(iName.toStdString(), iVisibility);
   UpdateImage();
   //if we are in volume rendering
-  EnableVolumeRendering(this->m_ViewActions.at(12)->isChecked());
+  EnableVolumeRendering( this->m_VolumeRenderingEnabled );
   // update visu
   m_ImageView->Update();
 }
@@ -3340,7 +3304,7 @@ void
 QGoTabImageView3DwT::updateSlot()
 {
   UpdateImage();
-  EnableVolumeRendering(this->m_ViewActions.at(12)->isChecked());
+  EnableVolumeRendering( this->m_VolumeRenderingEnabled );
   m_ImageView->Update();
 }
 //-------------------------------------------------------------------------
@@ -3361,11 +3325,13 @@ EnableVolumeRendering(bool iEnable)
 {
   if(iEnable)
     {
+    m_VolumeRenderingEnabled = true;
     m_ImageView->EnableVolumeRendering(m_ImageProcessor->getColoredImages(),
                                        m_ImageProcessor->getOpacityTransferFunctions());
     }
   else
     {
+    m_VolumeRenderingEnabled = false;
     m_ImageView->DisableVolumeRendering();
     }
 }
