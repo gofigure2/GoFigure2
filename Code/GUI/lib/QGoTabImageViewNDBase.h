@@ -39,10 +39,7 @@
 
 #include "QGoGUILibConfigure.h"
 
-class vtkLSMReader;
 class vtkImageData;
-
-class GoImageProcessor;
 
 /** \class QGoTabImageViewNDBase
  *  \brief Abstract class for representing one tab element which
@@ -66,9 +63,6 @@ public:
   /** \brief */
   vtkImageData * GetImage();
 
-  void SetLSMReader(vtkLSMReader *iReader, const int & iTimePoint);
-  virtual void UpdateImage() = 0;
-
 public slots:
   /** \brief */
   void ShowAllChannels(bool iChecked);
@@ -78,7 +72,6 @@ public slots:
 
 protected:
   vtkSmartPointer< vtkImageData > m_Image;
-  GoImageProcessor*                         m_ImageProcessor;
 
   /** \brief */
   virtual void SetImageToImageViewer(vtkImageData *image) = 0;

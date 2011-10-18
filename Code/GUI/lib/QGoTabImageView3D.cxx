@@ -55,8 +55,6 @@
 #include <QSpinBox>
 #include <QVBoxLayout>
 
-#include "GoImageProcessor.h"
-
 //--------------------------------------------------------------------------
 /**
  * \brief Constructor
@@ -897,41 +895,4 @@ QGoTabImageView3D::TakeSnapshot()
     }
 }
 
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-QGoTabImageView3D::
-UpdateImage()
-{
-  // get number of visible channels instead
-  unsigned int NumberOfVisibleChannels = m_ImageProcessor->getNumberOfVisibleChannels();
-
-  if ( NumberOfVisibleChannels>1 )
-    {
-    m_ImageView->SetImage(m_ImageProcessor->getVisibleImages());
-    }
-  else if( NumberOfVisibleChannels == 1)
-    {
-    //update Image
-    m_ImageView->SetImage(m_ImageProcessor->getImageBW());
-    // update LUT
-    m_ImageView->SetLookupTable(m_ImageProcessor->getLookuptable());
-    // CONFIGURE LUT
-    this->findChild<QAction*>("LUT")->setEnabled(true);
-    this->findChild<QAction*>("ScalarBar")->setEnabled(true);
-    }
-  else
-    {
-    // Start by creating a black lookup table.
-    vtkSmartPointer<vtkLookupTable> bwLut =
-      vtkSmartPointer<vtkLookupTable>::New();
-    bwLut->SetTableRange (0, 1);
-    bwLut->SetSaturationRange (0, 0);
-    bwLut->SetHueRange (0, 0);
-    bwLut->SetValueRange (0, 0);
-    bwLut->Build();
-    m_ImageView->SetLookupTable(bwLut);
-    }
-}
 //-------------------------------------------------------------------------

@@ -71,8 +71,6 @@ public:
 
   virtual void ReadSettings();
 
-  void UpdateImage();
-
 public slots:
   void ChangeLookupTable();
 

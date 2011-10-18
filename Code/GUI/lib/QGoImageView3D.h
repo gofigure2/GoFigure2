@@ -167,8 +167,6 @@ public:
 
   void ChangeCursorShape(QCursor iCursorShape);
 
-  void UpdateImage();
-
 signals:
   void SliceViewXYChanged(int Slice);
 
