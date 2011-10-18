@@ -651,45 +651,41 @@ QGoImageView3D::SnapshotViewXYZ(
 void
 QGoImageView3D::SetFullScreenView(const int & iS)
 {
-  if ( IsFullScreen == iS )
-    {
-    IsFullScreen = 0;
-    }
-  else
+  if ( IsFullScreen != iS )
     {
     IsFullScreen = iS;
-    }
 
-  switch ( IsFullScreen )
-    {
-    default:
-    case 0:
+    switch ( IsFullScreen )
       {
-      Quadview();
-      break;
+      default:
+      case 0:
+        {
+        Quadview();
+        break;
+        }
+      case 1:
+        {
+        FullScreenViewXY();
+        break;
+        }
+      case 2:
+        {
+        FullScreenViewXZ();
+        break;
+        }
+      case 3:
+        {
+        FullScreenViewYZ();
+        break;
+        }
+      case 4:
+        {
+        FullScreenViewXYZ();
+        break;
+        }
       }
-    case 1:
-      {
-      FullScreenViewXY();
-      break;
-      }
-    case 2:
-      {
-      FullScreenViewXZ();
-      break;
-      }
-    case 3:
-      {
-      FullScreenViewYZ();
-      break;
-      }
-    case 4:
-      {
-      FullScreenViewXYZ();
-      break;
-      }
+    emit FullScreenViewChanged(IsFullScreen);
     }
-  emit FullScreenViewChanged(IsFullScreen);
 }
 
 //--------------------------------------------------------------------------
