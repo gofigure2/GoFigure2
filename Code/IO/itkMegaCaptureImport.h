@@ -83,8 +83,6 @@ public:
 
   void SetTimeBased(const bool & iBool);
 
-//   void SetProgressBar( QProgressBar* PB );
-
   void Glob();
 
   void CreateOutput();
@@ -132,8 +130,7 @@ private:
   std::string                               m_FileName;
   std::string                               m_fileNameModified;
   std::string                               m_HeaderFileName;
-//   QProgressBar*     m_ProgressBar;
-//   bool              IsProgressBarSet;
+
   int m_NbSignificantMegaCaptureNumGroup;
 };
 }
