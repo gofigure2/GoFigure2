@@ -1,21 +1,4 @@
-/*=========================================================================
-
- Program:   Insight Segmentation & Registration Toolkit
- Module:    $RCSfile: itkQtProgressBar.h,v $
- Language:  C++
- Date:      $Date:  $
- Version:   $Revision:  $
-
- Copyright (c) 2002 Insight Consortium. All rights reserved.
- See ITKCopyright.txt or http://www.itk.org/HTML/Copyright.htm for details.
-
- This software is distributed WITHOUT ANY WARRANTY; without even
- the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- PURPOSE.  See the above copyright notices for more information.
-
- =========================================================================*/
-
-/*=========================================================================
+ /*=========================================================================
  Modifications were made by the GoFigure Dev. Team.
  while at Megason Lab, Systems biology, Harvard Medical school, 2009-11
 
@@ -49,25 +32,32 @@
 
  =========================================================================*/
 
-#ifndef __itkQtProgressBar_h
-#define __itkQtProgressBar_h
+#ifndef __itkQtProgressDialog_h
+#define __itkQtProgressDialog_h
 
-#include <QProgressBar>
+#include <QProgressDialog>
 #include "itkCommand.h"
 
 #include "itkQtConfigure.h"
 
 namespace itk
 {
-class IKTQT_EXPORT QtProgressBar : public ::QProgressBar
+class IKTQT_EXPORT QtProgressDialog : public ::QProgressDialog
 {
 public:
 
   /** Command Class invoked for button redraw */
-  typedef itk::MemberCommand< QtProgressBar > RedrawCommandType;
+  typedef itk::MemberCommand< QtProgressDialog > RedrawCommandType;
 
   /** Constructor */
-  explicit QtProgressBar(QWidget *parent = 0);
+  explicit QtProgressDialog( QWidget * parent = 0, Qt::WindowFlags f = 0 );
+
+  explicit QtProgressDialog( const QString & labelText,
+                             const QString & cancelButtonText,
+                             int minimum,
+                             int maximum,
+                             QWidget * parent = 0,
+                             Qt::WindowFlags f = 0 );
 
   /** Get Command */
   RedrawCommandType * GetRedrawCommand(void) const;
@@ -82,6 +72,7 @@ public:
 
 private:
 
+  Q_DISABLE_COPY( QtProgressDialog );
   RedrawCommandType::Pointer m_RedrawCommand;
 };
 }  // end of namespace
