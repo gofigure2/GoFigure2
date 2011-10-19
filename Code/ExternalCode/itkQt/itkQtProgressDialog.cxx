@@ -80,7 +80,7 @@ QtProgressDialog::ProcessEvent( itk::Object *caller,
     itk::ProcessObject::Pointer process = dynamic_cast< itk::ProcessObject * >( caller );
 
     const int tempvalue = static_cast< int >(
-          process->GetProgress() * static_cast< float >( this->maximum() ) / 10 );
+          process->GetProgress() * static_cast< float >( this->maximum() ) );
 
     this->setValue(tempvalue);
     }
