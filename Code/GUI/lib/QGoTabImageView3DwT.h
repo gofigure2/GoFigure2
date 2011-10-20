@@ -100,7 +100,7 @@ class QGoSeedsSegmentation;
 \brief
 \example GUI/lib/qgotabimageview3dwt.cxx
 */
-class QGOGUILIB_EXPORT QGoTabImageView3DwT:public QGoTabElementBase
+class QGOGUILIB_EXPORT QGoTabImageView3DwT : public QGoTabElementBase
 {
   Q_OBJECT
 public:

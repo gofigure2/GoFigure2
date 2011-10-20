@@ -3633,12 +3633,14 @@ UpdateTFEditor()
   for ( unsigned int i = 0; i < NumberOfChannels; i++ )
     {
     std::string name = m_ImageProcessor->getChannelName(i);
+
     GoTransferFunctionEditorWidget* widget =
       dynamic_cast<GoTransferFunctionEditorWidget*>(
         m_TransferFunctionDockWidget->GetWidget(i) );
 
     // update histogram
     widget->AddHistogram(m_ImageProcessor->getHistogram(name) );
+
     // update max value
     widget->SetMaximumValue(
         m_ImageProcessor->getImageBW(name)->GetScalarRange()[1]);
