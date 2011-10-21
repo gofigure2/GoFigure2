@@ -63,7 +63,7 @@ public:
 
   void AddTransferFunction(QString iName, GoTransferFunctionEditorWidget* iTF);
 
-  QWidget* GetCurrentWidget();
+  int      GetCurrentWidget();
   QWidget* GetWidget(int iIndex);
   void     SetCurrentWidget(int iIndex);
 };

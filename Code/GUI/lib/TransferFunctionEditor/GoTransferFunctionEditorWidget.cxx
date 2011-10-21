@@ -189,7 +189,7 @@ GoTransferFunctionEditorWidget(QWidget *parent,QString iChannel,
   m_MaxSlider->setObjectName("max");
   m_MaxSlider->setOrientation(Qt::Horizontal);
   m_MaxSlider->setMaximum(m_Max);
-  m_MaxSlider->setValue(iLUTParameters[2]);
+  m_MaxSlider->setValue(m_Max);
   m_MaxSlider->setStyleSheet("QSlider::groove:horizontal {border: 1px solid #bbb;background: rgba(0, 0, 0, 0);height: 4px;position: absolute; right: 10px;left: 10px; }QSlider::handle:horizontal {image: url(/home/nr52/gitroot/gofigure/Resources/widget/arrow_down.png);width: 20px;height: 6px;margin-top: -2px;margin-bottom: -2px; right: -10px; left:-10px; border: 1px solid black; background: rgba(255, 255, 255, 200); border-radius: 4px;}QSlider::sub-page:horizontal {background: rgba(0, 0, 0, 0);border: 1px solid black;}QSlider::add-page:horizontal {background: #909090;border: 1px solid black;}");
   // more spacer
   QSpacerItem* spacerShade1 =
@@ -273,8 +273,8 @@ GoTransferFunctionEditorWidget(QWidget *parent,QString iChannel,
   QString style3 = "border: 1px solid rgb(0, 0, 0); background-color: rgba(0, 0, 0, 0); border-radius: 4px;";
   histogramCB->setStyleSheet(style3);
   // connect signals
-  connect(tfoCB, SIGNAL(clicked(bool)), m_TFWidget, SIGNAL(enableHoverPoints(bool)));
-  connect(tfCB, SIGNAL(clicked(bool)), m_TFWidget, SIGNAL(enableGammaPoints(bool)));
+  connect(tfoCB, SIGNAL(clicked(bool)), m_TFWidget, SIGNAL(enableOpacityTF(bool)));
+  connect(tfCB, SIGNAL(clicked(bool)), m_TFWidget, SIGNAL(enableLUTCurve(bool)));
   connect(histogramCB, SIGNAL(clicked(bool)), this, SLOT(ShowHistogram(bool)));
 
   // add items to the widget
@@ -305,6 +305,8 @@ GoTransferFunctionEditorWidget(QWidget *parent,QString iChannel,
 
   // add layout to widget
   vbox->addLayout(layout);
+
+  this->setLayout(vbox);
 }
 //-------------------------------------------------------------------------
 
@@ -627,6 +629,10 @@ SetMaximumValue( double iMax)
   if(m_MaxSlider->maximum() > m_Max)
     {
     m_MaxSlider->setValue(iMax);
+    }
+  else
+    {
+    m_MaxSlider->setValue(m_MaxSlider->value());
     }
 
   m_MinSlider->setMaximum(m_Max);

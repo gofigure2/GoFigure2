@@ -64,15 +64,18 @@ QGoTransferFunctionDockWidget::
 AddTransferFunction(QString iName, GoTransferFunctionEditorWidget* iTF)
 {
   this->tabWidget->addTab(iTF, iName);
+  int nb_index = this->tabWidget->count();
+  this->tabWidget->setCurrentIndex(nb_index);
+  this->tabWidget->setCurrentIndex(0);
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-QWidget*
+int
 QGoTransferFunctionDockWidget::
 GetCurrentWidget()
 {
-  return this->tabWidget->currentWidget();
+  return this->tabWidget->currentIndex();
 }
 //-------------------------------------------------------------------------
 

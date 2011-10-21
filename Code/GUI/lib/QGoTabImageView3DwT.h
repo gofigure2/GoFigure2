@@ -411,7 +411,6 @@ public slots:
   void visibilityChanged(QString iName, bool iVisibility);
 
   GoTransferFunctionEditorWidget* createTransferFunctionEditor(QString iName);
-  void openTransferFunctionEditor(QString iName);
 
   void updateSlot();
 

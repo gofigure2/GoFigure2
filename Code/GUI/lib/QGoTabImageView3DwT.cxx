@@ -244,24 +244,6 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
         Qt::RightDockWidgetArea, false, true, this),
       m_TransferFunctionDockWidget) );
 
-  /*m_DockWidgetList.push_back(
-    std::pair< QGoDockWidgetStatus *, QDockWidget * >(
-      new QGoDockWidgetStatus(
-        m_ContourSegmentationDockWidget, Qt::LeftDockWidgetArea, false, true),
-      m_ContourSegmentationDockWidget) );*/
-
-  /*m_DockWidgetList.push_back(
-    std::pair< QGoDockWidgetStatus *, QDockWidget * >(
-      new QGoDockWidgetStatus(
-        this->m_MeshEditingWidget->GetDockWidget(), Qt::LeftDockWidgetArea, true, true),
-        this->m_MeshEditingWidget->GetDockWidget()) ); in setmegacapture/LSM files now */
-
-  /*m_DockWidgetList.push_back(
-    std::pair< QGoDockWidgetStatus *, QDockWidget * >(
-      new QGoDockWidgetStatus(this->m_DataBaseTables->GetTraceSettingsDockWidget(),
-                              Qt::LeftDockWidgetArea, false, true),
-      this->m_DataBaseTables->GetTraceSettingsDockWidget() ) );*/
-
   m_DockWidgetList.push_back(
     std::pair< QGoDockWidgetStatus *, QDockWidget * >(
       new QGoDockWidgetStatus(this->m_TrackViewDockWidget,
@@ -404,12 +386,6 @@ QGoTabImageView3DwT::CreateContourEditingDockWidget(
   this->m_ContourEditingWidget = new QGoContourEditingWidgetManager(
     channelNames, iTimeMin, iTimeMax, &m_Seeds,
     m_ImageProcessor, &m_TCoord, this);
-
-  m_DockWidgetList.push_back(
-    std::pair< QGoDockWidgetStatus *, QDockWidget * >(
-      new QGoDockWidgetStatus(
-        this->m_ContourEditingWidget->GetDockWidget(), Qt::LeftDockWidgetArea, false, true, this),
-        this->m_ContourEditingWidget->GetDockWidget()) );
 
   this->CreateConnectionsTraceEditingWidget<QGoContourEditingWidgetManager>(
     iTimeMin, iTimeMax, this->m_ContourEditingWidget);
@@ -653,10 +629,6 @@ QGoTabImageView3DwT::CreateVisuDockWidget()
 
   QObject::connect( m_NavigationDockWidget, SIGNAL( visibilityChanged(QString, bool) ),
                     this, SLOT( visibilityChanged(QString, bool) ) );
-
-  // not needed anymore
-  QObject::connect( m_NavigationDockWidget, SIGNAL( createTransferFunctionEditor(QString) ),
-                    this, SLOT( openTransferFunctionEditor(QString) ) );
 }
 
 //-------------------------------------------------------------------------
@@ -1627,11 +1599,21 @@ InitializeImageRelatedWidget()
   m_NavigationDockWidget->SetTSlice(boundTime[0]);
   m_NavigationDockWidget->blockSignals(false);
 
-  /**\ todo Lydie: the dock widget needs to have the channels and the timepoints,
-  do a separated method ??*/
-  CreateMeshEditingDockWidget(boundTime[0], boundTime[1]);
   CreateContourEditingDockWidget(boundTime[0], boundTime[1]);
-  //CreateModeActions();
+  CreateMeshEditingDockWidget(boundTime[0], boundTime[1]);
+    m_DockWidgetList.push_back(
+    std::pair< QGoDockWidgetStatus *, QDockWidget * >(
+      new QGoDockWidgetStatus(
+        this->m_ContourEditingWidget->GetDockWidget(),
+        Qt::LeftDockWidgetArea, false, true, this),
+        this->m_ContourEditingWidget->GetDockWidget()) );
+
+          m_DockWidgetList.push_back(
+  std::pair< QGoDockWidgetStatus *, QDockWidget * >(
+    new QGoDockWidgetStatus(
+      this->m_MeshEditingWidget->GetDockWidget(),
+      Qt::LeftDockWidgetArea, false, true, this),
+      this->m_MeshEditingWidget->GetDockWidget()) );
 
   // Set up QSpinBox in m_VideoRecorderWidget
 #if defined( ENABLEFFMPEG ) || defined( ENABLEAVI )
@@ -3361,22 +3343,13 @@ createTransferFunctionEditor(QString iName)
         m_ImageProcessor->getOpacityTransferFunction(iName.toStdString()));
   // add histogram - should not recalculate all the time...
   editor->AddHistogram(m_ImageProcessor->getHistogram(iName.toStdString()));
+  // hide editor
   editor->hide();
 
   //editor->setParent(m_TransferFunctionDockWidget);
   m_TransferFunctionDockWidget->AddTransferFunction(iName, editor);
 
   return editor;
-}
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void
-QGoTabImageView3DwT::
-openTransferFunctionEditor(QString iName)
-{
-  //show TF widget
-  //add item  to it if not there
 }
 //-------------------------------------------------------------------------
 
@@ -3633,6 +3606,7 @@ UpdateTFEditor()
   for ( unsigned int i = 0; i < NumberOfChannels; i++ )
     {
     std::string name = m_ImageProcessor->getChannelName(i);
+    this->m_TransferFunctionDockWidget->SetCurrentWidget(i);
     GoTransferFunctionEditorWidget* widget =
       dynamic_cast<GoTransferFunctionEditorWidget*>(
         m_TransferFunctionDockWidget->GetWidget(i) );

@@ -200,15 +200,13 @@ UpdateLookupTable(vtkLookupTable* iLUT, qreal iGamma, qreal iMin, qreal iMax)
   qreal width = this->width();
   qreal height = this->height();
   iLUT->SetNumberOfTableValues(iMax-iMin);
-  // update LUT to modify visualization
 
   // points affected with gamma correction, in the window
   int count = 0;
 
   // first point
   iPoints << QPointF((qreal)(iMin)*(width-1)/numTableValues, height - 1);
-  QColor colorMin(m_shade.pixel(iMin*(width-1)/numTableValues, height - 1));
-  iLUT->SetTableValue(count, colorMin.redF(), colorMin.greenF(), colorMin.blueF());
+  iLUT->SetTableValue(count, 0, 0, 0);
   count++;
 
   for(int i=iMin+1; i<iMax-1; ++i)
@@ -219,16 +217,16 @@ UpdateLookupTable(vtkLookupTable* iLUT, qreal iGamma, qreal iMin, qreal iMax)
 
     iPoints << QPointF((qreal)(i)*(width-1)/numTableValues,temp_height);
 
-    QColor color(m_shade.pixel(i*(width-1)/numTableValues, temp_height));
-    iLUT->SetTableValue(count, color.redF(), color.greenF(), color.blueF());
+    iLUT->SetTableValue(count,
+      power*m_color.redF(),
+      power*m_color.greenF(),
+      power*m_color.blueF());
     count++;
     }
 
-
   // last point
   iPoints << QPointF((qreal)(iMax)*(width-1)/numTableValues,0);
-  QColor colorMax(m_shade.pixel(iMax*(width-1)/numTableValues, 0));
-  iLUT->SetTableValue(count, colorMax.redF(), colorMax.greenF(), colorMax.blueF());
+  iLUT->SetTableValue(count, m_color.redF(), m_color.greenF(), m_color.blueF());
 
   iLUT->SetRange(iMin, iMax);
 
