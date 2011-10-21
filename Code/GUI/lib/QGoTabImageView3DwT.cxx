@@ -1985,12 +1985,25 @@ QGoTabImageView3DwT::ModeChanged(int iChannel)
     this->m_NavigationDockWidget->VisibilityListChannels(true);
     }
 
+  //clean TF Editor
+  m_TransferFunctionDockWidget->DeleteTabs();
+
+  //createTransferFunctionEditor(channel name)
+  unsigned int NumberOfChannels = m_ImageProcessor->getNumberOfChannels();
+  for ( unsigned int i = 0; i < NumberOfChannels; i++ )
+    {
+    std::string name = m_ImageProcessor->getChannelName(i);
+    GoTransferFunctionEditorWidget* widget =
+        createTransferFunctionEditor(QString::fromStdString(name));
+    }
+
   //update images
   UpdateImage();
   // update visualization
   m_ImageView->Update();
   //update the trace editing widget
   UpdateTracesEditingWidget();
+  // update the TF widget
 }
 //-------------------------------------------------------------------------
 

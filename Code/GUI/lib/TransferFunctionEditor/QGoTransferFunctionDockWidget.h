@@ -66,5 +66,7 @@ public:
   int      GetCurrentWidget();
   QWidget* GetWidget(int iIndex);
   void     SetCurrentWidget(int iIndex);
+
+  void DeleteTabs();
 };
 #endif

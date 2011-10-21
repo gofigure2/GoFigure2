@@ -96,3 +96,16 @@ SetCurrentWidget(int iIndex)
   return this->tabWidget->setCurrentIndex(iIndex);
 }
 //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTransferFunctionDockWidget::
+DeleteTabs()
+{
+  int nb_index = this->tabWidget->count();
+  for( int i = nb_index; i>0; i--)
+    {
+    this->tabWidget->removeTab(i-1);
+    }
+}
+//-------------------------------------------------------------------------
