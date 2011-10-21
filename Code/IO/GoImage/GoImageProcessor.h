@@ -181,11 +181,14 @@ typedef boost::multi_index_container<
   GoMegaImageStructure,
   boost::multi_index::indexed_by<
     boost::multi_index::ordered_non_unique<
-      boost::multi_index::tag<Index>,  BOOST_MULTI_INDEX_MEMBER(GoMegaImageStructure,unsigned int,Index)>,
+      boost::multi_index::tag<Index>,
+      BOOST_MULTI_INDEX_MEMBER(GoMegaImageStructure,unsigned int,Index)>,
     boost::multi_index::ordered_non_unique<
-      boost::multi_index::tag<Visibility>,  BOOST_MULTI_INDEX_MEMBER(GoMegaImageStructure,bool,Visibility)>,
+      boost::multi_index::tag<Visibility>,
+      BOOST_MULTI_INDEX_MEMBER(GoMegaImageStructure,bool,Visibility)>,
     boost::multi_index::hashed_non_unique<
-      boost::multi_index::tag<Name>,  BOOST_MULTI_INDEX_MEMBER(GoMegaImageStructure,std::string,Name)> >
+      boost::multi_index::tag<Name>,
+      BOOST_MULTI_INDEX_MEMBER(GoMegaImageStructure,std::string,Name)> >
 > GoMegaImageStructureMultiIndexContainer;
 
 //-----------------------------------------------------------------------------
@@ -211,7 +214,7 @@ public:
 
   /** Destructor */
   virtual ~GoImageProcessor();
-  
+
   /** Printing one element. std::cout << element << std::endl; */
   friend std::ostream & operator<<
     (std::ostream & os, const GoImageProcessor & c)
