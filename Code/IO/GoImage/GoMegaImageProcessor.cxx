@@ -79,9 +79,14 @@ initTimePoint(const unsigned int& iTime)
   // Get Number of channels from reader
   int numberOfChannels = getNumberOfChannels();
 
-  while(numberOfChannels>0)
+  int n = numberOfChannels;
+  // while(numberOfChannels>0)
+
+#pragma omp for
+  for( int kk = 0; kk < n; ++kk )
     {
-    --numberOfChannels;
+    numberOfChannels = n - ( kk + 1 );
+//    --numberOfChannels;
 
     // Get useful information from the reader
     // Nicolas Get Image or get output...?
@@ -162,9 +167,15 @@ setTimePoint(const unsigned int& iTime)
   // Get Number of channels from reader
   int numberOfChannels = getNumberOfChannels();
 
-  while(numberOfChannels>0)
+  int n = numberOfChannels;
+  // while(numberOfChannels>0)
+
+#pragma omp for
+//  while(numberOfChannels>0)
+  for( int kk = 0; kk < n; kk++ )
     {
-    --numberOfChannels;
+//    --numberOfChannels;
+    numberOfChannels = n - ( kk + 1 );
 
     // Get useful information from the reader
     // Nicolas Get Image or get output...?
@@ -215,6 +226,7 @@ setDoppler(const unsigned int& iTime, const unsigned int& iPrevious)
 
   std::vector<int> dopplerTime = getDopplerTime(iTime);
 
+#pragma omp for
   for(unsigned int i=0; i<getDopplerSize(); ++i)
     {
     if(dopplerTime[i] >= 0)

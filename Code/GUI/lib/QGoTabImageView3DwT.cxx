@@ -300,7 +300,7 @@ QGoTabImageView3DwT::
   unsigned int minch = m_MegaCaptureReader->GetMinChannel();
   unsigned int maxch = m_MegaCaptureReader->GetMaxChannel();
 
-  for ( unsigned int i = minch; i < maxch + 1; i++ )
+  for( unsigned int i = minch; i < maxch + 1; i++ )
     {
     vtkImageData *temp = m_MegaCaptureReader->GetOutput(i);
     if ( temp )
@@ -1012,7 +1012,7 @@ void QGoTabImageView3DwT::StartDopplerView()
   QStringList  channel;
   unsigned int* boundChannel = m_ImageProcessor->getBoundsChannel();
 
-  for ( unsigned int i = boundChannel[0]; i < boundChannel[1]+1; ++i )
+  for( unsigned int i = boundChannel[0]; i < boundChannel[1]+1; ++i )
     {
     channel << QString::number(i, 10);
     }
@@ -1346,7 +1346,7 @@ void QGoTabImageView3DwT::GetTheOpenBookmarksActions()
     this->m_DataBaseTables->GetListBookmarks();
   size_t NumberBookmarks = ListBookmarks.size();
   QMenu *OpenBookmarkMenu = new QMenu(tr("Open a bookmark"), this);
-  for ( size_t i = 0; i < NumberBookmarks; i++ )
+  for( size_t i = 0; i < NumberBookmarks; i++ )
     {
     QAction *OpenBookmarkAction =
       new QAction(ListBookmarks[i].first.c_str(), this);
@@ -1566,7 +1566,7 @@ InitializeImageRelatedWidget()
   // it will update the size of the related combobox
   m_NavigationDockWidget->blockSignals(true);
 
-  for ( unsigned int i = 0; i < NumberOfChannels; i++ )
+  for( unsigned int i = 0; i < NumberOfChannels; i++ )
     {
     std::string name = m_ImageProcessor->getChannelName(i);
     // channel color
@@ -2054,7 +2054,7 @@ QGoTabImageView3DwT::GetBoundingBox(vtkPolyData *iElement)
     double       Min[3], Max[3];
     int          k = 0;
     unsigned int i;
-    for ( i = 0; i < 3; i++ )
+    for( i = 0; i < 3; i++ )
       {
       Min[i] = bounds[k++];
       Max[i] = bounds[k++];
@@ -2066,7 +2066,7 @@ QGoTabImageView3DwT::GetBoundingBox(vtkPolyData *iElement)
     int extent[6];
     m_ImageProcessor->getImageBW()->GetExtent(extent);
 
-    for ( i = 0; i < 3; i++ )
+    for( i = 0; i < 3; i++ )
       {
       if ( min_idx[i] > extent[2 * i] )
         {
@@ -2131,7 +2131,9 @@ void
 QGoTabImageView3DwT::ValidateContour(int iTCoord)
 {
   bool re_edit = this->m_ContourEditingWidget->GetReeditMode();
-  for ( int i = 0; i < m_ImageView->GetNumberOfImageViewers(); i++ )
+
+#pragma omp for
+  for( int i = 0; i < m_ImageView->GetNumberOfImageViewers(); i++ )
     {
     vtkPolyData *nodes = m_ImageView->GetContourRepresentationNodePolydata(i);
 
@@ -2522,8 +2524,12 @@ void
 QGoTabImageView3DwT::SplitInDBAndRenderMeshForVisu(
   std::vector<vtkPolyData *> iVectPolydata)
 {
-  if( iVectPolydata.size() == 0 )
+  size_t N = iVectPolydata.size();
+
+  if( N == 0 )
+    {
     return;
+    }
 
   // get mesh trace ID
   std::list< unsigned int > traceID =
@@ -2539,13 +2545,18 @@ QGoTabImageView3DwT::SplitInDBAndRenderMeshForVisu(
   // need it so when we split next mesh, time point and track ID will be accurate
   m_MeshContainer->UpdateElementHighlighting(traceID.front());
 
-  // Save mesh first mesh, provide track ID
-  SaveAndVisuMesh(iVectPolydata[0], tCoord.front(), collectionID.front());
+  unsigned int timePoint = tCoord.front();
 
-  if( iVectPolydata.size() > 1)
+  // Save mesh first mesh, provide track ID
+  SaveAndVisuMesh(iVectPolydata[0], timePoint, collectionID.front());
+
+  if( N > 1)
     {
-    for(size_t i=1; i<iVectPolydata.size(); ++i)
-      SaveAndVisuMesh(iVectPolydata[i], tCoord.front(), 0);
+#pragma omp for
+    for( size_t i = 1; i<N; ++i )
+      {
+      SaveAndVisuMesh( iVectPolydata[i], timePoint, 0 );
+      }
     }
 
 }
@@ -2738,26 +2749,29 @@ ComputeMeshAttributes(vtkPolyData *iMesh,
   GoFigureMeshAttributes oAttributes;
   if(!m_ImageProcessor->getDopplerMode())
     {
-    for ( size_t i = 0; i < m_ImageProcessor->getNumberOfChannels(); i++ )
+    size_t NumberOfChannels = m_ImageProcessor->getNumberOfChannels();
+
+    if( iIntensity )
       {
-      vtkSmartPointer< vtkImageExport > vtk_exporter =
-        vtkSmartPointer< vtkImageExport >::New();
-      itk::VTKImageImport< ImageType >::Pointer itk_importer =
-        itk::VTKImageImport< ImageType >::New();
-
-      vtk_exporter->SetInput(m_ImageProcessor->getImageBW(i));
-
-      ConnectPipelines< vtkImageExport, itk::VTKImageImport< ImageType >::Pointer >(
-        vtk_exporter, itk_importer);
-      calculator->SetImage( itk_importer->GetOutput() );
-      calculator->Update();
-
-      oAttributes.m_Volume = calculator->GetPhysicalSize();
-      oAttributes.m_Area = calculator->GetArea();
-      oAttributes.m_Size = calculator->GetSize();
-
-      if ( iIntensity )
+#pragma omp for
+      for( size_t i = 0; i < NumberOfChannels; i++ )
         {
+        vtkSmartPointer< vtkImageExport > vtk_exporter =
+          vtkSmartPointer< vtkImageExport >::New();
+        itk::VTKImageImport< ImageType >::Pointer itk_importer =
+          itk::VTKImageImport< ImageType >::New();
+
+        vtk_exporter->SetInput(m_ImageProcessor->getImageBW(i));
+
+        ConnectPipelines< vtkImageExport, itk::VTKImageImport< ImageType >::Pointer >(
+          vtk_exporter, itk_importer);
+        calculator->SetImage( itk_importer->GetOutput() );
+        calculator->Update();
+
+        oAttributes.m_Volume = calculator->GetPhysicalSize();
+        oAttributes.m_Area = calculator->GetArea();
+        oAttributes.m_Size = calculator->GetSize();
+
         std::string channelname = m_ImageProcessor->getChannelName(i);
 
         oAttributes.m_TotalIntensityMap[channelname] =
@@ -2765,10 +2779,24 @@ ComputeMeshAttributes(vtkPolyData *iMesh,
         oAttributes.m_MeanIntensityMap[channelname] =
           calculator->GetMeanIntensity();
         }
-      else
-        {
-        break;
-        }
+      }
+    else
+      {
+      vtkSmartPointer< vtkImageExport > vtk_exporter =
+          vtkSmartPointer< vtkImageExport >::New();
+      itk::VTKImageImport< ImageType >::Pointer itk_importer =
+        itk::VTKImageImport< ImageType >::New();
+
+      vtk_exporter->SetInput( m_ImageProcessor->getImageBW( 0 ) );
+
+      ConnectPipelines< vtkImageExport, itk::VTKImageImport< ImageType >::Pointer >(
+            vtk_exporter, itk_importer);
+      calculator->SetImage( itk_importer->GetOutput() );
+      calculator->Update();
+
+      oAttributes.m_Volume = calculator->GetPhysicalSize();
+      oAttributes.m_Area = calculator->GetArea();
+      oAttributes.m_Size = calculator->GetSize();
       }
     }
   else
@@ -2781,16 +2809,47 @@ ComputeMeshAttributes(vtkPolyData *iMesh,
     // load real image
     m_ImageProcessor->initTimePoint(iTCoord);
 
-    for ( unsigned int i = boundChannel[0]; i <= boundChannel[1]; i++ )
+    if( iIntensity )
       {
-      temp_image[i] = m_ImageProcessor->getImageBW(i);
+#pragma omp for
+      for( unsigned int i = boundChannel[0]; i <= boundChannel[1]; i++ )
+        {
+        temp_image[i] = m_ImageProcessor->getImageBW(i);
+
+        vtkSmartPointer< vtkImageExport > vtk_exporter =
+          vtkSmartPointer< vtkImageExport >::New();
+        itk::VTKImageImport< ImageType >::Pointer itk_importer =
+          itk::VTKImageImport< ImageType >::New();
+
+        vtk_exporter->SetInput(temp_image[i]);
+
+        ConnectPipelines< vtkImageExport, itk::VTKImageImport< ImageType >::Pointer >(
+          vtk_exporter, itk_importer);
+        calculator->SetImage( itk_importer->GetOutput() );
+        calculator->Update();
+
+        oAttributes.m_Volume = calculator->GetPhysicalSize();
+        oAttributes.m_Area = calculator->GetArea();
+        oAttributes.m_Size = calculator->GetSize();
+
+        std::string channelname = m_ImageProcessor->getChannelName(i);
+
+        oAttributes.m_TotalIntensityMap[channelname] =
+            static_cast< int >( calculator->GetSumIntensity() );
+        oAttributes.m_MeanIntensityMap[channelname] =
+            calculator->GetMeanIntensity();
+        }
+      }
+    else
+      {
+      temp_image[0] = m_ImageProcessor->getImageBW(0);
 
       vtkSmartPointer< vtkImageExport > vtk_exporter =
         vtkSmartPointer< vtkImageExport >::New();
       itk::VTKImageImport< ImageType >::Pointer itk_importer =
         itk::VTKImageImport< ImageType >::New();
 
-      vtk_exporter->SetInput(temp_image[i]);
+      vtk_exporter->SetInput(temp_image[0]);
 
       ConnectPipelines< vtkImageExport, itk::VTKImageImport< ImageType >::Pointer >(
         vtk_exporter, itk_importer);
@@ -2798,23 +2857,8 @@ ComputeMeshAttributes(vtkPolyData *iMesh,
       calculator->Update();
 
       oAttributes.m_Volume = calculator->GetPhysicalSize();
-      //qDebug() << "volume:" << oAttributes.m_Volume;
       oAttributes.m_Area = calculator->GetArea();
       oAttributes.m_Size = calculator->GetSize();
-
-      if ( iIntensity )
-        {
-        std::string channelname = m_ImageProcessor->getChannelName(i);
-
-        oAttributes.m_TotalIntensityMap[channelname] =
-          static_cast< int >( calculator->GetSumIntensity() );
-        oAttributes.m_MeanIntensityMap[channelname] =
-          calculator->GetMeanIntensity();
-        }
-      else
-        {
-        break;
-        }
       }
     // load doppler image
     // visibility should be updated...
@@ -3603,7 +3647,7 @@ UpdateTFEditor()
 {
   unsigned int NumberOfChannels = m_ImageProcessor->getNumberOfChannels();
 
-  for ( unsigned int i = 0; i < NumberOfChannels; i++ )
+  for( unsigned int i = 0; i < NumberOfChannels; i++ )
     {
     std::string name = m_ImageProcessor->getChannelName(i);
     m_TransferFunctionDockWidget->SetCurrentWidget(i);
