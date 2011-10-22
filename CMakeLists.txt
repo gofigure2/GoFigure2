@@ -37,8 +37,9 @@ ENDIF( WIN32 )
   )
 
   IF( UNIX )
-    SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
+    SET (CACHE CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
   ENDIF( UNIX )
+
 
 #---------------------------------------------------------------------------
 # SUPERBUILD - ENABLED BY DEFAULT
@@ -60,6 +61,20 @@ ELSE( SUPERBUILD )
   CMAKE_MINIMUM_REQUIRED( VERSION 2.8.2 )
 
   #---------------------------------------------------------------------------
+  FIND_PACKAGE( OpenMP )
+
+  IF( OPENMP_FOUND )
+    MESSAGE( STATUS "OpenMP found" )
+
+    ADD_DEFINITIONS( -DHAS_OPENMP )
+
+    SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}" )
+    SET( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}" )
+  ELSE()
+    MESSAGE( STATUS "OpenMP not found" )
+
+    REMOVE_DEFINITIONS( -DHAS_OPENMP )
+  ENDIF()
 
   PROJECT( GOFIGURE2 )
 

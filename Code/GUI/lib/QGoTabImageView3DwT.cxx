@@ -2132,7 +2132,9 @@ QGoTabImageView3DwT::ValidateContour(int iTCoord)
 {
   bool re_edit = this->m_ContourEditingWidget->GetReeditMode();
 
+#ifdef HAS_OPENMP
 #pragma omp for
+#endif
   for( int i = 0; i < m_ImageView->GetNumberOfImageViewers(); i++ )
     {
     vtkPolyData *nodes = m_ImageView->GetContourRepresentationNodePolydata(i);
@@ -2552,7 +2554,9 @@ QGoTabImageView3DwT::SplitInDBAndRenderMeshForVisu(
 
   if( N > 1)
     {
+#ifdef HAS_OPENMP
 #pragma omp for
+#endif
     for( size_t i = 1; i<N; ++i )
       {
       SaveAndVisuMesh( iVectPolydata[i], timePoint, 0 );
@@ -2753,7 +2757,9 @@ ComputeMeshAttributes(vtkPolyData *iMesh,
 
     if( iIntensity )
       {
+#ifdef HAS_OPENMP
 #pragma omp for
+#endif
       for( size_t i = 0; i < NumberOfChannels; i++ )
         {
         vtkSmartPointer< vtkImageExport > vtk_exporter =
@@ -2811,7 +2817,10 @@ ComputeMeshAttributes(vtkPolyData *iMesh,
 
     if( iIntensity )
       {
+
+#ifdef HAS_OPENMP
 #pragma omp for
+#endif
       for( unsigned int i = boundChannel[0]; i <= boundChannel[1]; i++ )
         {
         temp_image[i] = m_ImageProcessor->getImageBW(i);

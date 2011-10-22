@@ -82,7 +82,9 @@ initTimePoint(const unsigned int& iTime)
   int n = numberOfChannels;
   // while(numberOfChannels>0)
 
+#ifdef HAS_OPENMP
 #pragma omp for
+#endif
   for( int kk = 0; kk < n; ++kk )
     {
     numberOfChannels = n - ( kk + 1 );
@@ -170,7 +172,9 @@ setTimePoint(const unsigned int& iTime)
   int n = numberOfChannels;
   // while(numberOfChannels>0)
 
+#ifdef HAS_OPENMP
 #pragma omp for
+#endif
 //  while(numberOfChannels>0)
   for( int kk = 0; kk < n; kk++ )
     {
@@ -226,7 +230,9 @@ setDoppler(const unsigned int& iTime, const unsigned int& iPrevious)
 
   std::vector<int> dopplerTime = getDopplerTime(iTime);
 
+#ifdef HAS_OPENMP
 #pragma omp for
+#endif
   for(unsigned int i=0; i<getDopplerSize(); ++i)
     {
     if(dopplerTime[i] >= 0)
