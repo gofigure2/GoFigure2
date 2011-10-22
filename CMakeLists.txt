@@ -60,7 +60,9 @@ ELSE( SUPERBUILD )
   # CMake >= 2.8.2 MUST be installed (which is required by ITK)
   CMAKE_MINIMUM_REQUIRED( VERSION 2.8.2 )
 
-  #---------------------------------------------------------------------------
+  PROJECT( GOFIGURE2 )
+
+  #-------------------------------------------------------------------------
   FIND_PACKAGE( OpenMP )
 
   IF( OPENMP_FOUND )
@@ -76,8 +78,7 @@ ELSE( SUPERBUILD )
     REMOVE_DEFINITIONS( -DHAS_OPENMP )
   ENDIF()
 
-  PROJECT( GOFIGURE2 )
-
+  #-------------------------------------------------------------------------
   # When making one release: update GOFIGURE2_*_VERSION,
   # GOFIGURE2_WC_REVISION and the date of the release
   SET( GOFIGURE2_MAJOR_VERSION "0" )
