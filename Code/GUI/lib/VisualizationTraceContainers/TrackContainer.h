@@ -744,12 +744,15 @@ public slots:
   void ChangeDivisionsColorCode(const QString& iColorCode);
 
   /*
-   * \brief Change the representation of a track, adding glyphs and tubes
-   * param[in] iRadius radius of the glyph
-   * param[in] iRadius2 radius of the tube
+   * \brief Update the representation of a track (adding glyphs, tubes or updating
+   *  the line width). If iRadius or iRadius2 are null then the line width gets updated.
+   * \param[in] iRadius radius of the glyph
+   * \param[in] iRadius2 radius of the tube
+   * \param[in] iWidth line width
    */
   void UpdateTracksRepresentation(const double& iRadius,
-                                  const double& iRadius2);
+                                  const double& iRadius2,
+                                  const double& iWidth);
 
   /*
    * \brief Highlight a collection given the track root ID
