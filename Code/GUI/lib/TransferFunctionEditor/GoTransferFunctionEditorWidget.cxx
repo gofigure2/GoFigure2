@@ -98,10 +98,11 @@
 //-------------------------------------------------------------------------
 
 GoTransferFunctionEditorWidget::
-GoTransferFunctionEditorWidget(QWidget *parent,QString iChannel,
+GoTransferFunctionEditorWidget(QString iChannel,
                                const std::vector<double>& iColor,
                                std::vector<int> iLUTParameters,
-                               double iMax):QWidget(parent )
+                               double iMax,
+                               QWidget *parent ) : QWidget(parent )
 {
   // set current color of the channel
   m_Color.setRedF(iColor[0]/255);

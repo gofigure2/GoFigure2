@@ -105,10 +105,11 @@ class GoTransferFunctionEditorWidget : public QWidget
 {
   Q_OBJECT
 public:
-  GoTransferFunctionEditorWidget(QWidget *parent, QString iChannel,
-                                 const std::vector<double>& iColor,
-                                 std::vector<int> iLUTParameters,
-                                 double iMax);
+  explicit GoTransferFunctionEditorWidget(  QString iChannel,
+                                            const std::vector<double>& iColor,
+                                            std::vector<int> iLUTParameters,
+                                            double iMax,
+                                            QWidget *parent = 0 );
 
   /**
    * \brief Add points to both LUT and Opacity transfer function

@@ -410,8 +410,6 @@ public slots:
 
   void visibilityChanged(QString iName, bool iVisibility);
 
-  GoTransferFunctionEditorWidget* createTransferFunctionEditor(QString iName);
-
   void updateSlot();
 
   void PolydatasRequested();
@@ -760,6 +758,8 @@ protected slots:
 private:
   void InitializeImageRelatedWidget();
   void SetUpShortcuts();
+
+  void createTransferFunctionEditor(QString iName);
 
   std::vector< QString > GetChannelNames();
 

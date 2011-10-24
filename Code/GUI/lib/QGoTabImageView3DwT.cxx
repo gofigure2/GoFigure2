@@ -134,10 +134,7 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
   m_TCoord(-1),
   m_MeshEditingWidget(NULL),
   m_Seeds( 3 )
-  //m_TraceWidgetRequiered(false)
 {
-  //m_Image = vtkImageData::New();
-
   m_Seeds[0] = vtkPoints::New();
   m_Seeds[1] = vtkPoints::New();
   m_Seeds[2] = vtkPoints::New();
@@ -182,11 +179,6 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
   m_TransferFunctionDockWidget =
     new QGoTransferFunctionDockWidget(this);
 
-
-  // segmentation dockwidgets
-  //CreateContourSegmentationDockWidget();
-  //CreateMeshSegmentationDockWiget();in setmegacapture/LSM files now
-
   // track dock widget
   m_TrackViewDockWidget = new QGoTrackViewDockWidget(this);
   this->m_TrackViewDockWidget->setObjectName("TrackViewDockWidget");
@@ -225,9 +217,6 @@ QGoTabImageView3DwT::QGoTabImageView3DwT(QWidget *iParent) :
   CreateToolsActions();
 
   CreateBookmarkActions();
-
-  //CreateModeActions(); in setmegacapture/LSM files now
-  //CreateTracesActions();
 
   ReadSettings();
 
@@ -286,17 +275,7 @@ QGoTabImageView3DwT::
   m_Seeds[0]->Delete();
   m_Seeds[1]->Delete();
   m_Seeds[2]->Delete();
-  // new
-  /*
-  std::vector<vtkPoints*>::iterator it = m_OrderedSeeds.begin();
-  while(it != m_OrderedSeeds.end())
-  {
-    (*it)->Delete();
-    (*it) = NULL;
-    ++it;
-  }
 
-  */
   unsigned int minch = m_MegaCaptureReader->GetMinChannel();
   unsigned int maxch = m_MegaCaptureReader->GetMaxChannel();
 
@@ -1571,9 +1550,11 @@ InitializeImageRelatedWidget()
     std::string name = m_ImageProcessor->getChannelName(i);
     // channel color
     std::vector<double> color = m_ImageProcessor->getColor(name);
+
+    QString channelname = QString::fromStdString(name);
     // update navigation dockwidget
     m_NavigationDockWidget->AddChannel(
-          QString::fromStdString(name),
+          channelname,
           QColor(color[0],
                  color[1],
                  color[2],
@@ -1582,8 +1563,7 @@ InitializeImageRelatedWidget()
           true); // all checkboxes are check edwhen we start
     // create TF editor
     // add it in the vector
-    GoTransferFunctionEditorWidget* widget =
-        createTransferFunctionEditor(QString::fromStdString(name));
+    this->createTransferFunctionEditor( channelname );
     }
 
   m_NavigationDockWidget->SetXMinimumAndMaximum(extent[0], extent[1]);
@@ -3292,21 +3272,22 @@ DopplerSizeChanged(int iDopplerSize)
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-GoTransferFunctionEditorWidget*
+void
 QGoTabImageView3DwT::
 createTransferFunctionEditor(QString iName)
 {
+  std::string channelname = iName.toStdString();
+
   // create editor
   // get LUT parameters (gamma, min, max)
-  std::vector<int> lutParameters =
-      m_ImageProcessor->getLUTParameters(iName.toStdString());
+  std::vector<int> lutParameters = m_ImageProcessor->getLUTParameters( channelname );
 
   GoTransferFunctionEditorWidget* editor =
-      new GoTransferFunctionEditorWidget(NULL,
-                                         iName,
-                                         m_ImageProcessor->getColor(iName.toStdString()),
+      new GoTransferFunctionEditorWidget(iName,
+                                         m_ImageProcessor->getColor( channelname ),
                                          lutParameters,
-                                         m_ImageProcessor->getImageBW(iName.toStdString())->GetScalarRange()[1]);
+                                         m_ImageProcessor->getImageBW( channelname )->GetScalarRange()[1],
+                                         this );
   // connect signals
 
   QObject::connect( editor,
@@ -3334,22 +3315,24 @@ createTransferFunctionEditor(QString iName)
 
   // show editor - to have consistent geomerty to add the points
   editor->show();
+
   // add points
-  editor->AddPoints(m_ImageProcessor->getAlpha(iName.toStdString()));
+  editor->AddPoints(m_ImageProcessor->getAlpha( channelname ));
+
   // add LUT
-  editor->AddLookupTable(m_ImageProcessor->getLookuptable(iName.toStdString()));
+  editor->AddLookupTable( m_ImageProcessor->getLookuptable( channelname ) );
   // add Opacity TF
   editor->AddOpacityTransferFunction(
-        m_ImageProcessor->getOpacityTransferFunction(iName.toStdString()));
+        m_ImageProcessor->getOpacityTransferFunction( channelname ) );
+
   // add histogram - should not recalculate all the time...
-  editor->AddHistogram(m_ImageProcessor->getHistogram(iName.toStdString()));
+  editor->AddHistogram(m_ImageProcessor->getHistogram( channelname ) );
+
   // hide editor
   editor->hide();
 
   //editor->setParent(m_TransferFunctionDockWidget);
   m_TransferFunctionDockWidget->AddTransferFunction(iName, editor);
-
-  return editor;
 }
 //-------------------------------------------------------------------------
 
