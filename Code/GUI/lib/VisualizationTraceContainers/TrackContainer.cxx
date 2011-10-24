@@ -473,8 +473,7 @@ void
 TrackContainer::
 ChangeColorCode(const QString& iColorCode)
 {
-  m_ActiveTrackScalars.clear();
-  m_ActiveTrackScalars.append(iColorCode);
+  m_ActiveTrackScalars = iColorCode;
 
   if ( m_ActiveTrackScalars.compare("Original") )
     {
