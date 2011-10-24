@@ -50,6 +50,7 @@ public:
   ~QGoTrackViewDockWidget();
 
 public slots:
+  void lineWidthValueChanged( double );
   void Glyphs( bool );
   void glyphValueChanged( double );
   void Tubes( bool );
@@ -57,22 +58,24 @@ public slots:
   void ColorCodeTracksByTime(bool);
   void ColorCodeTracksBySpeed(bool);
   void ColorCodeTracksByOriginalColor(bool);
+
 signals:
-  void UpdateTracksRepresentation(const double&, const double&);
+  void UpdateTracksRepresentation(const double&, const double&, const double&);
   void ChangeColorCode( const QString& );
 
 protected:
-  
+
   QCheckBox*      m_glyph;
   QCheckBox*      m_tube;
   QDoubleSpinBox* m_glyphSpinBox;
   QDoubleSpinBox* m_tubeSpinBox;
+  QDoubleSpinBox* m_linewidthSpinBox;
 
   QRadioButton*   m_time;
   QRadioButton*   m_real;
   QRadioButton*   m_speed;
 
   void SetUpUi();
-  void SetDoubleSpinBox(QDoubleSpinBox* iSpinBox);
+  void SetDoubleSpinBox(QDoubleSpinBox* iSpinBox, double Min, double Max, double Value);
 };
 #endif

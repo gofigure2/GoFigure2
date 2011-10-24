@@ -142,6 +142,8 @@ public:
     return os;
   }
 
+  void UpdateLineWidth( const double& iWidth ) const;
+
   void UpdateTracksRepresentation( const double& iRadius,
                                   const double& iRadius2 ) const;
 
