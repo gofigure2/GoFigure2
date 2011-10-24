@@ -244,11 +244,13 @@ public:
         endOfROI[dim] = sizeOfLargeImage[dim] - 1;
         }
 
-      size[dim] = endOfROI[dim] - startOfROI[dim];
-
-      if( size[dim] < 0 )
+      if( endOfROI[dim] - startOfROI[dim] < 0 )
         {
         size[dim] = 0;
+        }
+      else
+        {
+        size[dim] = endOfROI[dim] - startOfROI[dim];
         }
       }
 
