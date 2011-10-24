@@ -86,6 +86,8 @@ public:
 
   void SetSingleFileName(const QString & iFileName);
 
+  void SetMaxNumberOfTraces( unsigned int iN );
+
 private slots:
   void on_actionOpen_Single_File_triggered();
 
