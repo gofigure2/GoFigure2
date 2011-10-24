@@ -43,6 +43,7 @@
 #include <QLabel>
 #include <QComboBox>
 #include <QCheckBox>
+#include <QHash>
 #include "QGoAlgorithmWidget.h"
 
 /**
@@ -94,7 +95,7 @@ public:
   void SetTSliceForClassicView(QString iTimePoint);
 
   void SetTSliceForDopplerView(
-    std::map<QString, QColor> iListTimePoints, int iIndexChannel);
+    QHash<QString, QColor> iListTimePoints, int iIndexChannel);
 
   /**
   \brief return the name of the mode

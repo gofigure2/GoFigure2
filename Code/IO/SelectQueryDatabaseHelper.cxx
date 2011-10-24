@@ -58,11 +58,13 @@ std::vector< std::string > ListAllValuesForOneColumn(vtkMySQLDatabase *DatabaseC
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-std::map< std::string, std::string > MapTwoColumnsFromTable(
+boost::unordered_map< std::string, std::string > MapTwoColumnsFromTable(
   vtkMySQLDatabase *DatabaseConnector, std::vector< std::string > iColumnNames,
   std::string iTableName, std::string iField, std::string iValue)
 {
-  std::map< std::string, std::string > Result = std::map< std::string, std::string >();
+  boost::unordered_map< std::string, std::string > Result =
+      boost::unordered_map< std::string, std::string >();
+
   if ( iColumnNames.size() != 2 )
     {
     std::cout << "can not map if the size of the vector for the selected fields is different than 2 ";

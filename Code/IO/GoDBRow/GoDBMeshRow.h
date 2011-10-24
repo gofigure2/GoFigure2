@@ -35,7 +35,8 @@
 #define __GoDBMeshRow_h
 
 #include <string>
-#include <map>
+#include "boost/unordered_map.hpp"
+
 #include <iostream>
 #include <sstream>
 #include "GoDBTraceRow.h"
@@ -55,11 +56,11 @@ class QGOIO_EXPORT GoDBMeshRow:public GoDBTraceRow
 {
 public:
   GoDBMeshRow();
-  
+
   /**
   \brief fill the mesh map with the values gotten from the visualization
   \param[in] DatabaseConnector connection to the database
-  \param[in] TraceVisu vtkPolyData the points will be extracted from to create 
+  \param[in] TraceVisu vtkPolyData the points will be extracted from to create
   a string for "Points"
   \param[in] Min coordinate row for the minimum of the bounding box
   \param[in] Max coordinate row for the maximum of the bounding box
@@ -73,7 +74,7 @@ public:
   GoDBMeshRow(const GoDBMeshRow & iRow);
 
   /**
-  \brief 
+  \brief
   \param[in] ImagingSessionID ID of the current imagingsession
   */
   GoDBMeshRow(unsigned int ImagingSessionID);
@@ -88,7 +89,7 @@ public:
   /**
   \brief put the value of map["Celltype"] to CellTypeName
   \param[in] DatabaseConnector connection to the database
-  \param[in] CellTypeName 
+  \param[in] CellTypeName
   */
   void SetCellType(vtkMySQLDatabase *DatabaseConnector,
                    std::string CellTypeName);
@@ -96,7 +97,7 @@ public:
   /**
   \brief put the value of map["SubCelltype"] to SubCellTypeName
   \param[in] DatabaseConnector connection to the database
-  \param[in] SubCellTypeName 
+  \param[in] SubCellTypeName
   */
   void SetSubCellType(vtkMySQLDatabase *DatabaseConnector,
                       std::string SubCellTypeName);
@@ -114,11 +115,11 @@ public:
   \param[in] iNameChannelWithValues map with keys as channel names and values as intensities
   */
   void SaveInDBTotalIntensityPerChannel(vtkMySQLDatabase *DatabaseConnector,
-                                        std::map< std::string, int > iNameChannelWithValues);
+                                        boost::unordered_map< std::string, int > iNameChannelWithValues);
 
   /**
   \brief convert a GoDBTraceRow in GoDBMeshRow
-  \param[in] iRow 
+  \param[in] iRow
   */
   void SafeDownCast(GoDBTraceRow & iRow);
 
@@ -152,7 +153,7 @@ protected:
   //mother class method
   virtual void InitializeMap();
 
-  std::map< std::string, int > m_NameChannelWithValues;
+  boost::unordered_map< std::string, int > m_NameChannelWithValues;
 };
 
 #endif

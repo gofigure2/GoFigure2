@@ -194,25 +194,26 @@ void QGoAlgorithmsManagerWidget::SetTSliceForClassicView(QString iTimePoint)
 
 //-------------------------------------------------------------------------
 void QGoAlgorithmsManagerWidget::SetTSliceForDopplerView(
-  std::map<QString, QColor> iListTimePoints, int iIndexChannel)
+  QHash<QString, QColor> iListTimePoints, int iIndexChannel)
 {
   if (this->m_TimeComboBox)
     {
     this->m_TimeComboBox->clear();
     if (!iListTimePoints.empty() )
     {
-    std::map<QString, QColor>::iterator iter = iListTimePoints.begin();
+    QHash<QString, QColor>::iterator iter = iListTimePoints.begin();
     while(iter != iListTimePoints.end() )
       {
       QPixmap  pix(12, 12);
       QPainter painter(&pix);
       painter.setPen(Qt::gray);
-      painter.setBrush( QBrush(iter->second) );
+      QColor color = iter.value();
+      painter.setBrush( QBrush(color) );
       painter.drawRect(0, 0, 12, 12);
       QIcon Icon;
       Icon.addPixmap(pix);
 
-      this->m_TimeComboBox->addItem(Icon, iter->first);
+      this->m_TimeComboBox->addItem(Icon, iter.key());
 
       ++iter;
       }

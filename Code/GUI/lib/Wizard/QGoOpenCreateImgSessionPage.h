@@ -43,6 +43,7 @@
 #include <QStringList>
 #include <QString>
 #include <string>
+#include "boost/unordered_map.hpp"
 #include "vtkMySQLDatabase.h"
 
 class QGoOpenCreateImgSessionPage:public QWizardPage
@@ -83,8 +84,8 @@ private:
   QLineEdit *   lineImgSessionName;
   mutable bool  LeavingPage;
 
-  QStringList                          m_ListImgSession;
-  std::map< std::string, std::string > m_MapImgSessionIDName;
+  QStringList                                       m_ListImgSession;
+  boost::unordered_map< std::string, std::string >  m_MapImgSessionIDName;
 protected slots:
   /**
     * \brief display in the description text the existing description stored

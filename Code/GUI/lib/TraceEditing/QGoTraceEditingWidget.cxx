@@ -37,7 +37,7 @@
 #include <QPushButton>
 
 QGoTraceEditingWidget::QGoTraceEditingWidget(
-  std::string iTraceName,std::vector<QString> iVectChannels, 
+  std::string iTraceName,std::vector<QString> iVectChannels,
   QStringList iListTimePoints, QWidget *iParent)
 {
   this->Initialize(iVectChannels, iListTimePoints, iParent);
@@ -52,7 +52,7 @@ QGoTraceEditingWidget::~QGoTraceEditingWidget()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoTraceEditingWidget::Initialize(std::vector<QString> iVectChannels, 
+void QGoTraceEditingWidget::Initialize(std::vector<QString> iVectChannels,
   QStringList iListTimePoints, QWidget *iParent)
 {
   this->m_ListTimePoints = iListTimePoints;
@@ -60,7 +60,7 @@ void QGoTraceEditingWidget::Initialize(std::vector<QString> iVectChannels,
     iVectChannels, iListTimePoints, this);
 
   this->m_VLayout = new QVBoxLayout;
-  
+
   this->SetModesManager(this->m_ModeEditingWidget);
   this->setLayout(this->m_VLayout);
   this->m_VLayout->setSizeConstraint(QLayout::SetFixedSize);
@@ -76,8 +76,8 @@ void QGoTraceEditingWidget::AddMode(
     {
     ModeWidget = iModeWidget;
     }
-  this->m_ModeEditingWidget->AddWidgetWithModeName(iModeName, ModeWidget, 
-    ModeNeedSeeds); 
+  this->m_ModeEditingWidget->AddWidgetWithModeName(iModeName, ModeWidget,
+    ModeNeedSeeds);
 }
 //-------------------------------------------------------------------------
 
@@ -96,9 +96,9 @@ void QGoTraceEditingWidget::SetModesManager(QGoModesManagerWidget* iModeWidget)
   this->m_ModeEditingWidget = iModeWidget;
   this->m_VLayout->addWidget(this->m_ModeEditingWidget);
 
-  QObject::connect( this->m_ModeEditingWidget, 
+  QObject::connect( this->m_ModeEditingWidget,
                     SIGNAL (SetSeedInteractorBehaviour(bool) ),
-                    this, 
+                    this,
                     SIGNAL (SetSeedInteractorBehaviour(bool) ) );
 
   QObject::connect( this->m_ModeEditingWidget,
@@ -185,7 +185,7 @@ bool QGoTraceEditingWidget::GetIsInvertedOn()
 
 //-------------------------------------------------------------------------
  void QGoTraceEditingWidget::SetTSliceForDopplerView(
-   std::map<QString, QColor> iListTimePoints,
+   QHash<QString, QColor> iListTimePoints,
    int iChannelNumber)
  {
    this->m_ModeEditingWidget->SetTSliceForDopplerViewInAllAlgoModes(

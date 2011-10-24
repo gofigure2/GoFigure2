@@ -41,15 +41,16 @@
 #include "vtkImageData.h"
 #include "QGoDockWidget.h"
 #include <QAction>
+#include <QHash>
 #include <QDockWidget>
 
 class GoImageProcessor;
 
 
 /**
-\class QGoTraceEditingWidgetManager abstract class handles the interactions
+\class QGoTraceEditingWidgetManager
+\brief abstract class handles the interactions
 between the user and the algorithms for one kind of trace
-\brief
 */
 class QGOGUILIB_EXPORT QGoTraceEditingWidgetManager: public QObject
 {
@@ -84,7 +85,7 @@ public:
   by the user and disable the channel comboboxes
   */
   virtual void SetTSliceForDopplerView(
-    std::map<QString, QColor> iListTimePoints, int iChannelNumber);
+    QHash<QString, QColor> iListTimePoints, int iChannelNumber);
 
 public slots:
   /**

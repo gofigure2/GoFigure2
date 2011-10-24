@@ -64,7 +64,7 @@ int main(int argc, char **argv)
   std::cout << std::endl;
 
   std::cout << "iterator TEST... " << std::endl;
-  std::map< std::string, std::string >::iterator it = row.MapBegin();
+  GoDBMeshRow::StringMapIterator it = row.MapBegin();
   while ( it != row.MapEnd() )
     {
     ++it;
@@ -73,8 +73,7 @@ int main(int argc, char **argv)
   std::cout << std::endl;
 
   std::cout << "const iterator TEST... " << std::endl;
-  std::map< std::string, std::string >::const_iterator
-    c_it = row.ConstMapBegin();
+  GoDBMeshRow::StringMapConstIterator c_it = row.ConstMapBegin();
 
   while ( c_it != row.ConstMapEnd() )
     {
