@@ -218,7 +218,7 @@ void QGoPrintDatabase::CloseDBConnection()
 //--------------------------------------------------------------------------
 void QGoPrintDatabase::FillTableFromDatabase(const unsigned int& iThreshold)
 {
-  bool limitedMemory = ( iThreshold == std::numeric_limits< unsigned int >::max() );
+  bool limitedMemory = ( iThreshold != std::numeric_limits< unsigned int >::max() );
 
   OpenDBConnection();
   // Get number of meshes to be loaded
@@ -229,7 +229,7 @@ void QGoPrintDatabase::FillTableFromDatabase(const unsigned int& iThreshold)
 
   if( ( nbOfTraces <= iThreshold ) || !limitedMemory )
     {
-    this->m_VisibleTimePoints.resize(0);
+    this->m_VisibleTimePoints.clear();
     this->GetContentAndDisplayAllTracesInfo(this->m_DatabaseConnector);
     }
   else
