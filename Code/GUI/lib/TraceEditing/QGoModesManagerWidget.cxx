@@ -35,7 +35,7 @@
 #include <QLabel>
 #include <QColor>
 
-QGoModesManagerWidget::QGoModesManagerWidget(std::vector<QString> iVectChannels, 
+QGoModesManagerWidget::QGoModesManagerWidget(std::vector<QString> iVectChannels,
   QStringList iListTimePoints, QWidget *iParent)
   :QWidget(iParent), m_ManualModeManager(NULL)
 {
@@ -50,7 +50,7 @@ QGoModesManagerWidget::~QGoModesManagerWidget()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoModesManagerWidget::Initialize(std::vector<QString> iVectChannels, 
+void QGoModesManagerWidget::Initialize(std::vector<QString> iVectChannels,
   QStringList iListTimePoints)
 {
   this->m_ModeAlreadyCleaned = false;
@@ -72,12 +72,12 @@ void QGoModesManagerWidget::Initialize(std::vector<QString> iVectChannels,
 
   //add default modes:
   this->m_SemiAutoAlgoManagerWidget = new
-    QGoAlgorithmsManagerWidget("SemiAutomatic", this, iVectChannels, 
+    QGoAlgorithmsManagerWidget("SemiAutomatic", this, iVectChannels,
     iListTimePoints);
   this->AddAlgoManagerWidget(this->m_SemiAutoAlgoManagerWidget, true);
 
   this->m_AutoAlgoManagerWidget = new
-    QGoAlgorithmsManagerWidget("Automatic",this, iVectChannels, 
+    QGoAlgorithmsManagerWidget("Automatic",this, iVectChannels,
     iListTimePoints);
   this->AddAlgoManagerWidget(this->m_AutoAlgoManagerWidget, false);
 
@@ -92,7 +92,7 @@ void QGoModesManagerWidget::Initialize(std::vector<QString> iVectChannels,
 
   QObject::connect(this->m_SemiAutoAlgoManagerWidget, SIGNAL(ResetClicked() ),
                    this, SIGNAL(ResetClicked() ) );
-  
+
 }
 //-------------------------------------------------------------------------
 
@@ -103,7 +103,7 @@ void QGoModesManagerWidget::AddWidgetWithModeName(
   int Index = 0;
   if (iWidget != 0)
     {
-    this->m_ModeWidgets->addWidget(iWidget);  
+    this->m_ModeWidgets->addWidget(iWidget);
     Index = this->m_ModeWidgets->indexOf(iWidget);
     }
   this->m_ModeComboBox->insertItem(Index,iModeName.c_str());
@@ -120,7 +120,7 @@ void QGoModesManagerWidget::AddAlgoManagerWidget(
     QGoAlgorithmsManagerWidget* iAlgoManagerWidget, bool ModeNeedSeeds,
     int iDefaultIndex)
 {
-  this->AddWidgetWithModeName(iAlgoManagerWidget->GetModeName(), 
+  this->AddWidgetWithModeName(iAlgoManagerWidget->GetModeName(),
     iAlgoManagerWidget, ModeNeedSeeds);
   iAlgoManagerWidget->SetCurrentIndex(iDefaultIndex);
 }
@@ -161,7 +161,7 @@ void QGoModesManagerWidget::AddAlgoWidgetForAutomaticMode(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoModesManagerWidget::AddWidgetForManualMode(QWidget* iWidget, 
+void QGoModesManagerWidget::AddWidgetForManualMode(QWidget* iWidget,
   QStringList iListTimePoint, bool ModeNeedSeeds)
 {
   std::vector<QString> Channels = std::vector<QString>();
@@ -175,7 +175,7 @@ void QGoModesManagerWidget::AddWidgetForManualMode(QWidget* iWidget,
 //-------------------------------------------------------------------------
 std::string QGoModesManagerWidget::GetCurrentImageName()
 {
-  QGoAlgorithmsManagerWidget* CurrentWidget =  
+  QGoAlgorithmsManagerWidget* CurrentWidget =
     dynamic_cast<QGoAlgorithmsManagerWidget*>
       (this->m_ModeWidgets->currentWidget());
   return CurrentWidget->GetCurrentImageName();
@@ -185,7 +185,7 @@ std::string QGoModesManagerWidget::GetCurrentImageName()
 //-------------------------------------------------------------------------
 int QGoModesManagerWidget::GetSelectedTimePoint()
 {
-  QGoAlgorithmsManagerWidget* CurrentWidget =  
+  QGoAlgorithmsManagerWidget* CurrentWidget =
     dynamic_cast<QGoAlgorithmsManagerWidget*>
       (this->m_ModeWidgets->currentWidget());
   return CurrentWidget->GetSelectedTimePoint();
@@ -195,7 +195,7 @@ int QGoModesManagerWidget::GetSelectedTimePoint()
 //-------------------------------------------------------------------------
 bool QGoModesManagerWidget::GetIsInvertedOn()
 {
-  QGoAlgorithmsManagerWidget* CurrentWidget =  
+  QGoAlgorithmsManagerWidget* CurrentWidget =
     dynamic_cast<QGoAlgorithmsManagerWidget*>
       (this->m_ModeWidgets->currentWidget());
   return CurrentWidget->IsInvertChecked();
@@ -215,7 +215,7 @@ void QGoModesManagerWidget::SetTheRightMode(int iIndex)
     {
     this->m_ModeWidgets->setCurrentIndex(iIndex);
     }
-  
+
   if (this->m_ModesWhoNeedSeeds.indexOf(
         this->m_ModeComboBox->currentText() ) != -1)
     {
@@ -237,13 +237,13 @@ void QGoModesManagerWidget::SetTSliceForClassicViewInAllAlgoModes(int iTimePoint
     {
     this->m_ManualModeManager->SetTSliceForClassicView(tr("%1").arg(iTimePoint) );
     }
- 
+
 }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void QGoModesManagerWidget::SetTSliceForDopplerViewInAllAlgoModes(
-  std::map<QString, QColor> iListTimePoints, int iChannelNumber)
+  QHash<QString, QColor> iListTimePoints, int iChannelNumber)
 {
   this->m_AutoAlgoManagerWidget->SetTSliceForDopplerView(
     iListTimePoints, iChannelNumber);

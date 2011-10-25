@@ -165,7 +165,7 @@ bool QGoOpenCreateImgSessionPage::GetListImgSession()
                             field(
                               "ProjectName").toString().toStdString() );
 
-  std::map< std::string, std::string >::iterator it = m_MapImgSessionIDName.begin();
+  boost::unordered_map< std::string, std::string >::iterator it = m_MapImgSessionIDName.begin();
   if ( !m_MapImgSessionIDName.empty() )
     {
     while ( it != m_MapImgSessionIDName.end() )
@@ -255,7 +255,7 @@ void QGoOpenCreateImgSessionPage::DisplayInfoImgSession(
 
   if ( ImgSessionName != "" )
     {
-    std::map< std::string, std::string >::iterator it = m_MapImgSessionIDName.begin();
+    boost::unordered_map< std::string, std::string >::iterator it = m_MapImgSessionIDName.begin();
     while ( it != m_MapImgSessionIDName.end() && ImagingSessionID == "0" )
       {
       if ( it->first == ImgSessionName.toStdString() )

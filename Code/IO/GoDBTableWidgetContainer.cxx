@@ -518,10 +518,10 @@ void GoDBTableWidgetContainer::FillRowContainer(
   std::vector< std::vector< std::string > > iResultsFromQuery,
   std::vector< std::string > iSelectFields, std::string BaseOn)
 {
-  for ( unsigned int i = 0; i < iSelectFields.size(); i++ )
+  for ( size_t i = 0; i < iSelectFields.size(); i++ )
     {
     bool HasBeenFound = false;
-    for ( unsigned int j = 0; j < m_RowContainer.size() && HasBeenFound == false; j++ )
+    for ( size_t j = 0; j < m_RowContainer.size() && HasBeenFound == false; j++ )
       {
       std::string test = iSelectFields[i];                            //for test
                                                                       // purpose
@@ -537,11 +537,11 @@ void GoDBTableWidgetContainer::FillRowContainer(
         {
         if ( BaseOn == "ColumnNameTableWidget" )
           {
-          std::string NameColonne = m_RowContainer[j].first.ColumnNameTableWidget;
-          if ( !NameColonne.empty() )
+          std::string NameColumn = m_RowContainer[j].first.ColumnNameTableWidget;
+          if ( !NameColumn.empty() )
             {
             PosColumnNameFound =
-              iSelectFields[i].find(NameColonne);
+              iSelectFields[i].find(NameColumn);
             }
           else
             {
@@ -559,8 +559,9 @@ void GoDBTableWidgetContainer::FillRowContainer(
       if ( PosColumnNameFound != std::string::npos && m_RowContainer[j].second.empty() )
         {
         HasBeenFound = true;
-        for ( unsigned int RowNumberForQueryResults = 0;
-              RowNumberForQueryResults < iResultsFromQuery.size(); RowNumberForQueryResults++ )
+        for ( size_t RowNumberForQueryResults = 0;
+              RowNumberForQueryResults < iResultsFromQuery.size();
+              ++RowNumberForQueryResults )
           {
           std::vector< std::string > ResultsFromQueryForOneTrace =
             iResultsFromQuery[RowNumberForQueryResults];

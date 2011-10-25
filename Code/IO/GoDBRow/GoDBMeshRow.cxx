@@ -226,7 +226,7 @@ void GoDBMeshRow::SetSubCellType(vtkMySQLDatabase *iDatabaseConnector,
 //-------------------------------------------------------------------------
 void GoDBMeshRow::SaveInDBTotalIntensityPerChannel(
   vtkMySQLDatabase *DatabaseConnector,
-  std::map< std::string, int > iNameChannelWithValues)
+  boost::unordered_map< std::string, int > iNameChannelWithValues)
 {
   if ( this->GetMapValue("meshID") == "0" )
     {
@@ -237,7 +237,8 @@ void GoDBMeshRow::SaveInDBTotalIntensityPerChannel(
     {
     std::cout << "The imagingSession hasn't been entered for the mesh" << std::endl;
     }
-  std::map< std::string, int >::iterator iter = iNameChannelWithValues.begin();
+
+  boost::unordered_map< std::string, int >::iterator iter = iNameChannelWithValues.begin();
   while ( iter != iNameChannelWithValues.end() )
     {
     std::vector< FieldWithValue > Conditions;

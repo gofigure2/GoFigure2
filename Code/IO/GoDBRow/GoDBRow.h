@@ -39,7 +39,7 @@
 #include "vtkMySQLDatabase.h"
 #include <string>
 #include <sstream>
-#include <map>
+#include "boost/unordered_map.hpp"
 #include <vector>
 
 #include "QGoIOConfigure.h"
@@ -56,21 +56,21 @@ class QGOIO_EXPORT GoDBRow
 {
 public:
 
-  typedef std::map< std::string, std::string > StringMapType;
+  typedef boost::unordered_map< std::string, std::string > StringMapType;
   typedef StringMapType::iterator              StringMapIterator;
   typedef StringMapType::const_iterator        StringMapConstIterator;
 
   GoDBRow();
   virtual ~GoDBRow();
 
-  /** 
+  /**
   \brief convert the value into a string and assign it to the key in the map
   \param[in] key key of the map
   \param[in] value value to be assigned to key
   \tparam T type of the value, anything but string
   */
   template< typename T >
-  void SetField(std::string key, T value)
+  void SetField(const std::string& key, const T& value)
   {
     StringMapIterator it = m_MapRow.find(key);
 
@@ -91,7 +91,7 @@ public:
   \param[in] key key of the map
   \param[in] value value to be assigned to key which is a string
   */
-  void SetField(std::string key, std::string value);
+  void SetField(const std::string& key, const std::string& value);
 
   /**
   \brief
@@ -122,7 +122,7 @@ public:
   \return all the map keys in a vector
   */
   std::vector< std::string > GetVectorColumnNames();
-  
+
   /**
   \brief put all the keys and values of the map in a string as map[key] = value separated by ','
   \return all the map [key] = value separated by ',' but without a ',' at the end of the string
@@ -149,21 +149,21 @@ public:
 
   /**
   \brief
-  \return the iterator at the end of the class map 
+  \return the iterator at the end of the class map
   */
   StringMapIterator MapEnd();
 
   /**
   \brief return the value for the field map[key] after having removed the "
   at the beginning and at the end of the value if it is a string in order to get
-  the original value. 
+  the original value.
   \param[in] key key of the map for which the value is needed
-  \return the corresponding value without "" if the value was a string 
+  \return the corresponding value without "" if the value was a string
   */
-  std::string GetMapValue(std::string key);
+  std::string GetMapValue(const std::string& key);
 
   template<typename T>
-  T GetMapValue(std::string key)
+  T GetMapValue(const std::string& key)
   {
     std::string Value = this->GetMapValue(key);
     return ss_atoi<T>(Value);
@@ -171,7 +171,7 @@ public:
 
   /**
   \brief print the keys and values of the map in a cout
-  \param[in,out] os 
+  \param[in,out] os
   \param[in,out] c the row to print
   */
   friend std::ostream & operator<<(std::ostream & os, const GoDBRow & c)
@@ -187,7 +187,7 @@ public:
   }
 
   /**
-  \brief get the data from the database corresponding to the specific ID and 
+  \brief get the data from the database corresponding to the specific ID and
   put them in the map
   \param[in] ID ID for which the data are needed
   \param[in] iDatabaseConnector connection to the database
@@ -214,7 +214,8 @@ protected:
   \param[in] iNameOfField key of the map
   \param[in,out] ioFieldWithValue vector of FieldWithValue
   */
-  void AddConditions(std::string iNameOfField, std::vector<FieldWithValue> &ioFieldWithValue);
+  void AddConditions(const std::string& iNameOfField,
+                     std::vector<FieldWithValue>& ioFieldWithValue);
 
   StringMapType m_MapRow;
   std::string   m_TableName;

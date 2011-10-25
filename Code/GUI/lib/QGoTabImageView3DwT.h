@@ -410,8 +410,6 @@ public slots:
 
   void visibilityChanged(QString iName, bool iVisibility);
 
-  GoTransferFunctionEditorWidget* createTransferFunctionEditor(QString iName);
-
   void updateSlot();
 
   void PolydatasRequested();
@@ -761,6 +759,8 @@ private:
   void InitializeImageRelatedWidget();
   void SetUpShortcuts();
   void CreateDopplerTFEditor();
+
+  void createTransferFunctionEditor(QString iName);
 
   std::vector< QString > GetChannelNames();
 

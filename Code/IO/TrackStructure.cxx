@@ -128,7 +128,50 @@ TrackStructure::ReleaseData() const
   TrackStructure* structure = const_cast<TrackStructure*>(this);
   structure->TreeNode.ReleaseData();
 }
+//--------------------------------------------------------------------------
 
+//--------------------------------------------------------------------------
+void
+TrackStructure::
+UpdateLineWidth(const double &iWidth) const
+{
+  if( this->ActorXY )
+    {
+    vtkProperty* property = this->ActorXY->GetProperty();
+
+    if( property )
+      {
+      property->SetLineWidth( iWidth );
+      }
+    }
+  if( this->ActorXZ )
+    {
+    vtkProperty* property = this->ActorXZ->GetProperty();
+
+    if( property )
+      {
+      property->SetLineWidth( iWidth );
+      }
+    }
+  if( this->ActorYZ )
+    {
+    vtkProperty* property = this->ActorYZ->GetProperty();
+
+    if( property )
+      {
+      property->SetLineWidth( iWidth );
+      }
+    }
+  if( this->ActorXYZ )
+    {
+    vtkProperty* property = this->ActorXYZ->GetProperty();
+
+    if( property )
+      {
+      property->SetLineWidth( iWidth );
+      }
+    }
+}
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
@@ -284,10 +327,10 @@ void
 TrackStructure::
 ModifyDivisionColorData( const double* iColor )
 {
-this->TreeNode.rgba[0] = iColor[0];
-this->TreeNode.rgba[1] = iColor[1];
-this->TreeNode.rgba[2] = iColor[2];
-this->TreeNode.rgba[3] = iColor[3];
+  this->TreeNode.rgba[0] = iColor[0];
+  this->TreeNode.rgba[1] = iColor[1];
+  this->TreeNode.rgba[2] = iColor[2];
+  this->TreeNode.rgba[3] = iColor[3];
 }
 //--------------------------------------------------------------------------
 

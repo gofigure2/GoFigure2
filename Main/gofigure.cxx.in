@@ -61,7 +61,8 @@ int main(int argc, char **argv)
 
   boost::program_options::options_description config_options( "Configuration" );
   config_options.add_options()
-      ("input,i", boost::program_options::value< std::vector< std::string > >(), "input file (single file)" );
+      ("input,i", boost::program_options::value< std::vector< std::string > >(), "input file (single file)" )
+      ("max-meshes", boost::program_options::value< unsigned int >(), "Maximum number of meshes to load in memory (default 5000)" );
 
   boost::program_options::options_description all_options( "Usage:\n  gofigure [options]" );
   all_options.add( general_options ).add( config_options );
@@ -166,6 +167,13 @@ int main(int argc, char **argv)
         form->SetSingleFileName(inputfilename);
         }
       }
+    }
+
+  if( vm.count( "max-meshes" ) )
+    {
+    unsigned int max_number_of_meshes = vm["max-meshes"].as< unsigned int >();
+
+    form->SetMaxNumberOfTraces( max_number_of_meshes );
     }
 
   form->show();
