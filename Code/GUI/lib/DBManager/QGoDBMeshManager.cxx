@@ -122,7 +122,7 @@ void QGoDBMeshManager::DisplayInfoAndLoadVisuContainerForAllMeshesForSpecificTPs
 void QGoDBMeshManager::AddInfoForMeshesInTWForSpecificTPs(vtkMySQLDatabase *iDatabaseConnector,
     std::list<unsigned int> iListTPs)
 {
-  int IndexShowColumn = this->m_TWContainer->GetIndexShowColumn();
+  //int IndexShowColumn = this->m_TWContainer->GetIndexShowColumn();
 
   /*this->AddInfoForTracesInTWForSpecificTPsTemplate<GoDBTWContainerForContourMesh>(
     this->m_TWContainer,

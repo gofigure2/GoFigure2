@@ -216,13 +216,13 @@ void QGoPrintDatabase::CloseDBConnection()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoPrintDatabase::FillTableFromDatabase(const int& iThreshold)
+void QGoPrintDatabase::FillTableFromDatabase(const unsigned int& iThreshold)
 {
   bool limitedMemory = ( iThreshold != std::numeric_limits< unsigned int >::max() );
 
   OpenDBConnection();
   // Get number of meshes to be loaded
-  int nbOfTraces = NumberOfElementForGivenImagingSessionAndTrace(
+  unsigned int nbOfTraces = NumberOfElementForGivenImagingSessionAndTrace(
           this->m_DatabaseConnector,
           this->m_ImgSessionID,
           "mesh");

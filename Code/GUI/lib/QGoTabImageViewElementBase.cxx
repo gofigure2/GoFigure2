@@ -281,14 +281,14 @@ void QGoTabImageViewElementBase::ValidateContour(const int & iId)
   contour->GetBounds(bounds);
 
   // Extract Min and Max from bounds
-  double Min[3];
+ /* double Min[3];
   double Max[3];
   int    k = 0;
   for ( int i = 0; i < 3; ++i )
     {
     Min[i] = bounds[k++];
     Max[i] = bounds[k++];
-    }
+    }*/
 
 // *** Get the Bounding Box ***
 //   int* min_idx = this->GetImageCoordinatesFromWorldCoordinates( Min );
