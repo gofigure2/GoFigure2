@@ -1582,8 +1582,7 @@ InitializeImageRelatedWidget()
           true); // all checkboxes are check edwhen we start
     // create TF editor
     // add it in the vector
-    GoTransferFunctionEditorWidget* widget =
-        createTransferFunctionEditor(QString::fromStdString(name));
+    createTransferFunctionEditor(QString::fromStdString(name));
     }
 
   m_NavigationDockWidget->SetXMinimumAndMaximum(extent[0], extent[1]);
@@ -1727,8 +1726,19 @@ QGoTabImageView3DwT::SetTimePoint(const int & iTimePoint)
   // update image container
   UpdateImage();
 
-  // update TF editor (histogram and max value)
-  UpdateTFEditor();
+  // if go from t=0 to t=1 in doppler mode
+  if (m_ImageProcessor->getDopplerMode())
+    {
+    //clean TF Editor
+    m_TransferFunctionDockWidget->DeleteTabs();
+    //createTransferFunctionEditor(channel name)
+    CreateDopplerTFEditor();
+    }
+  else
+    {
+    // update TF editor (histogram and max value)
+    UpdateTFEditor();
+    }
 
   EnableVolumeRendering( this->m_VolumeRenderingEnabled );
 
@@ -1970,10 +1980,16 @@ QGoTabImageView3DwT::ChangeBackgroundColor()
 void
 QGoTabImageView3DwT::ModeChanged(int iChannel)
 {
+
+  //clean TF Editor
+  m_TransferFunctionDockWidget->DeleteTabs();
+
   if ( iChannel == 1 )
     {
     // set image processor and build navigation widget if we click on ok
     StartDopplerView();
+    //createTransferFunctionEditor(channel name)
+    CreateDopplerTFEditor();
     }
   else
     {
@@ -1983,18 +1999,14 @@ QGoTabImageView3DwT::ModeChanged(int iChannel)
     m_ImageProcessor->initTimePoint(m_TCoord);
     // change visibility
     this->m_NavigationDockWidget->VisibilityListChannels(true);
-    }
-
-  //clean TF Editor
-  m_TransferFunctionDockWidget->DeleteTabs();
-
-  //createTransferFunctionEditor(channel name)
-  unsigned int NumberOfChannels = m_ImageProcessor->getNumberOfChannels();
-  for ( unsigned int i = 0; i < NumberOfChannels; i++ )
-    {
-    std::string name = m_ImageProcessor->getChannelName(i);
-    GoTransferFunctionEditorWidget* widget =
-        createTransferFunctionEditor(QString::fromStdString(name));
+    // create transfer function editor
+    unsigned int NumberOfChannels = m_ImageProcessor->getNumberOfChannels();
+    for ( unsigned int i = 0; i < NumberOfChannels; i++ )
+      {
+      std::string name = m_ImageProcessor->getChannelName(i);
+      // create TF editor
+      createTransferFunctionEditor(QString::fromStdString(name));
+      }
     }
 
   //update images
@@ -2021,6 +2033,10 @@ QGoTabImageView3DwT::StepChanged(int iStep)
   BuildDopplerWidget();
   // build new image
   UpdateImage();
+  //clean TF Editor
+  m_TransferFunctionDockWidget->DeleteTabs();
+  //
+  CreateDopplerTFEditor();
   //update
   m_ImageView->Update();
   //update the trace editing widget
@@ -3297,6 +3313,10 @@ DopplerSizeChanged(int iDopplerSize)
   BuildDopplerWidget();
   // build new image
   UpdateImage();
+  //clean TF Editor
+  m_TransferFunctionDockWidget->DeleteTabs();
+  //createTransferFunctionEditor(channel name)
+  CreateDopplerTFEditor();
   //update
   m_ImageView->Update();
   //update the trace editing widget
@@ -3631,6 +3651,7 @@ UpdateTFEditor()
     widget->SetMaximumValue(
         m_ImageProcessor->getImageBW(name)->GetScalarRange()[1]);
     }
+
 }
 //------------------------------------------------------------------------------
 
@@ -3687,3 +3708,22 @@ MoveToPreviousTimePoint()
 {
   m_NavigationDockWidget->MoveToPreviousTimePoint();
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::
+CreateDopplerTFEditor()
+{
+  std::vector<int> time = m_ImageProcessor->getDopplerTime(m_TCoord);
+
+  for(unsigned int i=0; i<m_ImageProcessor->getDopplerSize(); ++i)
+    {
+    if(time[i]>=0)
+      {
+      std::string name = m_ImageProcessor->getChannelName(time[i]);
+      createTransferFunctionEditor(QString::fromStdString(name));
+      }
+    }
+}
+//-------------------------------------------------------------------------

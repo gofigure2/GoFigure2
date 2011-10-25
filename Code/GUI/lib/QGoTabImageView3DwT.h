@@ -760,6 +760,7 @@ protected slots:
 private:
   void InitializeImageRelatedWidget();
   void SetUpShortcuts();
+  void CreateDopplerTFEditor();
 
   std::vector< QString > GetChannelNames();
 

@@ -68,5 +68,6 @@ public:
   void     SetCurrentWidget(int iIndex);
 
   void DeleteTabs();
+  int GetNumberOfTabs();
 };
 #endif
