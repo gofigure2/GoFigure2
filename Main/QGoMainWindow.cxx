@@ -107,7 +107,7 @@ QGoMainWindow::QGoMainWindow(QWidget *iParent, Qt::WindowFlags iFlags) :
   // QSize IconSize = this->iconSize();
   QSize SizeIcon(22, 22);
   this->setIconSize(SizeIcon);
-  QSize IconSize = this->iconSize();
+  //QSize IconSize = this->iconSize();
 
   this->setCentralWidget(this->CentralTabWidget);
 

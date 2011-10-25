@@ -216,13 +216,13 @@ void QGoPrintDatabase::CloseDBConnection()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoPrintDatabase::FillTableFromDatabase(const int& iThreshold)
+void QGoPrintDatabase::FillTableFromDatabase(const unsigned int& iThreshold)
 {
   bool limitedMemory = ( iThreshold == std::numeric_limits< unsigned int >::max() );
 
   OpenDBConnection();
   // Get number of meshes to be loaded
-  int nbOfTraces = NumberOfElementForGivenImagingSessionAndTrace(
+  unsigned int nbOfTraces = NumberOfElementForGivenImagingSessionAndTrace(
           this->m_DatabaseConnector,
           this->m_ImgSessionID,
           "mesh");
@@ -1214,7 +1214,7 @@ void QGoPrintDatabase::GetContentAndDisplayAllTracesInfoFor3TPs(
     {
     m_VisibleTimePoints.push_back(*this->m_SelectedTimePoint-1);
     }
-  
+
   m_VisibleTimePoints.push_back(*this->m_SelectedTimePoint);
   m_VisibleTimePoints.push_back(*this->m_SelectedTimePoint+1);
 
