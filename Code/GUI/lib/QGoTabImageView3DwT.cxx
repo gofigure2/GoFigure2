@@ -3587,10 +3587,24 @@ CreateMeshesActorsFromVisuContainer(std::list<unsigned int> iTPointToLoad)
         size_t i = 0;
         progress.setValue( i );
 
+        std::vector< MeshContainerTCoordIterator > tempvector;
+        while( it0 != it1 )
+          {
+          tempvector.push_back(it0);
+          ++it0;
+          }
+
+        size_t numberOfMeshes = tempvector.size();
+
         // we don't need here to save this mesh in the database,
         // since they have just been extracted from it!
-        while ( it0 != it1 )
+        //while ( it0 != it1 )
+
+#pragma omp for
+        for( size_t i = 0; i < numberOfMeshes; i++ )
           {
+          it0 = tempvector[i];
+
           if ( it0->Nodes )
             {
             // bug here, don't use TCoord
@@ -3604,9 +3618,9 @@ CreateMeshesActorsFromVisuContainer(std::list<unsigned int> iTPointToLoad)
               &attributes, it0->TraceID);
             }
           this->AddMeshFromNodes< TCoord >( it0 );
-          ++it0;
+          //++it0;
 
-          ++i;
+          //++i;
           progress.setValue( i );
           }
 
