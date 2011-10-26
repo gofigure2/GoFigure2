@@ -451,12 +451,13 @@ void QGoDBTrackManager::SplitMergeTrackWithWidget()
 
 //-------------------------------------------------------------------------
 void QGoDBTrackManager::DisplayOnlyCalculatedValuesForExistingTrack(
-  GoFigureTrackAttributes *iTrackAttributes, unsigned iTrackID)
+  GoFigureTrackAttributes *iTrackAttributes, unsigned int iTrackID)
 {
-    std::cout <<"DisplayOnlyCalculatedValuesForExistingTrack: "<< iTrackAttributes << std::endl;
   if ( iTrackAttributes != 0 )
     {
     int timeInterval = m_TrackContainerInfoForVisu->getTimeInterval();
+
+    assert( timeInterval != 0 );
 
     std::vector< std::string > ColumnNames (7);
     std::vector< std::string > Values (7);
@@ -471,10 +472,10 @@ void QGoDBTrackManager::DisplayOnlyCalculatedValuesForExistingTrack(
     Values.at(3) = ConvertToString< double >(iTrackAttributes->phi);
     ColumnNames.at(4) = "AvgSpeed";
     Values.at(4) = ConvertToString< double >
-        (iTrackAttributes->avg_speed / timeInterval);
+        (iTrackAttributes->avg_speed / static_cast< double >( timeInterval ));
     ColumnNames.at(5) = "MaxSpeed";
     Values.at(5) = ConvertToString< double >
-        (iTrackAttributes->max_speed / timeInterval);
+        (iTrackAttributes->max_speed / static_cast< double >( timeInterval ));
     ColumnNames.at(6) = "AvgVolume";
     Values.at(6) = ConvertToString< double >(iTrackAttributes->avg_volume);
 

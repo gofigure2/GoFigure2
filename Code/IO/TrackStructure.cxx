@@ -234,11 +234,6 @@ TrackStructure::ComputeAttributes() const
 
   PointsMapConstIterator it = this->PointsMap.begin();
 
-  if ( it == this->PointsMap.end() )
-    {
-    return oAttributes;
-    }
-
   unsigned int tmin = it->first;
   unsigned int t0 = tmin;
   unsigned int t1 = tmin;
@@ -292,7 +287,7 @@ TrackStructure::ComputeAttributes() const
                                                           / oAttributes.distance ) );
     }
 
-  oAttributes.avg_volume = this->m_AverageVolume/(PointsMap.size());
+  oAttributes.avg_volume = this->m_AverageVolume/( static_cast< double >( PointsMap.size() ) );
 
   return oAttributes;
 }
