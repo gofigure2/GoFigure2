@@ -518,7 +518,6 @@ IF( VTK_FOUND )
       INSTALL(
         FILES ${CMAKE_CURRENT_BINARY_DIR}/GoFigure2.desktop
         DESTINATION ${GOFIGURE2_INSTALL_BIN_DIR}
-        @ONLY
       )
     ENDIF()
 

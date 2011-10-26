@@ -108,6 +108,9 @@ IF( APPLE )
   SET( MACOSX_BUNDLE_LONG_VERSION_STRING
     Version ${GOFIGURE2_VERSION}
     )
+    
+  SET( GOFIGURE2_INSTALL_LICENSE_DIR    ${plugin_dest_dir}/Licenses   )
+  SET( GOFIGURE2_INSTALL_RESOURCSES_DIR ${plugin_dest_dir}/Resources  )
 
 ENDIF( APPLE )
 
@@ -284,6 +287,16 @@ IF( USE_BUNDLE_UTILITIES )
   )
 ENDIF( USE_BUNDLE_UTILITIES )
 
+IF( APPLE )
+  #---------------------------------------------------------------------------
+  # install a qt.conf file
+  # this inserts some cmake code into the install script to write the file
+  INSTALL( CODE "
+    file( WRITE \"\${CMAKE_INSTALL_PREFIX}/${GOFIGURE2_INSTALL_BUNDLE_DIR}/${qtconf_dest_dir}/qt.conf\" \"\")
+    " COMPONENT Runtime
+    )
+ENDIF( APPLE )
+
 #-----------------------------------------------------
 # Here Let's take care of License and Resoources files
 FILE( GLOB
@@ -295,36 +308,18 @@ FILE( GLOB
   GOFIGURE2_RESOURCES_FILE
   "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Resources/*.txt"
   )
+  
+# licence files
+INSTALL( FILES ${GOFIGURE2_LICENSE_FILES}
+  DESTINATION ${GOFIGURE2_INSTALL_LICENSE_DIR}
+  COMPONENT Runtime
+)
 
-IF( APPLE )
-  #---------------------------------------------------------------------------
-  # install a qt.conf file
-  # this inserts some cmake code into the install script to write the file
-  INSTALL( CODE "
-    file( WRITE \"\${CMAKE_INSTALL_PREFIX}/${GOFIGURE2_INSTALL_BUNDLE_DIR}/${qtconf_dest_dir}/qt.conf\" \"\")
-    " COMPONENT Runtime
-    )
-  # licencehi
-  INSTALL( FILES ${GOFIGURE2_LICENSE_FILES}
-    DESTINATION ${plugin_dest_dir}/Licenses
-    COMPONENT Runtime
-    )
-  # resources files
-  INSTALL( FILES ${GOFIGURE2_RESOURCES_FILE}
-    DESTINATION ${plugin_dest_dir}/Resources
-    COMPONENT Runtime
-    )
-
-ELSE( APPLE )
-  INSTALL( FILES ${GOFIGURE2_LICENSE_FILES}
-    DESTINATION ${GOFIGURE2_INSTALL_LICENSE_DIR}
-    COMPONENT Runtime
-    )
-  INSTALL( FILES ${GOFIGURE2_RESOURCES_FILE}
-    DESTINATION ${GOFIGURE2_INSTALL_RESOURCSES_DIR}
-    COMPONENT Runtime
-    )
-ENDIF( APPLE )
+# resources files
+INSTALL( FILES ${GOFIGURE2_RESOURCES_FILE}
+  DESTINATION ${GOFIGURE2_INSTALL_RESOURCSES_DIR}
+  COMPONENT Runtime
+)
 
 FILE( GLOB __source_file_h "${CMAKE_CURRENT_SOURCE_DIR}/*.h" )
 
