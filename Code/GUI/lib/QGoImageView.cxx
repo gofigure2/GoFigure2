@@ -595,8 +595,6 @@ QGoImageView::InitializeContourWidget()
 void
 QGoImageView::EnableContourWidget(bool iActivate)
 {
-  //qDebug() << "Contour ---Widget---" << iActivate;
-
   if ( iActivate )
     {
     DefaultMode();

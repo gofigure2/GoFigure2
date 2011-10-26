@@ -51,8 +51,8 @@ QGoContourEditingWidgetManager::QGoContourEditingWidgetManager(
   GoImageProcessor* iImages,
   int* iCurrentTimePoint,
   QWidget* iParent): QGoTraceEditingWidgetManager("Contour",
-  iVectChannels, iTimeMin, iTimeMax, iSeeds, iImages,
-  iCurrentTimePoint, iParent)
+    iVectChannels, iTimeMin, iTimeMax, iSeeds, iImages,
+    iCurrentTimePoint, iParent)
 {
   this->SetSemiAutomaticAlgorithms(iParent);
   this->SetManualMode(this->m_ListTimePoint, iParent);

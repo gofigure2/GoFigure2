@@ -474,6 +474,7 @@ QGoTabImageView3DwT::ManualInteractorBehavior(bool iVisible)
 void
 QGoTabImageView3DwT::SeedInteractorBehavior(bool iVisible)
 {
+  DefaultInteractorBehavior(iVisible);
   this->m_ImageView->EnableSeedWidget(iVisible);
 }
 
