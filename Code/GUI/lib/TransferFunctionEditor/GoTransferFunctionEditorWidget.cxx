@@ -144,7 +144,7 @@ GoTransferFunctionEditorWidget(QString iChannel,
         style.arg(m_Color.red()).arg(m_Color .green()).arg(m_Color.blue()));
   m_ColorPushButton->setToolTip("Click to modify the color of this channel");
   // add items to layout
-  QHBoxLayout *colorLayout = new QHBoxLayout(this);
+  QHBoxLayout *colorLayout = new QHBoxLayout;
   colorLayout->addWidget(color);
   colorLayout->addWidget(m_ColorPushButton);
   // connect signals
@@ -202,7 +202,7 @@ GoTransferFunctionEditorWidget(QString iChannel,
   connect(m_MinSlider, SIGNAL(valueChanged(int)), this, SLOT(updateSliders(int)));
   connect(m_MaxSlider, SIGNAL(valueChanged(int)), this, SLOT(updateSliders(int)));
   // add items to layout 1
-  QHBoxLayout *m_TFWidget_layout = new QHBoxLayout(this);
+  QHBoxLayout *m_TFWidget_layout = new QHBoxLayout;
   m_TFWidget_layout->addSpacerItem(spacer_red1);
   m_TFWidget_layout->addWidget(m_TFWidget);
   m_TFWidget_layout->addSpacerItem(spacer_red2);
