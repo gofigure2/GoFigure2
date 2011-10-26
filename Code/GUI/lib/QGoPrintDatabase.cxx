@@ -1195,8 +1195,6 @@ void QGoPrintDatabase::GetContentAndDisplayAllTracesInfo(
     iDatabaseConnector);
   this->m_TracksManager->DisplayInfoAndLoadVisuContainerForAllTracks(
     iDatabaseConnector);
-  this->m_TracksManager->DisplayInfoAndLoadVisuContainerForAllTracks(
-    iDatabaseConnector);
   this->m_LineagesManager->DisplayInfoAndLoadVisuContainerForAllLineages(
     iDatabaseConnector);
 }
