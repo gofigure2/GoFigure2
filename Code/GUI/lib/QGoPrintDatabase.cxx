@@ -773,13 +773,18 @@ void QGoPrintDatabase::ImportMeshes()
                                             tr("Open Meshes Export Files"), "",
                                             tr("TextFile (*.txt)") );
 
-  QStringList::Iterator it = p.begin();
-
-  while ( it != p.end() )
+  if( p.size() != 0 )
     {
-    emit        PrintMessage( tr("Warning: Close and reopen your imagingsession once the import is done !!") );
-    QFileInfo   pathInfo(*it);
-    std::string filename = (*it).toStdString();
+    emit PrintMessage( tr("Warning: Close and reopen your imagingsession once the import is done !!") );
+    }
+
+#if HAS_OPENMP
+#pragma omp for
+#endif
+  for( int i = 0; i < p.size(); i++ )
+    {
+    QFileInfo   pathInfo( p[i] );
+    std::string filename = ( p[i] ).toStdString();
     //import into the database:
     GoDBImport ImportHelper(this->m_Server, this->m_User,
                             this->m_Password, this->m_ImgSessionID, filename,
@@ -796,8 +801,6 @@ void QGoPrintDatabase::ImportMeshes()
                                                                  this->m_DatabaseConnector);
     this->CloseDBConnection();
     this->InitializeTheComboboxesNotTraceRelated();
-
-    ++it;
     }
 }
 
