@@ -151,10 +151,10 @@ void GoDBMeshRow::InitializeMap()
   this->m_TableIDName = "meshID";
   this->m_CollectionName = "track";
   this->m_CollectionIDName = "trackID";
-  this->m_MapRow[this->m_TableIDName] = ConvertToString< int >(0);
-  this->m_MapRow["CellTypeID"] = ConvertToString< int >(0);
-  this->m_MapRow["SubCellularID"] = ConvertToString< int >(0);
-  this->m_MapRow["trackID"] = ConvertToString< int >(0);
+  this->m_MapRow[this->m_TableIDName] = std::string( "0" );//ConvertToString< int >(0);
+  this->m_MapRow["CellTypeID"] = std::string( "0" );//ConvertToString< int >(0);
+  this->m_MapRow["SubCellularID"] = std::string( "0" );//ConvertToString< int >(0);
+  this->m_MapRow["trackID"] = std::string( "0" );//ConvertToString< int >(0);
 }
 
 //-------------------------------------------------------------------------
