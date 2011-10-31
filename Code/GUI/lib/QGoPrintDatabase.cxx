@@ -794,16 +794,16 @@ void QGoPrintDatabase::ImportMeshes()
                             *this->m_SelectedTimePoint);
     ImportHelper.ImportMeshes();
 
-    std::vector< int > NewMeshIDs = ImportHelper.GetVectorNewMeshIDs();
-    std::vector< int > NewTrackIDs = ImportHelper.GetVectorNewTracksIDs();
+//    std::vector< int > NewMeshIDs = ImportHelper.GetVectorNewMeshIDs();
+//    std::vector< int > NewTrackIDs = ImportHelper.GetVectorNewTracksIDs();
 
-    this->OpenDBConnection();
-    this->m_MeshesManager->UpdateTWAndContainerForImportedTraces(NewMeshIDs,
-                                                                 this->m_DatabaseConnector);
-    this->m_TracksManager->UpdateTWAndContainerForImportedTraces(NewTrackIDs,
-                                                                 this->m_DatabaseConnector);
-    this->CloseDBConnection();
-    this->InitializeTheComboboxesNotTraceRelated();
+//    this->OpenDBConnection();
+//    this->m_MeshesManager->UpdateTWAndContainerForImportedTraces(NewMeshIDs,
+//                                                                 this->m_DatabaseConnector);
+//    this->m_TracksManager->UpdateTWAndContainerForImportedTraces(NewTrackIDs,
+//                                                                 this->m_DatabaseConnector);
+//    this->CloseDBConnection();
+//    this->InitializeTheComboboxesNotTraceRelated();
     }
 }
 
