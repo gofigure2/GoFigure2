@@ -106,8 +106,9 @@ public:
   std::list< unsigned int > UpdateTheTracesColor(vtkMySQLDatabase *iDatabaseConnector);
 
   //virtual pure method in QGoDBTraceManager
-  virtual void UpdateTWAndContainerForImportedTraces(std::vector< int > iVectorImportedTraces,
-                                                     vtkMySQLDatabase *iDatabaseConnector);
+  virtual void UpdateTWAndContainerForImportedTraces(
+    const std::vector< int > & iVectorImportedTraces,
+    vtkMySQLDatabase *iDatabaseConnector);
 
   /**
   \brief delete the traces of the list from the database, the TW and the
@@ -117,7 +118,7 @@ public:
 
   */
   void DeleteListTraces(vtkMySQLDatabase *iDatabaseConnector,
-    std::list<unsigned int> iListTraces);
+    const std::list<unsigned int> & iListTraces);
 
   //virtual pure method in QGoDBTraceManager
   virtual void DeleteCheckedTraces( vtkMySQLDatabase *iDatabaseConnector);
@@ -137,11 +138,13 @@ public:
   with the info from the meshes and save them in the database
   */
   void UpdatePointsOfCurrentElementForImportedTrack(
-    std::map<unsigned int,double*> iMeshesInfo, vtkMySQLDatabase* iDatabaseConnector);
+    std::map<unsigned int,double*> iMeshesInfo,
+    vtkMySQLDatabase* iDatabaseConnector);
 
   //method in QGoDBTraceManager
   void UpdateBoundingBoxes(
-  vtkMySQLDatabase *iDatabaseConnector,std::list< unsigned int > iListTracesIDs);
+    vtkMySQLDatabase *iDatabaseConnector,
+    const std::list< unsigned int > & iListTracesIDs);
 
   /**
   \brief check if the track belongs to a division and if it is possible to add the mesh
@@ -149,13 +152,15 @@ public:
   a message to the user, if not, return the trackID of the divisions to be updated in the
   visu, if return empty message and empty list, the track doesn't belong to any division
   */
-  std::string CheckMeshCanBeAddedToTrack(vtkMySQLDatabase* iDatabaseConnector,
-    unsigned int iTrackID, unsigned int iMeshTimePoint, std::list<unsigned int> &ioMotherTrackDivisionToUpdate);
+  std::string CheckMeshCanBeAddedToTrack( vtkMySQLDatabase* iDatabaseConnector,
+                                          unsigned int iTrackID,
+                                          unsigned int iMeshTimePoint,
+                                          std::list<unsigned int> &ioMotherTrackDivisionToUpdate);
 
   /**
   \brief update the track container for visu and consequently the divisions in the visu
   */
-  void UpdateDivisions(std::list<unsigned int> iListMotherTrackIDs);
+  void UpdateDivisions(const std::list<unsigned int> & iListMotherTrackIDs);
 
   /**
   \brief Modify volume of the given track ID
@@ -165,23 +170,23 @@ public:
   /**
   \brief Modify volume of the given track ID
   */
-  void AddVolumes(std::list< std::pair<unsigned int, double> > iVolumes);
+  void AddVolumes(const std::list< std::pair<unsigned int, double> > & iVolumes);
 
   /**
   \brief Modify volume of the given track ID
   */
-  void RemoveVolumes(std::list< std::pair<unsigned int, double> > iVolumes);
+  void RemoveVolumes(const std::list< std::pair<unsigned int, double> > & iVolumes);
 
   /**
   \brief Modify volume of the given track ID
   */
-  void AddVolumes(std::list< std::pair<unsigned int, double> > iVolumes,
+  void AddVolumes(const std::list< std::pair<unsigned int, double> > & iVolumes,
                   unsigned int iTrackID);
 
   /**
   \brief Modify volume of the given track ID
   */
-  void RemoveVolumes(std::list< std::pair<unsigned int, double> > iVolumes,
+  void RemoveVolumes(const std::list< std::pair<unsigned int, double> > & iVolumes,
                      unsigned int iTrackID);
 
 signals:
@@ -207,7 +212,7 @@ protected:
   virtual void DisplayInfoForAllTraces(vtkMySQLDatabase *iDatabaseConnector);
 
   virtual void DisplayInfoForTracesForSpecificTPs(
-    vtkMySQLDatabase *iDatabaseConnector, std::list<unsigned int> iListTPs);
+    vtkMySQLDatabase *iDatabaseConnector, const std::list<unsigned int> & iListTPs);
 
   //virtual pure method in QGoDBTraceManager
   virtual void GetTracesInfoFromDBAndModifyContainerForVisu(
@@ -270,7 +275,8 @@ protected:
   \return ID of the new created trackfamily
   */
   int CreateTrackFamily(vtkMySQLDatabase* iDatabaseConnector,
-    unsigned int iMotherTrackID, std::list<unsigned int> iDaughtersID);
+                        unsigned int iMotherTrackID,
+                        const std::list<unsigned int> & iDaughtersID);
 
   /**
   \brief get the trackID with the lowest timepoint as the mother trackID,
@@ -283,7 +289,8 @@ protected:
   */
   bool IdentifyMotherDaughtersToCreateTrackFamily(
     vtkMySQLDatabase* iDatabaseConnector,
-    std::list<unsigned int> iListTracksID, int &ioMotherID,
+    const std::list<unsigned int> & iListTracksID,
+    int &ioMotherID,
     std::list<unsigned int> &ioDaughtersID);
 
   /**

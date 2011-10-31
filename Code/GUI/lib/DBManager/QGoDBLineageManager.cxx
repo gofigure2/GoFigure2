@@ -128,7 +128,8 @@ void QGoDBLineageManager::DisplayInfoForAllTraces(
 
 //-------------------------------------------------------------------------
 void QGoDBLineageManager::DisplayInfoForTracesForSpecificTPs(
-    vtkMySQLDatabase *iDatabaseConnector, std::list<unsigned int> iListTPs)
+  vtkMySQLDatabase *iDatabaseConnector,
+  const std::list<unsigned int> & iListTPs)
 {
   (void) iListTPs;
   this->DisplayInfoForAllTraces(iDatabaseConnector);
@@ -156,7 +157,7 @@ void QGoDBLineageManager::DisplayInfoAndLoadVisuContainerForAllLineages(
   while ( it != list_of_traces.end() )
     {
     LineageStructure Lineage = *it;
-    GoFigureLineageAttributes Attributes = 
+    GoFigureLineageAttributes Attributes =
       m_TrackContainerInfoForVisu->UpdateDivisionsForALineage(
       Lineage.TrackRootID, Lineage.rgba);
     this->m_LineageContainerInfoForVisu->Insert(*it);
@@ -224,7 +225,7 @@ unsigned int QGoDBLineageManager::CreateNewLineageWithTrackRoot(
     true);
   delete[] color;
   this->DisplayInfoForLastCreatedTrace(iDatabaseConnector);
-  
+
   return NewLineageID;
 }
 
@@ -257,12 +258,13 @@ std::list< unsigned int > QGoDBLineageManager::UpdateTheTracesColor(
 
 //-------------------------------------------------------------------------
 void QGoDBLineageManager::UpdateTWAndContainerForImportedTraces(
-  std::vector< int > iVectorImportedTraces, vtkMySQLDatabase *iDatabaseConnector)
+  const std::vector< int > & iVectorImportedTraces,
+  vtkMySQLDatabase *iDatabaseConnector)
 {
   //this->UpdateTWAndContainerWithImportedTracesTemplate<
   //  GoDBTWContainerForLineage >(this->m_TWContainer,
                              // iVectorImportedTraces, iDatabaseConnector);
-  
+
 }
 
 //-------------------------------------------------------------------------
@@ -270,14 +272,15 @@ void QGoDBLineageManager::UpdateTWAndContainerForImportedTraces(
 //-------------------------------------------------------------------------
 void QGoDBLineageManager::DeleteCheckedTraces(vtkMySQLDatabase *iDatabaseConnector)
 {
-  this->DeleteListTraces(iDatabaseConnector, this->GetListHighlightedIDs() );  
+  this->DeleteListTraces(iDatabaseConnector, this->GetListHighlightedIDs() );
 }
 
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoDBLineageManager::DeleteListTraces(vtkMySQLDatabase *iDatabaseConnector,
-                                         std::list< unsigned int > iListTraces)
+void QGoDBLineageManager::
+DeleteListTraces(vtkMySQLDatabase *iDatabaseConnector,
+                 const std::list< unsigned int > & iListTraces)
 {
   //delete the lineages from the visu, the database and the TW:
   this->DeleteTracesTemplate< LineageContainer >(iDatabaseConnector,
@@ -418,7 +421,7 @@ void QGoDBLineageManager::SetColorCoding(bool IsChecked)
 //-------------------------------------------------------------------------
 void QGoDBLineageManager::UpdateTrackRootSelectedLineage(
   vtkMySQLDatabase* iDatabaseConnector,
-  unsigned int iLineageID, unsigned int iTrackIDRoot) 
+  unsigned int iLineageID, unsigned int iTrackIDRoot)
 {
   GoDBLineageRow LastLineage;
   LastLineage.SetValuesForSpecificID(iLineageID, iDatabaseConnector);
@@ -486,13 +489,16 @@ ExportLineages()
 
 //-------------------------------------------------------------------------
 void
-QGoDBLineageManager::UpdateBoundingBoxes(vtkMySQLDatabase *iDatabaseConnector,
-                                   std::list< unsigned int > iListTracesIDs,
-                                   bool UpdateTW)
+QGoDBLineageManager::
+UpdateBoundingBoxes(vtkMySQLDatabase *iDatabaseConnector,
+                    const std::list< unsigned int > & iListTracesIDs,
+                    bool UpdateTW)
 {
   this->m_CollectionOfTraces->RecalculateDBBoundingBox(
     iDatabaseConnector, iListTracesIDs);
-  std::list<unsigned int>::iterator iter = iListTracesIDs.begin();
+
+  std::list<unsigned int>::const_iterator iter = iListTracesIDs.begin();
+
   while(iter != iListTracesIDs.end() )
     {
     std::list<unsigned int> Listiter;
@@ -525,7 +531,7 @@ void QGoDBLineageManager::UpdateDivisionsInTrackContainer(unsigned int iLineageI
     }
   else
     {
-    Attributes = m_TrackContainerInfoForVisu->UpdateCollectionScalars( root ); 
+    Attributes = m_TrackContainerInfoForVisu->UpdateCollectionScalars( root );
     }
 
   this->m_TWContainer->SetLineageAttributes(Attributes);
@@ -535,7 +541,7 @@ void QGoDBLineageManager::UpdateDivisionsInTrackContainer(unsigned int iLineageI
 //-------------------------------------------------------------------------
 void QGoDBLineageManager::DeleteTracesFromContextMenu()
 {
-  std::list<unsigned int> ListLineagesToDelete = 
+  std::list<unsigned int> ListLineagesToDelete =
     this->GetListHighlightedIDs();
   if ( QGoDBTraceManager::CheckThatThereAreTracesToDelete(ListLineagesToDelete) )
     {
@@ -551,10 +557,12 @@ void QGoDBLineageManager::DeleteTracesFromContextMenu()
 
 //-------------------------------------------------------------------------
 void QGoDBLineageManager::DeleteDivisionsForLineages(
-  vtkMySQLDatabase *iDatabaseConnector, std::list<unsigned int> iLineagesID)
+  vtkMySQLDatabase *iDatabaseConnector,
+  const std::list<unsigned int> & iLineagesID)
 {
-  std::list<unsigned int> TrackFamiliesToDelete = 
+  std::list<unsigned int> TrackFamiliesToDelete =
     this->m_CollectionOfTraces->GetTrackFamiliesForLineages(iDatabaseConnector, iLineagesID);
+
   std::list<unsigned int>::iterator iter = TrackFamiliesToDelete.begin();
   while(iter != TrackFamiliesToDelete.end() )
     {
