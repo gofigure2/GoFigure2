@@ -140,6 +140,8 @@ void QGoDBLineageManager::DisplayInfoForTracesForSpecificTPs(
 void QGoDBLineageManager::DisplayInfoAndLoadVisuContainerForAllLineages(
   vtkMySQLDatabase *iDatabaseConnector)
 {
+  this->m_Table->setSortingEnabled(false);
+
   std::vector< int > VectorIDs = this->m_TWContainer->GetAllTraceIDsInContainer();
   std::list<unsigned int> ListIDs(VectorIDs.begin(), VectorIDs.end());
 
@@ -162,6 +164,9 @@ void QGoDBLineageManager::DisplayInfoAndLoadVisuContainerForAllLineages(
     this->InsertLineageInTW(iDatabaseConnector, Lineage.TraceID);
     ++it;
     }
+
+  this->m_Table->setSortingEnabled(true);
+  this->m_Table->resizeColumnsToContents();
 }
 
 //-------------------------------------------------------------------------

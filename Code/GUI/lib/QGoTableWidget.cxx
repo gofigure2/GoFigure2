@@ -472,7 +472,7 @@ void QGoTableWidget::InsertOnlyOneNewRow(TWContainerType iTWRowContainer,
                                   std::string TraceName, std::string CollectionName,
                                   Qt::CheckState iVisible)
 {
-  this->setSortingEnabled(false);
+//  this->setSortingEnabled(false);
   if ( iTWRowContainer.size() == 0 || iTWRowContainer[1].second.size() != 1 )
     {
     std::cout << "The New Trace Row Container is totally empty or there is more than 1 trace in it";
@@ -484,8 +484,8 @@ void QGoTableWidget::InsertOnlyOneNewRow(TWContainerType iTWRowContainer,
     this->InsertNewRow(iTWRowContainer, 0, iIndexColorTraceRowContainer, iIndexColorCollectionRowContainer,
       TraceName, CollectionName, iVisible);
     }
-  this->setSortingEnabled(true);
-  this->resizeColumnsToContents();
+//  this->setSortingEnabled(true);
+//  this->resizeColumnsToContents();
 }
 
 //--------------------------------------------------------------------------

@@ -623,15 +623,18 @@ protected:
                                                       std::vector< int > iVectorTraceIDs,
                                                       vtkMySQLDatabase *iDatabaseConnector)
   {
+    this->m_Table->setSortingEnabled(false);
+
     //insert the info from the database for the traces into the container
     //for visu:
     /** \todo Lydie modify to have as argument a list of unsigned int*/
     std::list< unsigned int > ListTraceIDs(iVectorTraceIDs.begin(), iVectorTraceIDs.end() );
     this->GetTracesInfoFromDBAndModifyContainerForVisu(
       iDatabaseConnector, ListTraceIDs);
+
     //insert the new rows into the TW:
     std::list< unsigned int >::iterator iter = ListTraceIDs.begin();
-    this->m_Table->setSortingEnabled(false);
+
     while ( iter != ListTraceIDs.end() )
       {
       TWContainerType RowContainer =
@@ -641,9 +644,10 @@ protected:
                                   iTWContainer->GetIndexForGroupColor(this->m_TraceName),
                                   iTWContainer->GetIndexForGroupColor(this->m_CollectionName),
                                   this->m_TraceName, this->m_CollectionName);
-      iter++;
+      ++iter;
       }
     this->m_Table->setSortingEnabled(true);
+    this->m_Table->resizeColumnsToContents();
   }
 
   /**
