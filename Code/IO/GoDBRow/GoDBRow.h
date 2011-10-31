@@ -39,7 +39,7 @@
 #include "vtkMySQLDatabase.h"
 #include <string>
 #include <sstream>
-#include "boost/unordered_map.hpp"
+#include <map>
 #include <vector>
 
 #include "QGoIOConfigure.h"
@@ -56,7 +56,7 @@ class QGOIO_EXPORT GoDBRow
 {
 public:
 
-  typedef boost::unordered_map< std::string, std::string > StringMapType;
+  typedef std::map< std::string, std::string >      StringMapType;
   typedef StringMapType::iterator              StringMapIterator;
   typedef StringMapType::const_iterator        StringMapConstIterator;
 
