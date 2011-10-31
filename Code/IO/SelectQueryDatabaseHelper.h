@@ -623,6 +623,7 @@ GetSpecificValuesEqualToZero(
   const std::string & iFieldTwo);
 
 template <class TResultsQuery>
+inline
 TResultsQuery ExecuteSelectQuery(vtkMySQLDatabase *iDatabaseConnector,
                                  const std::string & iQuery)
 {
@@ -643,9 +644,10 @@ TResultsQuery ExecuteSelectQuery(vtkMySQLDatabase *iDatabaseConnector,
     query->Delete();
     return oResults;
     }
+  int NumberOfFields = query->GetNumberOfFields();
   while ( query->NextRow() )
     {
-    for ( int k = 0; k < query->GetNumberOfFields(); k++ )
+    for ( int k = 0; k < NumberOfFields; k++ )
       {
       ValueType temp = ss_atoi<ValueType>(query->DataValue(k).ToString());
       oResults.push_back( temp );
