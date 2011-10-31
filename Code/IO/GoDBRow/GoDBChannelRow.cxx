@@ -46,12 +46,12 @@ void GoDBChannelRow::InitializeMap()
 {
   this->m_TableName = "channel";
   this->m_TableIDName = "ChannelID";
-  this->m_MapRow["ChannelID"] = ConvertToString< int >(0);
+  this->m_MapRow["ChannelID"] = std::string( "0" );//ConvertToString< int >(0);
   this->m_MapRow["Name"] = "";
-  this->m_MapRow["ImagingSessionID"] = ConvertToString< int >(0);
-  this->m_MapRow["ColorID"] = ConvertToString< int >(0);
-  this->m_MapRow["ChannelNumber"] = ConvertToString< int >(0);
-  this->m_MapRow["NumberOfBits"] = ConvertToString< int >(0);
+  this->m_MapRow["ImagingSessionID"] = std::string( "0" );//ConvertToString< int >(0);
+  this->m_MapRow["ColorID"] = std::string( "0" );//ConvertToString< int >(0);
+  this->m_MapRow["ChannelNumber"] = std::string( "0" );//ConvertToString< int >(0);
+  this->m_MapRow["NumberOfBits"] = std::string( "0" );//ConvertToString< int >(0);
 }
 
 //-------------------------------------------------------------------------

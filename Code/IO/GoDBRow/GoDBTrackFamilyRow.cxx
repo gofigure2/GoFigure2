@@ -42,7 +42,7 @@ GoDBTrackFamilyRow::GoDBTrackFamilyRow() : GoDBRow()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-GoDBTrackFamilyRow::GoDBTrackFamilyRow(unsigned int iExistingID, 
+GoDBTrackFamilyRow::GoDBTrackFamilyRow(unsigned int iExistingID,
   vtkMySQLDatabase* iDatabaseConnector)
 {
   this->InitializeMap();
@@ -55,10 +55,10 @@ void GoDBTrackFamilyRow::InitializeMap()
 {
   this->m_TableName = "trackfamily";
   this->m_TableIDName = "TrackFamilyID";
-  this->m_MapRow["TrackFamilyID"] = ConvertToString< int >(0);
-  this->m_MapRow["TrackIDMother"] = ConvertToString< int >(0);
-  this->m_MapRow["TrackIDDaughter1"] = ConvertToString< int >(0);
-  this->m_MapRow["TrackIDDaughter2"] = ConvertToString< int >(0);
+  this->m_MapRow["TrackFamilyID"] = std::string( "0" );//ConvertToString< int >(0);
+  this->m_MapRow["TrackIDMother"] = std::string( "0" );//ConvertToString< int >(0);
+  this->m_MapRow["TrackIDDaughter1"] = std::string( "0" );//ConvertToString< int >(0);
+  this->m_MapRow["TrackIDDaughter2"] = std::string( "0" );//ConvertToString< int >(0);
 }
 
 //-------------------------------------------------------------------------
@@ -84,8 +84,8 @@ int GoDBTrackFamilyRow::DoesThisTrackFamilyAlreadyExists(
   vtkMySQLDatabase *DatabaseConnector)
 {
   std::vector< FieldWithValue > Conditions;
-  this->AddConditions("TrackIDMother", Conditions); 
-  return FindOneID(DatabaseConnector, this->m_TableName, 
+  this->AddConditions("TrackIDMother", Conditions);
+  return FindOneID(DatabaseConnector, this->m_TableName,
     this->m_TableIDName, Conditions);
 }
 //-------------------------------------------------------------------------

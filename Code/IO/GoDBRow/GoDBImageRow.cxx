@@ -44,11 +44,11 @@ GoDBImageRow::GoDBImageRow()
 //-------------------------------------------------------------------------
 void GoDBImageRow::InitializeMap()
 {
-  this->m_MapRow["ImageID"] = ConvertToString< int >(0);
-  this->m_MapRow["ImagingSessionID"] = ConvertToString< int >(0);
-  this->m_MapRow["CoordIDMin"] = ConvertToString< int >(0);
+  this->m_MapRow["ImageID"] = std::string( "0" );//ConvertToString< int >(0);
+  this->m_MapRow["ImagingSessionID"] = std::string( "0" );//ConvertToString< int >(0);
+  this->m_MapRow["CoordIDMin"] = std::string( "0" );//ConvertToString< int >(0);
   this->m_MapRow["Filename"] = "";
-  this->m_MapRow["ChannelID"] = ConvertToString< int >(1); //\todo :change back
+  this->m_MapRow["ChannelID"] = std::string( "1" );//ConvertToString< int >(1); //\todo :change back
                                                            // to 0 or -1
 }
 

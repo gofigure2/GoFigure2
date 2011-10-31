@@ -181,11 +181,11 @@ std::string GoDBImport::SaveNoTracesEntities(IntMapType & ioMapColorIDs,
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void GoDBImport::SaveTracesEntities(IntMapType iMapColorIDs,
-                                    IntMapType iMapCoordIDs,
-                                    std::string iLineContent,
-                                    IntMapType iMapCellTypeIDs,
-                                    IntMapType iMapSubCellTypeIDs,
+void GoDBImport::SaveTracesEntities(const IntMapType  & iMapColorIDs,
+                                    const IntMapType  & iMapCoordIDs,
+                                    const std::string & iLineContent,
+                                    const IntMapType  & iMapCellTypeIDs,
+                                    const IntMapType  & iMapSubCellTypeIDs,
                                     bool SaveIntensities)
 {
   IntMapType MapContourIDs;
@@ -304,7 +304,8 @@ void GoDBImport::CloseDBConnection()
 
 //--------------------------------------------------------------------------
 void GoDBImport::SaveIntensityForMesh(std::string & ioLineContent,
-                                      IntMapType iMapMeshIDs, IntMapType iMapColorIDs)
+                                      const IntMapType & iMapMeshIDs,
+                                      const IntMapType & iMapColorIDs)
 {
   IntMapType MapChannelIDs;
   while ( this->FindFieldName(ioLineContent) != "NumberOfchannel" )

@@ -117,6 +117,9 @@ public:
   */
   std::string PrintColumnNames();
 
+
+  std::vector< std::string > PrintColumnsAndValues();
+
   /**
   \brief put all the keys of the map in a vector
   \return all the map keys in a vector
