@@ -871,7 +871,6 @@ protected:
 
   void AddSpecificActionsForContourMesh(QMenu *iMenu);
 
-
   virtual void AddActionForAddingCheckedTracesToCollection();
 
   /**

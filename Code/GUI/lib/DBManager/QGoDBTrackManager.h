@@ -416,5 +416,8 @@ protected slots:
   \brief slot called when the user chose "Delete the division for this tracks"
   */
   void DeleteTheDivisions();
+
+  void GoToTrackEnd();
+  void GoToTrackBegin();
 };
 #endif

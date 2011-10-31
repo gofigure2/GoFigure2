@@ -463,7 +463,6 @@ void QGoDBTraceManager::GoToTheTrace()
                               CoordCenter.GetMapValue<int>("ZCoord"),
                               CoordCenter.GetMapValue<int>("TCoord") );
 }
-
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
