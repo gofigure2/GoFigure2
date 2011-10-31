@@ -910,10 +910,10 @@ std::list<unsigned int> GoDBCollectionOfTraces::GetTraceIDsBelongingToListTimePo
 {
   FieldWithValue JoinCondition = { "CoordIDMin", "CoordID", "=" };
   std::vector< std::string > VectTimePoints = ListUnsgIntToVectorString(iListTPs);
-  FieldWithValue AndCondition = 
+  FieldWithValue AndCondition =
     {"imagingsessionID", ConvertToString<unsigned int>(this->m_ImgSessionID), "="};
 
-  return GetAllSelectedValuesFromTwoTables(iDatabaseConnector, this->m_TracesName, 
+  return GetAllSelectedValuesFromTwoTables(iDatabaseConnector, this->m_TracesName,
     "coordinate", this->m_TracesIDName, JoinCondition, "TCoord", VectTimePoints,
      AndCondition);
 }
@@ -1048,7 +1048,7 @@ int GoDBCollectionOfTraces::GetTraceIDWithLowestTimePoint(
     ++iter;
     }
 
-  std::vector< std::string > ResultQuery 
+  std::vector< std::string > ResultQuery
     = GetAllSelectedValuesFromTwoTables(
         iDatabaseConnector, this->m_TracesName, "coordinate", SelectedFields,
         JoinCondition, Conditions, "OR", "TCoord");
@@ -1067,19 +1067,18 @@ int GoDBCollectionOfTraces::GetTraceIDWithLowestTimePoint(
  std::list<unsigned int> GoDBCollectionOfTraces::GetTrackFamilyDataFromDB(
    vtkMySQLDatabase *iDatabaseConnector)
  {
-   
    std::vector<std::string> VectColumnsTrackFamily(3);
    VectColumnsTrackFamily.at(0) = "TrackIDMother";
    VectColumnsTrackFamily.at(1) = "TrackIDDaughter1";
    VectColumnsTrackFamily.at(2) = "TrackIDDaughter2";
-   FieldWithValue JoinCondition = {"TrackID", "TrackIDMother", "="};
+   const FieldWithValue JoinCondition = {"TrackID", "TrackIDMother", "="};
 
    return GetAllSelectedValuesFromTwoTables(  iDatabaseConnector,
-                                              "track",
-                                              "trackfamily",
+                                              std::string( "track" ),
+                                              std::string( "trackfamily" ),
                                               VectColumnsTrackFamily,
                                               JoinCondition,
-                                              "ImagingsessionID",
+                                              std::string( "ImagingsessionID" ),
                                               ConvertToString<unsigned int>(this->m_ImgSessionID),
                                               true);
  }
@@ -1105,8 +1104,8 @@ int GoDBCollectionOfTraces::GetTraceIDWithLowestTimePoint(
  {
    FieldWithValue JoinCondition = { "trackID", "trackIDMother", "=" };
    std::vector<std::string> VectTrackIDs = ListUnsgIntToVectorString(iListTrackIDs);
-   std::list<unsigned int> oList = GetTwoFieldsFromTwoTables(iDatabaseConnector, 
-     this->m_TracesName, "trackfamily", JoinCondition, "track.trackfamilyID", 
+   std::list<unsigned int> oList = GetTwoFieldsFromTwoTables(iDatabaseConnector,
+     this->m_TracesName, "trackfamily", JoinCondition, "track.trackfamilyID",
      "trackfamily.trackfamilyID", this->m_TracesIDName, VectTrackIDs, true);
    return oList;
  }
