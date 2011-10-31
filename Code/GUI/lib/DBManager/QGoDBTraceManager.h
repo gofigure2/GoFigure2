@@ -92,7 +92,7 @@ public:
   \param[in] iTraceIDs list of the IDs for the traces to be deleted
   */
   void UpdateTWAndContainerForDeletedTraces(
-    std::list< unsigned int > iTraceIDs);
+    const std::list< unsigned int > & iTraceIDs);
 
   /**
   \brief get the data needed from the database for the
@@ -101,8 +101,9 @@ public:
   \param[in] iVectorImportedTraces IDs of the imported traces
   \param[in] iDatabaseConnector connection to the database
   */
-  virtual void UpdateTWAndContainerForImportedTraces(std::vector< int > iVectorImportedTraces,
-                                                     vtkMySQLDatabase *iDatabaseConnector) = 0;
+  virtual void UpdateTWAndContainerForImportedTraces(
+    const std::vector< int > & iVectorImportedTraces,
+    vtkMySQLDatabase *iDatabaseConnector) = 0;
 
   /**
   \brief
@@ -140,11 +141,12 @@ public:
   the traces
   */
   void UpdateCollectionID(vtkMySQLDatabase *iDatabaseConnector,
-                          std::list< unsigned int > iListTracesIDs, int iCollectionID);
+                          const std::list< unsigned int > & iListTracesIDs,
+                          int iCollectionID);
 
   /**
   \brief update in the database the bounding boxes corresponding to the
-  TracesIDs and update the corresponding rows in the TW if the bool is 
+  TracesIDs and update the corresponding rows in the TW if the bool is
   set to true.
   \param[in] iDatabaseConnector connection to the database
   \param[in] iListTracesIDs list of the tracesIDs with a bounding box
@@ -152,7 +154,7 @@ public:
   \param[in] UpdateTW display the updates in the TW
   */
   virtual void UpdateBoundingBoxes(vtkMySQLDatabase *iDatabaseConnector,
-                                   std::list< unsigned int > iListTracesIDs,
+                                   const std::list< unsigned int > & iListTracesIDs,
                                    bool UpdateTW = true);
 
   /**
@@ -165,7 +167,8 @@ public:
   different from zero found in the database for these tracesIDs
   */
   std::list< unsigned int > GetListCollectionIDs(
-    vtkMySQLDatabase *iDatabaseConnector, std::list< unsigned int > iListTracesIDs);
+    vtkMySQLDatabase *iDatabaseConnector,
+    const std::list< unsigned int > & iListTracesIDs);
 
   /**
   \brief get the collectionOf IDs for the TracesIDs found in iListTraces
@@ -176,7 +179,8 @@ public:
   (exp: return a list of ContourIDs belonging to the meshesIDs listed in iListTraces)
   */
   std::list< unsigned int > GetListTracesIDsFromThisCollectionOf(
-    vtkMySQLDatabase *iDatabaseConnector, std::list< unsigned int > iListTraces);
+    vtkMySQLDatabase *iDatabaseConnector,
+    const std::list< unsigned int > & iListTraces);
 
   /**
   \brief get the list of tracesIDs belonging to the collection listed in iListCollectionIDs
@@ -185,7 +189,8 @@ public:
   \return list of the traces belonging to these collections
   */
   std::list< unsigned int > GetListTracesIDsBelongingToCollectionIDs(
-    vtkMySQLDatabase *iDatabaseConnector, std::list<unsigned int> iListCollectionIDs);
+    vtkMySQLDatabase *iDatabaseConnector,
+    const std::list<unsigned int>& iListCollectionIDs);
 
   /**
   \brief get the data from the database corresponding to the iListTraces and display
@@ -194,7 +199,7 @@ public:
   \param[in] iListTraces list of the TraceIDs the rows in the TW need to be updated
   */
   void DisplayInfoForExistingTraces(vtkMySQLDatabase *iDatabaseConnector,
-                                    std::list< unsigned int > iListTraces);
+                                    const std::list< unsigned int >& iListTraces);
   /**
   \brief get the last saved traces in the database
   \param[in] iDatabaseConnector connection to the database
@@ -300,7 +305,8 @@ protected:
   virtual void DisplayInfoForAllTraces(vtkMySQLDatabase *iDatabaseConnector) = 0;
 
   virtual void DisplayInfoForTracesForSpecificTPs(
-    vtkMySQLDatabase *iDatabaseConnector, std::list<unsigned int> iListTPs) = 0;
+    vtkMySQLDatabase *iDatabaseConnector,
+    const std::list<unsigned int>& iListTPs) = 0;
 
   /**
   \brief Virtual pure method: get the data needed from the database for the
@@ -389,7 +395,7 @@ protected:
   no value yet
   \param[in] iDatabaseConnector connection to the database
   \param[in] iState if false the visible column will be unchecked in the TW
-  \param[in] iIndexShowColumn index of the show column in the TW Container(to be set up 
+  \param[in] iIndexShowColumn index of the show column in the TW Container(to be set up
   for mesh and contour)
   \tparam T this method takes only children of GoDBTableWidgetContainer as type
   */
@@ -408,7 +414,7 @@ protected:
       RowContainer,
       iTWContainer->GetIndexForGroupColor(this->m_TraceName),
       iTWContainer->GetIndexForGroupColor(this->m_CollectionName),
-      this->m_TraceName, this->m_CollectionName, ColumnNamesAndToolTips, 
+      this->m_TraceName, this->m_CollectionName, ColumnNamesAndToolTips,
       iState, iIndexShowColumn);
   }
 
@@ -416,7 +422,7 @@ protected:
   void DisplayInfoForTracesForSpecificTPsTemplate(T *iTWContainer,
                                        vtkMySQLDatabase *iDatabaseConnector,
                                        Qt::CheckState iState,
-                                       std::list<unsigned int> iListTPs,
+                                       const std::list<unsigned int> & iListTPs,
                                        int iIndexShowColumn = 0)
   {
     //load the container with the traces infos for the TW for the TimePoints contained
@@ -432,7 +438,7 @@ protected:
       RowContainer,
       iTWContainer->GetIndexForGroupColor(this->m_TraceName),
       iTWContainer->GetIndexForGroupColor(this->m_CollectionName),
-      this->m_TraceName, this->m_CollectionName, ColumnNamesAndToolTips, 
+      this->m_TraceName, this->m_CollectionName, ColumnNamesAndToolTips,
       iState, iIndexShowColumn);
   }
 
@@ -472,7 +478,8 @@ protected:
   */
   template< typename T >
   void DisplayInfoForExistingTraceTemplate(T *iTWContainer,
-                                           vtkMySQLDatabase *iDatabaseConnector, int iTraceID)
+                                           vtkMySQLDatabase *iDatabaseConnector,
+                                           int iTraceID)
   {
     if (iTraceID != 0)
       {
@@ -522,10 +529,17 @@ protected:
   }
 
   template< typename T >
-  void SetTraceBoundingBoxAndPoints(unsigned int iXCoordMin, unsigned int iYCoordMin,
-                                    unsigned int iZCoordMin, unsigned int iTCoord, unsigned int iXCoordMax,
-                                    unsigned int iYCoordMax, unsigned int iZCoordMax, vtkPolyData *iTraceNodes,
-                                    vtkMySQLDatabase *iDatabaseConnector, T & iTrace, unsigned int iTCoordMax = 0)
+  void SetTraceBoundingBoxAndPoints(unsigned int iXCoordMin,
+                                    unsigned int iYCoordMin,
+                                    unsigned int iZCoordMin,
+                                    unsigned int iTCoord,
+                                    unsigned int iXCoordMax,
+                                    unsigned int iYCoordMax,
+                                    unsigned int iZCoordMax,
+                                    vtkPolyData *iTraceNodes,
+                                    vtkMySQLDatabase *iDatabaseConnector,
+                                    T & iTrace,
+                                    unsigned int iTCoordMax = 0)
   {
     GoDBCoordinateRow coord_min = this->GetCoordinateFromInt(iXCoordMin,
                                                              iYCoordMin, iZCoordMin, iTCoord);
@@ -571,11 +585,11 @@ protected:
   void DisplayInfoAndLoadVisuContainerWithAllTracesForSpecificTPs(
                                                     vtkMySQLDatabase *iDatabaseConnector,
                                                     C* iContainerForVisu,
-                                                    std::list<unsigned int> iListTPs)
+                                                    const std::list<unsigned int> & iListTPs)
   {
    this->DisplayInfoForTracesForSpecificTPs( iDatabaseConnector, iListTPs);
 
-    std::list<unsigned int> ListIDs = 
+    std::list<unsigned int> ListIDs =
       this->m_CollectionOfTraces->GetTraceIDsBelongingToListTimePoints(
         iDatabaseConnector,  iListTPs);
 
@@ -589,14 +603,17 @@ protected:
   void RemoveTracesFromTWAndContainerForVisuForSpecificTPsTemplate(
                                                     vtkMySQLDatabase *iDatabaseConnector,
                                                     C* iContainerForVisu,
-                                                    std::list<unsigned int> iListTPs)
+                                                    const std::list<unsigned int> & iListTPs)
   {
     std::list<unsigned int> ListIDs =
       this->m_CollectionOfTraces->GetTraceIDsBelongingToListTimePoints(
         iDatabaseConnector, iListTPs);
+
     iContainerForVisu->Clear(ListIDs);
+
     QStringList StrgListTPs;
-    std::list<unsigned int>::iterator iter = iListTPs.begin();
+    std::list<unsigned int>::const_iterator iter = iListTPs.begin();
+
     while (iter != iListTPs.end() )
       {
       QString temp;
@@ -620,18 +637,21 @@ protected:
   */
   template< typename T >
   void UpdateTWAndContainerWithImportedTracesTemplate(T *iTWContainer,
-                                                      std::vector< int > iVectorTraceIDs,
+                                                      const std::vector< int > & iVectorTraceIDs,
                                                       vtkMySQLDatabase *iDatabaseConnector)
   {
+    this->m_Table->setSortingEnabled(false);
+
     //insert the info from the database for the traces into the container
     //for visu:
     /** \todo Lydie modify to have as argument a list of unsigned int*/
     std::list< unsigned int > ListTraceIDs(iVectorTraceIDs.begin(), iVectorTraceIDs.end() );
     this->GetTracesInfoFromDBAndModifyContainerForVisu(
       iDatabaseConnector, ListTraceIDs);
+
     //insert the new rows into the TW:
     std::list< unsigned int >::iterator iter = ListTraceIDs.begin();
-    this->m_Table->setSortingEnabled(false);
+
     while ( iter != ListTraceIDs.end() )
       {
       TWContainerType RowContainer =
@@ -641,9 +661,10 @@ protected:
                                   iTWContainer->GetIndexForGroupColor(this->m_TraceName),
                                   iTWContainer->GetIndexForGroupColor(this->m_CollectionName),
                                   this->m_TraceName, this->m_CollectionName);
-      iter++;
+      ++iter;
       }
     this->m_Table->setSortingEnabled(true);
+    this->m_Table->resizeColumnsToContents();
   }
 
   /**
@@ -729,7 +750,7 @@ protected:
   \param[in] iDatabaseConnector connection to the database
   \param[in] iContainerForVisu common container for the visu and database
   \param[in] iListTracesToDelete list of the tracesIDs to be deleted
-  \param[in] DeleteHighlightedTraces if true, the traces to be deleted are the ones 
+  \param[in] DeleteHighlightedTraces if true, the traces to be deleted are the ones
   highlighted in the visu
   \tparam T ContourMeshContainer or TrackContainer
   */
@@ -737,8 +758,9 @@ protected:
   // TODO Nico- useless bool, should test lenght of list instead...!
   template<typename T>
   void DeleteTracesTemplate(vtkMySQLDatabase *iDatabaseConnector,
-    T *iContainerForVisu, std::list<unsigned int> iListTracesToDelete = std::list<unsigned int>(), 
-    bool DeleteHighlightedTraces = true)
+                            T *iContainerForVisu,
+                            std::list<unsigned int> iListTracesToDelete = std::list<unsigned int>(),
+                            bool DeleteHighlightedTraces = true)
   {
     std::list< unsigned int > ListTracesIDsToDelete;
     if (DeleteHighlightedTraces) //case where the traces to be deleted are the ones highlighted in the visu
@@ -828,7 +850,7 @@ protected:
   template<typename T>
   void GetTracesInfoFromDBAndModifyContainerForVisuTemplate(
     T* iContainerForVisu, vtkMySQLDatabase* iDatabaseConnector,
-    std::list<unsigned int> iListTraceIDs)
+    const std::list<unsigned int> & iListTraceIDs)
   {
     typedef typename T::MultiIndexContainerElementType Structure;
     std::list<Structure> list_of_traces =
@@ -861,7 +883,7 @@ protected:
     std::list<unsigned int> iListTraceIDs = std::list< unsigned int >())= 0;
 
 
-  bool CheckThatThereAreTracesToDelete(std::list<unsigned int> iListTracesIDToDelete);
+  bool CheckThatThereAreTracesToDelete(const std::list<unsigned int> & iListTracesIDToDelete);
 
 protected slots:
   //context menu:

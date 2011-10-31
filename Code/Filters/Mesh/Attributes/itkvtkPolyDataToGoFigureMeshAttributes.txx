@@ -167,6 +167,17 @@ vtkPolyDataToGoFigureMeshAttributes< TImage >::GenerateData()
     typename ImageType::SizeType size =
       m_Binarizer->GetOutput()->GetLargestPossibleRegion().GetSize();
 
+    typename ImageType::SizeType image_size = m_Image->GetLargestPossibleRegion().GetSize();
+
+    // make sure we will stay inside the bounding box while iterating
+    for(int i = 0; i<3; i++)
+      {
+      if(size[i] + start_idx[i] > image_size[i])
+        {
+        size[i] = image_size[i] - start_idx[i];
+        }
+      }
+
     typename ImageType::RegionType region;
     region.SetSize(size);
     region.SetIndex(start_idx);

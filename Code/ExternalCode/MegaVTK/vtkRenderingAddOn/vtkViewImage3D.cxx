@@ -687,6 +687,7 @@ vtkViewImage3D::AddDataSet(vtkDataSet *dataset,
     {
     // Generates bug in visu
     //actor3d->SetProperty( property );
+    actor3d->GetProperty()->BackfaceCullingOn();
     actor3d->GetProperty()->SetColor( property->GetColor() );
     actor3d->GetProperty()->SetOpacity( property->GetOpacity() );
     actor3d->GetProperty()->SetLineWidth(this->IntersectionLineWidth);

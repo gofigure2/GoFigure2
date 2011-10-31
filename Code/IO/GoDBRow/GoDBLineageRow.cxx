@@ -69,8 +69,8 @@ void GoDBLineageRow::InitializeMap()
   this->m_TableIDName = "lineageID";
   this->m_CollectionName = "None";
   this->m_CollectionIDName = "NoneID";
-  this->m_MapRow[this->m_TableIDName] = ConvertToString< int >(0);
-  this->m_MapRow["TrackIDRoot"] = ConvertToString< int >(0);
+  this->m_MapRow[this->m_TableIDName] = std::string( "0" );//ConvertToString< int >(0);
+  this->m_MapRow["TrackIDRoot"] = std::string( "0" );//ConvertToString< int >(0);
 }
 
 //-------------------------------------------------------------------------

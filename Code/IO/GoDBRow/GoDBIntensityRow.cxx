@@ -53,10 +53,10 @@ void GoDBIntensityRow::InitializeMap()
 {
   this->m_TableName = "intensity";
   this->m_TableIDName = "IntensityID";
-  this->m_MapRow["IntensityID"] = ConvertToString< int >(0);
-  this->m_MapRow["Value"] = ConvertToString< int >(0);
-  this->m_MapRow["meshID"] = ConvertToString< int >(0);
-  this->m_MapRow["ChannelID"] = ConvertToString< int >(0);
+  this->m_MapRow["IntensityID"] = std::string( "0" );//ConvertToString< int >(0);
+  this->m_MapRow["Value"] = std::string( "0" );//ConvertToString< int >(0);
+  this->m_MapRow["meshID"] = std::string( "0" );//ConvertToString< int >(0);
+  this->m_MapRow["ChannelID"] = std::string( "0" );//ConvertToString< int >(0);
 }
 
 //-------------------------------------------------------------------------

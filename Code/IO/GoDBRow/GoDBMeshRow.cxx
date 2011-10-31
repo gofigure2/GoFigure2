@@ -151,10 +151,10 @@ void GoDBMeshRow::InitializeMap()
   this->m_TableIDName = "meshID";
   this->m_CollectionName = "track";
   this->m_CollectionIDName = "trackID";
-  this->m_MapRow[this->m_TableIDName] = ConvertToString< int >(0);
-  this->m_MapRow["CellTypeID"] = ConvertToString< int >(0);
-  this->m_MapRow["SubCellularID"] = ConvertToString< int >(0);
-  this->m_MapRow["trackID"] = ConvertToString< int >(0);
+  this->m_MapRow[this->m_TableIDName] = std::string( "0" );//ConvertToString< int >(0);
+  this->m_MapRow["CellTypeID"] = std::string( "0" );//ConvertToString< int >(0);
+  this->m_MapRow["SubCellularID"] = std::string( "0" );//ConvertToString< int >(0);
+  this->m_MapRow["trackID"] = std::string( "0" );//ConvertToString< int >(0);
 }
 
 //-------------------------------------------------------------------------
@@ -226,7 +226,7 @@ void GoDBMeshRow::SetSubCellType(vtkMySQLDatabase *iDatabaseConnector,
 //-------------------------------------------------------------------------
 void GoDBMeshRow::SaveInDBTotalIntensityPerChannel(
   vtkMySQLDatabase *DatabaseConnector,
-  std::map< std::string, int > iNameChannelWithValues)
+  boost::unordered_map< std::string, int > iNameChannelWithValues)
 {
   if ( this->GetMapValue("meshID") == "0" )
     {
@@ -237,7 +237,8 @@ void GoDBMeshRow::SaveInDBTotalIntensityPerChannel(
     {
     std::cout << "The imagingSession hasn't been entered for the mesh" << std::endl;
     }
-  std::map< std::string, int >::iterator iter = iNameChannelWithValues.begin();
+
+  boost::unordered_map< std::string, int >::iterator iter = iNameChannelWithValues.begin();
   while ( iter != iNameChannelWithValues.end() )
     {
     std::vector< FieldWithValue > Conditions;

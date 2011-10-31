@@ -68,13 +68,13 @@ void QGoWaterShedAlgo::SetAlgoWidget(QWidget* iParent)
   this->m_AlgoWidget =
     new QGoAlgorithmWidget("WaterShed", iParent);
 
-  m_ThresMin = new QGoAlgoParameter<int>("Background below",true, 0, m_MaxThreshold, 10);
+  m_ThresMin = new QGoAlgoParameter<int>("Background <",true, 0, m_MaxThreshold, 10);
   this->m_AlgoWidget->AddParameter(m_ThresMin);
 
-  m_ThresMax = new QGoAlgoParameter<int>("Nuclei above", true, 0, m_MaxThreshold, 30);
+  m_ThresMax = new QGoAlgoParameter<int>("Nuclei >", true, 0, m_MaxThreshold, 30);
   this->m_AlgoWidget->AddParameter(m_ThresMax);
 
-  m_CorrThres = new QGoAlgoParameter<double>("Gaussian Shape Similarity", true, 0, 1, 2, 0.5, 0.01);
+  m_CorrThres = new QGoAlgoParameter<double>("Gaussian Simile", true, 0, 1, 2, 0.5, 0.01);
   this->m_AlgoWidget->AddParameter(m_CorrThres);
 
   m_Alpha = new QGoAlgoParameter<double>("Scaling", true, 0, 10, 2, 1.5, 0.1);

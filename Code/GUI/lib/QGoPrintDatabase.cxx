@@ -216,26 +216,29 @@ void QGoPrintDatabase::CloseDBConnection()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoPrintDatabase::FillTableFromDatabase(const int& iThreshold)
+void QGoPrintDatabase::FillTableFromDatabase(const unsigned int& iThreshold)
 {
+  bool limitedMemory = ( iThreshold != std::numeric_limits< unsigned int >::max() );
+
   OpenDBConnection();
   // Get number of meshes to be loaded
-  int nbOfTraces = NumberOfElementForGivenImagingSessionAndTrace(
+  unsigned int nbOfTraces = NumberOfElementForGivenImagingSessionAndTrace(
           this->m_DatabaseConnector,
           this->m_ImgSessionID,
           "mesh");
 
-  // if there are more than 5000 meshes, only load 3 time points in
-  // memory
-  if(nbOfTraces > iThreshold)
+  if( ( nbOfTraces <= iThreshold ) || !limitedMemory )
     {
-    this->m_VisibleTimePoints.resize(3);
-    this->GetContentAndDisplayAllTracesInfoFor3TPs(this->m_DatabaseConnector);
+    this->m_VisibleTimePoints.clear();
+    this->GetContentAndDisplayAllTracesInfo(this->m_DatabaseConnector);
     }
   else
     {
-    this->m_VisibleTimePoints.resize(0);
-    this->GetContentAndDisplayAllTracesInfo(this->m_DatabaseConnector);
+    // if there are more than 5000 meshes, only load 3 time points in
+    // memory
+
+    this->m_VisibleTimePoints.resize(3);
+    this->GetContentAndDisplayAllTracesInfoFor3TPs(this->m_DatabaseConnector);
     }
 
   CloseDBConnection();
@@ -1195,8 +1198,7 @@ void QGoPrintDatabase::GetContentAndDisplayAllTracesInfo(
     iDatabaseConnector);
   this->m_TracksManager->DisplayInfoAndLoadVisuContainerForAllTracks(
     iDatabaseConnector);
-  this->m_TracksManager->DisplayInfoAndLoadVisuContainerForAllTracks(
-    iDatabaseConnector);
+  this->m_TracksManager->LoadInfoVisuContainerForTrackFamilies(iDatabaseConnector);
   this->m_LineagesManager->DisplayInfoAndLoadVisuContainerForAllLineages(
     iDatabaseConnector);
 }
@@ -1214,7 +1216,7 @@ void QGoPrintDatabase::GetContentAndDisplayAllTracesInfoFor3TPs(
     {
     m_VisibleTimePoints.push_back(*this->m_SelectedTimePoint-1);
     }
-  
+
   m_VisibleTimePoints.push_back(*this->m_SelectedTimePoint);
   m_VisibleTimePoints.push_back(*this->m_SelectedTimePoint+1);
 
@@ -1227,6 +1229,7 @@ void QGoPrintDatabase::GetContentAndDisplayAllTracesInfoFor3TPs(
     m_VisibleTimePoints);
   this->m_TracksManager->DisplayInfoAndLoadVisuContainerForAllTracks(
     iDatabaseConnector);
+  this->m_TracksManager->LoadInfoVisuContainerForTrackFamilies(iDatabaseConnector);
   this->m_LineagesManager->DisplayInfoAndLoadVisuContainerForAllLineages(
     iDatabaseConnector);
 }

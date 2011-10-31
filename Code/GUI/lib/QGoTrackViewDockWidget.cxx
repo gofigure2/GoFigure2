@@ -53,6 +53,9 @@ QGoTrackViewDockWidget::QGoTrackViewDockWidget(
   this->m_ToggleAction->setToolTip("Track View");
   this->setWindowTitle("Track View");
   // appearance
+  QObject::connect( this->m_linewidthSpinBox, SIGNAL( valueChanged(double)),
+                    this, SLOT(lineWidthValueChanged(double)) );
+
   QObject::connect( this->m_glyph, SIGNAL( toggled(bool) ),
                     this, SLOT( Glyphs(bool) ) );
   QObject::connect( this->m_glyphSpinBox, SIGNAL( valueChanged(double) ),
@@ -91,6 +94,17 @@ QGoTrackViewDockWidget::
 
 //-------------------------------------------------------------------------
 void
+QGoTrackViewDockWidget::lineWidthValueChanged(double iValue)
+{
+  if ( !this->m_tube->isChecked() )
+    {
+    emit UpdateTracksRepresentation( 0, 0, iValue );
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
 QGoTrackViewDockWidget::glyphValueChanged(double)
 {
   //to avoid useless update
@@ -108,11 +122,15 @@ QGoTrackViewDockWidget::Glyphs(bool iActivated)
 {
   if ( iActivated )
     {
-    emit UpdateTracksRepresentation( this->m_glyphSpinBox->value(), this->m_tubeSpinBox->value() * this->m_tube->isChecked() );
+    emit UpdateTracksRepresentation( this->m_glyphSpinBox->value(),
+                                     this->m_tubeSpinBox->value() * this->m_tube->isChecked(),
+                                     this->m_linewidthSpinBox->value() );
     }
   else
     {
-    emit UpdateTracksRepresentation( 0, this->m_tubeSpinBox->value() * this->m_tube->isChecked() );
+    emit UpdateTracksRepresentation( 0,
+                                     this->m_tubeSpinBox->value() * this->m_tube->isChecked(),
+                                     this->m_linewidthSpinBox->value() );
     }
 }
 
@@ -137,11 +155,15 @@ QGoTrackViewDockWidget::Tubes(bool iActivated)
 {
   if ( iActivated )
     {
-    emit UpdateTracksRepresentation( this->m_glyphSpinBox->value() * this->m_glyph->isChecked(), this->m_tubeSpinBox->value() );
+    emit UpdateTracksRepresentation( this->m_glyphSpinBox->value() * this->m_glyph->isChecked(),
+                                     this->m_tubeSpinBox->value(),
+                                     this->m_linewidthSpinBox->value() );
     }
   else
     {
-    emit UpdateTracksRepresentation(this->m_glyphSpinBox->value() * this->m_glyph->isChecked(), 0);
+    emit UpdateTracksRepresentation(this->m_glyphSpinBox->value() * this->m_glyph->isChecked(),
+                                    0,
+                                    this->m_linewidthSpinBox->value() );
     }
 }
 
@@ -190,21 +212,26 @@ void QGoTrackViewDockWidget::SetUpUi()
   this->m_tube = new QCheckBox(tr ("Tubes"), this );
   this->m_glyphSpinBox = new QDoubleSpinBox(this);
   this->m_tubeSpinBox = new QDoubleSpinBox(this);
-  this->SetDoubleSpinBox(this->m_glyphSpinBox);
-  this->SetDoubleSpinBox(this->m_tubeSpinBox);
+  this->m_linewidthSpinBox = new QDoubleSpinBox(this);
+  this->SetDoubleSpinBox(this->m_glyphSpinBox, 0., 99., 3. );
+  this->SetDoubleSpinBox(this->m_tubeSpinBox, 0., 99., 3. );
+  this->SetDoubleSpinBox(this->m_linewidthSpinBox, 0., 10., 1. );
 
   QVBoxLayout* Vlayout = new QVBoxLayout;
+  QLabel* linewidthLabel = new QLabel( tr( "Line Width" ), this );
   QLabel* Element = new QLabel(tr("Element:"), this );
   QLabel* Radius = new QLabel (tr("Radius:"), this );
 
   QGridLayout* GridLayout = new QGridLayout;
   GridLayout->addWidget(Element, 0, 0);
   GridLayout->addWidget(Radius, 0, 1);
-  GridLayout->addWidget(this->m_glyph, 1, 0);
-  GridLayout->addWidget(this->m_glyphSpinBox, 1, 1);
-  GridLayout->addWidget(this->m_tube, 2, 0);
-  GridLayout->addWidget(this->m_tubeSpinBox, 2, 1);
-  
+  GridLayout->addWidget(linewidthLabel, 1, 0 );
+  GridLayout->addWidget(this->m_linewidthSpinBox, 1, 1 );
+  GridLayout->addWidget(this->m_glyph, 2, 0);
+  GridLayout->addWidget(this->m_glyphSpinBox, 2, 1);
+  GridLayout->addWidget(this->m_tube, 3, 0);
+  GridLayout->addWidget(this->m_tubeSpinBox, 3, 1);
+
   Vlayout->addLayout(GridLayout);
   QLabel* Blank = new QLabel(tr("  ") );
   Vlayout->addWidget(Blank);
@@ -229,12 +256,13 @@ void QGoTrackViewDockWidget::SetUpUi()
 
 //-------------------------------------------------------------------------
 void
-QGoTrackViewDockWidget::SetDoubleSpinBox(QDoubleSpinBox* iSpinBox)
+QGoTrackViewDockWidget::SetDoubleSpinBox(QDoubleSpinBox* iSpinBox,
+                                         double Min, double Max, double Value )
 {
   iSpinBox->setDecimals(2);
-  iSpinBox->setMaximum(99);
-  iSpinBox->setMinimum(0);
-  iSpinBox->setValue(3);
+  iSpinBox->setMaximum(Max);
+  iSpinBox->setMinimum(Min);
+  iSpinBox->setValue(Value);
 }
 //-------------------------------------------------------------------------
 

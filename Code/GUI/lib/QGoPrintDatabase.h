@@ -98,7 +98,7 @@ public:
   /** \brief Create the QTableWidgetChild,get the columns names and the
  * values stored in the database, display them in the QTableWidgetChild
  * and fill the info for the contours and meshes*/
-  void FillTableFromDatabase( const int& iTreshold);
+  void FillTableFromDatabase( const unsigned int& iTreshold);
 
   /** \brief Return a vector of all the contours for the given timepoint*/
   std::vector< ContourMeshStructure > GetContoursForAGivenTimepoint(

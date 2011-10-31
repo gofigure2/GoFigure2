@@ -106,9 +106,9 @@ void GoDBTrackRow::InitializeMap()
   this->m_TableIDName = "trackID";
   this->m_CollectionName = "lineage";
   this->m_CollectionIDName = "lineageID";
-  this->m_MapRow[this->m_TableIDName] = ConvertToString< int >(0);
-  this->m_MapRow["lineageID"] = ConvertToString< int >(0);
-  this->m_MapRow["TrackFamilyID"] = ConvertToString< int >(0);
+  this->m_MapRow[this->m_TableIDName] = std::string( "0" );//ConvertToString< int >(0);
+  this->m_MapRow["lineageID"] = std::string( "0" );//ConvertToString< int >(0);
+  this->m_MapRow["TrackFamilyID"] = std::string( "0" );//ConvertToString< int >(0);
 }
 
 //-------------------------------------------------------------------------

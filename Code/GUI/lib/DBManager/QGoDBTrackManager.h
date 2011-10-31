@@ -91,7 +91,7 @@ public:
   \param[in] iTrackID trackID of the track we want to display the values
   */
   void DisplayOnlyCalculatedValuesForExistingTrack(
-    GoFigureTrackAttributes *iTrackAttributes, unsigned iTrackID);
+    GoFigureTrackAttributes *iTrackAttributes, unsigned int iTrackID);
 
   /**
   \brief create a new track with no mesh and no points in the database, add it in the
@@ -106,9 +106,10 @@ public:
   std::list< unsigned int > UpdateTheTracesColor(vtkMySQLDatabase *iDatabaseConnector);
 
   //virtual pure method in QGoDBTraceManager
-  virtual void UpdateTWAndContainerForImportedTraces(std::vector< int > iVectorImportedTraces,
-                                                     vtkMySQLDatabase *iDatabaseConnector);
-  
+  virtual void UpdateTWAndContainerForImportedTraces(
+    const std::vector< int > & iVectorImportedTraces,
+    vtkMySQLDatabase *iDatabaseConnector);
+
   /**
   \brief delete the traces of the list from the database, the TW and the
   container for visu
@@ -117,7 +118,7 @@ public:
 
   */
   void DeleteListTraces(vtkMySQLDatabase *iDatabaseConnector,
-    std::list<unsigned int> iListTraces);
+    const std::list<unsigned int> & iListTraces);
 
   //virtual pure method in QGoDBTraceManager
   virtual void DeleteCheckedTraces( vtkMySQLDatabase *iDatabaseConnector);
@@ -137,25 +138,29 @@ public:
   with the info from the meshes and save them in the database
   */
   void UpdatePointsOfCurrentElementForImportedTrack(
-	  std::map<unsigned int,double*> iMeshesInfo, vtkMySQLDatabase* iDatabaseConnector);
+    std::map<unsigned int,double*> iMeshesInfo,
+    vtkMySQLDatabase* iDatabaseConnector);
 
   //method in QGoDBTraceManager
   void UpdateBoundingBoxes(
-  vtkMySQLDatabase *iDatabaseConnector,std::list< unsigned int > iListTracesIDs);
+    vtkMySQLDatabase *iDatabaseConnector,
+    const std::list< unsigned int > & iListTracesIDs);
 
   /**
   \brief check if the track belongs to a division and if it is possible to add the mesh
   without making the track overlapping the other tracks of the divisions, if so return
-  a message to the user, if not, return the trackID of the divisions to be updated in the 
+  a message to the user, if not, return the trackID of the divisions to be updated in the
   visu, if return empty message and empty list, the track doesn't belong to any division
   */
-  std::string CheckMeshCanBeAddedToTrack(vtkMySQLDatabase* iDatabaseConnector,
-    unsigned int iTrackID, unsigned int iMeshTimePoint, std::list<unsigned int> &ioMotherTrackDivisionToUpdate);
+  std::string CheckMeshCanBeAddedToTrack( vtkMySQLDatabase* iDatabaseConnector,
+                                          unsigned int iTrackID,
+                                          unsigned int iMeshTimePoint,
+                                          std::list<unsigned int> &ioMotherTrackDivisionToUpdate);
 
   /**
   \brief update the track container for visu and consequently the divisions in the visu
   */
-  void UpdateDivisions(std::list<unsigned int> iListMotherTrackIDs);
+  void UpdateDivisions(const std::list<unsigned int> & iListMotherTrackIDs);
 
   /**
   \brief Modify volume of the given track ID
@@ -165,23 +170,23 @@ public:
   /**
   \brief Modify volume of the given track ID
   */
-  void AddVolumes(std::list< std::pair<unsigned int, double> > iVolumes);
+  void AddVolumes(const std::list< std::pair<unsigned int, double> > & iVolumes);
 
   /**
   \brief Modify volume of the given track ID
   */
-  void RemoveVolumes(std::list< std::pair<unsigned int, double> > iVolumes);
+  void RemoveVolumes(const std::list< std::pair<unsigned int, double> > & iVolumes);
 
   /**
   \brief Modify volume of the given track ID
   */
-  void AddVolumes(std::list< std::pair<unsigned int, double> > iVolumes,
+  void AddVolumes(const std::list< std::pair<unsigned int, double> > & iVolumes,
                   unsigned int iTrackID);
 
   /**
   \brief Modify volume of the given track ID
   */
-  void RemoveVolumes(std::list< std::pair<unsigned int, double> > iVolumes,
+  void RemoveVolumes(const std::list< std::pair<unsigned int, double> > & iVolumes,
                      unsigned int iTrackID);
 
 signals:
@@ -189,7 +194,7 @@ signals:
   void TrackToSplit(unsigned int iTrackID, std::list<unsigned int> iListMeshIDs);
   void TrackIDToBeModifiedWithWidget(std::list<unsigned int> iListTracksID);
   void MeshesToAddToTrack(std::list<unsigned int> iListMeshes, unsigned int iTrackID);
- 
+
   void CheckedTracksToAddToSelectedLineage(std::list<unsigned int> iDaughtersID, unsigned int iLineageID,
     std::list<unsigned> iLineagesToDelete);
 
@@ -207,7 +212,7 @@ protected:
   virtual void DisplayInfoForAllTraces(vtkMySQLDatabase *iDatabaseConnector);
 
   virtual void DisplayInfoForTracesForSpecificTPs(
-    vtkMySQLDatabase *iDatabaseConnector, std::list<unsigned int> iListTPs);
+    vtkMySQLDatabase *iDatabaseConnector, const std::list<unsigned int> & iListTPs);
 
   //virtual pure method in QGoDBTraceManager
   virtual void GetTracesInfoFromDBAndModifyContainerForVisu(
@@ -265,25 +270,27 @@ protected:
   \brief check that the mothertrackID is not already a mother in another
   trackfamily, create the trackfamily if not and return the trackfamilyID
   \param[in] iDatabaseConnector connection to the database
-  \param[in] iMotherTrackID 
+  \param[in] iMotherTrackID
   \param[in] iDaughtersID
   \return ID of the new created trackfamily
   */
   int CreateTrackFamily(vtkMySQLDatabase* iDatabaseConnector,
-    unsigned int iMotherTrackID, std::list<unsigned int> iDaughtersID);
+                        unsigned int iMotherTrackID,
+                        const std::list<unsigned int> & iDaughtersID);
 
   /**
-  \brief get the trackID with the lowest timepoint as the mother trackID, 
-  if several tracks have the lowest timepoint, return false. if other tracks 
+  \brief get the trackID with the lowest timepoint as the mother trackID,
+  if several tracks have the lowest timepoint, return false. if other tracks
   from the list are overlapping the mother trackID, return false.
   \param[in] iListTracksID tracks ID to be identified
-  \param[in,out] ioMotherID to be modified with the identified mother TrackID 
+  \param[in,out] ioMotherID to be modified with the identified mother TrackID
   \param[in,out] ioDaughtersID to be modified with the identified daughters TrackID
   \return false if it was not possible to identify them based on the timepoints
   */
   bool IdentifyMotherDaughtersToCreateTrackFamily(
     vtkMySQLDatabase* iDatabaseConnector,
-    std::list<unsigned int> iListTracksID, int &ioMotherID,
+    const std::list<unsigned int> & iListTracksID,
+    int &ioMotherID,
     std::list<unsigned int> &ioDaughtersID);
 
   /**
@@ -314,7 +321,7 @@ protected:
   void PrintAMessageForTracksWithNoDivision(std::list<unsigned int> iTracksNoDivision);
 
   /**
-  \brief set the trackfamilyID of the daughter to 0, get all the tracks with the same lineage 
+  \brief set the trackfamilyID of the daughter to 0, get all the tracks with the same lineage
   and emit a signal to create a lineage from these tracks with the daughter as trackIDRoot
   if ioPartOfHigherLineage, the lineage of the division will not be deleted as higher tracks belong to it
   */
@@ -325,20 +332,20 @@ protected:
   \brief return the trackfamilyID of the division the track is a mother of or 0 if the
   track is not a mother
   */
-  unsigned int IsTheTrackAMother(unsigned int iDaughterID, 
+  unsigned int IsTheTrackAMother(unsigned int iDaughterID,
     vtkMySQLDatabase* iDatabaseConnector);
 
   /**
   \brief return the trackfamilyID of the division the track is a daughter of or 0 if the
   track is not a daughter
   */
-  unsigned int IsTheTrackADaughter(unsigned int iTrackID, 
+  unsigned int IsTheTrackADaughter(unsigned int iTrackID,
   vtkMySQLDatabase* iDatabaseConnector);
 
   /**
   \brief check if the daughters are mothers, if yes, create a new lineage for them,
   if not, update the track familyID to 0 and fill the ioTrackIDsNoLineage with them,
-  if ioPartOfHigherLineage is false, delete the lineage after creating a new one 
+  if ioPartOfHigherLineage is false, delete the lineage after creating a new one
   for the daughter family if the daughter is a mother and set the ioPartOfHigherLineage
   to true
   */
@@ -353,17 +360,17 @@ protected:
   std::list<unsigned int> GetDivisionIDsTheTrackBelongsTo(
     vtkMySQLDatabase* iDatabaseConnector, unsigned int iTrackID );
   /**
-  \brief check that the iTimePoint is < to the mintimepoint of the daughter from the 
+  \brief check that the iTimePoint is < to the mintimepoint of the daughter from the
   division where trackID is a mother
   */
-  unsigned int CheckBoundingBoxDivisionAsAMother(vtkMySQLDatabase* iDatabaseConnector, 
+  unsigned int CheckBoundingBoxDivisionAsAMother(vtkMySQLDatabase* iDatabaseConnector,
     unsigned int iTimePoint, unsigned int iTrackFamilyID );
 
    /**
-  \brief check that the iTimePoint is > to the maxtimepoint of the mother from the 
+  \brief check that the iTimePoint is > to the maxtimepoint of the mother from the
   division where trackID is a daughter
   */
-  unsigned int CheckBoundingBoxDivisionAsADaughter(vtkMySQLDatabase* iDatabaseConnector, 
+  unsigned int CheckBoundingBoxDivisionAsADaughter(vtkMySQLDatabase* iDatabaseConnector,
     unsigned int iTimePoint, unsigned int iTrackFamilyID );
 
 protected slots:
@@ -391,11 +398,11 @@ protected slots:
   void TrackIDToEmit();
 
   /**
-  \brief check that only 2 tracks are checked in the TW, if not display 
-  a message to the user, check that the 2 tracks are not overlapping, 
-  if yes, display a message to the user, get the meshes of the track with 
-  the lowest timepoints, delete this track and send a signal for the list of 
-  meshes of the previous track to be reassigned to the track with the 
+  \brief check that only 2 tracks are checked in the TW, if not display
+  a message to the user, check that the 2 tracks are not overlapping,
+  if yes, display a message to the user, get the meshes of the track with
+  the lowest timepoints, delete this track and send a signal for the list of
+  meshes of the previous track to be reassigned to the track with the
   highest timepoints
   */
   void MergeTracks();

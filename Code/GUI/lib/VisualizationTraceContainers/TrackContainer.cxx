@@ -473,8 +473,7 @@ void
 TrackContainer::
 ChangeColorCode(const QString& iColorCode)
 {
-  m_ActiveTrackScalars.clear();
-  m_ActiveTrackScalars.append(iColorCode);
+  m_ActiveTrackScalars = iColorCode;
 
   if ( m_ActiveTrackScalars.compare("Original") )
     {
@@ -696,9 +695,12 @@ getTimeInterval()
 //-------------------------------------------------------------------------
 void
 TrackContainer::
-UpdateTracksRepresentation(const double& iRadius, const double& iRadius2)
+UpdateTracksRepresentation(const double& iRadius,
+                           const double& iRadius2,
+                           const double& iWidth )
 {
   MultiIndexContainerType::iterator it = m_Container.begin();
+  bool IsThereNonNullRadius = ( iRadius > 0 || iRadius2 > 0 );
 
   while ( it != m_Container.end() )
     {
@@ -706,9 +708,16 @@ UpdateTracksRepresentation(const double& iRadius, const double& iRadius2)
     bool pointsInPolydata = UpdateTrackStructurePolyData( ( *it ) );
 
     // add glyphs if necessary
-    if ( ( iRadius > 0 || iRadius2 > 0 ) && pointsInPolydata )
+    if( pointsInPolydata )
       {
-      it->UpdateTracksRepresentation(iRadius, iRadius2);
+      if ( IsThereNonNullRadius )
+        {
+        it->UpdateTracksRepresentation(iRadius, iRadius2);
+        }
+      else
+        {
+        it->UpdateLineWidth( iWidth );
+        }
       }
     ++it;
     }

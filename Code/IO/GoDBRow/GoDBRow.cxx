@@ -33,7 +33,6 @@
 =========================================================================*/
 
 #include "GoDBRow.h"
-#include <map>
 #include <iostream>
 
 GoDBRow::GoDBRow()
@@ -50,7 +49,7 @@ GoDBRow::~GoDBRow()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void GoDBRow::SetField(std::string key, std::string value)
+void GoDBRow::SetField(const std::string& key, const std::string& value)
 {
   StringMapIterator it = m_MapRow.find(key);
 
@@ -98,7 +97,6 @@ std::string GoDBRow::PrintColumnNames()
   size_t n = ListColumnNames.str().length() - 2;
   return ListColumnNames.str().substr(0, n);
 }
-
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -134,20 +132,6 @@ std::vector< std::string > GoDBRow::GetVectorColumnNames()
   return VectorColumnNames;
 }
 
-//-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-/*std::list<std::string> GoDBRow::GetListColumnNames()
-{
-  std::list<std::string> ListColumnNames;
-  for( std::map<std::string, std::string>::iterator iter = m_MapRow.begin();
-      iter != m_MapRow.end(); ++iter )
-    {
-    ListColumnNames.push_back(iter->first);
-    }
-  return ListColumnNames;
-
-}*/
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -187,7 +171,7 @@ GoDBRow::ConstMapEnd()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-std::string GoDBRow::GetMapValue(std::string key)
+std::string GoDBRow::GetMapValue(const std::string& key)
 {
   std::string oMapValue = "noValue";
 
@@ -277,7 +261,7 @@ std::string GoDBRow::GetTableIDName()
 
 //-------------------------------------------------------------------------
 void GoDBRow::AddConditions(
-  std::string iNameOfField, std::vector< FieldWithValue > & ioFieldWithValue)
+  const std::string& iNameOfField, std::vector< FieldWithValue > & ioFieldWithValue)
 {
   FieldWithValue temp = { iNameOfField, this->GetMapValue(iNameOfField), "=" };
 

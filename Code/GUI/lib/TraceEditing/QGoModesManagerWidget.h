@@ -39,6 +39,7 @@
 #include <QStackedWidget>
 #include <QVBoxLayout>
 #include <QComboBox>
+#include <QHash>
 #include "QGoAlgorithmsManagerWidget.h"
 
 /**
@@ -54,7 +55,7 @@ class QGoModesManagerWidget:
 {
   Q_OBJECT
 public:
-  explicit QGoModesManagerWidget(std::vector<QString> iVectChannels, 
+  explicit QGoModesManagerWidget(std::vector<QString> iVectChannels,
     QStringList iListTimePoints, QWidget *iParent = 0);
   ~QGoModesManagerWidget();
 
@@ -66,7 +67,7 @@ public:
   \param[in] ModeNeedSeeds if true, a signal will be emitted everytime the mode name appear
   in the combobox
   */
-  void AddWidgetWithModeName (std::string iModeName, QWidget* iWidget, 
+  void AddWidgetWithModeName (std::string iModeName, QWidget* iWidget,
     bool ModeNeedSeeds);
 
   /**
@@ -75,7 +76,7 @@ public:
   \param[in] iAlgoManagerWidget
   \param[in] iDefaultIndex default index for the algo widget
   */
-  void AddAlgoManagerWidget(QGoAlgorithmsManagerWidget* iAlgoManagerWidget, 
+  void AddAlgoManagerWidget(QGoAlgorithmsManagerWidget* iAlgoManagerWidget,
     bool ModeNeedSeeds, int iDefaultIndex = 0);
 
   /**
@@ -97,7 +98,7 @@ public:
   widget
   \param[in] iWidget widget to be added for the manual mode
   */
-  void AddWidgetForManualMode(QWidget* iWidget, 
+  void AddWidgetForManualMode(QWidget* iWidget,
     QStringList iListTimePoint, bool ModeNeedSeeds);
 
   /**
@@ -109,7 +110,7 @@ public:
 
   void SetTSliceForClassicViewInAllAlgoModes(int iTimePoint);
   void SetTSliceForDopplerViewInAllAlgoModes(
-    std::map<QString, QColor> iListTimePoints, int iChannelNumber);
+    QHash<QString, QColor> iListTimePoints, int iChannelNumber);
 
   /**
   \brief return the mode name currently selected in the combobox
@@ -131,7 +132,7 @@ signals:
 protected:
   QVBoxLayout*                m_VBoxLayout;
   QComboBox*                  m_ModeComboBox;
-  QStackedWidget*             m_ModeWidgets;  
+  QStackedWidget*             m_ModeWidgets;
   QGoAlgorithmsManagerWidget* m_SemiAutoAlgoManagerWidget;
   QGoAlgorithmsManagerWidget* m_AutoAlgoManagerWidget;
   QGoAlgorithmsManagerWidget* m_ManualModeManager;
@@ -146,6 +147,6 @@ protected:
   */
   void CheckDefaultModes();
 
- 
+
 };
 #endif

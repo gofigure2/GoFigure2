@@ -99,7 +99,7 @@ void QGoDBTrackManager::DisplayInfoForAllTraces(
 
 //-------------------------------------------------------------------------
 void QGoDBTrackManager::DisplayInfoForTracesForSpecificTPs(
-    vtkMySQLDatabase *iDatabaseConnector, std::list<unsigned int> iListTPs)
+    vtkMySQLDatabase *iDatabaseConnector, const std::list<unsigned int> & iListTPs)
 {
   (void) iListTPs;
   this->DisplayInfoForAllTraces(iDatabaseConnector);
@@ -174,7 +174,8 @@ std::list< unsigned int > QGoDBTrackManager::UpdateTheTracesColor(
 
 //-------------------------------------------------------------------------
 void QGoDBTrackManager::UpdateTWAndContainerForImportedTraces(
-  std::vector< int > iVectorImportedTraces, vtkMySQLDatabase *iDatabaseConnector)
+  const std::vector< int > & iVectorImportedTraces,
+  vtkMySQLDatabase *iDatabaseConnector)
 {
   this->UpdateTWAndContainerWithImportedTracesTemplate<
     GoDBTWContainerForTrack >(this->m_TWContainer,
@@ -220,7 +221,7 @@ void QGoDBTrackManager::DeleteCheckedTraces(vtkMySQLDatabase *iDatabaseConnector
 
 //-------------------------------------------------------------------------
 void QGoDBTrackManager::DeleteListTraces(vtkMySQLDatabase *iDatabaseConnector,
-                                         std::list< unsigned int > iListTraces)
+                                         const std::list< unsigned int > & iListTraces)
 {
   this->DeleteTracesTemplate< TrackContainer >(iDatabaseConnector,
                                                this->m_TrackContainerInfoForVisu, iListTraces, false);
@@ -240,8 +241,7 @@ std::list< unsigned int > QGoDBTrackManager::GetListHighlightedIDs()
 void QGoDBTrackManager::UpdateHighlightedElementsInVisuContainer(
   int iTraceID)
 {
-  this->m_TrackContainerInfoForVisu->
-  UpdateElementHighlightingWithGivenTraceID(iTraceID);
+  this->m_TrackContainerInfoForVisu->UpdateElementHighlightingWithGivenTraceID(iTraceID);
 }
 
 //-------------------------------------------------------------------------
@@ -340,7 +340,8 @@ void QGoDBTrackManager::SaveTrackStructure(
 
 //-------------------------------------------------------------------------
 void QGoDBTrackManager::UpdatePointsOfCurrentElementForImportedTrack(
-  std::map< unsigned int, double * > iMeshesInfo, vtkMySQLDatabase *iDatabaseConnector)
+  std::map< unsigned int, double * > iMeshesInfo,
+  vtkMySQLDatabase *iDatabaseConnector)
 {
   this->m_TrackContainerInfoForVisu->ImportTrackInCurrentElement(iMeshesInfo);
   this->SaveTrackCurrentElement(iDatabaseConnector);
@@ -362,10 +363,11 @@ void QGoDBTrackManager::UpdateTrackPolydataForVisu(vtkMySQLDatabase *iDatabaseCo
 
 //-------------------------------------------------------------------------
 void QGoDBTrackManager::UpdateBoundingBoxes(
-  vtkMySQLDatabase *iDatabaseConnector, std::list< unsigned int > iListTracesIDs)
+  vtkMySQLDatabase *iDatabaseConnector,
+  const std::list< unsigned int > & iListTracesIDs)
 {
   QGoDBTraceManager::UpdateBoundingBoxes(iDatabaseConnector, iListTracesIDs, false);
-  std::list< unsigned int >::iterator iter = iListTracesIDs.begin();
+  std::list< unsigned int >::const_iterator iter = iListTracesIDs.begin();
   while ( iter != iListTracesIDs.end() )
     {
     this->UpdateTrackPolydataForVisu(iDatabaseConnector, *iter);
@@ -451,12 +453,13 @@ void QGoDBTrackManager::SplitMergeTrackWithWidget()
 
 //-------------------------------------------------------------------------
 void QGoDBTrackManager::DisplayOnlyCalculatedValuesForExistingTrack(
-  GoFigureTrackAttributes *iTrackAttributes, unsigned iTrackID)
+  GoFigureTrackAttributes *iTrackAttributes, unsigned int iTrackID)
 {
-    std::cout <<"DisplayOnlyCalculatedValuesForExistingTrack: "<< iTrackAttributes << std::endl;
   if ( iTrackAttributes != 0 )
     {
     int timeInterval = m_TrackContainerInfoForVisu->getTimeInterval();
+
+    assert( timeInterval != 0 );
 
     std::vector< std::string > ColumnNames (7);
     std::vector< std::string > Values (7);
@@ -471,10 +474,10 @@ void QGoDBTrackManager::DisplayOnlyCalculatedValuesForExistingTrack(
     Values.at(3) = ConvertToString< double >(iTrackAttributes->phi);
     ColumnNames.at(4) = "AvgSpeed";
     Values.at(4) = ConvertToString< double >
-        (iTrackAttributes->avg_speed / timeInterval);
+        (iTrackAttributes->avg_speed / static_cast< double >( timeInterval ));
     ColumnNames.at(5) = "MaxSpeed";
     Values.at(5) = ConvertToString< double >
-        (iTrackAttributes->max_speed / timeInterval);
+        (iTrackAttributes->max_speed / static_cast< double >( timeInterval ));
     ColumnNames.at(6) = "AvgVolume";
     Values.at(6) = ConvertToString< double >(iTrackAttributes->avg_volume);
 
@@ -638,8 +641,9 @@ void QGoDBTrackManager::CreateCorrespondingTrackFamily()
 //-------------------------------------------------------------------------
 bool QGoDBTrackManager::IdentifyMotherDaughtersToCreateTrackFamily(
   vtkMySQLDatabase* iDatabaseConnector,
-  std::list<unsigned int> iListTracksID, int &ioMotherID,
-  std::list<unsigned int> &ioDaughtersID)
+  const std::list<unsigned int> & iListTracksID,
+  int &ioMotherID,
+  std::list<unsigned int> & ioDaughtersID)
 {
   //get the trackid with the lowest timepoint and check that there is only one:
   ioMotherID = this->m_CollectionOfTraces->GetTraceIDWithLowestTimePoint(
@@ -653,7 +657,7 @@ bool QGoDBTrackManager::IdentifyMotherDaughtersToCreateTrackFamily(
     return false;
     }
   //check that none of the 2 others tracks overlap the mother:
-  std::list<unsigned int>::iterator iter = iListTracksID.begin();
+  std::list<unsigned int>::const_iterator iter = iListTracksID.begin();
   //to change: modify the method CheckOverlappingTracks:
   unsigned int ioTraceIDToKeep = 0;
   unsigned int ioTraceIDToDelete = 0;
@@ -675,7 +679,7 @@ bool QGoDBTrackManager::IdentifyMotherDaughtersToCreateTrackFamily(
         }
       ioDaughtersID.push_back(*iter);
       }
-    iter++;
+    ++iter;
     }
   return true;
 }
@@ -684,7 +688,7 @@ bool QGoDBTrackManager::IdentifyMotherDaughtersToCreateTrackFamily(
 
 //-------------------------------------------------------------------------
 int QGoDBTrackManager::CreateTrackFamily(vtkMySQLDatabase* iDatabaseConnector,
-   unsigned int iMotherTrackID, std::list<unsigned int> iDaughtersID)
+   unsigned int iMotherTrackID, const std::list<unsigned int> & iDaughtersID)
 {
   int oTrackFamilyID = -1;
   //check that the mother is not already a mother in a trackfamily:
@@ -705,7 +709,7 @@ int QGoDBTrackManager::CreateTrackFamily(vtkMySQLDatabase* iDatabaseConnector,
     std::cout << std::endl;
     return oTrackFamilyID;
     }
-  std::list<unsigned int>::iterator iter = iDaughtersID.begin();
+  std::list<unsigned int>::const_iterator iter = iDaughtersID.begin();
   unsigned int TrackIDDaughterOne = *iter;
   ++iter;
   unsigned int TrackIDDaughterTwo = *iter;
@@ -1086,9 +1090,9 @@ std::list<unsigned int> QGoDBTrackManager::GetDivisionIDsTheTrackBelongsTo(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoDBTrackManager::UpdateDivisions(std::list<unsigned int> iListMotherTrackIDs)
+void QGoDBTrackManager::UpdateDivisions(const std::list<unsigned int> & iListMotherTrackIDs)
 {
-  std::list<unsigned int>::iterator iter = iListMotherTrackIDs.begin();
+  std::list<unsigned int>::const_iterator iter = iListMotherTrackIDs.begin();
   while (iter != iListMotherTrackIDs.end() )
     {
     this->m_TrackContainerInfoForVisu->CreateDivisionPolydata(*iter);
@@ -1108,9 +1112,9 @@ AddVolume(const unsigned int& iTrackID, const double& iVolume)
 //-------------------------------------------------------------------------
 void
 QGoDBTrackManager::
-AddVolumes(std::list< std::pair<unsigned int, double> > iVolumes)
+AddVolumes(const std::list< std::pair<unsigned int, double> > & iVolumes)
 {
-  std::list< std::pair<unsigned int, double> >::iterator it =
+  std::list< std::pair<unsigned int, double> >::const_iterator it =
           iVolumes.begin();
   while(it != iVolumes.end())
     {
@@ -1123,9 +1127,9 @@ AddVolumes(std::list< std::pair<unsigned int, double> > iVolumes)
 //-------------------------------------------------------------------------
 void
 QGoDBTrackManager::
-RemoveVolumes(std::list< std::pair<unsigned int, double> > iVolumes)
+RemoveVolumes(const std::list< std::pair<unsigned int, double> > & iVolumes)
 {
-  std::list< std::pair<unsigned int, double> >::iterator it =
+  std::list< std::pair<unsigned int, double> >::const_iterator it =
           iVolumes.begin();
   while(it != iVolumes.end())
     {
@@ -1138,10 +1142,10 @@ RemoveVolumes(std::list< std::pair<unsigned int, double> > iVolumes)
 //-------------------------------------------------------------------------
 void
 QGoDBTrackManager::
-AddVolumes(std::list< std::pair<unsigned int, double> > iVolumes,
+AddVolumes(const std::list< std::pair<unsigned int, double> > & iVolumes,
            unsigned int iTrackID)
 {
-  std::list< std::pair<unsigned int, double> >::iterator it =
+  std::list< std::pair<unsigned int, double> >::const_iterator it =
           iVolumes.begin();
   while(it != iVolumes.end())
     {
@@ -1154,10 +1158,10 @@ AddVolumes(std::list< std::pair<unsigned int, double> > iVolumes,
 //-------------------------------------------------------------------------
 void
 QGoDBTrackManager::
-RemoveVolumes(std::list< std::pair<unsigned int, double> > iVolumes,
+RemoveVolumes(const std::list< std::pair<unsigned int, double> > & iVolumes,
               unsigned int iTrackID)
 {
-  std::list< std::pair<unsigned int, double> >::iterator it =
+  std::list< std::pair<unsigned int, double> >::const_iterator it =
           iVolumes.begin();
   while(it != iVolumes.end())
     {

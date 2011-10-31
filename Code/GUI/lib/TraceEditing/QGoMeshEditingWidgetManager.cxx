@@ -84,7 +84,7 @@ void QGoMeshEditingWidgetManager::SetTSliceForClassicView()
 
 //-------------------------------------------------------------------------
 void QGoMeshEditingWidgetManager::SetTSliceForDopplerView(
-  std::map<QString, QColor> iListTimePoints, int iChannelNumber)
+  QHash<QString, QColor> iListTimePoints, int iChannelNumber)
 {
   QGoTraceEditingWidgetManager::SetTSliceForDopplerView(
     iListTimePoints, iChannelNumber);
@@ -104,14 +104,6 @@ void QGoMeshEditingWidgetManager::SetSemiAutomaticAlgorithms(QWidget* iParent)
   QObject::connect(LevelSetWidget, SIGNAL(ApplyAlgo() ),
     this, SLOT(ApplyLevelSetAlgo() ) );
 
-  //shape:
-  this->m_ShapeAlgo = new QGoMeshShapeAlgo(this->m_Seeds, iParent);
-  QGoAlgorithmWidget* ShapeWidget = this->m_ShapeAlgo->GetAlgoWidget();
-  this->m_TraceEditingWidget->AddAlgoWidgetForSemiAutomaticMode(ShapeWidget);
-
-  QObject::connect(ShapeWidget, SIGNAL(ApplyAlgo() ),
-    this, SLOT(ApplyShapeAlgo() ) );
-
   //watershed:
   this->m_WaterShedAlgo = new QGoMeshWaterShedAlgo(this->m_Seeds,
                                                    this->m_MaxThreshold,
@@ -121,6 +113,14 @@ void QGoMeshEditingWidgetManager::SetSemiAutomaticAlgorithms(QWidget* iParent)
 
   QObject::connect(WaterShedWidget, SIGNAL(ApplyAlgo() ),
     this, SLOT(ApplyWaterShedAlgo() ) );
+
+  //shape:
+  this->m_ShapeAlgo = new QGoMeshShapeAlgo(this->m_Seeds, iParent);
+  QGoAlgorithmWidget* ShapeWidget = this->m_ShapeAlgo->GetAlgoWidget();
+  this->m_TraceEditingWidget->AddAlgoWidgetForSemiAutomaticMode(ShapeWidget);
+
+  QObject::connect(ShapeWidget, SIGNAL(ApplyAlgo() ),
+    this, SLOT(ApplyShapeAlgo() ) );
 }
 //-------------------------------------------------------------------------
 

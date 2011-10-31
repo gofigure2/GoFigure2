@@ -46,7 +46,7 @@ void GoDBCellTypeRow::InitializeMap()
 {
   this->m_TableName = "celltype";
   this->m_TableIDName = "CellTypeID";
-  this->m_MapRow[this->m_TableIDName] = ConvertToString< int >(0);
+  this->m_MapRow[this->m_TableIDName] = std::string( "0" );//ConvertToString< int >(0);
 }
 
 //-------------------------------------------------------------------------

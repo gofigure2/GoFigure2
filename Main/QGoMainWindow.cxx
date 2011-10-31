@@ -107,7 +107,7 @@ QGoMainWindow::QGoMainWindow(QWidget *iParent, Qt::WindowFlags iFlags) :
   // QSize IconSize = this->iconSize();
   QSize SizeIcon(22, 22);
   this->setIconSize(SizeIcon);
-  QSize IconSize = this->iconSize();
+  //QSize IconSize = this->iconSize();
 
   this->setCentralWidget(this->CentralTabWidget);
 
@@ -200,6 +200,19 @@ QGoMainWindow::~QGoMainWindow()
 }
 
 //--------------------------------------------------------------------------
+void
+QGoMainWindow::SetMaxNumberOfTraces( unsigned int iN )
+{
+  if( iN != 0 )
+    {
+    this->m_MaxNumberOfTraces = iN;
+    }
+  else
+    {
+    this->m_MaxNumberOfTraces = std::numeric_limits< unsigned int >::max();
+    }
+}
+
 
 //--------------------------------------------------------------------------
 void QGoMainWindow::CreateSignalSlotsConnection()

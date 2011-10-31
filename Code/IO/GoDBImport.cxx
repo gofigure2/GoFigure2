@@ -71,10 +71,10 @@ GoDBImport::~GoDBImport()
 void GoDBImport::ImportContours()
 {
   this->OpenDBConnection();
-  std::map< int, int > MapColorIDs;
-  std::map< int, int > MapCellTypeIDs;
-  std::map< int, int > MapSubCellTypeIDs;
-  std::map< int, int > MapCoordIDs;
+  IntMapType MapColorIDs;
+  IntMapType MapCellTypeIDs;
+  IntMapType MapSubCellTypeIDs;
+  IntMapType MapCoordIDs;
   std::string          LineContent;
 
   LineContent = this->SaveNoTracesEntities(MapColorIDs, MapCellTypeIDs,
@@ -93,10 +93,10 @@ void GoDBImport::ImportMeshes()
 {
   this->OpenDBConnection();
   this->m_NewContourIDs.clear();
-  std::map< int, int > MapColorIDs;
-  std::map< int, int > MapCellTypeIDs;
-  std::map< int, int > MapSubCellTypeIDs;
-  std::map< int, int > MapCoordIDs;
+  IntMapType MapColorIDs;
+  IntMapType MapCellTypeIDs;
+  IntMapType MapSubCellTypeIDs;
+  IntMapType MapCoordIDs;
   std::string          LineContent;
 
   LineContent = this->SaveNoTracesEntities(MapColorIDs, MapCellTypeIDs,
@@ -118,10 +118,10 @@ void GoDBImport::ImportTracks()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-std::string GoDBImport::SaveNoTracesEntities(std::map< int, int > & ioMapColorIDs,
-                                             std::map< int, int > & ioMapCellTypeIDs,
-                                             std::map< int, int > & ioMapSubCellTypeIDs,
-                                             std::map< int, int > & ioMapCoordIDs)
+std::string GoDBImport::SaveNoTracesEntities(IntMapType & ioMapColorIDs,
+                                             IntMapType & ioMapCellTypeIDs,
+                                             IntMapType & ioMapSubCellTypeIDs,
+                                             IntMapType & ioMapCoordIDs)
 {
   std::string LineContent;
 
@@ -181,31 +181,59 @@ std::string GoDBImport::SaveNoTracesEntities(std::map< int, int > & ioMapColorID
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void GoDBImport::SaveTracesEntities(std::map< int, int > iMapColorIDs,
-                                    std::map< int, int > iMapCoordIDs, std::string iLineContent,
-                                    std::map< int, int > iMapCellTypeIDs, std::map< int, int > iMapSubCellTypeIDs,
+void GoDBImport::SaveTracesEntities(const IntMapType  & iMapColorIDs,
+                                    const IntMapType  & iMapCoordIDs,
+                                    const std::string & iLineContent,
+                                    const IntMapType  & iMapCellTypeIDs,
+                                    const IntMapType  & iMapSubCellTypeIDs,
                                     bool SaveIntensities)
 {
-  std::map< int, int > MapContourIDs;
-  std::map< int, int > MapMeshIDs;
-  std::map< int, int > MapTrackIDs;
-  std::map< int, int > MapLineageIDs;
+  IntMapType MapContourIDs;
+  IntMapType MapMeshIDs;
+  IntMapType MapTrackIDs;
+  IntMapType MapLineageIDs;
 
   std::string LineContent = iLineContent;
 
+  {
+  IntMapType MapIDsSpecificOne;
+  IntMapType MapIDsSpecificTwo;
+
   this->SaveTraces< GoDBLineageRow >(iMapColorIDs, iMapCoordIDs,
-                                     MapLineageIDs, LineContent, this->m_NewLineageIDs, MapLineageIDs);
+                                     MapLineageIDs, LineContent,
+                                     this->m_NewLineageIDs, MapLineageIDs,
+                                     MapIDsSpecificOne, MapIDsSpecificTwo );
+  }
+
+  {
+  IntMapType MapIDsSpecificOne;
+  IntMapType MapIDsSpecificTwo;
+
   this->SaveTraces< GoDBTrackRow >(iMapColorIDs, iMapCoordIDs, MapLineageIDs,
-                                   LineContent, this->m_NewTracksIDs, MapTrackIDs);
+                                   LineContent, this->m_NewTracksIDs, MapTrackIDs,
+                                   MapIDsSpecificOne, MapIDsSpecificTwo );
+
+  }
+
+  {
   this->SaveTraces< GoDBMeshRow >(iMapColorIDs, iMapCoordIDs, MapTrackIDs,
                                   LineContent, this->m_NewMeshIDs, MapMeshIDs, iMapCellTypeIDs,
                                   iMapSubCellTypeIDs);
+  }
+
   if ( SaveIntensities )
     {
     this->SaveIntensityForMesh(LineContent, MapMeshIDs, iMapColorIDs);
     }
+
+  {
+  IntMapType MapIDsSpecificOne;
+  IntMapType MapIDsSpecificTwo;
+
   this->SaveTraces< GoDBContourRow >(iMapColorIDs, iMapCoordIDs, MapMeshIDs,
-                                     LineContent, this->m_NewContourIDs, MapContourIDs);
+                                     LineContent, this->m_NewContourIDs, MapContourIDs,
+                                     MapIDsSpecificOne, MapIDsSpecificTwo );
+  }
 }
 
 //--------------------------------------------------------------------------
@@ -276,9 +304,10 @@ void GoDBImport::CloseDBConnection()
 
 //--------------------------------------------------------------------------
 void GoDBImport::SaveIntensityForMesh(std::string & ioLineContent,
-                                      std::map< int, int > iMapMeshIDs, std::map< int, int > iMapColorIDs)
+                                      const IntMapType & iMapMeshIDs,
+                                      const IntMapType & iMapColorIDs)
 {
-  std::map< int, int > MapChannelIDs;
+  IntMapType MapChannelIDs;
   while ( this->FindFieldName(ioLineContent) != "NumberOfchannel" )
     {
     getline (this->m_InFile, ioLineContent);

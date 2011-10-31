@@ -127,7 +127,7 @@ std::vector< std::vector< std::string > > QGoWizardDB::GetFilenamesFromDB()
   ChannelAttributes[0] = "channelID";
   ChannelAttributes[1] = "ChannelNumber";
 
-  std::map< std::string, std::string > ListChannelsIDNumber =
+  boost::unordered_map< std::string, std::string > ListChannelsIDNumber =
     MapTwoColumnsFromTable( DatabaseConnector, ChannelAttributes, "channel",
                             "ImagingSessionID", field("ImgSessionID").toString().toStdString() );
 
@@ -136,7 +136,7 @@ std::vector< std::vector< std::string > > QGoWizardDB::GetFilenamesFromDB()
   //                         "channel", "ImagingSessionID",
   // field("ImgSessionID").toString().toStdString() );
 
-  std::map< std::string, std::string >::iterator it = ListChannelsIDNumber.begin();
+  boost::unordered_map< std::string, std::string >::iterator it = ListChannelsIDNumber.begin();
   oFilenames.resize( ListChannelsIDNumber.size() );
   int i = 0;
   while ( it != ListChannelsIDNumber.end() )

@@ -41,21 +41,23 @@
 #include "vtkImageData.h"
 #include "QGoDockWidget.h"
 #include <QAction>
+#include <QHash>
 #include <QDockWidget>
+#include <vector>
 
 class GoImageProcessor;
 
 
 /**
-\class QGoTraceEditingWidgetManager abstract class handles the interactions
+\class QGoTraceEditingWidgetManager
+\brief abstract class handles the interactions
 between the user and the algorithms for one kind of trace
-\brief
 */
 class QGOGUILIB_EXPORT QGoTraceEditingWidgetManager: public QObject
 {
   Q_OBJECT
 public:
-  QGoTraceEditingWidgetManager(std::string iTraceName,
+  explicit QGoTraceEditingWidgetManager(std::string iTraceName,
     std::vector<QString> iVectChannels,
     int iTimeMin, int iTimeMax,
     std::vector< vtkPoints* >* iSeeds,
@@ -84,7 +86,7 @@ public:
   by the user and disable the channel comboboxes
   */
   virtual void SetTSliceForDopplerView(
-    std::map<QString, QColor> iListTimePoints, int iChannelNumber);
+    QHash<QString, QColor> iListTimePoints, int iChannelNumber);
 
 public slots:
   /**
@@ -104,6 +106,11 @@ signals:
   void TracesCreatedFromAlgo(std::vector<vtkPolyData *> iVectPolydata, int iTCoord);
   void TracesSplittedFromAlgo(std::vector<vtkPolyData *> iVectPolydata);
   void TracesMergedFromAlgo(vtkPolyData * iPolydata);
+
+  /**
+  \brief emit true to get the seeds widget enabled and false to disable it
+  */
+  void SetSeedInteractorBehaviour(bool enable);
 
 protected:
   QGoDockWidget*              m_TraceEditingDockWidget;
@@ -147,14 +154,6 @@ protected:
     emit TracesCreatedFromAlgo(NewTraces, this->GetSelectedTimePoint() );
     emit ClearAllSeeds();
     }
-
-signals:
-  /**
-  \brief emit true to get the seeds widget enabled and false to disable it
-  */
-  void SetSeedInteractorBehaviour(bool enable);
-
-protected slots:
 
 };
 

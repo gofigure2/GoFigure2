@@ -129,6 +129,8 @@ private:
   ContourMeshContainer *m_NewContourInfoForVisu;
   ContourMeshContainer *m_NewMeshInfoForVisu;
 
+  typedef std::map< int, int > IntMapType;
+
   /** \brief Return the name of the field contained in the line*/
   std::string FindFieldName(std::string iLine);
 
@@ -141,10 +143,10 @@ private:
 
   /** \brief Get the values from the Infile, save the non traces entities,
   fill the matching map for old and new IDs and return the current line content*/
-  std::string SaveNoTracesEntities(std::map< int, int > & ioMapColorIDs,
-                                   std::map< int, int > & ioMapCellTypeIDs,
-                                   std::map< int, int > & ioMapSubCellTypeIDs,
-                                   std::map< int, int > & ioMapCoordIDs);
+  std::string SaveNoTracesEntities(IntMapType & ioMapColorIDs,
+                                   IntMapType & ioMapCellTypeIDs,
+                                   IntMapType & ioMapSubCellTypeIDs,
+                                   IntMapType & ioMapCoordIDs);
 
   void OpenDBConnection();
 
@@ -154,11 +156,11 @@ private:
    IDs maps previously filled, then save them in the database if their bounding box
    doesn't match any existing ones and save the intensities for the meshes if
    SaveIntensities is set to true*/
-  void SaveTracesEntities(std::map< int, int > iMapColorIDs,
-                          std::map< int, int > iMapCoordIDs,
-                          std::string iLineContent,
-                          std::map< int, int > iMapCellTypeIDs,
-                          std::map< int, int > iMapSubCellTypeIDs,
+  void SaveTracesEntities(const IntMapType  & iMapColorIDs,
+                          const IntMapType  & iMapCoordIDs,
+                          const std::string & iLineContent,
+                          const IntMapType  & iMapCellTypeIDs,
+                          const IntMapType  & iMapSubCellTypeIDs,
                           bool SaveIntensities = false);
 
   /** \brief fill the info needed for the new imported contours to add
@@ -169,8 +171,8 @@ private:
   //void FillMeshInfoForVisu(std::vector<int> iListMeshIDs);
 
   void SaveIntensityForMesh(std::string & ioLineContent,
-                            std::map< int, int > iMapMeshIDs,
-                            std::map< int, int > iMapColorIDs);
+                            const IntMapType & iMapMeshIDs,
+                            const IntMapType & iMapColorIDs);
 
   /** \brief get the values from the import file,save the
   corresponding number of entities in the database, return
@@ -179,7 +181,7 @@ private:
   the import file*/
   template< typename T >
   std::string SaveImportedEntitiesInDatabase(int iNumberOfEntities,
-                                             std::map< int, int > & ioMapMatchingIDs)
+                                             IntMapType & ioMapMatchingIDs)
   {
     std::string LineContent;
 
@@ -227,10 +229,10 @@ private:
   with the new IDs created that matches the old one in the
   iMapIDs*/
   template< typename T >
-  void ReplaceTheFieldWithNewIDs(std::map< int, int > iMapIDs,
+  void ReplaceTheFieldWithNewIDs(const IntMapType & iMapIDs,
                                  std::string iFieldName, T & ioEntity)
   {
-    std::map< int, int >::iterator iter =
+    typename IntMapType::const_iterator iter =
       iMapIDs.find( atoi( ioEntity.GetMapValue(iFieldName).c_str() ) );
     //in case the value of the field name is 0 which corresponds to
     //an not yet associated value, it won't be found in the map:
@@ -248,9 +250,9 @@ private:
   CollectionID*/
   template< typename T >
   void ReplaceCommonFieldsForTraces(T & ioEntityToSave,
-                                    std::map< int, int > iMapColorIDs,
-                                    std::map< int, int > iMapCoordIDs,
-                                    std::map< int, int > iMapCollectionIDs)
+                                    const IntMapType & iMapColorIDs,
+                                    const IntMapType & iMapCoordIDs,
+                                    const IntMapType & iMapCollectionIDs)
   {
     ioEntityToSave.SetField(
       "ImagingSessionID", this->m_ImagingSessionID);
@@ -270,16 +272,15 @@ private:
 
   /** brief save all the entities in the database for a given
   trace*/
-  typedef std::map< int, int > IntMapType;
   template< typename T >
-  void SaveTraces(IntMapType iMapColorIDs,
-                  IntMapType iMapCoordIDs,
-                  IntMapType iMapCollectionIDs,
+  void SaveTraces(const IntMapType &  iMapColorIDs,
+                  const IntMapType &  iMapCoordIDs,
+                  const IntMapType &  iMapCollectionIDs,
                   std::string & ioLineContent,
                   std::vector< int > & ioNewTracesIDs,
-                  IntMapType & ioMapTraceIDs = IntMapType(),
-                  IntMapType iMapIDsSpecificOne = IntMapType(),
-                  IntMapType iMapIDsSpecificTwo = IntMapType()
+                  IntMapType & ioMapTraceIDs,
+                  const IntMapType &  iMapIDsSpecificOne,
+                  const IntMapType &  iMapIDsSpecificTwo
                   )
   {
     T   TraceToSave;
