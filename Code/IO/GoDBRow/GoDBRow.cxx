@@ -97,7 +97,6 @@ std::string GoDBRow::PrintColumnNames()
   size_t n = ListColumnNames.str().length() - 2;
   return ListColumnNames.str().substr(0, n);
 }
-
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
