@@ -1522,10 +1522,11 @@ void QGoPrintDatabase::SetTracksManager()
                     this, SLOT( ChangeTrackColor() ) );
   QObject::connect( this->m_TracksManager, SIGNAL( CheckedTracesToDelete() ),
                     this, SLOT( DeleteCheckedTracks() ) );
-
   QObject::connect( this->m_TracksManager, SIGNAL( NeedToGetDatabaseConnection() ),
                     this, SLOT( PassDBConnectionToTracksManager() ) );
-
+  QObject::connect( this->m_TracksManager,
+                    SIGNAL( NeedToGoToTheRealLocation(double, double, double, int) ),
+                    this, SIGNAL( NeedToGoToTheRealLocation(double, double, double, int) ) );
   QObject::connect( this->m_TracksManager,
                     SIGNAL( DBConnectionNotNeededAnymore() ),
                     this,

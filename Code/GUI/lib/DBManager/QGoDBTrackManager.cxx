@@ -396,6 +396,12 @@ void QGoDBTrackManager::AddActionsContextMenu(QMenu *iMenu)
   SplitMergeMenu->addAction( tr("Merge your 2 tracks"), this, SLOT( MergeTracks() ) );
   iMenu->addAction( SplitMergeMenu->menuAction() );
 
+  this->m_CheckedTracesMenu->addAction( tr("Go to the end of this %1s")
+                                        .arg( this->m_TraceName.c_str() ),
+                                        this, SLOT( GoToTrackEnd() ) );
+  this->m_CheckedTracesMenu->addAction( tr("Go to the beginning of this %1s")
+                                        .arg( this->m_TraceName.c_str() ),
+                                        this, SLOT( GoToTrackBegin() ) );
   this->m_CheckedTracesMenu->addAction( tr("Create a new division from checked %1s")
                                         .arg( this->m_TraceName.c_str() ),
                                         this, SLOT( CreateCorrespondingTrackFamily() ) );
@@ -1168,5 +1174,112 @@ RemoveVolumes(const std::list< std::pair<unsigned int, double> > & iVolumes,
     this->m_TrackContainerInfoForVisu->AddVolume(iTrackID, (-1)*((*it).second));
     ++it;
     }
+}
+//-------------------------------------------------------------------------
+
+//------------------------------------------------------------------------
+void QGoDBTrackManager::GoToTrackEnd()
+{
+  // open db connection
+  emit NeedToGetDatabaseConnection();
+
+  // make sure only one trace is checked
+  std::list< unsigned int > ListCheckedTraces =
+    this->GetListHighlightedIDs();
+  if ( ListCheckedTraces.size() != 1 )
+    {
+    QMessageBox msgBox;
+    msgBox.setText(
+      tr("Please select one and only one %1 to go to")
+      .arg( this->m_TraceName.c_str() ) );
+    msgBox.exec();
+    return;
+    }
+
+  //get last point of the trace from db
+  std::stringstream points( this->m_CollectionOfTraces->GetPoints(
+                                this->m_DatabaseConnector,
+                                this->m_TraceName,
+                                ListCheckedTraces.front()) );
+
+  int numberOfPoints = 0;
+  int count = 1;
+  points >> numberOfPoints;
+
+  if( numberOfPoints > 0)
+    {
+    // go to the last point
+    double point = 0.0;
+    while( count < numberOfPoints )
+      {
+      points >> point;
+      points >> point;
+      points >> point;
+      points >> point;
+      ++count;
+      }
+
+    double x = 0;
+    points >> x;
+    double y = 0;
+    points >> y;
+    double z = 0;
+    points >> z;
+    double t = 0;
+    points >> t;
+
+    emit NeedToGoToTheRealLocation( x,y,z, static_cast<int>(t) );
+    }
+
+  // close db connection
+  emit DBConnectionNotNeededAnymore();
+}
+//-------------------------------------------------------------------------
+
+//------------------------------------------------------------------------
+void QGoDBTrackManager::GoToTrackBegin()
+{
+  // open db connection
+  emit NeedToGetDatabaseConnection();
+
+  // make sure only one trace is checked
+  std::list< unsigned int > ListCheckedTraces =
+    this->GetListHighlightedIDs();
+  if ( ListCheckedTraces.size() != 1 )
+    {
+    QMessageBox msgBox;
+    msgBox.setText(
+      tr("Please select one and only one %1 to go to")
+      .arg( this->m_TraceName.c_str() ) );
+    msgBox.exec();
+    return;
+    }
+
+  //get last point of the trace from db
+  std::stringstream points( this->m_CollectionOfTraces->GetPoints(
+                                this->m_DatabaseConnector,
+                                this->m_TraceName,
+                                ListCheckedTraces.front()) );
+
+  int numberOfPoints = 0;
+  points >> numberOfPoints;
+
+  if( numberOfPoints > 0)
+    {
+    double x = 0;
+    points >> x;
+    double y = 0;
+    points >> y;
+    double z = 0;
+    points >> z;
+    double t = 0;
+    points >> t;
+
+    // go to the last point of the track
+    emit NeedToGoToTheRealLocation( x,y,z, static_cast<int>(t) );
+    }
+
+  // close db connection
+  emit DBConnectionNotNeededAnymore();
 }
 //-------------------------------------------------------------------------
