@@ -201,6 +201,8 @@ signals:
   void NewLineageToCreateFromTracks( std::list<unsigned int> iCheckedTracksIDs, unsigned int iTrackIDRoot,
     std::list<unsigned> iLineagesToDelete);
 
+  void NeedToGoToTheRealLocation(double, double, double, int);
+
 protected:
   GoDBTWContainerForTrack *m_TWContainer;
   TrackContainer          *m_TrackContainerInfoForVisu;
@@ -416,5 +418,8 @@ protected slots:
   \brief slot called when the user chose "Delete the division for this tracks"
   */
   void DeleteTheDivisions();
+
+  void GoToTrackEnd();
+  void GoToTrackBegin();
 };
 #endif

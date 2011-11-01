@@ -676,6 +676,7 @@ protected slots:
   void UpdateSeeds();
 
   void GoToLocation(int iX, int iY, int iZ, int iT);
+  void GoToRealLocation(double iX, double iY, double iZ, int iT);
 
   /**
    * \brief Mouse interaction style allows contours segmentation, according to

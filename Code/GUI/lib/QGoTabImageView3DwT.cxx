@@ -640,6 +640,11 @@ QGoTabImageView3DwT::CreateDataBaseTablesConnection()
   QObject::connect( this->m_DataBaseTables, SIGNAL( NeedToGoToTheLocation(int, int, int, int) ),
                     this, SLOT( GoToLocation(int, int, int, int) ) );
 
+  QObject::connect( this->m_DataBaseTables,
+                    SIGNAL( NeedToGoToTheRealLocation(double, double, double, int) ),
+                    this,
+                    SLOT( GoToRealLocation(double, double, double, int) ) );
+
   QObject::connect( this->m_DataBaseTables->toggleViewAction(), SIGNAL (toggled(bool) ),
                     this, SLOT(SetTraceSettingsToolBarVisible(bool) ) );
 
@@ -2862,6 +2867,36 @@ QGoTabImageView3DwT::GoToLocation(int iX, int iY, int iZ, int iT)
   this->SetSliceViewXY(iZ);
   this->SetSliceViewXZ(iY);
   this->SetSliceViewYZ(iX);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::GoToRealLocation(double iX, double iY, double iZ, int iT)
+{
+  // get spacing - should we provide easier access though image processor?
+  double* spacing = this->m_ImageProcessor->getImageBW()->GetSpacing();
+
+  int indexX = 0;
+  int indexY = 0;
+  int indexZ = 0;
+
+  if(spacing[0] != 0)
+    {
+    indexX = iX/spacing[0];
+    }
+
+  if(spacing[1] != 0)
+    {
+    indexY = iY/spacing[1];
+    }
+
+  if(spacing[2] != 0)
+    {
+    indexZ = iZ/spacing[2];
+    }
+
+  GoToLocation(indexX, indexY, indexZ, iT);
 }
 //-------------------------------------------------------------------------
 

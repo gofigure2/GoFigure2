@@ -225,7 +225,7 @@ public:
   }
 
   /**
-  \overload 
+  \overload
   */
   template< typename T >
   unsigned int CreateNewTraceInDB(T iTrace, vtkMySQLDatabase *iDatabaseConnector,
@@ -247,7 +247,7 @@ public:
   */
   template< typename T > //for lineage
   unsigned int CreateNewTraceInDB(T iTrace, vtkMySQLDatabase *iDatabaseConnector,
-                                  unsigned int iCoordIDMin, unsigned int iCoordIDMax, 
+                                  unsigned int iCoordIDMin, unsigned int iCoordIDMax,
                                   NameWithColorData iColor)
   {
     iTrace.SetField( "CoordIDMin", ConvertToString< unsigned int >(iCoordIDMin) );
@@ -444,13 +444,13 @@ public:
   \brief get the timepoint min or max for the trace
   \param[in] iDatabaseConnector connection to the database
   \param[in] iTraceID ID of the trace the timepoint min is needed
-  \param[in] MinTimePoint if true return the min timepoint, if false, 
+  \param[in] MinTimePoint if true return the min timepoint, if false,
   return the max timepoint
   \return the timepoint min or max
   */
   unsigned int GetBoundedBoxTimePoint(
     vtkMySQLDatabase *iDatabaseConnector, unsigned int iTraceID, bool MinTimePoint = true);
- 
+
   /**
   \brief get a list of structures filled with data from the database
   \param[in] iDatabaseConnector connection to the database
@@ -461,7 +461,7 @@ public:
   */
   template<typename T>
   std::list<T> GetListStructureFromDB(
-    vtkMySQLDatabase* iDatabaseConnector, unsigned int iImgSessionID, 
+    vtkMySQLDatabase* iDatabaseConnector, unsigned int iImgSessionID,
     std::list<unsigned int> iListTraces)
 {
   std::list<T> oListTracesResults;
@@ -470,8 +470,8 @@ public:
   FieldWithValue ColorCondition = {"ColorID", "ColorID", "="};
 
   GetInfoFromDBAndModifyListStructure<T>(
-    oListTracesResults, iDatabaseConnector, 
-    TraceAttributes, this->m_TracesName, "coordinate", "color", 
+    oListTracesResults, iDatabaseConnector,
+    TraceAttributes, this->m_TracesName, "coordinate", "color",
     CoordinateCondition, ColorCondition, "ImagingSessionID",
     iImgSessionID, this->m_TracesIDName, iListTraces);
   return oListTracesResults;
@@ -489,12 +489,16 @@ public:
   std::list<unsigned int> GetTrackFamiliesForLineages(
     vtkMySQLDatabase *iDatabaseConnector, std::list<unsigned int> iLineagesID);
 
-  /** 
-  \brief return the trackFamilyIDs the track belongs to (as a mother or as 
+  /**
+  \brief return the trackFamilyIDs the track belongs to (as a mother or as
   a daughter)
   */
-  std::list<unsigned int> GetTrackFamilyID(vtkMySQLDatabase *iDatabaseConnector, 
+  std::list<unsigned int> GetTrackFamilyID(vtkMySQLDatabase *iDatabaseConnector,
     std::list<unsigned int> iListTrackIDs);
+
+  std::string GetPoints(vtkMySQLDatabase *iDatabaseConnector,
+                        std::string iTraceName,
+                        unsigned int iTraceID);
 
 protected:
 
