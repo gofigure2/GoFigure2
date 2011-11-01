@@ -1113,28 +1113,29 @@ int GoDBCollectionOfTraces::GetTraceIDWithLowestTimePoint(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-std::list<unsigned int>
+std::string
 GoDBCollectionOfTraces::
 GetPoints(vtkMySQLDatabase *iDatabaseConnector, std::string iTraceName,
           unsigned int iTraceID)
 {
-  std::list<unsigned int> toto;
+  // WHAT
+  std::string QueryString = "SELECT Points ";
 
-  std::string QueryString = "SELECT Points FROM ";
-  QueryString += iTraceName;
-  QueryString += " WHERE TrackID = ";
+  // FROM
+  QueryString += "FROM " + iTraceName;
 
+  //WHERE
+  // trace to Trace (mysql not case sensitive on linux but just in case)
+  std::string traceID = iTraceName;
+  std::transform(iTraceName.begin(), ++iTraceName.begin(),traceID.begin(), ::toupper);
+  traceID += "ID";
+  QueryString += " WHERE " + traceID + " = ";
+  // iTraceID int to string
   std::stringstream s;
   s << iTraceID;
   QueryString += s.str();
 
-  std::cout <<"QUERY: " << QueryString << std::endl;
-
-  std::string test = ExecuteSelectQueryOneValue< std::string >(iDatabaseConnector,
-                                               QueryString);
-
-  std::cout <<"string: " << test << std::endl;
-
-  return toto;
+  return ExecuteSelectQueryOneValue< std::string >(iDatabaseConnector,
+                                                   QueryString);
 }
 //-------------------------------------------------------------------------

@@ -496,9 +496,9 @@ public:
   std::list<unsigned int> GetTrackFamilyID(vtkMySQLDatabase *iDatabaseConnector,
     std::list<unsigned int> iListTrackIDs);
 
-  std::list<unsigned int> GetPoints(vtkMySQLDatabase *iDatabaseConnector,
-                                    std::string iTraceName,
-                                    unsigned int iTraceID);
+  std::string GetPoints(vtkMySQLDatabase *iDatabaseConnector,
+                        std::string iTraceName,
+                        unsigned int iTraceID);
 
 protected:
 
