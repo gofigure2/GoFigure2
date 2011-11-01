@@ -313,6 +313,8 @@ signals:
   */
   void NeedToGoToTheLocation(int XCoord, int YCoord, int ZCoord, int TCoord);
 
+  void NeedToGoToTheRealLocation(double XCoord, double YCoord, double ZCoord, int TCoord);
+
   void PrintMessage(QString iMessage, int iTimeOut = 0);
 
 protected:

@@ -1135,7 +1135,7 @@ GetPoints(vtkMySQLDatabase *iDatabaseConnector, std::string iTraceName,
   s << iTraceID;
   QueryString += s.str();
 
-  return ExecuteSelectQueryOneValue< std::string >(iDatabaseConnector,
-                                                   QueryString);
+  return ExecuteSelectQueryOneValue< std::string >( iDatabaseConnector,
+                                                    QueryString);
 }
 //-------------------------------------------------------------------------
