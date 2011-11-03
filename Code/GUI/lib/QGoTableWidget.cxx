@@ -182,8 +182,17 @@ void QGoTableWidget::SetCheckStateForTraceID(unsigned int iTraceID,
                                              Qt::CheckState iState,
                                              bool EmitSignal)
 {
-  unsigned int ColumnIndex = this->findColumnName("");
-  int          RowIndex = this->GetRowForTraceID(iTraceID, iTraceName);
+
+std::cout << "iTraceID: " << iTraceID << std::endl;
+std::cout << "iTraceName: " << iTraceName << std::endl;
+std::cout << "EmitSignal: " << EmitSignal << std::endl;
+
+unsigned int ColumnIndex = this->findColumnName("");
+int          RowIndex = this->GetRowForTraceID(iTraceID, iTraceName);
+
+std::cout << "ColumnIndex: " << ColumnIndex << std::endl;
+std::cout << "RowIndex: " << RowIndex << std::endl;
+std::cout << "this->item(RowIndex, ColumnIndex): " << this->item(RowIndex, ColumnIndex) << std::endl;
 
   this->setCheckedUncheckedStateCheckBox(
     this->item(RowIndex, ColumnIndex), iState, EmitSignal);

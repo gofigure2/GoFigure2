@@ -587,11 +587,22 @@ bool QGoDBTrackManager::CheckOverlappingTracks(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoDBTrackManager::CreateCorrespondingTrackFamily()
+void QGoDBTrackManager::CreateCorrespondingTrackFamily( std::list<unsigned int> iDivisions )
 {
   int MotherID = 0;
   std::list<unsigned int> DaughtersIDs = std::list<unsigned int>();
-  std::list<unsigned int> CheckedTracks = this->GetListHighlightedIDs();
+  std::list<unsigned int> CheckedTracks;
+
+  if(iDivisions.size())
+    {
+    CheckedTracks = iDivisions;
+    }
+  else
+    {
+    CheckedTracks =
+      this->GetListHighlightedIDs();
+    }
+
   if (CheckedTracks.size() != 3)
     {
     QMessageBox msgBox;
@@ -602,7 +613,7 @@ void QGoDBTrackManager::CreateCorrespondingTrackFamily()
     }
   emit NeedToGetDatabaseConnection();
   if (this->IdentifyMotherDaughtersToCreateTrackFamily(this->m_DatabaseConnector,
-    this->GetListHighlightedIDs(), MotherID, DaughtersIDs) )
+    CheckedTracks, MotherID, DaughtersIDs) )
     {
     int TrackFamilyID =  this->CreateTrackFamily(this->m_DatabaseConnector,
       MotherID, DaughtersIDs);
@@ -796,12 +807,22 @@ void QGoDBTrackManager::LoadInfoVisuContainerForTrackFamilies(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoDBTrackManager::DeleteTheDivisions()
+void QGoDBTrackManager::DeleteTheDivisions(std::list<unsigned int> iDivisions)
 {
   //check that the selected traces are all mother, if not message in the status bar:
   std::list<unsigned int> TrackIDNotMother = std::list<unsigned int>();
-  std::list<unsigned int> CheckedTracks =
-    this->m_TrackContainerInfoForVisu->GetHighlightedElementsTraceID();
+  std::list<unsigned int> CheckedTracks;
+
+  if(iDivisions.size())
+    {
+    CheckedTracks = iDivisions;
+    }
+  else
+    {
+    CheckedTracks =
+      this->m_TrackContainerInfoForVisu->GetHighlightedElementsTraceID();
+    }
+
   std::list<unsigned int> TrackIDsWithNoLineage = std::list<unsigned int>();
   std::list<unsigned int> LineagesToDelete = std::list<unsigned int>();
   if (CheckedTracks.empty() )
@@ -1281,5 +1302,15 @@ void QGoDBTrackManager::GoToTrackBegin()
 
   // close db connection
   emit DBConnectionNotNeededAnymore();
+}
+//-------------------------------------------------------------------------
+
+//------------------------------------------------------------------------
+std::vector<unsigned int>
+QGoDBTrackManager::GetTrackFamily(vtkMySQLDatabase* iDatabaseConnector,
+                                  unsigned int iTrackID)
+{
+  return this->m_CollectionOfTraces->GetTrackFamily(iDatabaseConnector,
+                                                 iTrackID);
 }
 //-------------------------------------------------------------------------

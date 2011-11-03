@@ -1139,3 +1139,30 @@ GetPoints(vtkMySQLDatabase *iDatabaseConnector, std::string iTraceName,
                                                     QueryString);
 }
 //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::vector<unsigned int>
+GoDBCollectionOfTraces::
+GetTrackFamily(vtkMySQLDatabase *iDatabaseConnector, unsigned int iTrackID)
+{
+  // WHAT
+  std::string QueryString = "SELECT * ";
+
+  // FROM
+  QueryString += "FROM trackfamily ";
+
+  //WHERE
+  // iTraceID int to string
+  std::stringstream s;
+  s << iTrackID;
+  std::string trackID = s.str();
+
+  QueryString += " WHERE (TrackIDDaughter1=" + trackID;
+  QueryString += " OR TrackIDDaughter2=" + trackID + ")";
+
+  std::cout << "query: " << QueryString << std::endl;
+
+  return ExecuteSelectQuery< std::vector<unsigned int> >( iDatabaseConnector,
+                                                          QueryString);
+}
+//-------------------------------------------------------------------------

@@ -1723,7 +1723,45 @@ void QGoPrintDatabase::CreateNewTrackFromListMeshes(
   // remove all meshes from previous track avg_volume, from mesh ID
   temp = this->m_MeshesManager->GetListVolumes(ListMeshToBelongToTheTrack);
   // update tracks volumes
+  // do remove add at same time?
   this->m_TracksManager->RemoveVolumes(temp);
+
+  ///////////////////////////////////////////
+
+  // Get old track mother and 2 daughters from database
+  unsigned int oldMotherID = 0;
+  unsigned int oldTrackID = 0;
+  unsigned int newTrackID = NewTrackID;
+  unsigned int oldDaughter = 0;
+
+  std::list< std::pair<unsigned int, double> >::const_iterator it =
+          temp.begin();
+  if(it != temp.end())
+    {
+    oldTrackID = (*it).first;
+    }
+
+  // get track family from daughter
+  std::vector<unsigned int> family =
+      this->m_TracksManager->GetTrackFamily(this->m_DatabaseConnector, oldTrackID);
+
+  oldMotherID = family[1];
+  if(family[2] == oldTrackID)
+    {
+    oldDaughter = family[3];
+    }
+  else
+    {
+    oldDaughter = family[2];
+    }
+
+  ///////////////////////////////////////////////////
+  // Delete old track mother division
+  std::list<unsigned int> oldList;
+  oldList.push_back(oldMotherID);
+  this->m_TracksManager->DeleteTheDivisions(oldList);
+
+  ///////////////////////////////////////////////////
 
   //at that moment, do nothing for the checked meshes not selected to be part of
   // the track
@@ -1733,13 +1771,25 @@ void QGoPrintDatabase::CreateNewTrackFromListMeshes(
     }
 
   // remove all meshes from previous track avg_volume, from mesh ID
-  temp = this->m_MeshesManager->GetListVolumes(ListMeshToBelongToTheTrack);
+  //temp = this->m_MeshesManager->GetListVolumes(ListMeshToBelongToTheTrack);
   // update tracks volumes
   this->m_TracksManager->AddVolumes(temp, NewTrackID);
 
   this->AddCheckedTracesToCollection< QGoDBMeshManager, QGoDBTrackManager >(
     this->m_MeshesManager, this->m_TracksManager,
     NewTrackID, ListMeshToBelongToTheTrack);
+
+
+
+  ///////////////////////////////////////////////////
+  // Create division old mother and new daughter
+  std::list<unsigned int> newdaughter;
+  newdaughter.push_back(oldMotherID);
+  newdaughter.push_back(oldDaughter);
+  newdaughter.push_back(newTrackID);
+  this->m_TracksManager->CreateCorrespondingTrackFamily(newdaughter);
+  ///////////////////////////////////////////////////
+
   this->CloseDBConnection();
 }
 
@@ -1912,20 +1962,30 @@ void QGoPrintDatabase::SplitMergeTracksWithWidget(
 
   if ( win->exec() )
     {
-    std::list< std::list< unsigned int > >              ListTracksToCreate = win->GetListOfTracksToBeCreated();
+    std::list< std::list< unsigned int > > ListTracksToCreate =
+        win->GetListOfTracksToBeCreated();
     std::map< unsigned int, std::list< unsigned int > > ListTracksToUpdate =
-      win->GetListOfTracksToBeUpdated();
-    std::list< unsigned int > ListTracksToDelete = win->GetListOfTracksToBeDeleted();
+        win->GetListOfTracksToBeUpdated();
+    std::list< unsigned int > ListTracksToDelete =
+        win->GetListOfTracksToBeDeleted();
     if ( !ListTracksToCreate.empty() )
       {
+      std::cout << "create tracks" << std::endl;
       this->CreateNewTrackFromListMeshes(ListTracksToCreate);
       }
     if ( !ListTracksToUpdate.empty() )
       {
+      std::cout << "update tracks" << std::endl;
+      std::cout << "update tracks" << std::endl;
+      std::cout << "update tracks" << std::endl;
+      std::cout << "update tracks" << std::endl;
+      std::cout << "update tracks" << std::endl;
+      std::cout << "update tracks" << std::endl;
       this->AddListMeshesToATrack(ListTracksToUpdate);
       }
     if ( !ListTracksToDelete.empty() )
       {
+      std::cout << "delete tracks" << std::endl;
       this->DeleteListTraces< QGoDBTrackManager, QGoDBMeshManager, QGoDBMeshManager >(
         this->m_TracksManager, this->m_MeshesManager, this->m_MeshesManager,
         ListTracksToDelete);

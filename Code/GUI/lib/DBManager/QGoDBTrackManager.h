@@ -189,6 +189,21 @@ public:
   void RemoveVolumes(const std::list< std::pair<unsigned int, double> > & iVolumes,
                      unsigned int iTrackID);
 
+  std::vector<unsigned int> GetTrackFamily(vtkMySQLDatabase* iDatabaseConnector,
+                                           unsigned int iTrackID);
+
+                                             /**
+  \brief check that the mothertrackID is not already a mother in another
+  trackfamily, create the trackfamily if not and return the trackfamilyID
+  \param[in] iDatabaseConnector connection to the database
+  \param[in] iMotherTrackID
+  \param[in] iDaughtersID
+  \return ID of the new created trackfamily
+  */
+  int CreateTrackFamily(vtkMySQLDatabase* iDatabaseConnector,
+                        unsigned int iMotherTrackID,
+                        const std::list<unsigned int> & iDaughtersID);
+
 signals:
   void NeedMeshesInfoForImportedTrack(unsigned int iTrackID);
   void TrackToSplit(unsigned int iTrackID, std::list<unsigned int> iListMeshIDs);
@@ -202,6 +217,17 @@ signals:
     std::list<unsigned> iLineagesToDelete);
 
   void NeedToGoToTheRealLocation(double, double, double, int);
+
+public slots:
+  /**
+  \brief slot called when the user chose "Delete the division for this tracks"
+  */
+  void DeleteTheDivisions(std::list<unsigned int> iDivisions = std::list<unsigned int>());
+
+    /**
+  \brief slot called when the user chose "Create a new division from checked tracks"
+  */
+  void CreateCorrespondingTrackFamily(std::list<unsigned int> iDivisions = std::list<unsigned int>());
 
 protected:
   GoDBTWContainerForTrack *m_TWContainer;
@@ -267,18 +293,6 @@ protected:
   */
   void UpdateTrackFamilyIDForDaughter(vtkMySQLDatabase* iDatabaseConnector,
     unsigned int iDaughterID,unsigned int iTrackFamilyID);
-
-  /**
-  \brief check that the mothertrackID is not already a mother in another
-  trackfamily, create the trackfamily if not and return the trackfamilyID
-  \param[in] iDatabaseConnector connection to the database
-  \param[in] iMotherTrackID
-  \param[in] iDaughtersID
-  \return ID of the new created trackfamily
-  */
-  int CreateTrackFamily(vtkMySQLDatabase* iDatabaseConnector,
-                        unsigned int iMotherTrackID,
-                        const std::list<unsigned int> & iDaughtersID);
 
   /**
   \brief get the trackID with the lowest timepoint as the mother trackID,
@@ -408,16 +422,6 @@ protected slots:
   highest timepoints
   */
   void MergeTracks();
-
-  /**
-  \brief slot called when the user chose "Create a new division from checked tracks"
-  */
-  void CreateCorrespondingTrackFamily();
-
-  /**
-  \brief slot called when the user chose "Delete the division for this tracks"
-  */
-  void DeleteTheDivisions();
 
   void GoToTrackEnd();
   void GoToTrackBegin();

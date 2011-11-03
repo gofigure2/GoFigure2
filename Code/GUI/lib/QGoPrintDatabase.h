@@ -629,6 +629,7 @@ protected:
     TCollection *iCollectionManager, unsigned int iCollectionID,
     std::list< unsigned int > iListCheckedTraces)
   {
+    this->OpenDBConnection();
     //get the list of CollectionIDs that will be updated:
     std::list< unsigned int > ListCollectionIDsToUpdate =
       iTraceManager->GetListCollectionIDs(this->m_DatabaseConnector,
@@ -643,6 +644,7 @@ protected:
       }
     iCollectionManager->UpdateBoundingBoxes(this->m_DatabaseConnector,
                                             ListCollectionIDsToUpdate);
+  this->CloseDBConnection();
   }
 
   void UpdateSelectedCollectionForTableWidget(std::string iTableName);
