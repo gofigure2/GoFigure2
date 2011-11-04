@@ -438,16 +438,22 @@ QGoMainWindow::LoadAllTracesFromDatabaseManager(const int & iT)
 #pragma omp sections nowait
   {
 #pragma omp section
-  // Loads contours
-  LoadContoursFromDatabase(iT);
+    {
+    // Loads contours
+    LoadContoursFromDatabase(iT);
+    }
 
 #pragma omp section
-  // Loads meshes
-  LoadMeshesFromDatabase(iT);
+    {
+    // Loads meshes
+    LoadMeshesFromDatabase(iT);
+    }
 
 #pragma omp section
-  // Loads tracks
-  LoadTracksFromDatabase(iT);
+    {
+    // Loads tracks
+    LoadTracksFromDatabase(iT);
+    }
   }
 
   QApplication::restoreOverrideCursor();
