@@ -427,9 +427,10 @@ void QGoDBTrackManager::TrackIDToEmit()
   else
     {
     emit NeedToGetDatabaseConnection();
-    emit TrackToSplit( HighlightedTrackIDs.front(),
-                       this->GetListTracesIDsFromThisCollectionOf(this->m_DatabaseConnector,
-                                                                  HighlightedTrackIDs) );
+    std::list<unsigned int> list_meshes =
+        this->GetListTracesIDsFromThisCollectionOf(this->m_DatabaseConnector,
+                                                   HighlightedTrackIDs);
+    emit TrackToSplit( HighlightedTrackIDs.front(), list_meshes );
     emit DBConnectionNotNeededAnymore();
     }
 }
@@ -520,29 +521,6 @@ void QGoDBTrackManager::MergeTracks()
       }
     else
       {
-      ///////////////////////////////////////////////////////////////////
-      // delete smallest track (in time)
-      unsigned int oldMotherID = 0;
-      unsigned int oldDaughter = 0;
-      // delete mother division
-      std::vector<unsigned int> family =
-          this->GetTrackFamily(this->m_DatabaseConnector, TrackIDToDelete);
-      oldMotherID = family[1];
-      if(family[2] == TrackIDToDelete)
-        {
-        oldDaughter = family[3];
-        }
-      else
-        {
-        oldDaughter = family[2];
-        }
-      // Delete old track mother division
-      std::list<unsigned int> oldList;
-      oldList.push_back(oldMotherID);
-      this->DeleteTheDivisions(oldList);
-      ///////////////////////////////////////////////////////////////////
-      // connection is closed above...
-      emit         NeedToGetDatabaseConnection();
       // merge
       std::list< unsigned int > TraceIDToDelete;
       TraceIDToDelete.push_back(TrackIDToDelete);
@@ -551,15 +529,6 @@ void QGoDBTrackManager::MergeTracks()
           this->m_DatabaseConnector, TraceIDToDelete);
       this->DeleteListTraces(this->m_DatabaseConnector, TraceIDToDelete);
       emit MeshesToAddToTrack(MeshesBelongingToTrackToDelete, TrackIDToKeep);
-
-      ///////////////////////////////////////////////////
-      // Create division old mother and new daughter
-      std::list<unsigned int> newdaughter;
-      newdaughter.push_back(oldMotherID);
-      newdaughter.push_back(oldDaughter);
-      newdaughter.push_back(TrackIDToKeep);
-      this->CreateCorrespondingTrackFamily(newdaughter);
-      ///////////////////////////////////////////////////
       }
     emit DBConnectionNotNeededAnymore();
     }

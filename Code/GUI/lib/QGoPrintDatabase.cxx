@@ -1774,7 +1774,6 @@ void QGoPrintDatabase::CreateNewTrackFromListMeshes(
   //temp = this->m_MeshesManager->GetListVolumes(ListMeshToBelongToTheTrack);
   // update tracks volumes
   this->m_TracksManager->AddVolumes(temp, NewTrackID);
-
   this->AddCheckedTracesToCollection< QGoDBMeshManager, QGoDBTrackManager >(
     this->m_MeshesManager, this->m_TracksManager,
     NewTrackID, ListMeshToBelongToTheTrack);
@@ -1868,6 +1867,10 @@ AddListMeshesToATrack(std::list< unsigned int > iListMeshes, unsigned int iTrack
   std::list< unsigned int > ListMeshToBelongToTheTrack;
   std::list< unsigned int > ListNullMeshToBelongToTheTrack;
   std::list< std::pair<unsigned int, double> > temp;
+  unsigned int oldTrackID = 0;
+  unsigned int oldMotherID = 0;
+  unsigned int oldDaughter = 0;
+
   if ( iTrackID == 0 )
     {
     ListMeshToBelongToTheTrack = iListMeshes;
@@ -1888,6 +1891,39 @@ AddListMeshesToATrack(std::list< unsigned int > iListMeshes, unsigned int iTrack
     // update tracks volumes
     this->m_TracksManager->RemoveVolumes(temp);
 
+    ///////////////////////////////////////////////////////////////////
+    std::list< std::pair<unsigned int, double> >::const_iterator it =
+          temp.begin();
+    if(it != temp.end())
+      {
+      oldTrackID = (*it).first;
+      }
+      // delete smallest track (in time)
+      // delete mother division
+      std::vector<unsigned int> family =
+          this->m_TracksManager->GetTrackFamily(this->m_DatabaseConnector, oldTrackID);
+      //
+      if(family.size() == 0)
+      {
+      this->CloseDBConnection();
+      return;
+      }
+
+      oldMotherID = family[1];
+      if(family[2] == oldTrackID)
+        {
+        oldDaughter = family[3];
+        }
+      else
+        {
+        oldDaughter = family[2];
+        }
+      // Delete old track mother division
+      std::list<unsigned int> oldList;
+      oldList.push_back(oldMotherID);
+      this->m_TracksManager->DeleteTheDivisions(oldList);
+      ///////////////////////////////////////////////////////////////////
+  this->OpenDBConnection();
     // if there is already a mesh at the same time point in the track,
     // change the mesh's track id to 0
     MessageToPrint +=
@@ -1917,6 +1953,16 @@ AddListMeshesToATrack(std::list< unsigned int > iListMeshes, unsigned int iTrack
   this->m_MeshesManager->ModifyTrackIDInVisuContainer(iTrackID,
                                                       ListMeshToBelongToTheTrack,
                                                       ListNullMeshToBelongToTheTrack);
+
+  ///////////////////////////////////////////////////
+  // Create division old mother and new daughter
+  std::list<unsigned int> newdaughter;
+  newdaughter.push_back(oldMotherID);
+  newdaughter.push_back(oldDaughter);
+  newdaughter.push_back(iTrackID);
+  this->m_TracksManager->CreateCorrespondingTrackFamily(newdaughter);
+  ///////////////////////////////////////////////////
+
   this->CloseDBConnection();
 }
 
