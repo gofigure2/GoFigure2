@@ -237,6 +237,12 @@ public slots:
    */
   void SynchronizeViews( bool iSynchronize);
 
+  /*
+   * \brief Show/hide the planes in the 3d view
+   * \param[in] iSynchronize Enable/disable synchronization
+   */
+  void ShowPlanes( bool iShow);
+
 protected:
   QSplitter *     VSplitter;
   QSplitterChild *HtSplitter;

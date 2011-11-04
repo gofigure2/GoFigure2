@@ -1378,3 +1378,20 @@ QGoImageView3D::SynchronizeViews( bool iSynchronize)
     viewer->SynchronizeViews( iSynchronize );
     }
 }
+//---------------------------------------------------------------------------
+
+//---------------------------------------------------------------------------
+void
+QGoImageView3D::ShowPlanes(bool iShow)
+{
+  if(iShow)
+  {
+  m_View3D->SetTriPlanarRenderingOn();
+  }
+else
+  {
+  m_View3D->SetTriPlanarRenderingOff();
+  }
+
+  m_View3D->Render();
+}
