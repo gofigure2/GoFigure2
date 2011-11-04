@@ -1696,7 +1696,10 @@ void QGoPrintDatabase::SplitTheTrack(unsigned int iTrackID,
   std::list< unsigned int > ListMeshesForNewTrack =
     this->m_MeshesManager->GetMeshesWithTimePointInfToTheCheckedOne(
       iTrackID, this->m_DatabaseConnector, iListMeshIDs);
-  this->CreateNewTrackFromListMeshes(ListMeshesForNewTrack);
+  if(ListMeshesForNewTrack.size() != 0)
+    {
+    this->CreateNewTrackFromListMeshes(ListMeshesForNewTrack);
+    }
   this->CloseDBConnection();
 }
 
