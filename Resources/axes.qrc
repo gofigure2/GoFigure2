@@ -42,5 +42,6 @@
         <file>widget/arrow_up.png</file>
         <file>widget/arrow_down.png</file>
         <file>fig/transferFunction.png</file>
+        <file>fig/C_M_L_Border.png</file>
     </qresource>
 </RCC>

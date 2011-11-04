@@ -336,7 +336,7 @@ void vtkViewImage3D::Render()
 void vtkViewImage3D::SetVolumeRenderingOff()
 {
   // triplanar rendering on
-  SetTriPlanarRenderingOn();
+  //SetTriPlanarRenderingOn();
 
   CleanVolumeRenderingVectors();
 }
@@ -375,7 +375,7 @@ void vtkViewImage3D::SetVolumeRenderingOn(const std::vector<vtkImageData*>& iIma
                                           const std::vector<vtkPiecewiseFunction*>& iOpacities)
 {
   // triplanar rendering off
-  SetTriPlanarRenderingOff();
+  //SetTriPlanarRenderingOff();
 
   int *size = this->GetInput()->GetDimensions();
 

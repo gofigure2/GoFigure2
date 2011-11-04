@@ -832,7 +832,7 @@ QGoTabImageView3DwT::CreateAllViewActions()
   ActionDisplaySplinePlanes->setStatusTip( tr(" Display spline planes on each view") );
 
   QIcon displaysplineplaneicon;
-  displaysplineplaneicon.addPixmap(QPixmap( QString::fromUtf8(":/fig/C_M_L.png") ),
+  displaysplineplaneicon.addPixmap(QPixmap( QString::fromUtf8(":/fig/C_M_L_Border.png") ),
                                    QIcon::Normal, QIcon::Off);
   ActionDisplaySplinePlanes->setIcon(displaysplineplaneicon);
   this->m_ViewNoToolBarActions.push_back(ActionDisplaySplinePlanes);
@@ -974,6 +974,21 @@ QGoTabImageView3DwT::CreateAllViewActions()
 
   QObject::connect( SynchronizeViewsAction, SIGNAL( toggled(bool) ),
                     this->m_ImageView, SLOT( SynchronizeViews(bool) ) );
+
+  // Show/hide the planes
+  QAction *PlaneVisibilityAction =
+    new QAction(tr("show planes in the 3d view"), this);
+  PlaneVisibilityAction->setCheckable(true);
+  PlaneVisibilityAction->setChecked(true);
+  this->m_ViewActions.push_back(PlaneVisibilityAction);
+
+  QIcon PlaneVisibilityicon;
+  PlaneVisibilityicon.addPixmap(QPixmap( QString::fromUtf8(":/fig/C_M_L.png") ),
+                                QIcon::Normal, QIcon::Off);
+  PlaneVisibilityAction->setIcon(PlaneVisibilityicon);
+
+  QObject::connect( PlaneVisibilityAction, SIGNAL( toggled(bool) ),
+                    this->m_ImageView, SLOT( ShowPlanes(bool) ) );
 }
 
 //-------------------------------------------------------------------------
