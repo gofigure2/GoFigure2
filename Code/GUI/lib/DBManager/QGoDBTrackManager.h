@@ -192,6 +192,8 @@ public:
   std::vector<unsigned int> GetTrackFamily(vtkMySQLDatabase* iDatabaseConnector,
                                            unsigned int iTrackID);
 
+  bool isMother(vtkMySQLDatabase* iDatabaseConnector, unsigned int iTrackID);
+
                                              /**
   \brief check that the mothertrackID is not already a mother in another
   trackfamily, create the trackfamily if not and return the trackfamilyID

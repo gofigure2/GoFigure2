@@ -1166,3 +1166,36 @@ GetTrackFamily(vtkMySQLDatabase *iDatabaseConnector, unsigned int iTrackID)
                                                           QueryString);
 }
 //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+bool
+GoDBCollectionOfTraces::
+isMother(vtkMySQLDatabase *iDatabaseConnector, unsigned int iTrackID)
+{
+  // WHAT
+  std::string QueryString = "SELECT TrackIDMother ";
+
+  // FROM
+  QueryString += "FROM trackfamily ";
+
+  //WHERE
+  // iTraceID int to string
+  std::stringstream s;
+  s << iTrackID;
+  std::string trackID = s.str();
+
+  QueryString += " WHERE TrackIDMother=" + trackID;
+
+  std::string result =
+  ExecuteSelectQueryOneValue< std::string >( iDatabaseConnector, QueryString);
+
+  bool ismother = true;
+
+  if(result.empty())
+    {
+    ismother = false;
+    }
+
+  return ismother;
+}
+//-------------------------------------------------------------------------

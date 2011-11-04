@@ -497,6 +497,7 @@ void QGoDBTrackManager::DisplayOnlyCalculatedValuesForExistingTrack(
 //-------------------------------------------------------------------------
 void QGoDBTrackManager::MergeTracks()
 {
+
   std::list< unsigned int > CheckedTrack =
     this->m_TrackContainerInfoForVisu->GetHighlightedElementsTraceID();
   if ( CheckedTrack.size() != 2 )
@@ -521,6 +522,17 @@ void QGoDBTrackManager::MergeTracks()
       }
     else
       {
+      // if first is mother of a lineage, doin't do anything
+      bool isMother =
+          this->isMother(this->m_DatabaseConnector, TrackIDToDelete);
+
+      if(isMother)
+        {
+        emit DBConnectionNotNeededAnymore();
+        return;
+        }
+
+
       // delete smallest track (in time)
       //  strategy:
       // 1-delete previous division
@@ -532,6 +544,16 @@ void QGoDBTrackManager::MergeTracks()
       // delete mother division
       std::vector<unsigned int> family =
           this->GetTrackFamily(this->m_DatabaseConnector, TrackIDToDelete);
+      std::cout << "family.size(): " << family.size() << std::endl;
+      std::cout << "family.size(): " << family.size() << std::endl;
+      std::cout << "family.size(): " << family.size() << std::endl;
+      std::cout << "family.size(): " << family.size() << std::endl;
+      std::cout << "family.size(): " << family.size() << std::endl;
+      std::cout << "family.size(): " << family.size() << std::endl;
+      std::cout << "family.size(): " << family.size() << std::endl;
+      std::cout << "family.size(): " << family.size() << std::endl;
+      std::cout << "family.size(): " << family.size() << std::endl;
+
       // if track belongs to a lineage
       if(family.size() > 0)
         {
@@ -544,6 +566,7 @@ void QGoDBTrackManager::MergeTracks()
           {
           oldDaughter = family[2];
           }
+
         // Delete old track mother division
         std::list<unsigned int> oldList;
         oldList.push_back(oldMotherID);
@@ -1355,5 +1378,15 @@ QGoDBTrackManager::GetTrackFamily(vtkMySQLDatabase* iDatabaseConnector,
 {
   return this->m_CollectionOfTraces->GetTrackFamily(iDatabaseConnector,
                                                  iTrackID);
+}
+//-------------------------------------------------------------------------
+
+//------------------------------------------------------------------------
+bool
+QGoDBTrackManager::isMother(vtkMySQLDatabase* iDatabaseConnector,
+                            unsigned int iTrackID)
+{
+  return this->m_CollectionOfTraces->isMother(iDatabaseConnector,
+                                              iTrackID);
 }
 //-------------------------------------------------------------------------
