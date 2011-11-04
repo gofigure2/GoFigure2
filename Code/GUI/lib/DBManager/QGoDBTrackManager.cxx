@@ -430,7 +430,12 @@ void QGoDBTrackManager::TrackIDToEmit()
     std::list<unsigned int> list_meshes =
         this->GetListTracesIDsFromThisCollectionOf(this->m_DatabaseConnector,
                                                    HighlightedTrackIDs);
-    emit TrackToSplit( HighlightedTrackIDs.front(), list_meshes );
+
+    if(list_meshes.size() > 0)
+      {
+      emit TrackToSplit( HighlightedTrackIDs.front(), list_meshes );
+      }
+
     emit DBConnectionNotNeededAnymore();
     }
 }
