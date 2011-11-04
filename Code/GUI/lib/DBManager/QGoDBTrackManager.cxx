@@ -526,12 +526,12 @@ void QGoDBTrackManager::MergeTracks()
       bool isMother =
           this->isMother(this->m_DatabaseConnector, TrackIDToDelete);
 
-      if(isMother)
+      /*if(isMother)
         {
         emit DBConnectionNotNeededAnymore();
         return;
         }
-
+*/
 
       // delete smallest track (in time)
       //  strategy:
