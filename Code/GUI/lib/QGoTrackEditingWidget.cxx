@@ -184,7 +184,7 @@ QGoTrackEditingWidget::updateCurrentActorSelection(vtkObject *caller)
       cutTrack(m_CurrentActor);
       }
     }
-  else
+  /*else
     {
     MeshContainer::MultiIndexContainerTraceIDIterator iter;
     vtkIntArray* testArray =
@@ -193,7 +193,7 @@ QGoTrackEditingWidget::updateCurrentActorSelection(vtkObject *caller)
     iter = m_MeshContainer->m_Container.get< TraceID >().find( testArray->GetValue(0) );
     assert(iter != m_MeshContainer->m_Container.get< TraceID >().end() );
     merge(iter);
-    }
+    }*/
 }
 
 //-------------------------------------------------------------------------

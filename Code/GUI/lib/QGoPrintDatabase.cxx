@@ -1729,7 +1729,11 @@ void QGoPrintDatabase::CreateNewTrackFromListMeshes(
   // do remove add at same time?
   this->m_TracksManager->RemoveVolumes(temp);
 
-  ///////////////////////////////////////////
+  //  strategy:
+  // 1-delete previous division
+  // 2-create new track
+  // 3-create new division
+  // therefore we ensure to have a correct lineage tree
 
   // Get old track mother and 2 daughters from database
   unsigned int oldMotherID = 0;
@@ -1747,24 +1751,23 @@ void QGoPrintDatabase::CreateNewTrackFromListMeshes(
   // get track family from daughter
   std::vector<unsigned int> family =
       this->m_TracksManager->GetTrackFamily(this->m_DatabaseConnector, oldTrackID);
-
-  oldMotherID = family[1];
-  if(family[2] == oldTrackID)
+  // if track belongs to a lineage
+  if(family.size() > 0)
     {
-    oldDaughter = family[3];
+    oldMotherID = family[1];
+    if(family[2] == oldTrackID)
+      {
+      oldDaughter = family[3];
+      }
+    else
+      {
+      oldDaughter = family[2];
+      }
+    // Delete old track mother division
+    std::list<unsigned int> oldList;
+    oldList.push_back(oldMotherID);
+    this->m_TracksManager->DeleteTheDivisions(oldList);
     }
-  else
-    {
-    oldDaughter = family[2];
-    }
-
-  ///////////////////////////////////////////////////
-  // Delete old track mother division
-  std::list<unsigned int> oldList;
-  oldList.push_back(oldMotherID);
-  this->m_TracksManager->DeleteTheDivisions(oldList);
-
-  ///////////////////////////////////////////////////
 
   //at that moment, do nothing for the checked meshes not selected to be part of
   // the track
@@ -1781,16 +1784,16 @@ void QGoPrintDatabase::CreateNewTrackFromListMeshes(
     this->m_MeshesManager, this->m_TracksManager,
     NewTrackID, ListMeshToBelongToTheTrack);
 
-
-
-  ///////////////////////////////////////////////////
-  // Create division old mother and new daughter
-  std::list<unsigned int> newdaughter;
-  newdaughter.push_back(oldMotherID);
-  newdaughter.push_back(oldDaughter);
-  newdaughter.push_back(newTrackID);
-  this->m_TracksManager->CreateCorrespondingTrackFamily(newdaughter);
-  ///////////////////////////////////////////////////
+  // if track belongs to a lineage
+  if(family.size() > 0)
+    {
+    // Create division old mother and new daughter
+    std::list<unsigned int> newdaughter;
+    newdaughter.push_back(oldMotherID);
+    newdaughter.push_back(oldDaughter);
+    newdaughter.push_back(newTrackID);
+    this->m_TracksManager->CreateCorrespondingTrackFamily(newdaughter);
+    }
 
   this->CloseDBConnection();
 }
@@ -1870,9 +1873,6 @@ AddListMeshesToATrack(std::list< unsigned int > iListMeshes, unsigned int iTrack
   std::list< unsigned int > ListMeshToBelongToTheTrack;
   std::list< unsigned int > ListNullMeshToBelongToTheTrack;
   std::list< std::pair<unsigned int, double> > temp;
-  unsigned int oldTrackID = 0;
-  unsigned int oldMotherID = 0;
-  unsigned int oldDaughter = 0;
 
   if ( iTrackID == 0 )
     {
@@ -1894,39 +1894,6 @@ AddListMeshesToATrack(std::list< unsigned int > iListMeshes, unsigned int iTrack
     // update tracks volumes
     this->m_TracksManager->RemoveVolumes(temp);
 
-    ///////////////////////////////////////////////////////////////////
-    std::list< std::pair<unsigned int, double> >::const_iterator it =
-          temp.begin();
-    if(it != temp.end())
-      {
-      oldTrackID = (*it).first;
-      }
-      // delete smallest track (in time)
-      // delete mother division
-      std::vector<unsigned int> family =
-          this->m_TracksManager->GetTrackFamily(this->m_DatabaseConnector, oldTrackID);
-      //
-      if(family.size() == 0)
-      {
-      this->CloseDBConnection();
-      return;
-      }
-
-      oldMotherID = family[1];
-      if(family[2] == oldTrackID)
-        {
-        oldDaughter = family[3];
-        }
-      else
-        {
-        oldDaughter = family[2];
-        }
-      // Delete old track mother division
-      std::list<unsigned int> oldList;
-      oldList.push_back(oldMotherID);
-      this->m_TracksManager->DeleteTheDivisions(oldList);
-      ///////////////////////////////////////////////////////////////////
-  this->OpenDBConnection();
     // if there is already a mesh at the same time point in the track,
     // change the mesh's track id to 0
     MessageToPrint +=
@@ -1956,15 +1923,6 @@ AddListMeshesToATrack(std::list< unsigned int > iListMeshes, unsigned int iTrack
   this->m_MeshesManager->ModifyTrackIDInVisuContainer(iTrackID,
                                                       ListMeshToBelongToTheTrack,
                                                       ListNullMeshToBelongToTheTrack);
-
-  ///////////////////////////////////////////////////
-  // Create division old mother and new daughter
-  std::list<unsigned int> newdaughter;
-  newdaughter.push_back(oldMotherID);
-  newdaughter.push_back(oldDaughter);
-  newdaughter.push_back(iTrackID);
-  this->m_TracksManager->CreateCorrespondingTrackFamily(newdaughter);
-  ///////////////////////////////////////////////////
 
   this->CloseDBConnection();
 }
@@ -2015,8 +1973,8 @@ void QGoPrintDatabase::SplitMergeTracksWithWidget(
         win->GetListOfTracksToBeCreated();
     std::map< unsigned int, std::list< unsigned int > > ListTracksToUpdate =
         win->GetListOfTracksToBeUpdated();
-    std::list< unsigned int > ListTracksToDelete =
-        win->GetListOfTracksToBeDeleted();
+    //std::list< unsigned int > ListTracksToDelete =
+    //    win->GetListOfTracksToBeDeleted();
     if ( !ListTracksToCreate.empty() )
       {
       this->CreateNewTrackFromListMeshes(ListTracksToCreate);
@@ -2025,12 +1983,12 @@ void QGoPrintDatabase::SplitMergeTracksWithWidget(
       {
       this->AddListMeshesToATrack(ListTracksToUpdate);
       }
-    if ( !ListTracksToDelete.empty() )
+    /*if ( !ListTracksToDelete.empty() )
       {
       this->DeleteListTraces< QGoDBTrackManager, QGoDBMeshManager, QGoDBMeshManager >(
         this->m_TracksManager, this->m_MeshesManager, this->m_MeshesManager,
         ListTracksToDelete);
-      }
+      }*/
     }
   delete win;
 }
@@ -2093,7 +2051,6 @@ UpdateTableWidgetAndContainersForGivenTimePoint(
 
   if(this->m_VisibleTimePoints.size() > 0)
     {
-     std::cout << "in if " << std::endl;
     // list to be removed
     std::list<unsigned int> listToRemove;
     listToRemove = m_VisibleTimePoints;
