@@ -1970,22 +1970,14 @@ void QGoPrintDatabase::SplitMergeTracksWithWidget(
         win->GetListOfTracksToBeDeleted();
     if ( !ListTracksToCreate.empty() )
       {
-      std::cout << "create tracks" << std::endl;
       this->CreateNewTrackFromListMeshes(ListTracksToCreate);
       }
     if ( !ListTracksToUpdate.empty() )
       {
-      std::cout << "update tracks" << std::endl;
-      std::cout << "update tracks" << std::endl;
-      std::cout << "update tracks" << std::endl;
-      std::cout << "update tracks" << std::endl;
-      std::cout << "update tracks" << std::endl;
-      std::cout << "update tracks" << std::endl;
       this->AddListMeshesToATrack(ListTracksToUpdate);
       }
     if ( !ListTracksToDelete.empty() )
       {
-      std::cout << "delete tracks" << std::endl;
       this->DeleteListTraces< QGoDBTrackManager, QGoDBMeshManager, QGoDBMeshManager >(
         this->m_TracksManager, this->m_MeshesManager, this->m_MeshesManager,
         ListTracksToDelete);
