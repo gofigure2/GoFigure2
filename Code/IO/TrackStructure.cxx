@@ -287,6 +287,10 @@ TrackStructure::ComputeAttributes() const
                                                           / oAttributes.distance ) );
     }
 
+  oAttributes.number_meshes = static_cast< unsigned int >( PointsMap.size() );
+
+  oAttributes.temporal_extent = ( t1 - tmin );
+
   oAttributes.avg_volume = this->m_AverageVolume/( static_cast< double >( PointsMap.size() ) );
 
   return oAttributes;
