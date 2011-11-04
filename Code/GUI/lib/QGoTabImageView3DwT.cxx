@@ -3494,7 +3494,9 @@ CreateMeshesActorsFromVisuContainer(std::list<unsigned int> iTPointToLoad)
         // since they have just been extracted from it!
         //while ( it0 != it1 )
 
+#ifdef HAS_OPENMP
 #pragma omp for
+#endif
         for( size_t i = 0; i < numberOfMeshes; i++ )
           {
           it0 = tempvector[i];

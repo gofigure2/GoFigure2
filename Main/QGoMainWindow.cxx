@@ -435,12 +435,20 @@ QGoMainWindow::LoadAllTracesFromDatabaseManager(const int & iT)
 {
   QApplication::setOverrideCursor( QCursor(Qt::WaitCursor) );
 
+#pragma omp sections nowait
+  {
+#pragma omp section
   // Loads contours
   LoadContoursFromDatabase(iT);
+
+#pragma omp section
   // Loads meshes
   LoadMeshesFromDatabase(iT);
+
+#pragma omp section
   // Loads tracks
   LoadTracksFromDatabase(iT);
+  }
 
   QApplication::restoreOverrideCursor();
 }
@@ -497,11 +505,11 @@ QGoMainWindow::LoadTracksFromDatabase(const int & iT)
     if ( temp )
       {
       // let's iterate on the container with increasing TraceID
-      TrackContainer::MultiIndexContainerType::index< TraceID >::type::iterator
-        track_list_it = temp->m_Container.get< TraceID >().begin();
+      typedef TrackContainer::MultiIndexContainerType::index< TraceID >::type::iterator
+          TrackContainerIterator;
 
-      TrackContainer::MultiIndexContainerType::index< TraceID >::type::iterator
-        track_list_end = temp->m_Container.get< TraceID >().end();
+      TrackContainerIterator track_list_it = temp->m_Container.get< TraceID >().begin();
+      TrackContainerIterator track_list_end = temp->m_Container.get< TraceID >().end();
 
       size_t nb_tracks = temp->m_Container.get< TraceID >().size();
 
