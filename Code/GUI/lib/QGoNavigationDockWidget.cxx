@@ -115,6 +115,7 @@ QGoNavigationDockWidget( QWidget *iParent,
   this->tLabel->hide();
   this->t->hide();
 
+  m_Classic = true;
 }
 
 //-------------------------------------------------------------------------
@@ -352,7 +353,18 @@ QGoNavigationDockWidget::
 ModifyChannel(QString iName, QColor iColor)
 {
   //modify color of bg of checkbox!
-  QList<QCheckBox*>::iterator it2 = m_ListCheckBoxes.begin();
+  QList<QCheckBox*>::iterator it2;
+
+  // doppler view or not?
+  if(m_Classic)
+    {
+    it2 = m_ListCheckBoxes.begin();
+    }
+  else
+    {
+    it2 = m_ListDoppler.begin();
+    }
+
   while(iName.compare((*it2)->objectName()) != 0)
     {
     ++it2;
@@ -392,6 +404,8 @@ VisibilityListChannels(const bool& iVisibility)
     (*it2)->setVisible(iVisibility);
     ++it2;
     }
+
+  m_Classic = iVisibility;
 }
 //-------------------------------------------------------------------------
 
@@ -405,7 +419,7 @@ AddDoppler(const QString& iName, const QColor& iColor, const unsigned int& iNumb
   QCheckBox *checkBox1 = new QCheckBox(iName, this);
   checkBox1->setObjectName(iName);
   checkBox1->setChecked(iChecked);
-  QString style = "border: 1px solid rgb(%1, %2, %3); background-color: rgba(%1, %2, %3, 100); border-radius: 4px;";
+  QString style = "border: 1px solid black; background-color: rgba(%1, %2, %3, 100); border-radius: 4px;";
   checkBox1->setStyleSheet(
         style.arg(iColor.red()).arg(iColor .green()).arg(iColor.blue()));
   QHBoxLayout *layout = new QHBoxLayout;
@@ -427,7 +441,7 @@ void
 QGoNavigationDockWidget::
 VisibilityListDoppler(const bool& iVisibility)
 {
-  QList<QWidget*>::iterator it = m_ListDoppler.begin();
+  QList<QCheckBox*>::iterator it = m_ListDoppler.begin();
   while(it != m_ListDoppler.end())
   {
     (*it)->setVisible(iVisibility);
