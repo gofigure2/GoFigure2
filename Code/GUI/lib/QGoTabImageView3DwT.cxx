@@ -3511,6 +3511,7 @@ QGoTabImageView3DwT::
 UpdateTFEditor()
 {
   unsigned int NumberOfChannels = m_ImageProcessor->getNumberOfChannels();
+  int currentChannel = m_TransferFunctionDockWidget->GetCurrentWidget();
 
   for ( unsigned int i = 0; i < NumberOfChannels; i++ )
     {
@@ -3528,6 +3529,7 @@ UpdateTFEditor()
         m_ImageProcessor->getImageBW(name)->GetScalarRange()[1]);
     }
 
+  m_TransferFunctionDockWidget->SetCurrentWidget(currentChannel);
 }
 //------------------------------------------------------------------------------
 
