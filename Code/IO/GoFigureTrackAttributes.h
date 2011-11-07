@@ -61,15 +61,21 @@ struct QGOIO_EXPORT GoFigureTrackAttributes
   /** average mesh volume over the track */
   double avg_volume;
 
+  unsigned int number_meshes;
+
+  unsigned int temporal_extent;
+
   /** Constructors */
   GoFigureTrackAttributes() : total_length( 0. ), avg_speed( 0. ),
-    max_speed( 0. ), distance( 0. ), theta( 0. ), phi( 0. ), avg_volume(0.)
+    max_speed( 0. ), distance( 0. ), theta( 0. ), phi( 0. ), avg_volume(0.),
+    number_meshes( 0 ), temporal_extent( 0 )
     {}
 
   GoFigureTrackAttributes(const GoFigureTrackAttributes & iE):
     total_length(iE.total_length), avg_speed(iE.avg_speed),
     max_speed(iE.max_speed), distance(iE.distance),
-    theta(iE.theta), phi(iE.phi), avg_volume(iE.avg_volume)
+    theta(iE.theta), phi(iE.phi), avg_volume(iE.avg_volume),
+    number_meshes( iE.number_meshes ), temporal_extent(iE.temporal_extent)
   {}
 
   GoFigureTrackAttributes& operator = ( GoFigureTrackAttributes & iE )
@@ -81,6 +87,8 @@ struct QGOIO_EXPORT GoFigureTrackAttributes
     this->theta = iE.theta;
     this->phi = iE.phi;
     this->avg_volume = iE.avg_volume;
+    this->number_meshes = iE.number_meshes;
+    this->temporal_extent = iE.temporal_extent;
 
     return *this;
     }

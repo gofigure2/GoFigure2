@@ -468,8 +468,8 @@ void QGoDBTrackManager::DisplayOnlyCalculatedValuesForExistingTrack(
 
     assert( timeInterval != 0 );
 
-    std::vector< std::string > ColumnNames (7);
-    std::vector< std::string > Values (7);
+    std::vector< std::string > ColumnNames (9);
+    std::vector< std::string > Values (9);
 
     ColumnNames.at(0) = "Deplacement";
     Values.at(0) = ConvertToString< double >(iTrackAttributes->total_length);
@@ -487,6 +487,10 @@ void QGoDBTrackManager::DisplayOnlyCalculatedValuesForExistingTrack(
         (iTrackAttributes->max_speed / static_cast< double >( timeInterval ));
     ColumnNames.at(6) = "AvgVolume";
     Values.at(6) = ConvertToString< double >(iTrackAttributes->avg_volume);
+    ColumnNames.at(7) = "NumberOfMeshes";
+    Values.at(7) = ConvertToString< unsigned int >(iTrackAttributes->number_meshes);
+    ColumnNames.at(8) = "Tmax - Tmin";
+    Values.at(8) = ConvertToString< unsigned int >(iTrackAttributes->temporal_extent);
 
     this->m_Table->AddValuesForID(ColumnNames, Values, iTrackID, "trackID");
     }

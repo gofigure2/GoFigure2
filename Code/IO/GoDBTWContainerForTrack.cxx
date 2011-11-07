@@ -117,6 +117,21 @@ void GoDBTWContainerForTrack::SetSpecificInfoForTrackTable()
   m_ColumnsInfos.push_back(temp);
   PairTemp.first = temp;
   m_RowContainer.push_back(PairTemp);
+
+  //Get the info for Number of meshes:
+  temp.InfoName = "NumberOfMeshes";
+  temp.ColumnNameTableWidget = "NumberOfMeshes";
+  m_ColumnsInfos.push_back(temp);
+  PairTemp.first = temp;
+  m_RowContainer.push_back(PairTemp);
+
+  //Get the info for Tmax - Tmin:
+  temp.InfoName = "Tmax - Tmin";
+  temp.ColumnNameTableWidget = "Tmax - Tmin";
+  m_ColumnsInfos.push_back(temp);
+  PairTemp.first = temp;
+  m_RowContainer.push_back(PairTemp);
+
   temp.Clear();
 }
 
@@ -180,6 +195,10 @@ void GoDBTWContainerForTrack::GetValuesAndNamesForTrackComputedValues(
     ioValues.push_back(temp);
     ioNames.push_back("AvgVolume");
     temp.push_back( ConvertToString< double >(iTrackAttributes->avg_volume) );
+    ioNames.push_back("NumberOfMeshes");
+    temp.push_back( ConvertToString< unsigned int >(iTrackAttributes->number_meshes) );
+    ioNames.push_back("Tmax - Tmin");
+    temp.push_back( ConvertToString< unsigned int >(iTrackAttributes->temporal_extent) );
     ioValues.push_back(temp);
     }
 }
