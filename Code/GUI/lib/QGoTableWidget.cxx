@@ -153,8 +153,12 @@ void QGoTableWidget::SetVisibleStateForTraceID(unsigned int iTraceID,
   unsigned int ColumnIndex = this->findColumnName("Show");
   int          RowIndex = this->GetRowForTraceID(iTraceID, iTraceName);
 
-  this->setVisibleStateCheckBox(this->item(RowIndex, ColumnIndex),
-                                iState, EmitSignal);
+  QTableWidgetItem* temp = this->item(RowIndex, ColumnIndex);
+
+  if( temp )
+    {
+    this->setVisibleStateCheckBox( temp, iState, EmitSignal);
+    }
 }
 
 //--------------------------------------------------------------------------
@@ -182,8 +186,17 @@ void QGoTableWidget::SetCheckStateForTraceID(unsigned int iTraceID,
                                              Qt::CheckState iState,
                                              bool EmitSignal)
 {
-  unsigned int ColumnIndex = this->findColumnName("");
-  int          RowIndex = this->GetRowForTraceID(iTraceID, iTraceName);
+
+std::cout << "iTraceID: " << iTraceID << std::endl;
+std::cout << "iTraceName: " << iTraceName << std::endl;
+std::cout << "EmitSignal: " << EmitSignal << std::endl;
+
+unsigned int ColumnIndex = this->findColumnName("");
+int          RowIndex = this->GetRowForTraceID(iTraceID, iTraceName);
+
+std::cout << "ColumnIndex: " << ColumnIndex << std::endl;
+std::cout << "RowIndex: " << RowIndex << std::endl;
+std::cout << "this->item(RowIndex, ColumnIndex): " << this->item(RowIndex, ColumnIndex) << std::endl;
 
   this->setCheckedUncheckedStateCheckBox(
     this->item(RowIndex, ColumnIndex), iState, EmitSignal);
@@ -860,10 +873,13 @@ void QGoTableWidget::setCheckedUncheckedStateCheckBox(QTableWidgetItem *iItem,
                                                       Qt::CheckState iState,
                                                       bool EmitSignal)
 {
-  if ( this->setCheckStateCheckBox(iItem, iState) && EmitSignal )
+  if( iItem )
     {
-    int  Row = iItem->row();
-    emit CheckedRowsChanged( this->item(Row, 1)->text().toInt() );
+    if ( this->setCheckStateCheckBox(iItem, iState) && EmitSignal )
+      {
+      int  Row = iItem->row();
+      emit CheckedRowsChanged( this->item(Row, 1)->text().toInt() );
+      }
     }
 }
 
@@ -874,25 +890,28 @@ void QGoTableWidget::setVisibleStateCheckBox(QTableWidgetItem *iItem,
                                              Qt::CheckState iState,
                                              bool EmitSignal)
 {
-  if ( this->setCheckStateCheckBox(iItem, iState) )
+  if( iItem )
     {
-    QIcon Icon;
-    if ( iState == Qt::Checked )
+    if ( this->setCheckStateCheckBox(iItem, iState) )
       {
-      Icon.addPixmap(QPixmap( QString::fromUtf8(":/fig/EyeIcon.png") ),
-                     QIcon::Normal, QIcon::Off);
+      QIcon Icon;
+      if ( iState == Qt::Checked )
+        {
+        Icon.addPixmap(QPixmap( QString::fromUtf8(":/fig/EyeIcon.png") ),
+                       QIcon::Normal, QIcon::Off);
+        }
+      else
+        {
+        Icon.addPixmap(QPixmap( QString::fromUtf8(":/fig/BlankIcon.png") ),
+                       QIcon::Normal, QIcon::Off);
+        }
+      if ( EmitSignal )
+        {
+        int Row = iItem->row();
+        VisibleRowsChanged( this->item(Row, 1)->text().toInt() );
+        }
+      iItem->setIcon(Icon);
       }
-    else
-      {
-      Icon.addPixmap(QPixmap( QString::fromUtf8(":/fig/BlankIcon.png") ),
-                     QIcon::Normal, QIcon::Off);
-      }
-    if ( EmitSignal )
-      {
-      int Row = iItem->row();
-      VisibleRowsChanged( this->item(Row, 1)->text().toInt() );
-      }
-    iItem->setIcon(Icon);
     }
 }
 
@@ -904,24 +923,27 @@ bool QGoTableWidget::setCheckStateCheckBox(QTableWidgetItem *iItem,
 {
   bool oModification = false;
 
-  if ( iState == Qt::Checked )
+  if( iItem )
     {
-    //if the row is already checked, no need to do anything:
-    if ( iItem->checkState() != 2 )
+    if ( iState == Qt::Checked )
       {
-      iItem->setCheckState(Qt::Checked);
-      iItem->setText("1");
-      oModification = true;
+      //if the row is already checked, no need to do anything:
+      if ( iItem->checkState() != 2 )
+        {
+        iItem->setCheckState(Qt::Checked);
+        iItem->setText("1");
+        oModification = true;
+        }
       }
-    }
-  else
-    {
-    //if the row is already unchecked, no need to do anything:
-    if ( iItem->checkState() != Qt::Unchecked )
+    else
       {
-      iItem->setCheckState(Qt::Unchecked);
-      iItem->setText("0");
-      oModification = true;
+      //if the row is already unchecked, no need to do anything:
+      if ( iItem->checkState() != Qt::Unchecked )
+        {
+        iItem->setCheckState(Qt::Unchecked);
+        iItem->setText("0");
+        oModification = true;
+        }
       }
     }
   return oModification;

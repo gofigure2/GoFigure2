@@ -500,6 +500,11 @@ public:
                         std::string iTraceName,
                         unsigned int iTraceID);
 
+  std::vector<unsigned int> GetTrackFamily(vtkMySQLDatabase *iDatabaseConnector,
+                                           unsigned int iTrackID);
+
+  bool isMother(vtkMySQLDatabase *iDatabaseConnector, unsigned int iTrackID);
+
 protected:
 
   std::string  m_CollectionName;

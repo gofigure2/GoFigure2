@@ -1139,3 +1139,64 @@ GetPoints(vtkMySQLDatabase *iDatabaseConnector, std::string iTraceName,
                                                     QueryString);
 }
 //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::vector<unsigned int>
+GoDBCollectionOfTraces::
+GetTrackFamily(vtkMySQLDatabase *iDatabaseConnector, unsigned int iTrackID)
+{
+  // WHAT
+  std::string QueryString = "SELECT * ";
+
+  // FROM
+  QueryString += "FROM trackfamily ";
+
+  //WHERE
+  // iTraceID int to string
+  std::stringstream s;
+  s << iTrackID;
+  std::string trackID = s.str();
+
+  QueryString += " WHERE (TrackIDDaughter1=" + trackID;
+  QueryString += " OR TrackIDDaughter2=" + trackID + ")";
+
+  return ExecuteSelectQuery< std::vector<unsigned int> >( iDatabaseConnector,
+                                                          QueryString);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+bool
+GoDBCollectionOfTraces::
+isMother(vtkMySQLDatabase *iDatabaseConnector, unsigned int iTrackID)
+{
+  // WHAT
+  std::string QueryString = "SELECT TrackIDMother ";
+
+  // FROM
+  QueryString += "FROM trackfamily ";
+
+  //WHERE
+  // iTraceID int to string
+  std::stringstream s;
+  s << iTrackID;
+  std::string trackID = s.str();
+
+  QueryString += " WHERE TrackIDMother=" + trackID;
+
+  std::string result =
+  ExecuteSelectQueryOneValue< std::string >( iDatabaseConnector, QueryString);
+
+  int numb;
+  std::stringstream(result) >> numb;
+
+  bool ismother = true;
+
+  if(numb <= 0)
+    {
+    ismother = false;
+    }
+
+  return ismother;
+}
+//-------------------------------------------------------------------------
