@@ -1160,8 +1160,6 @@ GetTrackFamily(vtkMySQLDatabase *iDatabaseConnector, unsigned int iTrackID)
   QueryString += " WHERE (TrackIDDaughter1=" + trackID;
   QueryString += " OR TrackIDDaughter2=" + trackID + ")";
 
-  std::cout << "query: " << QueryString << std::endl;
-
   return ExecuteSelectQuery< std::vector<unsigned int> >( iDatabaseConnector,
                                                           QueryString);
 }
@@ -1189,9 +1187,12 @@ isMother(vtkMySQLDatabase *iDatabaseConnector, unsigned int iTrackID)
   std::string result =
   ExecuteSelectQueryOneValue< std::string >( iDatabaseConnector, QueryString);
 
+  int numb;
+  std::stringstream(result) >> numb;
+
   bool ismother = true;
 
-  if(result.empty())
+  if(numb <= 0)
     {
     ismother = false;
     }

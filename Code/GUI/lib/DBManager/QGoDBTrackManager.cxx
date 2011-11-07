@@ -522,16 +522,33 @@ void QGoDBTrackManager::MergeTracks()
       }
     else
       {
-      // if first is mother of a lineage, doin't do anything
+      //if first is mother of a lineage, doin't do anything
       bool isMother =
           this->isMother(this->m_DatabaseConnector, TrackIDToDelete);
 
-      /*if(isMother)
+      if(isMother)
         {
         emit DBConnectionNotNeededAnymore();
+        QMessageBox msgBox;
+        msgBox.setText(
+            tr("The first track is already a mother track !!") );
+        msgBox.exec();
         return;
         }
-*/
+
+      // if second is dauther of a lineage, don't do anything
+      std::vector<unsigned int> family1 =
+          this->GetTrackFamily(this->m_DatabaseConnector, TrackIDToKeep);
+
+      if(family1.size() > 0)
+        {
+        emit DBConnectionNotNeededAnymore();
+        QMessageBox msgBox;
+        msgBox.setText(
+            tr("The second track is already a daughter track !!") );
+        msgBox.exec();
+        return;
+        }
 
       // delete smallest track (in time)
       //  strategy:
@@ -544,15 +561,6 @@ void QGoDBTrackManager::MergeTracks()
       // delete mother division
       std::vector<unsigned int> family =
           this->GetTrackFamily(this->m_DatabaseConnector, TrackIDToDelete);
-      std::cout << "family.size(): " << family.size() << std::endl;
-      std::cout << "family.size(): " << family.size() << std::endl;
-      std::cout << "family.size(): " << family.size() << std::endl;
-      std::cout << "family.size(): " << family.size() << std::endl;
-      std::cout << "family.size(): " << family.size() << std::endl;
-      std::cout << "family.size(): " << family.size() << std::endl;
-      std::cout << "family.size(): " << family.size() << std::endl;
-      std::cout << "family.size(): " << family.size() << std::endl;
-      std::cout << "family.size(): " << family.size() << std::endl;
 
       // if track belongs to a lineage
       if(family.size() > 0)
