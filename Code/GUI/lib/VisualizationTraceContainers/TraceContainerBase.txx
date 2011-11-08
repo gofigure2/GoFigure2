@@ -66,7 +66,8 @@ TraceContainerBase< TContainer >::Print()
 //-------------------------------------------------------------------------
 template< class TContainer >
 void
-TraceContainerBase< TContainer >::SetHighlightedProperty(vtkProperty *iProperty)
+TraceContainerBase< TContainer >::
+SetHighlightedProperty(vtkProperty *iProperty)
 {
   using boost::multi_index:: get;
 
@@ -91,7 +92,8 @@ TraceContainerBase< TContainer >::SetHighlightedProperty(vtkProperty *iProperty)
 //-------------------------------------------------------------------------
 template< class TContainer >
 vtkProperty *
-TraceContainerBase< TContainer >::GetHighlightedProperty()
+TraceContainerBase< TContainer >::
+GetHighlightedProperty()
 {
   return m_HighlightedProperty;
 }
@@ -101,7 +103,8 @@ TraceContainerBase< TContainer >::GetHighlightedProperty()
 //-------------------------------------------------------------------------
 template< class TContainer >
 std::vector< vtkActor * >
-TraceContainerBase< TContainer >::GetActorGivenTraceID(unsigned int iTraceID)
+TraceContainerBase< TContainer >::
+GetActorGivenTraceID(unsigned int iTraceID)
 {
   using boost::multi_index:: get;
 
@@ -132,7 +135,8 @@ TraceContainerBase< TContainer >::GetActorGivenTraceID(unsigned int iTraceID)
 //-------------------------------------------------------------------------
 template< class TContainer >
 bool
-TraceContainerBase< TContainer >::UpdateCurrentElementFromExistingOne(unsigned int iTraceID, bool iErase)
+TraceContainerBase< TContainer >::
+UpdateCurrentElementFromExistingOne(unsigned int iTraceID, bool iErase)
 {
   using boost::multi_index:: get;
 
@@ -164,21 +168,24 @@ TraceContainerBase< TContainer >::UpdateCurrentElementFromExistingOne(unsigned i
 //-------------------------------------------------------------------------
 template< class TContainer >
 void
-TraceContainerBase< TContainer >::Insert(const typename TraceContainerBase::MultiIndexContainerElementType & iE)
+TraceContainerBase< TContainer >::
+Insert(const typename TraceContainerBase::MultiIndexContainerElementType & iE)
 {
   this->m_Container.insert(iE);
 }
 
 template< class TContainer >
 void
-TraceContainerBase< TContainer >::InsertCurrentElement()
+TraceContainerBase< TContainer >::
+InsertCurrentElement()
 {
   this->m_Container.insert(this->m_CurrentElement);
 }
 
 template< class TContainer >
 void
-TraceContainerBase< TContainer >::ResetCurrentElement()
+TraceContainerBase< TContainer >::
+ResetCurrentElement()
 {
   this->m_CurrentElement = MultiIndexContainerElementType();
 }
@@ -230,7 +237,8 @@ TraceContainerBase< TContainer >::GetCurrentElementColor()
 //-------------------------------------------------------------------------
 template< class TContainer >
 bool
-TraceContainerBase< TContainer >::RemoveElementFromVisualizationWithGivenTraceID(const unsigned int & iId)
+TraceContainerBase< TContainer >::
+RemoveElementFromVisualizationWithGivenTraceID(const unsigned int & iId)
 {
   using boost::multi_index:: get;
 
@@ -278,7 +286,8 @@ TraceContainerBase< TContainer >::RemoveElementFromVisualizationWithGivenTraceID
 //-------------------------------------------------------------------------
 template< class TContainer >
 bool
-TraceContainerBase< TContainer >::UpdateElementHighlightingWithGivenTraceID(const unsigned int & iId)
+TraceContainerBase< TContainer >::
+UpdateElementHighlightingWithGivenTraceID(const unsigned int & iId)
 {
   using boost::multi_index:: get;
 
@@ -306,7 +315,7 @@ TraceContainerBase< TContainer >::UpdateElementHighlightingWithGivenTraceID(cons
     temp_property->Delete();
 
     bool highlighted = !it->Highlighted;
-    
+
     m_Container.get< TraceID >().
         modify( it , change_highlighted<MultiIndexContainerElementType>(highlighted) );
 
@@ -325,8 +334,9 @@ TraceContainerBase< TContainer >::UpdateElementHighlightingWithGivenTraceID(cons
 //-------------------------------------------------------------------------
 template< class TContainer >
 void
-TraceContainerBase< TContainer >::UpdateElementHighlightingWithGivenTraceIDsBase(const QStringList & iList,
-                                                                                 const Qt::CheckState & iCheck)
+TraceContainerBase< TContainer >::
+UpdateElementHighlightingWithGivenTraceIDsBase(const QStringList & iList,
+                                               const Qt::CheckState & iCheck)
 {
   using boost::multi_index:: get;
 
@@ -379,8 +389,9 @@ TraceContainerBase< TContainer >::UpdateElementHighlightingWithGivenTraceIDsBase
 //-------------------------------------------------------------------------
 template< class TContainer >
 void
-TraceContainerBase< TContainer >::UpdateElementVisibilityWithGivenTraceIDsBase(const QStringList & iList,
-                                                                               const Qt::CheckState & iCheck)
+TraceContainerBase< TContainer >::
+UpdateElementVisibilityWithGivenTraceIDsBase(const QStringList & iList,
+                                             const Qt::CheckState & iCheck)
 {
   using boost::multi_index:: get;
 
@@ -432,7 +443,7 @@ TraceContainerBase< TContainer >::UpdateElementVisibilityWithGivenTraceIDsBase(c
           }
 
         it->SetActorVisibility(visible);
-        
+
         m_Container.get< TraceID >().
             modify( it , change_visible<MultiIndexContainerElementType>(visible) );
         }
@@ -451,7 +462,8 @@ TraceContainerBase< TContainer >::UpdateElementVisibilityWithGivenTraceIDsBase(c
 //-------------------------------------------------------------------------
 template< class TContainer >
 std::list< unsigned int >
-TraceContainerBase< TContainer >::UpdateAllHighlightedElementsWithGivenColor(QColor iColor)
+TraceContainerBase< TContainer >::
+UpdateAllHighlightedElementsWithGivenColor(QColor iColor)
 {
   using boost::multi_index:: get;
 
@@ -565,7 +577,8 @@ GetHighlightedElements(){
 //-------------------------------------------------------------------------
 template< class TContainer >
 bool
-TraceContainerBase< TContainer >::UpdateElementVisibilityWithGivenTraceID(const unsigned int & iId)
+TraceContainerBase< TContainer >::
+UpdateElementVisibilityWithGivenTraceID(const unsigned int & iId)
 {
   using boost::multi_index:: get;
 
@@ -610,9 +623,9 @@ TraceContainerBase< TContainer >::UpdateElementVisibilityWithGivenTraceID(const 
       }
 
     it->SetActorVisibility(!it->Visible);
-    
+
     bool visible = !it->Visible;
-    
+
     m_Container.get< TraceID >().
         modify( it , change_visible<MultiIndexContainerElementType>(visible) );
 

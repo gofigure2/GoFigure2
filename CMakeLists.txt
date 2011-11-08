@@ -37,8 +37,9 @@ ENDIF( WIN32 )
   )
 
   IF( UNIX )
-    SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
+    SET (CACHE CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
   ENDIF( UNIX )
+
 
 #---------------------------------------------------------------------------
 # SUPERBUILD - ENABLED BY DEFAULT
@@ -59,10 +60,35 @@ ELSE( SUPERBUILD )
   # CMake >= 2.8.2 MUST be installed (which is required by ITK)
   CMAKE_MINIMUM_REQUIRED( VERSION 2.8.2 )
 
-  #---------------------------------------------------------------------------
-
   PROJECT( GOFIGURE2 )
 
+  #-------------------------------------------------------------------------
+  OPTION( OPENMP_SUPPORT "Enable OpenMP support if possible" ON )
+
+  IF( OPENMP_SUPPORT )
+
+    FIND_PACKAGE( OpenMP )
+
+    IF( OPENMP_FOUND )
+      MESSAGE( STATUS "OpenMP found" )
+
+      ADD_DEFINITIONS( -DHAS_OPENMP )
+
+      SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}" )
+      SET( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}" )
+    ELSE()
+      MESSAGE( STATUS "OpenMP not found" )
+
+      REMOVE_DEFINITIONS( -DHAS_OPENMP )
+    ENDIF()
+
+  ELSE()
+
+      REMOVE_DEFINITIONS( -DHAS_OPENMP )
+
+  ENDIF()
+
+  #-------------------------------------------------------------------------
   # When making one release: update GOFIGURE2_*_VERSION,
   # GOFIGURE2_WC_REVISION and the date of the release
   SET( GOFIGURE2_MAJOR_VERSION "0" )

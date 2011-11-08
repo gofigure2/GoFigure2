@@ -185,6 +185,9 @@ private:
   {
     std::string LineContent;
 
+#ifdef HAS_OPENMP
+#pragma omp for
+#endif
     for ( int i = 0; i < iNumberOfEntities; i++ )
       {
       T EntityToSave;
@@ -284,6 +287,10 @@ private:
     int NumberOfTraces = atoi( this->GetValueForTheLine(ioLineContent).c_str() );
 
     getline(this->m_InFile, ioLineContent);
+
+#ifdef HAS_OPENMP
+#pragma omp for
+#endif
     for ( int i = 0; i < NumberOfTraces; i++ )
       {
       ioLineContent = this->GetValuesFromInfile< T >(

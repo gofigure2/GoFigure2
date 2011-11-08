@@ -143,6 +143,7 @@ ENDIF( SUPER_BOOST )
 
 set(proj GoFigure2)
 option( GOFIGURE2_EXAMPLE "Force building GoFigure2's example" OFF )
+option( GOFIGURE2_OPENMP "Enable OpenMP support for GoFigure2" ON )
 
 ExternalProject_Add(${proj}
   DEPENDS ${GoFigure2_DEPENDENCIES}
@@ -161,6 +162,7 @@ ExternalProject_Add(${proj}
     # QT (From VTK)
     -DQT_QMAKE_EXECUTABLE:PATH=${QT_QMAKE_EXECUTABLE}
     -DBUILD_EXAMPLES:BOOL=${GOFIGURE2_EXAMPLE}
+    -DOPENMP_SUPPORT:BOOL=${GOFIGURE2_OPENMP}
   INSTALL_COMMAND ""
   )
 

@@ -13,7 +13,7 @@ FIND_PACKAGE( VTK REQUIRED )
     MESSAGE( SEND_ERROR
       "GoFigure2 requires VTK 5.6 (your version of VTK is ${VTK_VERSION})" )
   ENDIF( ( ${VTK_MAJOR_VERSION} LESS 5 ) OR ( ${VTK_MINOR_VERSION} LESS 6 ) )
-  
+
   #----------------------------------------------------------
   # Check if version of VTK is > 5.6
   # Requiered to now if we can use setBitRate() and setBitRateTolerance
