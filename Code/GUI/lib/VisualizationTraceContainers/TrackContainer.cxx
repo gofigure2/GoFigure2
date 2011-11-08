@@ -743,15 +743,24 @@ TrackContainer::GetBorderOfTheTrack( const unsigned int& iTrackID,
 
   if( it != m_Container.get< TraceID >().end() )
     {
-    vtkPoints* points = it->Nodes->GetPoints();
-    if(!iBorder)
+    vtkPolyData* nodes = it->Nodes;
+
+    if( nodes )
       {
-      return points->GetPoint(0);
-      }
-    else
-      {
-      vtkIdType nbOfPoints = points->GetNumberOfPoints();
-      return points->GetPoint(nbOfPoints-1);
+      vtkPoints* points = nodes->GetPoints();
+
+      if( points )
+        {
+          if(!iBorder)
+          {
+          return points->GetPoint(0);
+          }
+        else
+          {
+          vtkIdType nbOfPoints = points->GetNumberOfPoints();
+          return points->GetPoint(nbOfPoints-1);
+          }
+        }
       }
     }
 
@@ -868,10 +877,32 @@ CreateDivisionPolydata(const unsigned int& iMother)
   // Mother: last point
   // D1 & D2: first point
   double* mother    = this->GetBorderOfTheTrack(iMother, LAST);
+
+  if( !mother )
+    {
+    std::cout << "iMother : " << iMother << std::endl;
+    return;
+    }
+
   double* daughter1 = this->GetBorderOfTheTrack(
         motherIt->TreeNode.m_Child[0]->TraceID, FIRST);
+
+  if( !daughter1 )
+    {
+    std::cout << "iMother : " << iMother << std::endl;
+    std::cout << "daughter1: " << motherIt->TreeNode.m_Child[0]->TraceID << std::endl;
+    return;
+    }
+
   double* daughter2 = this->GetBorderOfTheTrack(
         motherIt->TreeNode.m_Child[1]->TraceID, FIRST);
+
+  if( !daughter2 )
+    {
+    std::cout << "iMother : " << iMother << std::endl;
+    std::cout << "daughter2: " << motherIt->TreeNode.m_Child[1]->TraceID << std::endl;
+    return;
+    }
 
   //setup points (geometry)
   vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
