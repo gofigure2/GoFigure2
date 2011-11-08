@@ -2,7 +2,7 @@
  Authors: Michael Kazhdan and Matthew Bolitho
  at Johns Hopkins University, 2006-10
 
- Copyright (c) 2006-10, Michael Kazhdan and Matthew Bolitho, 
+ Copyright (c) 2006-10, Michael Kazhdan and Matthew Bolitho,
  Johns Hopkins University.
  All rights reserved.
 
@@ -14,8 +14,8 @@
  Redistributions in binary form must reproduce the above copyright notice,
  this list of conditions and the following disclaimer in the documentation
  and/or other materials provided with the distribution.
- Neither the name of the Johns Hopkins University nor the names of its 
- contributors may be used to endorse or promote products derived from this 
+ Neither the name of the Johns Hopkins University nor the names of its
+ contributors may be used to endorse or promote products derived from this
  software without specific prior written permission.
 
  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
@@ -279,22 +279,22 @@ int	Cube::EdgeReflectEdgeIndex(const int& edgeIndex){
 3} // (0,0) -> (0,1)
 */
 const int MarchingSquares::edgeMask[1<<Square::CORNERS]={
-	    0, //  0 ->         ->                         ->
-	    9, //  1 -> 0       -> (0,0)                   -> 0,3     ->  9 
-	    3, //  2 -> 1       -> (1,0)                   -> 0,1     ->  3
-	   10, //  3 -> 0,1     -> (0,0) (1,0)             -> 1,3     -> 10
-	   12, //  4 -> 2       -> (0,1)                   -> 2,3     -> 12
-	    5, //  5 -> 0,2     -> (0,0) (0,1)             -> 0,2     ->  5
-	   15, //  6 -> 1,2     -> (1,0) (0,1)             -> 0,1,2,3 -> 15
-	    6, //  7 -> 0,1,2   -> (0,0) (1,0) (0,1)       -> 1,2     ->  6
-	    6, //  8 -> 3       -> (1,1)                   -> 1,2     ->  6
-	   15, //  9 -> 0,3     -> (0,0) (1,1)             -> 0,1,2,3 -> 15 
-	    5, // 10 -> 1,3     -> (1,0) (1,1)             -> 0,2     ->  5
-	   12, // 11 -> 0,1,3   -> (0,0) (1,0) (1,1)       -> 2,3     -> 12
-	   10, // 12 -> 2,3     -> (0,1) (1,1)             -> 1,3     -> 10
-	    3, // 13 -> 0,2,3   -> (0,0) (0,1) (1,1)       -> 0,1     ->  3
-	    9, // 14 -> 1,2,3   -> (1,0) (0,1) (1,1)       -> 0,3     ->  9
-	    0, // 15 -> 0,1,2,3 -> (0,0) (1,0) (0,1) (1,1) -> 
+			0, //  0 ->         ->                         ->
+			9, //  1 -> 0       -> (0,0)                   -> 0,3     ->  9
+			3, //  2 -> 1       -> (1,0)                   -> 0,1     ->  3
+		 10, //  3 -> 0,1     -> (0,0) (1,0)             -> 1,3     -> 10
+		 12, //  4 -> 2       -> (0,1)                   -> 2,3     -> 12
+			5, //  5 -> 0,2     -> (0,0) (0,1)             -> 0,2     ->  5
+		 15, //  6 -> 1,2     -> (1,0) (0,1)             -> 0,1,2,3 -> 15
+			6, //  7 -> 0,1,2   -> (0,0) (1,0) (0,1)       -> 1,2     ->  6
+			6, //  8 -> 3       -> (1,1)                   -> 1,2     ->  6
+		 15, //  9 -> 0,3     -> (0,0) (1,1)             -> 0,1,2,3 -> 15
+			5, // 10 -> 1,3     -> (1,0) (1,1)             -> 0,2     ->  5
+		 12, // 11 -> 0,1,3   -> (0,0) (1,0) (1,1)       -> 2,3     -> 12
+		 10, // 12 -> 2,3     -> (0,1) (1,1)             -> 1,3     -> 10
+			3, // 13 -> 0,2,3   -> (0,0) (0,1) (1,1)       -> 0,1     ->  3
+			9, // 14 -> 1,2,3   -> (1,0) (0,1) (1,1)       -> 0,3     ->  9
+			0, // 15 -> 0,1,2,3 -> (0,0) (1,0) (0,1) (1,1) ->
 };
 const int MarchingSquares::edges[1<<Square::CORNERS][MAX_EDGES*2+1] = {
 	{ -1,  -1,  -1,  -1,  -1}, //
@@ -389,13 +389,13 @@ double MarchingSquares::Interpolate(const double& v1,const double& v2){return v1
 // MarchingCubes //
 ///////////////////
 const int MarchingCubes::edgeMask[1<<Cube::CORNERS]={
-	    0,  273,  545,  816, 2082, 2355, 2563, 2834,
+			0,  273,  545,  816, 2082, 2355, 2563, 2834,
 	 1042, 1283, 1587, 1826, 3120, 3361, 3601, 3840,
-	  324,   85,  869,  628, 2406, 2167, 2887, 2646,
+		324,   85,  869,  628, 2406, 2167, 2887, 2646,
 	 1366, 1095, 1911, 1638, 3444, 3173, 3925, 3652,
-	  644,  917,  165,  436, 2726, 2999, 2183, 2454,
+		644,  917,  165,  436, 2726, 2999, 2183, 2454,
 	 1686, 1927, 1207, 1446, 3764, 4005, 3221, 3460,
-	  960,  721,  481,  240, 3042, 2803, 2499, 2258,
+		960,  721,  481,  240, 3042, 2803, 2499, 2258,
 	 2002, 1731, 1523, 1250, 4080, 3809, 3537, 3264,
 	 2184, 2457, 2729, 3000,  170,  443,  651,  922,
 	 3226, 3467, 3771, 4010, 1208, 1449, 1689, 1928,
@@ -406,13 +406,13 @@ const int MarchingCubes::edgeMask[1<<Cube::CORNERS]={
 	 2888, 2649, 2409, 2168,  874,  635,  331,   90,
 	 3930, 3659, 3451, 3178, 1912, 1641, 1369, 1096,
 	 1096, 1369, 1641, 1912, 3178, 3451, 3659, 3930,
-	   90,  331,  635,  874, 2168, 2409, 2649, 2888,
+		 90,  331,  635,  874, 2168, 2409, 2649, 2888,
 	 1292, 1053, 1837, 1596, 3374, 3135, 3855, 3614,
-	  286,   15,  831,  558, 2364, 2093, 2845, 2572,
+		286,   15,  831,  558, 2364, 2093, 2845, 2572,
 	 1740, 2013, 1261, 1532, 3822, 4095, 3279, 3550,
-	  734,  975,  255,  494, 2812, 3053, 2269, 2508,
+		734,  975,  255,  494, 2812, 3053, 2269, 2508,
 	 1928, 1689, 1449, 1208, 4010, 3771, 3467, 3226,
-	  922,  651,  443,  170, 3000, 2729, 2457, 2184,
+		922,  651,  443,  170, 3000, 2729, 2457, 2184,
 	 3264, 3537, 3809, 4080, 1250, 1523, 1731, 2002,
 	 2258, 2499, 2803, 3042,  240,  481,  721,  960,
 	 3460, 3221, 4005, 3764, 1446, 1207, 1927, 1686,
@@ -697,7 +697,7 @@ int MarchingCubes::GetIndex(const double v[Cube::CORNERS],const double& iso){
 }
 int MarchingCubes::GetFaceIndex(const double values[Cube::CORNERS],const double& iso,const int& faceIndex){
 	int i(0),j(0),x(0),y(0),z(0),idx(0);
-	double v[2][2];
+	double v[2][2] = {{0, 0}, {0, 0}};
 	Cube::FactorFaceIndex(faceIndex,x,y,z);
 	if		(x<0){for(i=0;i<2;i++){for(j=0;j<2;j++){v[i][j]=values[Cube::CornerIndex(0,i,j)];}}}
 	else if	(x>0){for(i=0;i<2;i++){for(j=0;j<2;j++){v[i][j]=values[Cube::CornerIndex(1,i,j)];}}}
@@ -842,7 +842,7 @@ int MarchingCubes::GetIndex(const float v[Cube::CORNERS],const float& iso){
 }
 int MarchingCubes::GetFaceIndex(const float values[Cube::CORNERS],const float& iso,const int& faceIndex){
 	int i(0),j(0),x(0),y(0),z(0),idx(0);
-	double v[2][2];
+	double v[2][2] = {{0, 0}, {0, 0}};
 	Cube::FactorFaceIndex(faceIndex,x,y,z);
 	if		(x<0){for(i=0;i<2;i++){for(j=0;j<2;j++){v[i][j]=values[Cube::CornerIndex(0,i,j)];}}}
 	else if	(x>0){for(i=0;i<2;i++){for(j=0;j<2;j++){v[i][j]=values[Cube::CornerIndex(1,i,j)];}}}
@@ -858,7 +858,7 @@ int MarchingCubes::GetFaceIndex(const float values[Cube::CORNERS],const float& i
 }
 int MarchingCubes::GetFaceIndex(const int& mcIndex,const int& faceIndex){
 	int i(0),j(0),x(0),y(0),z(0),idx(0);
-	int v[2][2];
+	int v[2][2] = {{0, 0}, {0, 0}};
 	Cube::FactorFaceIndex(faceIndex,x,y,z);
 	if		(x<0){for(i=0;i<2;i++){for(j=0;j<2;j++){v[i][j]=mcIndex&(1<<MarchingCubes::cornerMap[Cube::CornerIndex(0,i,j)]);}}}
 	else if	(x>0){for(i=0;i<2;i++){for(j=0;j<2;j++){v[i][j]=mcIndex&(1<<MarchingCubes::cornerMap[Cube::CornerIndex(1,i,j)]);}}}
