@@ -180,12 +180,24 @@ void QGoDBLineageManager::InsertLineageInTW(vtkMySQLDatabase *iDatabaseConnector
       this->m_TWContainer->GetContainerForOneSpecificTrace(iDatabaseConnector,
                                                     iTraceID);
 
-    //this->m_Table->setSortingEnabled(false);
+
+    // insert is buggy on sorted table
+    // 1- unsort (if sorted)
+    // 2- insert
+    // 3- sort (if sorted)
+    bool sorting = this->m_Table->isSortingEnabled();
+    if(sorting)
+      {
+      this->m_Table->setSortingEnabled(false);
+      }
     this->m_Table->InsertOnlyOneNewRow(RowContainer,
                                 this->m_TWContainer->GetIndexForGroupColor(this->m_TraceName),
                                 this->m_TWContainer->GetIndexForGroupColor(this->m_CollectionName),
                                 this->m_TraceName, this->m_CollectionName, Qt::Unchecked);
-    //this->m_Table->setSortingEnabled(true);
+    if(sorting)
+      {
+      this->m_Table->setSortingEnabled(true);
+      }
   }
 //-------------------------------------------------------------------------
 
