@@ -267,6 +267,8 @@ QGoTrackEditingWidget::initializeVisualization()
 
   computeMeshActors();
 
+  this->updateMeshesActors( false );
+
   computeLineActors();
 
   computeLabelActor();
