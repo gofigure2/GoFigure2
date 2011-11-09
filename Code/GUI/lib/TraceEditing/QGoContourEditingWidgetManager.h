@@ -94,7 +94,7 @@ public:
   //void SetTSliceForDopplerView(QStringList iListTimePoints, int iChannelNumber);
 
 public slots:
-  virtual void SetVisible(bool isVisible);
+  void StartManualSegmentation(bool iValue);
 
 signals:
   //from the manual mode:

@@ -90,10 +90,18 @@ void QGoContourEditingWidgetManager::SetManualMode(
                     SIGNAL (reinitializeContour() ),
                     this, SIGNAL(reinitializeContour() ) );
 
-  QObject::connect( this->m_ManualMode,
-                    SIGNAL (ManualSegmentationActivated(bool) ),
-                    this, SIGNAL(ManualSegmentationActivated(bool) ) );
+   QObject::connect( this->m_TraceEditingWidget,
+                    SIGNAL(SetSeedInteractorBehaviour(bool) ),
+                    this,
+                    SLOT(StartManualSegmentation(bool) ) );
 
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoContourEditingWidgetManager::StartManualSegmentation( bool iValue )
+{
+  emit ManualSegmentationActivated( ! iValue );
 }
 //-------------------------------------------------------------------------
 
@@ -177,14 +185,3 @@ void QGoContourEditingWidgetManager::InitializeSettingsForManualMode()
   this->m_ManualMode->GenerateContourRepresentationProperties(true);
 }
 //-------------------------------------------------------------------------
-
-//-------------------------------------------------------------------------
-void QGoContourEditingWidgetManager::SetVisible(bool isVisible)
-{
-  QGoTraceEditingWidgetManager::SetVisible(isVisible);
-
-  if (this->m_TraceEditingWidget->GetCurrentModeName() == "Manual")
-    {
-    emit ManualSegmentationActivated(isVisible);
-    }
-}
