@@ -101,7 +101,15 @@ void QGoContourEditingWidgetManager::SetManualMode(
 //-------------------------------------------------------------------------
 void QGoContourEditingWidgetManager::StartManualSegmentation( bool iValue )
 {
-  emit ManualSegmentationActivated( ! iValue );
+  // if current is
+  if(this->m_TraceEditingWidget->GetCurrentModeName().compare("Manual") == 0)
+    {
+    emit ManualSegmentationActivated( true );
+    }
+  else
+    {
+    emit ManualSegmentationActivated( false );
+    }
 }
 //-------------------------------------------------------------------------
 
@@ -185,3 +193,14 @@ void QGoContourEditingWidgetManager::InitializeSettingsForManualMode()
   this->m_ManualMode->GenerateContourRepresentationProperties(true);
 }
 //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoContourEditingWidgetManager::SetVisible(bool isVisible)
+{
+  QGoTraceEditingWidgetManager::SetVisible(isVisible);
+
+  if (this->m_TraceEditingWidget->GetCurrentModeName() == "Manual")
+    {
+    emit ManualSegmentationActivated(isVisible);
+    }
+}

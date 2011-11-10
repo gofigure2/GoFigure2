@@ -95,6 +95,7 @@ public:
 
 public slots:
   void StartManualSegmentation(bool iValue);
+  virtual void SetVisible(bool isVisible);
 
 signals:
   //from the manual mode:
