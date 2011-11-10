@@ -154,7 +154,6 @@ this->m_MaxThreshold, iParent);
 //-------------------------------------------------------------------------
 void QGoContourEditingWidgetManager::ApplyLevelSetAlgo()
 {
-  std::cout << "apply levelset 2d" << std::endl;
   this->GetPolydatasFromAlgo<QGoContourLevelSetAlgo>(this->m_LevelSetAlgo);
 }
 //-------------------------------------------------------------------------
