@@ -1588,20 +1588,24 @@ QGoTabImageView3DwT::SetTimePoint(const int & iTimePoint)
   // for the trace widget, navigation widget and table widget
   emit TimePointChanged(m_TCoord);
 
-  // clean table widget and container
-  // then load new traces in TW and put polydatas in container
-  std::list<unsigned int> timePoints =
-          this->m_DataBaseTables->
-          UpdateTableWidgetAndContainersForGivenTimePoint(
-          m_TCoord);
+  //if we use the database, update table and traces!
+  if(m_DataBaseTables->IsDatabaseUsed())
+   {
+    // clean table widget and container
+    // then load new traces in TW and put polydatas in container
+    std::list<unsigned int> timePoints =
+            this->m_DataBaseTables->
+            UpdateTableWidgetAndContainersForGivenTimePoint(
+            m_TCoord);
 
-  // create actors
-  // function has to be splitted-> remove duplications
-  this->CreateContoursActorsFromVisuContainer(timePoints);
-  this->CreateMeshesActorsFromVisuContainer(timePoints);
+    // create actors if we use the database
+    // function has to be splitted-> remove duplications
+    this->CreateContoursActorsFromVisuContainer(timePoints);
+    this->CreateMeshesActorsFromVisuContainer(timePoints);
 
-  //show time specific actors
-  this->ShowTraces(m_TCoord);
+    //show time specific actors
+    this->ShowTraces(m_TCoord);
+    }
 
   m_ImageView->Update();
 
@@ -2102,9 +2106,6 @@ QGoTabImageView3DwT::ReEditContour(const unsigned int & iId)
 
       this->m_TraceSettingsToolBar->setEnabled(false);
       this->m_TraceSettingsWidget->setEnabled(false);
-    //this->m_ContourSegmentationDockWidget->show();
-      //this->m_ContourSegmentationDockWidget->SegmentationMethod(0);
-      //this->m_ContourSegmentationDockWidget->SetReeditMode(true);
       this->m_ContourEditingWidget->SetReeditMode(true);
       // go to manual segmentation
       this->m_ContourEditingWidget->GetDockWidget()->show();
