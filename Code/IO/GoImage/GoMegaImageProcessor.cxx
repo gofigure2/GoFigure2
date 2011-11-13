@@ -1,4 +1,3 @@
-
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
  at Megason Lab, Systems biology, Harvard Medical school, 2009-11
@@ -170,15 +169,12 @@ setTimePoint(const unsigned int& iTime)
   int numberOfChannels = getNumberOfChannels();
 
   int n = numberOfChannels;
-  // while(numberOfChannels>0)
 
 #ifdef HAS_OPENMP
 #pragma omp for
 #endif
-//  while(numberOfChannels>0)
   for( int kk = 0; kk < n; kk++ )
     {
-//    --numberOfChannels;
     numberOfChannels = n - ( kk + 1 );
 
     // Get useful information from the reader

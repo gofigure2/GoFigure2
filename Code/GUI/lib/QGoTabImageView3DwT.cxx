@@ -3567,6 +3567,9 @@ UpdateTFEditor()
   unsigned int NumberOfChannels = m_ImageProcessor->getNumberOfChannels();
   int currentChannel = m_TransferFunctionDockWidget->GetCurrentWidget();
 
+#ifdef HAS_OPENMP
+#pragma omp for
+#endif
   for( unsigned int i = 0; i < NumberOfChannels; i++ )
     {
     std::string name = m_ImageProcessor->getChannelName(i);
