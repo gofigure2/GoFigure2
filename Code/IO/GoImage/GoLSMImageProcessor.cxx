@@ -78,16 +78,17 @@ initTimePoint(const unsigned int& iTime)
 
   // update the container
   // Get Number of channels from reader
-  int numberOfChannels = getNumberOfChannels();
+  int numberOfChannels = this->getNumberOfChannels();
 
-  while(numberOfChannels>0)
+#ifdef HAS_OPENMP
+#pragma omp for
+#endif
+  for( int i = 0; i < numberOfChannels; i++ )
     {
-    --numberOfChannels;
-
     vtkSmartPointer<vtkLSMReader> reader =
         vtkSmartPointer<vtkLSMReader>::New();
     reader->SetFileName(m_LSMReader->GetFileName());
-    reader->SetUpdateChannel(numberOfChannels);
+    reader->SetUpdateChannel( i );
     reader->SetUpdateTimePoint(iTime);
     reader->Update();
 
@@ -158,16 +159,17 @@ setTimePoint(const unsigned int& iTime)
 
   // update the container
   // Get Number of channels from reader
-  int numberOfChannels = getNumberOfChannels();
+  int numberOfChannels = this->getNumberOfChannels();
 
-  while(numberOfChannels>0)
+#ifdef HAS_OPENMP
+#pragma omp for
+#endif
+  for( int i = 0; i < numberOfChannels; i++ )
     {
-    --numberOfChannels;
-
     vtkSmartPointer<vtkLSMReader> reader =
         vtkSmartPointer<vtkLSMReader>::New();
     reader->SetFileName(m_LSMReader->GetFileName());
-    reader->SetUpdateChannel(numberOfChannels);
+    reader->SetUpdateChannel( i );
     reader->SetUpdateTimePoint(iTime);
     reader->Update();
 
@@ -176,7 +178,7 @@ setTimePoint(const unsigned int& iTime)
 
     // could iterate on sth else...
     GoMegaImageStructureMultiIndexContainer::index<Index>::type::iterator it =
-        m_MegaImageContainer.get< Index >().find(numberOfChannels);
+        m_MegaImageContainer.get< Index >().find( i );
 
     if(it!=m_MegaImageContainer.get< Index >().end())
       {
@@ -205,7 +207,12 @@ setDoppler(const unsigned int& iTime, const unsigned int& iPrevious)
 
   std::vector<int> dopplerTime = getDopplerTime(iTime);
 
-  for(unsigned int i=0; i<getDopplerSize(); ++i)
+  unsigned int dopplerSize = this->getDopplerSize();
+
+#ifdef HAS_OPENMP
+#pragma omp for
+#endif
+  for(unsigned int i=0; i < dopplerSize; ++i)
     {
     if(dopplerTime[i] >= 0)
       {
@@ -221,7 +228,7 @@ setDoppler(const unsigned int& iTime, const unsigned int& iPrevious)
 
       // hue: 0 to 0.7
       double* rgb = vtkMath::HSVToRGB(
-            static_cast<double>(i)/static_cast<double>(getDopplerSize()),1,1);
+            static_cast<double>(i)/static_cast<double>(dopplerSize),1,1);
 
       // color from red to blue
       std::vector<double> color;

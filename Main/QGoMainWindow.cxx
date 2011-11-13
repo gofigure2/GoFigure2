@@ -435,21 +435,27 @@ QGoMainWindow::LoadAllTracesFromDatabaseManager(const int & iT)
 {
   QApplication::setOverrideCursor( QCursor(Qt::WaitCursor) );
 
+#ifdef HAS_OPENMP
 #pragma omp sections nowait
+#endif
   {
+#ifdef HAS_OPENMP
 #pragma omp section
+#endif
     {
     // Loads contours
     LoadContoursFromDatabase(iT);
     }
-
+#ifdef HAS_OPENMP
 #pragma omp section
+#endif
     {
     // Loads meshes
     LoadMeshesFromDatabase(iT);
     }
-
+#ifdef HAS_OPENMP
 #pragma omp section
+#endif
     {
     // Loads tracks
     LoadTracksFromDatabase(iT);
