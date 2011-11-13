@@ -2887,29 +2887,16 @@ QGoTabImageView3DwT::GoToLocation(int iX, int iY, int iZ, int iT)
 void
 QGoTabImageView3DwT::GoToRealLocation(double iX, double iY, double iZ, int iT)
 {
-  // get spacing - should we provide easier access though image processor?
-  double* spacing = this->m_ImageProcessor->getImageBW()->GetSpacing();
+  double p[3];
+  p[0] = iX;
+  p[1] = iY;
+  p[2] = iZ;
 
-  int indexX = 0;
-  int indexY = 0;
-  int indexZ = 0;
+  int *index = this->GetImageCoordinatesFromWorldCoordinates( p );
 
-  if(spacing[0] != 0)
-    {
-    indexX = iX/spacing[0];
-    }
+  this->GoToLocation( index[0], index[1], index[2], iT);
 
-  if(spacing[1] != 0)
-    {
-    indexY = iY/spacing[1];
-    }
-
-  if(spacing[2] != 0)
-    {
-    indexZ = iZ/spacing[2];
-    }
-
-  GoToLocation(indexX, indexY, indexZ, iT);
+  delete[] index;
 }
 //-------------------------------------------------------------------------
 
@@ -3603,9 +3590,9 @@ UpdateTFEditor()
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
-PolydatasRequested(){
-  std::list< vtkPolyData* > elements =
-      this->m_MeshContainer-> GetHighlightedElements();
+PolydatasRequested()
+{
+  std::list< vtkPolyData* > elements = this->m_MeshContainer-> GetHighlightedElements();
   emit RequestedPolydatas(elements);
 }
 //-------------------------------------------------------------------------
@@ -3662,6 +3649,9 @@ CreateDopplerTFEditor()
 {
   std::vector<int> time = m_ImageProcessor->getDopplerTime(m_TCoord);
 
+#ifdef HAS_OPENMP
+#pragma omp for
+#endif
   for(unsigned int i=0; i<m_ImageProcessor->getDopplerSize(); ++i)
     {
     if(time[i]>=0)
