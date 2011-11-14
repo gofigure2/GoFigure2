@@ -57,6 +57,8 @@ GoImageProcessor::GoImageProcessor():m_Output(NULL),
   m_MaxThreshold(0),m_MaxImage(0),
   m_DopplerMode(false), m_DopplerStep(1), m_DopplerChannel(0), m_DopplerSize(3)
 {
+  m_CurrentTimePoint = std::numeric_limits< unsigned int >::max();
+
   m_BoundsTime[0] = 0;
   m_BoundsTime[1] = 0;
 
@@ -416,12 +418,12 @@ getVisibleImages()
     }
 
 #ifdef HAS_OPENMP
-#pragma for
+#pragma omp for
 #endif
   for( size_t j = 0; j < N; j++ )
     {
     it0 = tempVector[j];
-    
+
     vtkSmartPointer<vtkImageData> temp = this->colorImage(it0->Image, it0->LUT);
     vtkSmartPointer<vtkImageData> image = vtkSmartPointer<vtkImageData>::New();
     image->DeepCopy(temp);
@@ -482,7 +484,14 @@ int*
 GoImageProcessor::
 getExtent()
 {
-  return m_Extent;
+  if( ( m_MegaImageContainer.begin() )->Image )
+    {
+    return ( m_MegaImageContainer.begin() )->Image->GetExtent();
+    }
+  else
+    {
+    return NULL;
+    }
 }
 //--------------------------------------------------------------------------
 

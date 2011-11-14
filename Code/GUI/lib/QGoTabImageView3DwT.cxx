@@ -1403,6 +1403,8 @@ InitializeImageRelatedWidget()
   unsigned int NumberOfChannels = m_ImageProcessor->getNumberOfChannels();
   int* extent = m_ImageProcessor->getExtent();
 
+  assert( extent );
+
   // Initialize the widgets with the good number of channels
   // it will update the size of the related combobox
   m_NavigationDockWidget->blockSignals(true);

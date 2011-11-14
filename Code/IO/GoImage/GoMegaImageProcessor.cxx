@@ -50,8 +50,6 @@ setReader(itk::MegaCaptureReader::Pointer iReader)
   m_BoundsTime[1] = m_MegaImageReader->GetMaxTimePoint();
   m_BoundsChannel[0] = m_MegaImageReader->GetMinChannel();
   m_BoundsChannel[1] = m_MegaImageReader->GetMaxChannel();
-  (m_MegaImageReader->GetImage(m_BoundsChannel[0], m_BoundsTime[0]))->
-      GetExtent(m_Extent);
 
   m_TimeInterval = m_MegaImageReader->GetTimeInterval();
 }
@@ -62,88 +60,93 @@ void
 GoMegaImageProcessor::
 initTimePoint(const unsigned int& iTime)
 {
-  //check if time point exists
-  if(iTime >= m_BoundsTime[0] && iTime <= m_BoundsTime[1])
+  if( iTime != this->m_CurrentTimePoint )
     {
-    m_MegaImageReader->SetTimePoint(iTime);
-    m_MegaImageReader->Update();
-    m_MegaImageContainer.clear();
-    }
-  else
-    {
-    return;
-    }
-
-  // update the container
-  // Get Number of channels from reader
-  int numberOfChannels = getNumberOfChannels();
-
-  int n = numberOfChannels;
-  // while(numberOfChannels>0)
-
-#ifdef HAS_OPENMP
-#pragma omp for
-#endif
-  for( int kk = 0; kk < n; ++kk )
-    {
-    numberOfChannels = n - ( kk + 1 );
-//    --numberOfChannels;
-
-    // Get useful information from the reader
-    // Nicolas Get Image or get output...?
-    vtkSmartPointer<vtkImageData> image =
-        m_MegaImageReader->GetOutput(numberOfChannels);
-
-    // capacity of image -> rescale in multichannelmode
-    int type = image->GetScalarSize();
-    double threshold = pow(2, 8*type) - 1;
-    m_MaxImage = threshold;
-    // max pixel in image
-    double range = image->GetScalarRange()[1];
-    if(m_MaxThreshold < range)
+    //check if time point exists
+    if(iTime >= m_BoundsTime[0] && iTime <= m_BoundsTime[1])
       {
-      m_MaxThreshold = range;
+      this->m_CurrentTimePoint = iTime;
+
+      m_MegaImageReader->SetTimePoint(iTime);
+      m_MegaImageReader->Update();
+      m_MegaImageContainer.clear();
+      }
+    else
+      {
+      return;
       }
 
-    // Get Color
-    std::vector<std::vector<int> >channelColor =
+    // update the container
+    // Get Number of channels from reader
+    int numberOfChannels = getNumberOfChannels();
+
+    int n = numberOfChannels;
+    // while(numberOfChannels>0)
+
+  #ifdef HAS_OPENMP
+  #pragma omp for
+  #endif
+    for( int kk = 0; kk < n; ++kk )
+      {
+      numberOfChannels = n - ( kk + 1 );
+//    --numberOfChannels;
+
+      // Get useful information from the reader
+      // Nicolas Get Image or get output...?
+      vtkSmartPointer<vtkImageData> image =
+        m_MegaImageReader->GetOutput(numberOfChannels);
+
+      // capacity of image -> rescale in multichannelmode
+      int type = image->GetScalarSize();
+      double threshold = pow(2, 8*type) - 1;
+      m_MaxImage = threshold;
+      // max pixel in image
+      double range = image->GetScalarRange()[1];
+      if(m_MaxThreshold < range)
+        {
+        m_MaxThreshold = range;
+        }
+
+      // Get Color
+      std::vector<std::vector<int> >channelColor =
         m_MegaImageReader->GetChannelColor();
 
 
-    double random1 = channelColor[numberOfChannels][0];
-    double value1 = random1;
+      double random1 = channelColor[numberOfChannels][0];
+      double value1 = random1;
 
-    double random2 = channelColor[numberOfChannels][1];
-    double value2 = random2;
+      double random2 = channelColor[numberOfChannels][1];
+      double value2 = random2;
 
-    double random3 = channelColor[numberOfChannels][2];
-    double value3 = random3;
+      double random3 = channelColor[numberOfChannels][2];
+      double value3 = random3;
 
-    std::vector<double> color;
-    color.push_back(value1);
-    color.push_back(value2);
-    color.push_back(value3);
-    color.push_back(255);
+      std::vector<double> color( 4 );
+      color[0] = value1;
+      color[1] = value2;
+      color[2] = value3;
+      color[3] = 255;
 
-    // Create LUT
-    vtkSmartPointer<vtkLookupTable> lut = createLUT(color[0],
-                                                    color[1],
-                                                    color[2],
-                                                    color[3]);
+      // Create LUT
+      vtkSmartPointer<vtkLookupTable> lut = createLUT(color[0],
+                                                      color[1],
+                                                      color[2],
+                                                      color[3]);
 
-    // create name...
-    std::stringstream channelName;
-    channelName << "Channel ";
-    channelName << numberOfChannels;
+      // create name...
+      std::stringstream channelName;
+      channelName << "Channel ";
+      channelName << numberOfChannels;
 
-    // Update the MegaImageStructure
-    // image, LUT, channel, time point
-    m_MegaImageContainer.insert(GoMegaImageStructure(numberOfChannels,
-                                                     lut,
-                                                     image,
-                                                     color,
-                                                     true,
-                                                     channelName.str()));
+      // Update the MegaImageStructure
+      // image, LUT, channel, time point
+      m_MegaImageContainer.insert(GoMegaImageStructure(numberOfChannels,
+                                                       lut,
+                                                       image,
+                                                       color,
+                                                       true,
+                                                       channelName.str()));
+      }
     }
 }
 //--------------------------------------------------------------------------
@@ -153,52 +156,57 @@ void
 GoMegaImageProcessor::
 setTimePoint(const unsigned int& iTime)
 {
-  //check if time point exists
-  if(iTime >= m_BoundsTime[0] && iTime <= m_BoundsTime[1])
+  if( iTime != this->m_CurrentTimePoint )
     {
-    m_MegaImageReader->SetTimePoint(iTime);
-    m_MegaImageReader->Update();
-    }
-  else
-    {
-    return;
-    }
-
-  // update the container
-  // Get Number of channels from reader
-  int numberOfChannels = getNumberOfChannels();
-
-  int n = numberOfChannels;
-
-#ifdef HAS_OPENMP
-#pragma omp for
-#endif
-  for( int kk = 0; kk < n; kk++ )
-    {
-    numberOfChannels = n - ( kk + 1 );
-
-    // Get useful information from the reader
-    // Nicolas Get Image or get output...?
-    vtkSmartPointer<vtkImageData> image =
-        m_MegaImageReader->GetOutput(numberOfChannels);
-
-    // capacity of image -> rescale in multichannelmode
-    int type = image->GetScalarSize();
-    double threshold = pow(2, 8*type) - 1;
-    m_MaxImage = threshold;
-    // max pixel in image
-    double range = image->GetScalarRange()[1];
-    if(m_MaxThreshold < range)
+    //check if time point exists
+    if(iTime >= m_BoundsTime[0] && iTime <= m_BoundsTime[1])
       {
-      m_MaxThreshold = range;
+      m_MegaImageReader->SetTimePoint(iTime);
+      m_MegaImageReader->Update();
+      }
+    else
+      {
+      return;
       }
 
-    GoMegaImageStructureMultiIndexContainer::index<Index>::type::iterator it =
+    this->m_CurrentTimePoint = iTime;
+
+    // update the container
+    // Get Number of channels from reader
+    int numberOfChannels = getNumberOfChannels();
+
+    int n = numberOfChannels;
+
+  #ifdef HAS_OPENMP
+  #pragma omp for
+  #endif
+    for( int kk = 0; kk < n; kk++ )
+      {
+      numberOfChannels = n - ( kk + 1 );
+
+      // Get useful information from the reader
+      // Nicolas Get Image or get output...?
+      vtkSmartPointer<vtkImageData> image =
+        m_MegaImageReader->GetOutput(numberOfChannels);
+
+      // capacity of image -> rescale in multichannelmode
+      int type = image->GetScalarSize();
+      double threshold = pow(2, 8*type) - 1;
+      m_MaxImage = threshold;
+      // max pixel in image
+      double range = image->GetScalarRange()[1];
+      if(m_MaxThreshold < range)
+        {
+        m_MaxThreshold = range;
+        }
+
+      GoMegaImageStructureMultiIndexContainer::index<Index>::type::iterator it =
         m_MegaImageContainer.get< Index >().find(numberOfChannels);
 
-    if(it!=m_MegaImageContainer.get< Index >().end())
-      {
-      m_MegaImageContainer.get< Index >().modify( it , set_image(image) );
+      if(it!=m_MegaImageContainer.get< Index >().end())
+        {
+        m_MegaImageContainer.get< Index >().modify( it , set_image(image) );
+        }
       }
     }
 }
