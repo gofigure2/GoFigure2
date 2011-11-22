@@ -324,12 +324,19 @@ bool QGoDBTraceManager::CheckThatThereAreTracesToDelete(
     }
   else
     {
-    int r = QMessageBox::warning(this->m_Table, tr(""),
+    switch( QMessageBox::warning(this->m_Table, tr(""),
                                  tr("Are you sure you want to delete\n"
                                     "permanently the selected %1s?").arg( this->m_TraceName.c_str() ),
-                                 QMessageBox::Yes,
-                                 QMessageBox::No | QMessageBox::Default);
-    return r;
+                                 QMessageBox::Yes | QMessageBox::No,
+                                 QMessageBox::No))
+      {
+      case QMessageBox::Yes:
+        return true;
+      case QMessageBox::No:
+        return false;
+      default:
+        return false;
+      }
     }
 }
 //-------------------------------------------------------------------------

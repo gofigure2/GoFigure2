@@ -466,6 +466,8 @@ protected:
   GoMegaImageStructureMultiIndexContainer m_MegaImageContainer;
   vtkSmartPointer<vtkImageData>           m_Output;
 
+  unsigned int m_CurrentTimePoint;
+
   // Image parameters
   //--------------------
   unsigned int m_BoundsTime[2];

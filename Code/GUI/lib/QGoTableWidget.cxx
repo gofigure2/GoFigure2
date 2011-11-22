@@ -501,6 +501,7 @@ void QGoTableWidget::InsertOnlyOneNewRow(const TWContainerType & iTWRowContainer
                                          const std::string & CollectionName,
                                          Qt::CheckState iVisible)
 {
+// no sorting inside for performance issue while import
 //  this->setSortingEnabled(false);
   if ( iTWRowContainer.size() == 0 || iTWRowContainer[1].second.size() != 1 )
     {

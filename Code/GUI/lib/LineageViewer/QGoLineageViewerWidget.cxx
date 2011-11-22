@@ -280,22 +280,25 @@ void QGoLineageViewerWidget::selectionChanged(vtkObject*,
 //----------------------------------------------------------------------------
 void QGoLineageViewerWidget::slotAddLineage()
 {
-  QString file = QFileDialog::getOpenFileName(NULL, tr("Select a lineage"));
+  QStringList files = QFileDialog::getOpenFileNames( NULL, tr("Select lineages"));
 
-  vtkSmartPointer<vtkTreeReader> reader =
-      vtkSmartPointer<vtkTreeReader>::New();
-  reader->SetFileName(file.toLocal8Bit().data());
-  reader->Update();
+  for( int i = 0; i < files.size(); i++ )
+    {
+    vtkSmartPointer<vtkTreeReader> reader =
+    vtkSmartPointer<vtkTreeReader>::New();
+    reader->SetFileName(files[i].toLocal8Bit().data());
+    reader->Update();
 
-  vtkSmartPointer<vtkTree> tree =
-      vtkSmartPointer<vtkTree>::New();
-  tree->CheckedDeepCopy(reader->GetOutput());
+    vtkSmartPointer<vtkTree> tree =
+        vtkSmartPointer<vtkTree>::New();
+    tree->CheckedDeepCopy(reader->GetOutput());
 
-  // update list of graphs
-  std::pair<QString, vtkSmartPointer<vtkTree> > treePair;
-  treePair.first = file;
-  treePair.second = tree;
-  m_ListOfTrees.push_back(treePair);
+    // update list of graphs
+    std::pair<QString, vtkSmartPointer<vtkTree> > treePair;
+    treePair.first = files[i];
+    treePair.second = tree;
+    m_ListOfTrees.push_back(treePair);
+    }
 
   UpdateGraph();
 }

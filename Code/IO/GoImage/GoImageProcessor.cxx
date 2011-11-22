@@ -1,4 +1,3 @@
-
 /*=========================================================================
  Authors: The GoFigure Dev. Team.
  at Megason Lab, Systems biology, Harvard Medical school, 2009-11
@@ -56,8 +55,11 @@
 //--------------------------------------------------------------------------
 GoImageProcessor::GoImageProcessor():m_Output(NULL),
   m_MaxThreshold(0),m_MaxImage(0),
-  m_DopplerMode(false), m_DopplerStep(1), m_DopplerChannel(0), m_DopplerSize(3)
+  m_DopplerMode(false), m_DopplerStep(1), m_DopplerTime( 3, 0 ),
+  m_DopplerChannel(0), m_DopplerSize(3)
 {
+  m_CurrentTimePoint = std::numeric_limits< unsigned int >::max();
+
   m_BoundsTime[0] = 0;
   m_BoundsTime[1] = 0;
 
@@ -70,8 +72,6 @@ GoImageProcessor::GoImageProcessor():m_Output(NULL),
   m_Extent[3] = 0;
   m_Extent[4] = 0;
   m_Extent[5] = 0;
-
-  m_DopplerTime.resize(m_DopplerSize);
 }
 //--------------------------------------------------------------------------
 
@@ -79,7 +79,8 @@ GoImageProcessor::GoImageProcessor():m_Output(NULL),
 GoImageProcessor::GoImageProcessor(const GoImageProcessor & iE):
   m_MegaImageContainer(iE.m_MegaImageContainer), m_Output(iE.m_Output),
   m_DopplerMode(iE.m_DopplerMode), m_DopplerStep(iE.m_DopplerStep),
-  m_DopplerChannel(iE.m_DopplerChannel), m_DopplerSize(iE.m_DopplerSize)
+  m_DopplerTime(iE.m_DopplerTime), m_DopplerChannel(iE.m_DopplerChannel),
+  m_DopplerSize(iE.m_DopplerSize)
 {
   m_BoundsTime[0] = iE.m_BoundsTime[0];
   m_BoundsTime[1] = iE.m_BoundsTime[1];
@@ -93,8 +94,6 @@ GoImageProcessor::GoImageProcessor(const GoImageProcessor & iE):
   m_Extent[3] = iE.m_Extent[3];
   m_Extent[4] = iE.m_Extent[4];
   m_Extent[5] = iE.m_Extent[5];
-
-  m_DopplerTime = iE.m_DopplerTime;
 }
 //--------------------------------------------------------------------------
 
@@ -186,13 +185,17 @@ getOpacityTransferFunctions()
 {
   std::vector<vtkPiecewiseFunction*> opacityTFs;
 
-  GoMegaImageStructureMultiIndexContainer::index<Visibility>::type::iterator it =
-      m_MegaImageContainer.get< Visibility >().find(true);
+  typedef GoMegaImageStructureMultiIndexContainer::index<Visibility>::type::iterator
+    IteratorType;
 
-  while(it!=m_MegaImageContainer.get< Visibility >().end())
+  IteratorType it0, it1;
+  boost::tuples::tie( it0, it1 ) =
+    m_MegaImageContainer.get< Visibility >().equal_range(true);
+
+  while( it0 != it1 )
     {
-    opacityTFs.push_back(it->OpacityTF);
-    ++it;
+    opacityTFs.push_back( it0->OpacityTF );
+    ++it0;
     }
 
   return opacityTFs;
@@ -238,9 +241,8 @@ setLUTParameters(const std::string& iName, int iGamma, int iMin, int iMax)
 
   if(it!=m_MegaImageContainer.get< Name >().end())
     {
-    m_MegaImageContainer.get< Name >().modify( it , set_LUT_Parameters(iGamma,
-                                                                       iMin,
-                                                                       iMax));
+    m_MegaImageContainer.get< Name >().modify( it ,
+      set_LUT_Parameters(iGamma, iMin, iMax) );
     }
 }
 //--------------------------------------------------------------------------
@@ -255,11 +257,10 @@ getLUTParameters(const std::string& iName)
 
   assert(it!=m_MegaImageContainer.get< Name >().end());
 
-  std::vector<int> parameters;
-
-  parameters.push_back(it->Gamma);
-  parameters.push_back(it->Min);
-  parameters.push_back(it->Max);
+  std::vector<int> parameters(3);
+  parameters[0] = it->Gamma;
+  parameters[1] = it->Min;
+  parameters[2] = it->Max;
 
   return parameters;
 }
@@ -364,16 +365,20 @@ getColoredImages()
 {
   std::vector<vtkImageData*> images;
 
-  GoMegaImageStructureMultiIndexContainer::index<Visibility>::type::iterator it =
-      m_MegaImageContainer.get< Visibility >().find(true);
+  typedef GoMegaImageStructureMultiIndexContainer::index<Visibility>::type::iterator
+    IteratorType;
 
-  while(it!=m_MegaImageContainer.get< Visibility >().end())
+  IteratorType it0, it1;
+  boost::tuples::tie( it0, it1 ) =
+    m_MegaImageContainer.get< Visibility >().equal_range(true);
+
+  while( it0 != it1 )
     {
     // requiered deepcopy....
     vtkImageData* image = vtkImageData::New();
-    image->DeepCopy(colorImage(it->Image, it->LUT));
+    image->DeepCopy( this->colorImage( it0->Image, it0->LUT ) );
     images.push_back(image);
-    ++it;
+    ++it0;
     }
 
   return images;
@@ -392,20 +397,36 @@ getVisibleImages()
   blendedImage->ReleaseDataFlagOn();
   blendedImage->SetNumberOfThreads(VTK_MAX_THREADS);
 
-  GoMegaImageStructureMultiIndexContainer::index<Visibility>::type::iterator it =
-      m_MegaImageContainer.get< Visibility >().find(true);
+  typedef GoMegaImageStructureMultiIndexContainer::index<Visibility>::type::iterator
+    IteratorType;
 
-  vtkIdType i(0);
+  IteratorType it0, it1;
+  boost::tuples::tie( it0, it1 ) =
+    m_MegaImageContainer.get< Visibility >().equal_range(true);
 
-  while(it!=m_MegaImageContainer.get< Visibility >().end())
+  size_t N(0);
+
+  std::vector< IteratorType > tempVector;
+
+  while( it0 != it1 )
     {
-    vtkSmartPointer<vtkImageData> temp = colorImage(it->Image, it->LUT);
+    tempVector.push_back( it0 );
+    ++it0;
+    ++N;
+    }
+
+#ifdef HAS_OPENMP
+#pragma omp for
+#endif
+  for( size_t j = 0; j < N; j++ )
+    {
+    it0 = tempVector[j];
+
+    vtkSmartPointer<vtkImageData> temp = this->colorImage(it0->Image, it0->LUT);
     vtkSmartPointer<vtkImageData> image = vtkSmartPointer<vtkImageData>::New();
     image->DeepCopy(temp);
     temp = NULL;
     blendedImage->AddInput(image);
-    ++i;
-    ++it;
     }
   blendedImage->Update();
 
@@ -418,7 +439,7 @@ getVisibleImages()
 
   double range = std::max(rangeB[1], std::max(rangeR[1], rangeG[1]));
 
-  if(range)
+  if( range != 0. )
     {
     vtkSmartPointer<vtkImageShiftScale> scale =
         vtkSmartPointer<vtkImageShiftScale>::New();
@@ -461,7 +482,15 @@ int*
 GoImageProcessor::
 getExtent()
 {
-  return m_Extent;
+  if( !m_MegaImageContainer.empty() )
+    {
+    if( ( m_MegaImageContainer.begin() )->Image )
+      {
+      return ( m_MegaImageContainer.begin() )->Image->GetExtent();
+      }
+    }
+
+  return NULL;
 }
 //--------------------------------------------------------------------------
 
@@ -521,7 +550,6 @@ getDopplerTime(unsigned int iTime)
   for(unsigned int i=0; i<m_DopplerSize; ++i)
     {
     m_DopplerTime[i] = time +i*m_DopplerStep;
-    std::cout << "doppler time: " << i << " is "<< time +i*m_DopplerStep << std::endl;
 
     // special case if we are at the borders
     // value will be -1
@@ -534,12 +562,6 @@ getDopplerTime(unsigned int iTime)
       m_DopplerTime[i] = -1;
       }
     }
-/*
-  m_DopplerTime[0] = iTime - m_DopplerStep;
-  m_DopplerTime[1] = iTime;
-  m_DopplerTime[2]= iTime + m_DopplerStep;
-
-*/
 
   return m_DopplerTime;
 }
@@ -569,8 +591,6 @@ getDopplerChannel()
 {
   return m_DopplerChannel;
 }
-//--------------------------------------------------------------------------
-
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
@@ -628,15 +648,19 @@ unsigned int
 GoImageProcessor::
 getNumberOfVisibleChannels()
 {
-  unsigned int numberOfVisibleChannels(0);
+  typedef GoMegaImageStructureMultiIndexContainer::index<Visibility>::type::iterator
+    IteratorType;
 
-  GoMegaImageStructureMultiIndexContainer::index<Visibility>::type::iterator it =
-      m_MegaImageContainer.get< Visibility >().find(true)
-      ;
-  while(it!=m_MegaImageContainer.get< Visibility >().end())
+  IteratorType it0, it1;
+  boost::tuples::tie( it0, it1 ) =
+    m_MegaImageContainer.get< Visibility >().equal_range(true);
+
+  unsigned int numberOfVisibleChannels( 0 );
+
+  while( it0 != it1 )
     {
+    ++it0;
     ++numberOfVisibleChannels;
-    ++it;
     }
 
   return numberOfVisibleChannels;

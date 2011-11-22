@@ -909,6 +909,11 @@ vtkViewImage2D::AddDataSet(vtkPolyData *dataset,
     return NULL;
     }
 
+  if ( dataset->GetNumberOfPoints() <= 0 )
+    {
+    return NULL;
+    }
+
   vtkSmartPointer<vtkPolyDataMapper> mapper =
       vtkSmartPointer<vtkPolyDataMapper>::New();
   mapper->SetScalarVisibility(iDataVisibility);

@@ -1403,6 +1403,8 @@ InitializeImageRelatedWidget()
   unsigned int NumberOfChannels = m_ImageProcessor->getNumberOfChannels();
   int* extent = m_ImageProcessor->getExtent();
 
+  assert( extent );
+
   // Initialize the widgets with the good number of channels
   // it will update the size of the related combobox
   m_NavigationDockWidget->blockSignals(true);
@@ -1588,20 +1590,24 @@ QGoTabImageView3DwT::SetTimePoint(const int & iTimePoint)
   // for the trace widget, navigation widget and table widget
   emit TimePointChanged(m_TCoord);
 
-  // clean table widget and container
-  // then load new traces in TW and put polydatas in container
-  std::list<unsigned int> timePoints =
-          this->m_DataBaseTables->
-          UpdateTableWidgetAndContainersForGivenTimePoint(
-          m_TCoord);
+  //if we use the database, update table and traces!
+  if(m_DataBaseTables->IsDatabaseUsed())
+   {
+    // clean table widget and container
+    // then load new traces in TW and put polydatas in container
+    std::list<unsigned int> timePoints =
+            this->m_DataBaseTables->
+            UpdateTableWidgetAndContainersForGivenTimePoint(
+            m_TCoord);
 
-  // create actors
-  // function has to be splitted-> remove duplications
-  this->CreateContoursActorsFromVisuContainer(timePoints);
-  this->CreateMeshesActorsFromVisuContainer(timePoints);
+    // create actors if we use the database
+    // function has to be splitted-> remove duplications
+    this->CreateContoursActorsFromVisuContainer(timePoints);
+    this->CreateMeshesActorsFromVisuContainer(timePoints);
 
-  //show time specific actors
-  this->ShowTraces(m_TCoord);
+    //show time specific actors
+    this->ShowTraces(m_TCoord);
+    }
 
   m_ImageView->Update();
 
@@ -2048,7 +2054,6 @@ QGoTabImageView3DwT::ValidateContour(int iTCoord)
     this->m_TraceSettingsWidget->setEnabled(true);
     this->m_ContourEditingWidget->SetReeditMode(false);
     m_ImageView->ReinitializeContourWidget();
-    //m_ContourSegmentationDockWidget->hide();
     this->m_ContourEditingWidget->GetDockWidget()->hide();
     }
 }
@@ -2103,10 +2108,8 @@ QGoTabImageView3DwT::ReEditContour(const unsigned int & iId)
 
       this->m_TraceSettingsToolBar->setEnabled(false);
       this->m_TraceSettingsWidget->setEnabled(false);
-    //this->m_ContourSegmentationDockWidget->show();
-      //this->m_ContourSegmentationDockWidget->SegmentationMethod(0);
-      //this->m_ContourSegmentationDockWidget->SetReeditMode(true);
       this->m_ContourEditingWidget->SetReeditMode(true);
+      // go to manual segmentation
       this->m_ContourEditingWidget->GetDockWidget()->show();
 
       }
@@ -2296,6 +2299,13 @@ QGoTabImageView3DwT::SaveAndVisuContour(int iTCoord, vtkPolyData *iView)
     return -1;
     }
 
+  // if there are no points in the polydata
+  if ( iView->GetNumberOfPoints() == 0 )
+    {
+    std::cerr << "No points in the contour you want to save" << std::endl;
+    return 0;
+    }
+
   vtkPolyData *contour_nodes = vtkPolyData::New();
   CreateContour(contour_nodes, iView);
 
@@ -2314,7 +2324,6 @@ QGoTabImageView3DwT::SaveAndVisuContour(int iTCoord, vtkPolyData *iView)
   // update the container
   m_ContourContainer->UpdateCurrentElementFromVisu(actors,
                                                    contour_nodes,
-                                                   //m_TCoord,
                                                    iTCoord,
                                                    false, //highlighted
                                                    true); //visible
@@ -2375,11 +2384,6 @@ QGoTabImageView3DwT::SaveMesh(vtkPolyData *iView, int iTCoord, int iCollectionID
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/*void
-QGoTabImageView3DwT::SaveAndVisuMeshFromSegmentation(vtkPolyData *iView, int iTCoord)
-{
-  SaveAndVisuMesh(iView, m_TCoord, iTCoord);
-}*/
 void
 QGoTabImageView3DwT::SaveInDBAndRenderMeshForVisu(
   std::vector<vtkPolyData *> iVectPolydata, int iTCoord)
@@ -2499,11 +2503,7 @@ void QGoTabImageView3DwT::SaveInDBAndRenderContourForVisu(
   std::vector<vtkPolyData *>::iterator iter = iVectPolydata.begin();
   while(iter != iVectPolydata.end())
     {
-      std::cout << "receive polydata" << std::endl;
-    vtkPolyData* data = vtkPolyData::New();
-    data->DeepCopy(*iter);
-    this->AddContour(data);
-    //SaveAndVisuContour(*iter, m_TCoord, iTCoord);
+    SaveAndVisuContour(iTCoord, *iter);
     ++iter;
     }
 
@@ -2889,29 +2889,16 @@ QGoTabImageView3DwT::GoToLocation(int iX, int iY, int iZ, int iT)
 void
 QGoTabImageView3DwT::GoToRealLocation(double iX, double iY, double iZ, int iT)
 {
-  // get spacing - should we provide easier access though image processor?
-  double* spacing = this->m_ImageProcessor->getImageBW()->GetSpacing();
+  double p[3];
+  p[0] = iX;
+  p[1] = iY;
+  p[2] = iZ;
 
-  int indexX = 0;
-  int indexY = 0;
-  int indexZ = 0;
+  int *index = this->GetImageCoordinatesFromWorldCoordinates( p );
 
-  if(spacing[0] != 0)
-    {
-    indexX = iX/spacing[0];
-    }
+  this->GoToLocation( index[0], index[1], index[2], iT);
 
-  if(spacing[1] != 0)
-    {
-    indexY = iY/spacing[1];
-    }
-
-  if(spacing[2] != 0)
-    {
-    indexZ = iZ/spacing[2];
-    }
-
-  GoToLocation(indexX, indexY, indexZ, iT);
+  delete[] index;
 }
 //-------------------------------------------------------------------------
 
@@ -3582,6 +3569,9 @@ UpdateTFEditor()
   unsigned int NumberOfChannels = m_ImageProcessor->getNumberOfChannels();
   int currentChannel = m_TransferFunctionDockWidget->GetCurrentWidget();
 
+#ifdef HAS_OPENMP
+#pragma omp for
+#endif
   for( unsigned int i = 0; i < NumberOfChannels; i++ )
     {
     std::string name = m_ImageProcessor->getChannelName(i);
@@ -3605,9 +3595,9 @@ UpdateTFEditor()
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
-PolydatasRequested(){
-  std::list< vtkPolyData* > elements =
-      this->m_MeshContainer-> GetHighlightedElements();
+PolydatasRequested()
+{
+  std::list< vtkPolyData* > elements = this->m_MeshContainer-> GetHighlightedElements();
   emit RequestedPolydatas(elements);
 }
 //-------------------------------------------------------------------------
@@ -3664,6 +3654,9 @@ CreateDopplerTFEditor()
 {
   std::vector<int> time = m_ImageProcessor->getDopplerTime(m_TCoord);
 
+#ifdef HAS_OPENMP
+#pragma omp for
+#endif
   for(unsigned int i=0; i<m_ImageProcessor->getDopplerSize(); ++i)
     {
     if(time[i]>=0)

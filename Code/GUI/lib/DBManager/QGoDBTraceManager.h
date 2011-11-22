@@ -460,10 +460,25 @@ protected:
       iTWContainer->GetContainerForOneSpecificTrace(iDatabaseConnector,
                                                     TraceID);
 
+    // insert is buggy on sorted table
+    // 1- unsort (if sorted)
+    // 2- insert
+    // 3- sort (if sorted)
+    bool sorting = this->m_Table->isSortingEnabled();
+    if(sorting)
+      {
+      this->m_Table->setSortingEnabled(false);
+      }
+
     this->m_Table->InsertOnlyOneNewRow(RowContainer,
                                 iTWContainer->GetIndexForGroupColor(this->m_TraceName),
                                 iTWContainer->GetIndexForGroupColor(this->m_CollectionName),
                                 this->m_TraceName, this->m_CollectionName);
+
+    if(sorting)
+      {
+      this->m_Table->setSortingEnabled(true);
+      }
   }
 
   /**

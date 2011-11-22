@@ -58,10 +58,6 @@ QGoContourManualSegmentation::QGoContourManualSegmentation(QWidget *iParent) :
   QObject::connect(
     m_ContourSegmentationWidget, SIGNAL( ReinitializePressed() ),
     this, SIGNAL( reinitializeContour() ) );
-
-  QObject::connect(
-    m_ContourSegmentationWidget, SIGNAL( ManualSegmentationActivated(bool) ),
-    this, SIGNAL(ManualSegmentationActivated(bool) ) );
 }
 
 //--------------------------------------------------------------------------

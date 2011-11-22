@@ -90,10 +90,26 @@ void QGoContourEditingWidgetManager::SetManualMode(
                     SIGNAL (reinitializeContour() ),
                     this, SIGNAL(reinitializeContour() ) );
 
-  QObject::connect( this->m_ManualMode,
-                    SIGNAL (ManualSegmentationActivated(bool) ),
-                    this, SIGNAL(ManualSegmentationActivated(bool) ) );
+   QObject::connect( this->m_TraceEditingWidget,
+                    SIGNAL(SetSeedInteractorBehaviour(bool) ),
+                    this,
+                    SLOT(StartManualSegmentation(bool) ) );
 
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoContourEditingWidgetManager::StartManualSegmentation( bool iValue )
+{
+  // if current is
+  if(this->m_TraceEditingWidget->GetCurrentModeName().compare("Manual") == 0)
+    {
+    emit ManualSegmentationActivated( true );
+    }
+  else
+    {
+    emit ManualSegmentationActivated( false );
+    }
 }
 //-------------------------------------------------------------------------
 
@@ -138,7 +154,6 @@ this->m_MaxThreshold, iParent);
 //-------------------------------------------------------------------------
 void QGoContourEditingWidgetManager::ApplyLevelSetAlgo()
 {
-  std::cout << "apply levelset 2d" << std::endl;
   this->GetPolydatasFromAlgo<QGoContourLevelSetAlgo>(this->m_LevelSetAlgo);
 }
 //-------------------------------------------------------------------------
