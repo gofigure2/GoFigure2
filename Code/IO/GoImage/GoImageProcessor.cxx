@@ -55,7 +55,8 @@
 //--------------------------------------------------------------------------
 GoImageProcessor::GoImageProcessor():m_Output(NULL),
   m_MaxThreshold(0),m_MaxImage(0),
-  m_DopplerMode(false), m_DopplerStep(1), m_DopplerChannel(0), m_DopplerSize(3)
+  m_DopplerMode(false), m_DopplerStep(1), m_DopplerTime( 3, 0 ),
+  m_DopplerChannel(0), m_DopplerSize(3)
 {
   m_CurrentTimePoint = std::numeric_limits< unsigned int >::max();
 
@@ -71,8 +72,6 @@ GoImageProcessor::GoImageProcessor():m_Output(NULL),
   m_Extent[3] = 0;
   m_Extent[4] = 0;
   m_Extent[5] = 0;
-
-  m_DopplerTime.resize(m_DopplerSize);
 }
 //--------------------------------------------------------------------------
 
@@ -80,7 +79,8 @@ GoImageProcessor::GoImageProcessor():m_Output(NULL),
 GoImageProcessor::GoImageProcessor(const GoImageProcessor & iE):
   m_MegaImageContainer(iE.m_MegaImageContainer), m_Output(iE.m_Output),
   m_DopplerMode(iE.m_DopplerMode), m_DopplerStep(iE.m_DopplerStep),
-  m_DopplerChannel(iE.m_DopplerChannel), m_DopplerSize(iE.m_DopplerSize)
+  m_DopplerTime(iE.m_DopplerTime), m_DopplerChannel(iE.m_DopplerChannel),
+  m_DopplerSize(iE.m_DopplerSize)
 {
   m_BoundsTime[0] = iE.m_BoundsTime[0];
   m_BoundsTime[1] = iE.m_BoundsTime[1];
@@ -94,8 +94,6 @@ GoImageProcessor::GoImageProcessor(const GoImageProcessor & iE):
   m_Extent[3] = iE.m_Extent[3];
   m_Extent[4] = iE.m_Extent[4];
   m_Extent[5] = iE.m_Extent[5];
-
-  m_DopplerTime = iE.m_DopplerTime;
 }
 //--------------------------------------------------------------------------
 
@@ -187,7 +185,7 @@ getOpacityTransferFunctions()
 {
   std::vector<vtkPiecewiseFunction*> opacityTFs;
 
-  typedef GoMegaImageStructureMultiIndexContainer::index<Visibility>::type::iterator 
+  typedef GoMegaImageStructureMultiIndexContainer::index<Visibility>::type::iterator
     IteratorType;
 
   IteratorType it0, it1;
@@ -367,7 +365,7 @@ getColoredImages()
 {
   std::vector<vtkImageData*> images;
 
-  typedef GoMegaImageStructureMultiIndexContainer::index<Visibility>::type::iterator 
+  typedef GoMegaImageStructureMultiIndexContainer::index<Visibility>::type::iterator
     IteratorType;
 
   IteratorType it0, it1;
@@ -399,7 +397,7 @@ getVisibleImages()
   blendedImage->ReleaseDataFlagOn();
   blendedImage->SetNumberOfThreads(VTK_MAX_THREADS);
 
-  typedef GoMegaImageStructureMultiIndexContainer::index<Visibility>::type::iterator 
+  typedef GoMegaImageStructureMultiIndexContainer::index<Visibility>::type::iterator
     IteratorType;
 
   IteratorType it0, it1;
@@ -484,14 +482,15 @@ int*
 GoImageProcessor::
 getExtent()
 {
-  if( ( m_MegaImageContainer.begin() )->Image )
+  if( !m_MegaImageContainer.empty() )
     {
-    return ( m_MegaImageContainer.begin() )->Image->GetExtent();
+    if( ( m_MegaImageContainer.begin() )->Image )
+      {
+      return ( m_MegaImageContainer.begin() )->Image->GetExtent();
+      }
     }
-  else
-    {
-    return NULL;
-    }
+
+  return NULL;
 }
 //--------------------------------------------------------------------------
 
@@ -563,12 +562,6 @@ getDopplerTime(unsigned int iTime)
       m_DopplerTime[i] = -1;
       }
     }
-/*
-  m_DopplerTime[0] = iTime - m_DopplerStep;
-  m_DopplerTime[1] = iTime;
-  m_DopplerTime[2]= iTime + m_DopplerStep;
-
-*/
 
   return m_DopplerTime;
 }
@@ -598,8 +591,6 @@ getDopplerChannel()
 {
   return m_DopplerChannel;
 }
-//--------------------------------------------------------------------------
-
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
@@ -657,7 +648,7 @@ unsigned int
 GoImageProcessor::
 getNumberOfVisibleChannels()
 {
-  typedef GoMegaImageStructureMultiIndexContainer::index<Visibility>::type::iterator 
+  typedef GoMegaImageStructureMultiIndexContainer::index<Visibility>::type::iterator
     IteratorType;
 
   IteratorType it0, it1;
