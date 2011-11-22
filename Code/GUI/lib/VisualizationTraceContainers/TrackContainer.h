@@ -862,7 +862,7 @@ private:
   template< class TIndex >
   void ChangeActorsVisibility(
     typename MultiIndexContainerType::template index< TIndex >::type::iterator iBegin,
-    bool & iVisibility)
+    bool iVisibility)
     {
     typedef void ( QGoImageView3D::*ImageViewMember )(const int &, vtkActor *);
     ImageViewMember f;

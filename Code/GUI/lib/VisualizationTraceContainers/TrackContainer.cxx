@@ -2036,8 +2036,9 @@ TrackContainer::ShowActorsWithGivenTimePoint(const unsigned int & iT)
   //if ( iT != m_TCoord )
   //  {
     // go through all elements
-    MultiIndexContainerTraceIDIterator
-      trace_it = this->m_Container.get< TraceID >().begin();
+    MultiIndexContainerType::index< TraceID >::type::iterator
+    //MultiIndexContainerTraceIDIterator
+      trace_it = m_Container.get< TraceID >().begin();
 
   while ( trace_it != m_Container.get< TraceID >().end() )
     {
