@@ -43,6 +43,7 @@
 #include "GoDBContourRow.h"
 #include "GoDBMeshRow.h"
 #include "GoDBTrackRow.h"
+#include "GoDBTrackFamilyRow.h"
 #include "GoDBLineageRow.h"
 #include "GoDBChannelRow.h"
 #include "GoDBIntensityRow.h"
@@ -76,8 +77,9 @@ void GoDBExport::ExportContours()
   this->WriteTheColorsInfoFromDatabase();
   this->WriteCellTypeAndSubCellTypeInfoFromDatabase();
   this->WriteCoordinatesInfoFromDatabase();
-  this->WriteLineagesInfoFromDatabase();
   this->WriteTracksInfoFromDatabase();
+  this->WriteLineagesInfoFromDatabase();
+  this->WriteTrackFamilyInfoFromDatabase();
   this->WriteMeshesInfoFromDatabase();
   this->WriteContoursInfoFromDatabase();
   this->CloseDBConnection();
@@ -97,8 +99,9 @@ void GoDBExport::ExportMeshes()
   this->WriteTheColorsInfoFromDatabase();
   this->WriteCellTypeAndSubCellTypeInfoFromDatabase();
   this->WriteCoordinatesInfoFromDatabase();
-  this->WriteLineagesInfoFromDatabase();
   this->WriteTracksInfoFromDatabase();
+  this->WriteLineagesInfoFromDatabase();
+  this->WriteTrackFamilyInfoFromDatabase();
   this->WriteMeshesInfoFromDatabase();
   this->WriteChannelsInfoFromDatabase();
   this->WriteIntensityInfoFromDatabase();
@@ -221,6 +224,19 @@ void GoDBExport::UpdateVectorTrackIDsToExportInfo()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+void GoDBExport::UpdateVectorTrackFamilyIDsToExportInfo()
+{
+  if ( !this->m_VectorTrackIDs.empty() )
+    {
+    this->m_VectorTrackFamilyIDs = ListSpecificValuesForOneColumn(
+        this->m_DatabaseConnector, "track", "trackfamilyID", "trackID",
+        this->m_VectorTrackIDs, true, true);
+    }
+}
+
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
 void GoDBExport::UpdateVectorLineageIDsToExportInfo()
 {
   if ( !this->m_VectorTrackIDs.empty() )
@@ -239,6 +255,7 @@ void GoDBExport::UpdateAllVectorTracesIDsToExportContours()
   this->UpdateVectorContourIDsForExportContours();
   this->UpdateVectorMeshIDsForExportContours();
   this->UpdateVectorTrackIDsToExportInfo();
+  this->UpdateVectorTrackFamilyIDsToExportInfo();
   this->UpdateVectorLineageIDsToExportInfo();
   //no need for channel info when exporting contours at this time:
   this->m_VectorChannelIDs.clear();
@@ -252,6 +269,7 @@ void GoDBExport::UpdateAllVectorTracesIDsToExportMeshes()
   this->UpdateVectorContourIDsForExportMeshes();
   this->UpdateVectorMeshIDsForExportMeshes();
   this->UpdateVectorTrackIDsToExportInfo();
+  this->UpdateVectorTrackFamilyIDsToExportInfo();
   this->UpdateVectorLineageIDsToExportInfo();
   this->UpdateVectorChannelIDsForExportMeshes();
 }
@@ -330,6 +348,12 @@ void GoDBExport::WriteLineagesInfoFromDatabase()
 }
 
 //--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void GoDBExport::WriteTrackFamilyInfoFromDatabase()
+{
+  this->WriteTableInfoFromDB< GoDBTrackFamilyRow >(this->m_VectorTrackFamilyIDs);
+}
 
 //--------------------------------------------------------------------------
 void GoDBExport::WriteTracksInfoFromDatabase()

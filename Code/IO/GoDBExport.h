@@ -84,6 +84,7 @@ private:
   std::vector< std::string > m_VectorContourIDs;
   std::vector< std::string > m_VectorMeshIDs;
   std::vector< std::string > m_VectorTrackIDs;
+  std::vector< std::string > m_VectorTrackFamilyIDs;
   std::vector< std::string > m_VectorLineageIDs;
   std::vector< std::string > m_VectorChannelIDs;
 
@@ -237,6 +238,8 @@ private:
   */
   void WriteLineagesInfoFromDatabase();
 
+  void WriteTrackFamilyInfoFromDatabase();
+
   /**
   \brief get the channels info which IDs are in the m_VectorChannelIDs
   from the database and write them on the output file
@@ -287,6 +290,8 @@ private:
   are put in the m_VectorTrackIDs
   */
   void UpdateVectorTrackIDsToExportInfo();
+
+  void UpdateVectorTrackFamilyIDsToExportInfo();
 
   /**
   \brief check if for the tracks IDs found in the m_VectorTrackIDs,
