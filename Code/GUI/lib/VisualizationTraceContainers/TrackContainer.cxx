@@ -2033,17 +2033,15 @@ AddVolume(const unsigned int& iTrackID, const double& iVolume)
 void
 TrackContainer::ShowActorsWithGivenTimePoint(const unsigned int & iT)
 {
-  //if ( iT != m_TCoord )
-  //  {
-    // go through all elements
-    MultiIndexContainerType::index< TraceID >::type::iterator
-    //MultiIndexContainerTraceIDIterator
-      trace_it = m_Container.get< TraceID >().begin();
+
+  // go through all elements
+  MultiIndexContainerType::index< TraceID >::type::iterator
+  trace_it = m_Container.get< TraceID >().begin();
 
   while ( trace_it != m_Container.get< TraceID >().end() )
     {
-    int min = std::numeric_limits< int >::max();
-    int max = std::numeric_limits< int >::min();
+    unsigned int min = std::numeric_limits< unsigned int >::max();
+    unsigned int max = std::numeric_limits< unsigned int >::min();
 
     // go through map
     std::map< unsigned int, double*>::const_iterator end = trace_it->PointsMap.end();
@@ -2059,7 +2057,10 @@ TrackContainer::ShowActorsWithGivenTimePoint(const unsigned int & iT)
         {
         max = it->first;
         }
-      // if?
+
+      ++it;
+      }
+
       if(iT >= min && iT <= max)
         {
         ChangeActorsVisibility< TraceID >(trace_it, true);
@@ -2068,13 +2069,8 @@ TrackContainer::ShowActorsWithGivenTimePoint(const unsigned int & iT)
         {
         ChangeActorsVisibility< TraceID >(trace_it, false);
         }
-      ++it;
-      }
     ++trace_it;
     }
-
-  //  m_TCoord = iT;
-  //  }
 }
 
 //-------------------------------------------------------------------------
