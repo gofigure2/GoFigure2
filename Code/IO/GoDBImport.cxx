@@ -230,6 +230,15 @@ void GoDBImport::SaveTracesEntities(const IntMapType  & iMapColorIDs,
     {
     GoDBTrackFamilyRow EntityToSave;
     LineContent = this->GetValuesFromInfile< GoDBTrackFamilyRow >(EntityToSave);
+
+    this->ReplaceTheFieldWithNewIDs< GoDBTrackFamilyRow >(
+      MapTrackIDs, "TrackIDMother", EntityToSave);
+
+    this->ReplaceTheFieldWithNewIDs< GoDBTrackFamilyRow >(
+      MapTrackIDs, "TrackIDDaughter1", EntityToSave);
+
+    this->ReplaceTheFieldWithNewIDs< GoDBTrackFamilyRow >(
+      MapTrackIDs, "TrackIDDaughter2", EntityToSave);
     }
   }
 

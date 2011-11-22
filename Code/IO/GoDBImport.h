@@ -232,16 +232,18 @@ private:
   void ReplaceTheFieldWithNewIDs(const IntMapType & iMapIDs,
                                  std::string iFieldName, T & ioEntity)
   {
-    typename IntMapType::const_iterator iter =
-      iMapIDs.find( atoi( ioEntity.GetMapValue(iFieldName).c_str() ) );
+    std::string temp = ioEntity.GetMapValue(iFieldName);
+    int value = atoi( temp.c_str() );
+
+    typename IntMapType::const_iterator iter = iMapIDs.find( value );
+
     //in case the value of the field name is 0 which corresponds to
-    //an not yet associated value, it won't be found in the map:
-    if ( iter == iMapIDs.end() )
+    //an not yet associated value, it won't be found in the map, just return
+    if ( iter != iMapIDs.end() )
       {
-      return;
+      int NewID = iter->second;
+      ioEntity.SetField(iFieldName, NewID);
       }
-    int NewID = iter->second;
-    ioEntity.SetField(iFieldName, NewID);
   }
 
   /** \brief replace old IDs found in the import file with
