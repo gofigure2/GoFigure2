@@ -614,7 +614,7 @@ void QGoDBTrackManager::MergeTracks()
 
 //-------------------------------------------------------------------------
 bool QGoDBTrackManager::CheckOverlappingTracks(
-  std::list< unsigned int > iTrackIDs, unsigned int & ioTraceIDToKeep,
+  const std::list< unsigned int > & iTrackIDs, unsigned int & ioTraceIDToKeep,
   unsigned int & ioTraceIDToDelete, vtkMySQLDatabase *iDatabaseConnector)
 {
   unsigned int TraceID1 = 0, TraceID2 = 0;
@@ -622,7 +622,7 @@ bool QGoDBTrackManager::CheckOverlappingTracks(
     TimePointMax2 = 0;
   bool oTracksOverlapping = true;
 
-  std::list< unsigned int >::iterator iter = iTrackIDs.begin();
+  std::list< unsigned int >::const_iterator iter = iTrackIDs.begin();
   if ( iter == iTrackIDs.end() )
     {
     std::cout << "Pb, there should have been 2 tracks instead of 0 in this method" << std::endl;
@@ -665,7 +665,9 @@ bool QGoDBTrackManager::CheckOverlappingTracks(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoDBTrackManager::CreateCorrespondingTrackFamily( std::list<unsigned int> iDivisions )
+void
+QGoDBTrackManager::
+CreateCorrespondingTrackFamily( std::list<unsigned int> iDivisions )
 {
   int MotherID = 0;
   std::list<unsigned int> DaughtersIDs = std::list<unsigned int>();
@@ -690,8 +692,8 @@ void QGoDBTrackManager::CreateCorrespondingTrackFamily( std::list<unsigned int> 
     return;
     }
   emit NeedToGetDatabaseConnection();
-  if (this->IdentifyMotherDaughtersToCreateTrackFamily(this->m_DatabaseConnector,
-    CheckedTracks, MotherID, DaughtersIDs) )
+  if (this->IdentifyMotherDaughtersToCreateTrackFamily(
+        this->m_DatabaseConnector, CheckedTracks, MotherID, DaughtersIDs) )
     {
     int TrackFamilyID =  this->CreateTrackFamily(this->m_DatabaseConnector,
       MotherID, DaughtersIDs);
@@ -1056,22 +1058,27 @@ void QGoDBTrackManager::CreateALineageWithFormerDaughterOfADeletedDivision(
   unsigned int iDaughterID, vtkMySQLDatabase* iDatabaseConnector,
   bool &ioPartOfHigherLineage)
 {
-    //GoDBTrackRow Daughter(iDaughterID, iDatabaseConnector);
+  //GoDBTrackRow Daughter(iDaughterID, iDatabaseConnector);
   std::list<unsigned int> PreviousLineageToDelete = std::list<unsigned int>();
-  if (!ioPartOfHigherLineage) //the lineage should not be deleted if higher tracks belong to it
+
+  //the lineage should not be deleted if higher tracks belong to it
+  if (!ioPartOfHigherLineage)
     {
     GoDBTrackRow Daughter(iDaughterID, iDatabaseConnector);
     PreviousLineageToDelete.push_back( Daughter.GetMapValue<unsigned int>("lineageID") );
-      //get the previous lineage ID of the daughter
-    ioPartOfHigherLineage = true; // the second daughter will have a lineage set to 0 anyway
+    //get the previous lineage ID of the daughter
+
+    // the second daughter will have a lineage set to 0 anyway
+    ioPartOfHigherLineage = true;
     }
 
   //get all the tracks daugthers of the DaughterID:
-  std::list<unsigned int> TracksIDs = this->m_TrackContainerInfoForVisu->GetSubLineage(iDaughterID);
+  std::list<unsigned int> TracksIDs =
+      this->m_TrackContainerInfoForVisu->GetSubLineage(iDaughterID);
   if (TracksIDs.size() > 1)
     {
-    emit NewLineageToCreateFromTracks(TracksIDs, iDaughterID, PreviousLineageToDelete); //need to create a new lineage with
-      //the family of the daughter
+    //need to create a new lineage with the family of the daughter
+    emit NewLineageToCreateFromTracks(TracksIDs, iDaughterID, PreviousLineageToDelete);
     }
 }
 //-------------------------------------------------------------------------

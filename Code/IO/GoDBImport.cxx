@@ -199,16 +199,6 @@ void GoDBImport::SaveTracesEntities(const IntMapType  & iMapColorIDs,
   IntMapType MapIDsSpecificOne;
   IntMapType MapIDsSpecificTwo;
 
-  this->SaveTraces< GoDBLineageRow >(iMapColorIDs, iMapCoordIDs,
-                                     MapLineageIDs, LineContent,
-                                     this->m_NewLineageIDs, MapLineageIDs,
-                                     MapIDsSpecificOne, MapIDsSpecificTwo );
-  }
-
-  {
-  IntMapType MapIDsSpecificOne;
-  IntMapType MapIDsSpecificTwo;
-
   this->SaveTraces< GoDBTrackRow >(iMapColorIDs, iMapCoordIDs, MapLineageIDs,
                                    LineContent, this->m_NewTracksIDs, MapTrackIDs,
                                    MapIDsSpecificOne, MapIDsSpecificTwo );
@@ -216,9 +206,19 @@ void GoDBImport::SaveTracesEntities(const IntMapType  & iMapColorIDs,
   }
 
   {
+  IntMapType MapIDsSpecificOne;
+  IntMapType MapIDsSpecificTwo;
+
+  this->SaveTraces< GoDBLineageRow >(iMapColorIDs, iMapCoordIDs,
+                                     MapLineageIDs, LineContent,
+                                     this->m_NewLineageIDs, MapLineageIDs,
+                                     MapIDsSpecificOne, MapIDsSpecificTwo );
+  }
+
+  {
   this->SaveTraces< GoDBMeshRow >(iMapColorIDs, iMapCoordIDs, MapTrackIDs,
-                                  LineContent, this->m_NewMeshIDs, MapMeshIDs, iMapCellTypeIDs,
-                                  iMapSubCellTypeIDs);
+                                  LineContent, this->m_NewMeshIDs, MapMeshIDs,
+                                  iMapCellTypeIDs, iMapSubCellTypeIDs);
   }
 
   if ( SaveIntensities )
