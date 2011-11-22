@@ -193,6 +193,7 @@ void GoDBImport::SaveTracesEntities(const IntMapType  & iMapColorIDs,
   IntMapType MapMeshIDs;
   IntMapType MapTrackIDs;
   IntMapType MapLineageIDs;
+  IntMapType MapTrackFamilyIDs;
 
   std::string LineContent = iLineContent;
 
@@ -239,6 +240,11 @@ void GoDBImport::SaveTracesEntities(const IntMapType  & iMapColorIDs,
 
     this->ReplaceTheFieldWithNewIDs< GoDBTrackFamilyRow >(
       MapTrackIDs, "TrackIDDaughter2", EntityToSave);
+
+    int OldID =  EntityToSave.GetMapValue<int>("TrackFamilyID");
+    EntityToSave.SetField("TrackFamilyID", "0");
+
+    MapTrackFamilyIDs[OldID] = EntityToSave.SaveInDB(this->m_DatabaseConnector);
     }
   }
 
