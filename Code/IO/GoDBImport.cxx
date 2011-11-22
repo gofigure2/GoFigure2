@@ -48,9 +48,9 @@
 #include "GoDBIntensityRow.h"
 
 //--------------------------------------------------------------------------
-GoDBImport::GoDBImport(std::string iServerName, std::string iLogin,
-                       std::string iPassword, int iImagingSessionID,
-                       std::string iFilename, int iCurrentTimePoint)
+GoDBImport::GoDBImport(const std::string & iServerName, const std::string & iLogin,
+                       const std::string & iPassword, int iImagingSessionID,
+                       const std::string & iFilename, int iCurrentTimePoint)
 {
   this->m_ServerName = iServerName;
   this->m_Login = iLogin;
@@ -239,7 +239,7 @@ void GoDBImport::SaveTracesEntities(const IntMapType  & iMapColorIDs,
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-std::string GoDBImport::FindFieldName(std::string iLine)
+std::string GoDBImport::FindFieldName(const std::string & iLine)
 {
   size_t      BegName = iLine.find("<", 0) + 1;
   size_t      EndName = iLine.find(">", 0);
@@ -256,7 +256,7 @@ std::string GoDBImport::FindFieldName(std::string iLine)
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-std::string GoDBImport::GetValueForTheLine(std::string iLine)
+std::string GoDBImport::GetValueForTheLine(const std::string & iLine)
 {
   size_t BegValue = iLine.find(">", 0) + 1;
   size_t EndValue = iLine.find("<", BegValue);
@@ -272,15 +272,11 @@ std::string GoDBImport::GetValueForTheLine(std::string iLine)
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-bool GoDBImport::IsLineForNumberOfEntities(std::string iLine)
+bool GoDBImport::IsLineForNumberOfEntities(const std::string & iLine)
 {
   size_t BegValue = iLine.find("NumberOf", 0);
 
-  if ( BegValue != iLine.npos )
-    {
-    return true;
-    }
-  return false;
+  return ( BegValue != iLine.npos );
 }
 
 //--------------------------------------------------------------------------
