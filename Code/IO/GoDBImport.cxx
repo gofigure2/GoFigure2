@@ -131,7 +131,7 @@ std::string GoDBImport::SaveNoTracesEntities(IntMapType & ioMapColorIDs,
     {
     getline (this->m_InFile, LineContent);
     }
-  while ( this->FindFieldName(LineContent) != "NumberOflineage" )
+  while ( this->FindFieldName(LineContent) != "NumberOftrack" )
     {
     int EntitiesNumber = atoi( this->GetValueForTheLine(LineContent).c_str() );
     getline(this->m_InFile, LineContent);
@@ -220,7 +220,9 @@ void GoDBImport::SaveTracesEntities(const IntMapType  & iMapColorIDs,
   IntMapType MapIDsSpecificOne;
   IntMapType MapIDsSpecificTwo;
 
-  int NumberOfTrackFamilies = atoi( this->GetValueForTheLine(LineContent).c_str() );
+  std::string temp = this->GetValueForTheLine(LineContent);
+
+  int NumberOfTrackFamilies = atoi( temp.c_str() );
 
   getline(this->m_InFile, LineContent);
 
