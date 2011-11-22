@@ -166,8 +166,8 @@ unsigned int QGoDBTrackManager::CreateNewTrackWithNoMesh(
 std::list< unsigned int > QGoDBTrackManager::UpdateTheTracesColor(
   vtkMySQLDatabase *iDatabaseConnector)
 {
-  return this->UpdateTheTracesColorTemplate< GoDBTrackRow,
-                                             TrackContainer >(iDatabaseConnector, this->m_TrackContainerInfoForVisu);
+  return this->UpdateTheTracesColorTemplate< GoDBTrackRow, TrackContainer >(
+        iDatabaseConnector, this->m_TrackContainerInfoForVisu);
 }
 
 //-------------------------------------------------------------------------

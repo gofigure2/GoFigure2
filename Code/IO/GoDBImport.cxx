@@ -43,6 +43,7 @@
 #include "GoDBContourRow.h"
 #include "GoDBMeshRow.h"
 #include "GoDBTrackRow.h"
+#include "GoDBTrackFamilyRow.h"
 #include "GoDBLineageRow.h"
 #include "GoDBChannelRow.h"
 #include "GoDBIntensityRow.h"
@@ -213,6 +214,21 @@ void GoDBImport::SaveTracesEntities(const IntMapType  & iMapColorIDs,
                                      MapLineageIDs, LineContent,
                                      this->m_NewLineageIDs, MapLineageIDs,
                                      MapIDsSpecificOne, MapIDsSpecificTwo );
+  }
+
+  {
+  IntMapType MapIDsSpecificOne;
+  IntMapType MapIDsSpecificTwo;
+
+  int NumberOfTrackFamilies = atoi( this->GetValueForTheLine(LineContent).c_str() );
+
+  getline(this->m_InFile, LineContent);
+
+  for ( int i = 0; i < NumberOfTrackFamilies; i++ )
+    {
+    GoDBTrackFamilyRow EntityToSave;
+    LineContent = this->GetValuesFromInfile< GoDBTrackFamilyRow >(EntityToSave);
+    }
   }
 
   {
