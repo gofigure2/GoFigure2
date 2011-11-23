@@ -2037,29 +2037,13 @@ TrackContainer::ShowActorsWithGivenTimePoint(const unsigned int & iT)
   // go through all elements
   MultiIndexContainerType::index< TraceID >::type::iterator
   trace_it = m_Container.get< TraceID >().begin();
-
   while ( trace_it != m_Container.get< TraceID >().end() )
     {
-    unsigned int min = std::numeric_limits< unsigned int >::max();
-    unsigned int max = std::numeric_limits< unsigned int >::min();
-
-    // go through map
-    std::map< unsigned int, double*>::const_iterator end = trace_it->PointsMap.end();
-    std::map< unsigned int, double*>::const_iterator it = trace_it->PointsMap.begin();
-
-    while( it != end )
+    //check size (nb of elemtents) of track
+    if(trace_it->PointsMap.size() > 0)
       {
-      if(it->first < min)
-        {
-        min = it->first;
-        }
-      if(it->first > max)
-        {
-        max = it->first;
-        }
-
-      ++it;
-      }
+      unsigned int min = ( trace_it->PointsMap.begin() )->first;
+      unsigned int max = ( trace_it->PointsMap.rbegin() )->first;
 
       if(iT >= min && iT <= max)
         {
@@ -2069,6 +2053,7 @@ TrackContainer::ShowActorsWithGivenTimePoint(const unsigned int & iT)
         {
         ChangeActorsVisibility< TraceID >(trace_it, false);
         }
+      }
     ++trace_it;
     }
 }
