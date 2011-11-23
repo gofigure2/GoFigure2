@@ -38,6 +38,8 @@
 #include "vtkMySQLDatabase.h"
 #include "ContourMeshStructure.h"
 #include "ContourMeshContainer.h"
+#include "GoDBMeshRow.h"
+
 #include <vector>
 #include <map>
 
@@ -298,7 +300,7 @@ private:
       ioLineContent = this->GetValuesFromInfile< T >(
         TraceToSave);
       //for mesh, need to get the new celltype/subcelltype:
-      if ( TraceToSave.GetTableName() == "mesh" )
+      /*if ( TraceToSave.GetTableName() == "mesh" )
         {
         if ( !iMapIDsSpecificOne.empty() )
           {
@@ -310,7 +312,7 @@ private:
           this->ReplaceTheFieldWithNewIDs< T >(
             iMapIDsSpecificTwo, "SubCellularID", TraceToSave);
           }
-        }
+        }*/
       this->ReplaceCommonFieldsForTraces(
         TraceToSave, iMapColorIDs, iMapCoordIDs, iMapCollectionIDs);
       int OldTraceID = atoi( TraceToSave.GetMapValue( TraceToSave.GetTableIDName() ).c_str() );
@@ -334,6 +336,7 @@ private:
       ioNewTracesIDs.push_back(NewTraceID);
       ioMapTraceIDs[OldTraceID] = NewTraceID;
       }
-  }
+    }
+
 };
 #endif

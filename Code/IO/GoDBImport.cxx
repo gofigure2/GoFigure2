@@ -181,108 +181,7 @@ std::string GoDBImport::SaveNoTracesEntities(IntMapType & ioMapColorIDs,
 
 //--------------------------------------------------------------------------
 
-//--------------------------------------------------------------------------
-void GoDBImport::SaveTracesEntities(const IntMapType  & iMapColorIDs,
-                                    const IntMapType  & iMapCoordIDs,
-                                    const std::string & iLineContent,
-                                    const IntMapType  & iMapCellTypeIDs,
-                                    const IntMapType  & iMapSubCellTypeIDs,
-                                    bool SaveIntensities)
-{
-  IntMapType MapContourIDs;
-  IntMapType MapMeshIDs;
-  IntMapType MapTrackIDs;
-  IntMapType MapLineageIDs;
-  IntMapType MapTrackFamilyIDs;
 
-  std::string LineContent = iLineContent;
-
-  {
-  IntMapType MapIDsSpecificOne;
-  IntMapType MapIDsSpecificTwo;
-
-  this->SaveTraces< GoDBTrackRow >(iMapColorIDs, iMapCoordIDs, MapLineageIDs,
-                                   LineContent, this->m_NewTracksIDs, MapTrackIDs,
-                                   MapIDsSpecificOne, MapIDsSpecificTwo );
-
-  }
-
-  {
-  IntMapType MapIDsSpecificOne;
-  IntMapType MapIDsSpecificTwo;
-
-  this->SaveTraces< GoDBLineageRow >(iMapColorIDs, iMapCoordIDs,
-                                     MapLineageIDs, LineContent,
-                                     this->m_NewLineageIDs, MapLineageIDs,
-                                     MapIDsSpecificOne, MapIDsSpecificTwo );
-  }
-
-  {
-  IntMapType MapIDsSpecificOne;
-  IntMapType MapIDsSpecificTwo;
-
-  std::string temp = this->GetValueForTheLine(LineContent);
-
-  int NumberOfTrackFamilies = atoi( temp.c_str() );
-
-  getline(this->m_InFile, LineContent);
-
-  for ( int i = 0; i < NumberOfTrackFamilies; i++ )
-    {
-    GoDBTrackFamilyRow EntityToSave;
-    LineContent = this->GetValuesFromInfile< GoDBTrackFamilyRow >(EntityToSave);
-
-    this->ReplaceTheFieldWithNewIDs< GoDBTrackFamilyRow >(
-      MapTrackIDs, "TrackIDMother", EntityToSave);
-
-    this->ReplaceTheFieldWithNewIDs< GoDBTrackFamilyRow >(
-      MapTrackIDs, "TrackIDDaughter1", EntityToSave);
-
-    this->ReplaceTheFieldWithNewIDs< GoDBTrackFamilyRow >(
-      MapTrackIDs, "TrackIDDaughter2", EntityToSave);
-
-    int OldID =  EntityToSave.GetMapValue<int>("TrackFamilyID");
-    EntityToSave.SetField("TrackFamilyID", "0");
-
-    int NewID = EntityToSave.SaveInDB(this->m_DatabaseConnector);
-
-    MapTrackFamilyIDs[OldID] = NewID;
-
-    GoDBTrackRow Daughter1;
-    Daughter1.SetValuesForSpecificID(iDaughterID, iDatabaseConnector);
-    Daughter1.SetField<unsigned int>("TrackFamilyID", NewID);
-    Daughter1.SaveInDB(iDatabaseConnector);
-
-    GoDBTrackRow Daughter2;
-    Daughter2.SetValuesForSpecificID(iDaughterID, iDatabaseConnector);
-    Daughter2.SetField<unsigned int>("TrackFamilyID", NewID);
-    Daughter2.SaveInDB(iDatabaseConnector);
-
-    }
-  }
-
-  {
-  this->SaveTraces< GoDBMeshRow >(iMapColorIDs, iMapCoordIDs, MapTrackIDs,
-                                  LineContent, this->m_NewMeshIDs, MapMeshIDs,
-                                  iMapCellTypeIDs, iMapSubCellTypeIDs);
-  }
-
-  if ( SaveIntensities )
-    {
-    this->SaveIntensityForMesh(LineContent, MapMeshIDs, iMapColorIDs);
-    }
-
-  {
-  IntMapType MapIDsSpecificOne;
-  IntMapType MapIDsSpecificTwo;
-
-  this->SaveTraces< GoDBContourRow >(iMapColorIDs, iMapCoordIDs, MapMeshIDs,
-                                     LineContent, this->m_NewContourIDs, MapContourIDs,
-                                     MapIDsSpecificOne, MapIDsSpecificTwo );
-  }
-}
-
-//--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
 std::string GoDBImport::FindFieldName(const std::string & iLine)
@@ -419,4 +318,234 @@ void GoDBImport::SaveIntensityForMesh(std::string & ioLineContent,
         }
       }
     }
+  }
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+template<>
+void
+GoDBImport::SaveTraces< GoDBMeshRow >(
+  const IntMapType &  iMapColorIDs,
+  const IntMapType &  iMapCoordIDs,
+  const IntMapType &  iMapCollectionIDs,
+  std::string & ioLineContent,
+  std::vector< int > & ioNewTracesIDs,
+  IntMapType & ioMapTraceIDs,
+  const IntMapType &  iMapIDsSpecificOne,
+  const IntMapType &  iMapIDsSpecificTwo
+  )
+{
+  GoDBMeshRow TraceToSave;
+  int NumberOfTraces = atoi( this->GetValueForTheLine(ioLineContent).c_str() );
+
+  getline(this->m_InFile, ioLineContent);
+
+#ifdef HAS_OPENMP
+#pragma omp for
+#endif
+  for ( int i = 0; i < NumberOfTraces; i++ )
+    {
+    ioLineContent = this->GetValuesFromInfile< GoDBMeshRow >(TraceToSave);
+
+    if ( !iMapIDsSpecificOne.empty() )
+      {
+      this->ReplaceTheFieldWithNewIDs< GoDBMeshRow >(iMapIDsSpecificOne,
+                                                     "CellTypeID", TraceToSave);
+      }
+    if ( !iMapIDsSpecificTwo.empty() )
+      {
+      this->ReplaceTheFieldWithNewIDs< GoDBMeshRow >(iMapIDsSpecificTwo,
+                                                     "SubCellularID", TraceToSave);
+      }
+
+    this->ReplaceCommonFieldsForTraces(TraceToSave, iMapColorIDs,
+                                       iMapCoordIDs, iMapCollectionIDs);
+
+    int OldTraceID = atoi( TraceToSave.GetMapValue( TraceToSave.GetTableIDName() ).c_str() );
+
+    /*in order the query works, the TraceID to be saved has to be set to 0 otherwise
+    if the TraceID already exists,the query will return the error
+    "Duplicate entry TraceID for key primary":*/
+    TraceToSave.SetField(TraceToSave.GetTableIDName(), "0");
+    int NewTraceID = TraceToSave.DoesThisBoundingBoxExist(this->m_DatabaseConnector);
+    if ( NewTraceID == -1 )
+      {
+      NewTraceID = TraceToSave.SaveInDB(this->m_DatabaseConnector);
+      // this->m_NewTraceIDs.push_back(NewTraceID);
+      }
+    else
+      {
+      std::cout << "The trace" << OldTraceID << " has the same bounding box as ";
+      std::cout << "the existing trace " << NewTraceID;
+      std::cout << "so the imported contours belonging to the mesh " << OldTraceID;
+      std::cout << " will belong to the existing mesh " << NewTraceID << std::endl;
+      }
+    ioNewTracesIDs.push_back(NewTraceID);
+    ioMapTraceIDs[OldTraceID] = NewTraceID;
+    }
 }
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+template<>
+void
+GoDBImport::SaveTraces< GoDBLineageRow >(
+  const IntMapType &  iMapColorIDs,
+  const IntMapType &  iMapCoordIDs,
+  const IntMapType &  iMapCollectionIDs,
+  std::string & ioLineContent,
+  std::vector< int > & ioNewTracesIDs,
+  IntMapType & ioMapTraceIDs,
+  const IntMapType &  iMapIDsSpecificOne,
+  const IntMapType &  iMapIDsSpecificTwo
+  )
+{
+  GoDBLineageRow TraceToSave;
+  int NumberOfTraces = atoi( this->GetValueForTheLine(ioLineContent).c_str() );
+
+  getline(this->m_InFile, ioLineContent);
+
+#ifdef HAS_OPENMP
+#pragma omp for
+#endif
+  for ( int i = 0; i < NumberOfTraces; i++ )
+    {
+    ioLineContent = this->GetValuesFromInfile< GoDBLineageRow >(TraceToSave);
+
+    this->ReplaceCommonFieldsForTraces(TraceToSave, iMapColorIDs,
+                                       iMapCoordIDs, iMapCollectionIDs);
+
+    this->ReplaceTheFieldWithNewIDs< GoDBLineageRow >(
+      iMapIDsSpecificOne, "TrackIDRoot", TraceToSave);
+
+    int OldTraceID = atoi( TraceToSave.GetMapValue( TraceToSave.GetTableIDName() ).c_str() );
+
+    /*in order the query works, the TraceID to be saved has to be set to 0 otherwise
+    if the TraceID already exists,the query will return the error
+    "Duplicate entry TraceID for key primary":*/
+    TraceToSave.SetField(TraceToSave.GetTableIDName(), "0");
+    int NewTraceID = TraceToSave.DoesThisBoundingBoxExist(this->m_DatabaseConnector);
+    if ( NewTraceID == -1 )
+      {
+      NewTraceID = TraceToSave.SaveInDB(this->m_DatabaseConnector);
+      // this->m_NewTraceIDs.push_back(NewTraceID);
+      }
+    else
+      {
+      std::cout << "The trace" << OldTraceID << " has the same bounding box as ";
+      std::cout << "the existing trace " << NewTraceID;
+      std::cout << "so the imported contours belonging to the mesh " << OldTraceID;
+      std::cout << " will belong to the existing mesh " << NewTraceID << std::endl;
+      }
+    ioNewTracesIDs.push_back(NewTraceID);
+    ioMapTraceIDs[OldTraceID] = NewTraceID;
+    }
+}
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void
+GoDBImport::SaveTracesEntities(const IntMapType  & iMapColorIDs,
+                               const IntMapType  & iMapCoordIDs,
+                               const std::string & iLineContent,
+                               const IntMapType  & iMapCellTypeIDs,
+                               const IntMapType  & iMapSubCellTypeIDs,
+                               bool SaveIntensities)
+{
+  IntMapType MapContourIDs;
+  IntMapType MapMeshIDs;
+  IntMapType MapTrackIDs;
+  IntMapType MapLineageIDs;
+  IntMapType MapTrackFamilyIDs;
+
+  std::string LineContent = iLineContent;
+
+    {
+    IntMapType MapIDsSpecificOne;
+    IntMapType MapIDsSpecificTwo;
+
+    this->SaveTraces< GoDBTrackRow >(iMapColorIDs, iMapCoordIDs, MapLineageIDs,
+                                     LineContent, this->m_NewTracksIDs, MapTrackIDs,
+                                     MapIDsSpecificOne, MapIDsSpecificTwo );
+    }
+
+    {
+    IntMapType MapIDsSpecificTwo;
+    IntMapType MapCollectionIDs;
+
+
+    this->SaveTraces< GoDBLineageRow >(iMapColorIDs, iMapCoordIDs,
+                                       MapCollectionIDs, LineContent,
+                                       this->m_NewLineageIDs, MapLineageIDs,
+                                       MapTrackIDs, MapIDsSpecificTwo );
+    }
+
+    {
+    IntMapType MapIDsSpecificOne;
+    IntMapType MapIDsSpecificTwo;
+
+    std::string temp = this->GetValueForTheLine(LineContent);
+
+    int NumberOfTrackFamilies = atoi( temp.c_str() );
+
+    getline(this->m_InFile, LineContent);
+
+    for ( int i = 0; i < NumberOfTrackFamilies; i++ )
+      {
+      GoDBTrackFamilyRow EntityToSave;
+      LineContent = this->GetValuesFromInfile< GoDBTrackFamilyRow >(EntityToSave);
+
+      this->ReplaceTheFieldWithNewIDs< GoDBTrackFamilyRow >(
+        MapTrackIDs, "TrackIDMother", EntityToSave);
+
+      this->ReplaceTheFieldWithNewIDs< GoDBTrackFamilyRow >(
+        MapTrackIDs, "TrackIDDaughter1", EntityToSave);
+
+      unsigned int TrackIDDaughter1 = EntityToSave.GetMapValue<unsigned int>( "TrackIDDaughter1" );
+
+      this->ReplaceTheFieldWithNewIDs< GoDBTrackFamilyRow >(
+        MapTrackIDs, "TrackIDDaughter2", EntityToSave);
+
+      unsigned int TrackIDDaughter2 = EntityToSave.GetMapValue<unsigned int>( "TrackIDDaughter2" );
+
+      int OldID =  EntityToSave.GetMapValue<int>("TrackFamilyID");
+      EntityToSave.SetField("TrackFamilyID", "0");
+
+      int NewID = EntityToSave.SaveInDB(this->m_DatabaseConnector);
+
+      MapTrackFamilyIDs[OldID] = NewID;
+
+      GoDBTrackRow Daughter1;
+      Daughter1.SetValuesForSpecificID(TrackIDDaughter1, this->m_DatabaseConnector);
+      Daughter1.SetField<unsigned int>("TrackFamilyID", NewID);
+      Daughter1.SaveInDB(this->m_DatabaseConnector);
+
+      GoDBTrackRow Daughter2;
+      Daughter2.SetValuesForSpecificID(TrackIDDaughter2, this->m_DatabaseConnector);
+      Daughter2.SetField<unsigned int>("TrackFamilyID", NewID);
+      Daughter2.SaveInDB(this->m_DatabaseConnector);
+      }
+    }
+
+    {
+    this->SaveTraces< GoDBMeshRow >(iMapColorIDs, iMapCoordIDs, MapTrackIDs,
+                                    LineContent, this->m_NewMeshIDs, MapMeshIDs,
+                                    iMapCellTypeIDs, iMapSubCellTypeIDs);
+    }
+
+    if ( SaveIntensities )
+      {
+      this->SaveIntensityForMesh(LineContent, MapMeshIDs, iMapColorIDs);
+      }
+
+    {
+    IntMapType MapIDsSpecificOne;
+    IntMapType MapIDsSpecificTwo;
+
+    this->SaveTraces< GoDBContourRow >(iMapColorIDs, iMapCoordIDs, MapMeshIDs,
+                                       LineContent, this->m_NewContourIDs, MapContourIDs,
+                                       MapIDsSpecificOne, MapIDsSpecificTwo );
+    }
+}
+
+//--------------------------------------------------------------------------
