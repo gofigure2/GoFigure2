@@ -244,7 +244,20 @@ void GoDBImport::SaveTracesEntities(const IntMapType  & iMapColorIDs,
     int OldID =  EntityToSave.GetMapValue<int>("TrackFamilyID");
     EntityToSave.SetField("TrackFamilyID", "0");
 
-    MapTrackFamilyIDs[OldID] = EntityToSave.SaveInDB(this->m_DatabaseConnector);
+    int NewID = EntityToSave.SaveInDB(this->m_DatabaseConnector);
+
+    MapTrackFamilyIDs[OldID] = NewID;
+
+    GoDBTrackRow Daughter1;
+    Daughter1.SetValuesForSpecificID(iDaughterID, iDatabaseConnector);
+    Daughter1.SetField<unsigned int>("TrackFamilyID", NewID);
+    Daughter1.SaveInDB(iDatabaseConnector);
+
+    GoDBTrackRow Daughter2;
+    Daughter2.SetValuesForSpecificID(iDaughterID, iDatabaseConnector);
+    Daughter2.SetField<unsigned int>("TrackFamilyID", NewID);
+    Daughter2.SaveInDB(iDatabaseConnector);
+
     }
   }
 
