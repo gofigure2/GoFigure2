@@ -338,5 +338,9 @@ private:
       }
     }
 
+  void SaveTrackFamilyEntities(const IntMapType & iMapTrackIDs,
+                               IntMapType & ioMapTrackFamilyIDs,
+                               std::string & ioLineContent);
+
 };
 #endif

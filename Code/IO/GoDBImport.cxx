@@ -443,6 +443,54 @@ GoDBImport::SaveTraces< GoDBLineageRow >(
 }
 //--------------------------------------------------------------------------
 
+void
+GoDBImport::SaveTrackFamilyEntities(const IntMapType & iMapTrackIDs,
+                                    IntMapType & ioMapTrackFamilyIDs,
+                                    std::string & ioLineContent)
+{
+  std::string temp = this->GetValueForTheLine(ioLineContent);
+
+  int NumberOfTrackFamilies = atoi( temp.c_str() );
+
+  getline(this->m_InFile, ioLineContent);
+
+  for ( int i = 0; i < NumberOfTrackFamilies; i++ )
+    {
+    GoDBTrackFamilyRow EntityToSave;
+    ioLineContent = this->GetValuesFromInfile< GoDBTrackFamilyRow >(EntityToSave);
+
+    this->ReplaceTheFieldWithNewIDs< GoDBTrackFamilyRow >(
+      iMapTrackIDs, "TrackIDMother", EntityToSave);
+
+    this->ReplaceTheFieldWithNewIDs< GoDBTrackFamilyRow >(
+      iMapTrackIDs, "TrackIDDaughter1", EntityToSave);
+
+    unsigned int TrackIDDaughter1 = EntityToSave.GetMapValue<unsigned int>( "TrackIDDaughter1" );
+
+    this->ReplaceTheFieldWithNewIDs< GoDBTrackFamilyRow >(
+      iMapTrackIDs, "TrackIDDaughter2", EntityToSave);
+
+    unsigned int TrackIDDaughter2 = EntityToSave.GetMapValue<unsigned int>( "TrackIDDaughter2" );
+
+    int OldID =  EntityToSave.GetMapValue<int>("TrackFamilyID");
+    EntityToSave.SetField("TrackFamilyID", "0");
+
+    int NewID = EntityToSave.SaveInDB(this->m_DatabaseConnector);
+
+    ioMapTrackFamilyIDs[OldID] = NewID;
+
+    GoDBTrackRow Daughter1;
+    Daughter1.SetValuesForSpecificID(TrackIDDaughter1, this->m_DatabaseConnector);
+    Daughter1.SetField<unsigned int>("TrackFamilyID", NewID);
+    Daughter1.SaveInDB(this->m_DatabaseConnector);
+
+    GoDBTrackRow Daughter2;
+    Daughter2.SetValuesForSpecificID(TrackIDDaughter2, this->m_DatabaseConnector);
+    Daughter2.SetField<unsigned int>("TrackFamilyID", NewID);
+    Daughter2.SaveInDB(this->m_DatabaseConnector);
+    }
+}
+
 //--------------------------------------------------------------------------
 void
 GoDBImport::SaveTracesEntities(const IntMapType  & iMapColorIDs,
@@ -481,50 +529,7 @@ GoDBImport::SaveTracesEntities(const IntMapType  & iMapColorIDs,
     }
 
     {
-    IntMapType MapIDsSpecificOne;
-    IntMapType MapIDsSpecificTwo;
-
-    std::string temp = this->GetValueForTheLine(LineContent);
-
-    int NumberOfTrackFamilies = atoi( temp.c_str() );
-
-    getline(this->m_InFile, LineContent);
-
-    for ( int i = 0; i < NumberOfTrackFamilies; i++ )
-      {
-      GoDBTrackFamilyRow EntityToSave;
-      LineContent = this->GetValuesFromInfile< GoDBTrackFamilyRow >(EntityToSave);
-
-      this->ReplaceTheFieldWithNewIDs< GoDBTrackFamilyRow >(
-        MapTrackIDs, "TrackIDMother", EntityToSave);
-
-      this->ReplaceTheFieldWithNewIDs< GoDBTrackFamilyRow >(
-        MapTrackIDs, "TrackIDDaughter1", EntityToSave);
-
-      unsigned int TrackIDDaughter1 = EntityToSave.GetMapValue<unsigned int>( "TrackIDDaughter1" );
-
-      this->ReplaceTheFieldWithNewIDs< GoDBTrackFamilyRow >(
-        MapTrackIDs, "TrackIDDaughter2", EntityToSave);
-
-      unsigned int TrackIDDaughter2 = EntityToSave.GetMapValue<unsigned int>( "TrackIDDaughter2" );
-
-      int OldID =  EntityToSave.GetMapValue<int>("TrackFamilyID");
-      EntityToSave.SetField("TrackFamilyID", "0");
-
-      int NewID = EntityToSave.SaveInDB(this->m_DatabaseConnector);
-
-      MapTrackFamilyIDs[OldID] = NewID;
-
-      GoDBTrackRow Daughter1;
-      Daughter1.SetValuesForSpecificID(TrackIDDaughter1, this->m_DatabaseConnector);
-      Daughter1.SetField<unsigned int>("TrackFamilyID", NewID);
-      Daughter1.SaveInDB(this->m_DatabaseConnector);
-
-      GoDBTrackRow Daughter2;
-      Daughter2.SetValuesForSpecificID(TrackIDDaughter2, this->m_DatabaseConnector);
-      Daughter2.SetField<unsigned int>("TrackFamilyID", NewID);
-      Daughter2.SaveInDB(this->m_DatabaseConnector);
-      }
+    this->SaveTrackFamilyEntities(MapTrackIDs, MapTrackFamilyIDs, LineContent);
     }
 
     {
