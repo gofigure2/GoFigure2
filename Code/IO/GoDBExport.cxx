@@ -43,13 +43,15 @@
 #include "GoDBContourRow.h"
 #include "GoDBMeshRow.h"
 #include "GoDBTrackRow.h"
+#include "GoDBTrackFamilyRow.h"
 #include "GoDBLineageRow.h"
 #include "GoDBChannelRow.h"
 #include "GoDBIntensityRow.h"
 
 //--------------------------------------------------------------------------
-GoDBExport::GoDBExport(std::string iServerName, std::string iLogin,
-                       std::string iPassword, int iImagingSessionID, std::string iFilename)
+GoDBExport::GoDBExport(const std::string & iServerName, const std::string & iLogin,
+                       const std::string & iPassword, int iImagingSessionID,
+                       const std::string & iFilename)
 {
   this->m_ServerName = iServerName;
   this->m_Login = iLogin;
@@ -75,8 +77,9 @@ void GoDBExport::ExportContours()
   this->WriteTheColorsInfoFromDatabase();
   this->WriteCellTypeAndSubCellTypeInfoFromDatabase();
   this->WriteCoordinatesInfoFromDatabase();
-  this->WriteLineagesInfoFromDatabase();
   this->WriteTracksInfoFromDatabase();
+  this->WriteLineagesInfoFromDatabase();
+  this->WriteTrackFamilyInfoFromDatabase();
   this->WriteMeshesInfoFromDatabase();
   this->WriteContoursInfoFromDatabase();
   this->CloseDBConnection();
@@ -96,8 +99,9 @@ void GoDBExport::ExportMeshes()
   this->WriteTheColorsInfoFromDatabase();
   this->WriteCellTypeAndSubCellTypeInfoFromDatabase();
   this->WriteCoordinatesInfoFromDatabase();
-  this->WriteLineagesInfoFromDatabase();
   this->WriteTracksInfoFromDatabase();
+  this->WriteLineagesInfoFromDatabase();
+  this->WriteTrackFamilyInfoFromDatabase();
   this->WriteMeshesInfoFromDatabase();
   this->WriteChannelsInfoFromDatabase();
   this->WriteIntensityInfoFromDatabase();
@@ -137,8 +141,8 @@ GoDBExport::GetImagingSessionInfoFromDB()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-std::pair< std::string, std::string > GoDBExport::GetOneInfoFromDBForImgSession(
-  std::string iNameInfo)
+std::pair< std::string, std::string >
+GoDBExport::GetOneInfoFromDBForImgSession(const std::string & iNameInfo)
 {
   std::pair< std::string, std::string > OneInfo;
   OneInfo.first = iNameInfo;
@@ -220,6 +224,19 @@ void GoDBExport::UpdateVectorTrackIDsToExportInfo()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+void GoDBExport::UpdateVectorTrackFamilyIDsToExportInfo()
+{
+  if ( !this->m_VectorTrackIDs.empty() )
+    {
+    this->m_VectorTrackFamilyIDs = ListSpecificValuesForOneColumn(
+        this->m_DatabaseConnector, "track", "trackfamilyID", "trackID",
+        this->m_VectorTrackIDs, true, true);
+    }
+}
+
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
 void GoDBExport::UpdateVectorLineageIDsToExportInfo()
 {
   if ( !this->m_VectorTrackIDs.empty() )
@@ -238,6 +255,7 @@ void GoDBExport::UpdateAllVectorTracesIDsToExportContours()
   this->UpdateVectorContourIDsForExportContours();
   this->UpdateVectorMeshIDsForExportContours();
   this->UpdateVectorTrackIDsToExportInfo();
+  this->UpdateVectorTrackFamilyIDsToExportInfo();
   this->UpdateVectorLineageIDsToExportInfo();
   //no need for channel info when exporting contours at this time:
   this->m_VectorChannelIDs.clear();
@@ -251,6 +269,7 @@ void GoDBExport::UpdateAllVectorTracesIDsToExportMeshes()
   this->UpdateVectorContourIDsForExportMeshes();
   this->UpdateVectorMeshIDsForExportMeshes();
   this->UpdateVectorTrackIDsToExportInfo();
+  this->UpdateVectorTrackFamilyIDsToExportInfo();
   this->UpdateVectorLineageIDsToExportInfo();
   this->UpdateVectorChannelIDsForExportMeshes();
 }
@@ -331,6 +350,12 @@ void GoDBExport::WriteLineagesInfoFromDatabase()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
+void GoDBExport::WriteTrackFamilyInfoFromDatabase()
+{
+  this->WriteTableInfoFromDB< GoDBTrackFamilyRow >(this->m_VectorTrackFamilyIDs);
+}
+
+//--------------------------------------------------------------------------
 void GoDBExport::WriteTracksInfoFromDatabase()
 {
   this->WriteTableInfoFromDB< GoDBTrackRow >(this->m_VectorTrackIDs);
@@ -379,12 +404,13 @@ void GoDBExport::WriteContoursInfoFromDatabase()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void GoDBExport::WriteOnTheOutputFile(std::string iNameOfEntity,
-                                      std::vector< std::pair< std::string, std::string > > iInfoToWrite)
+void
+GoDBExport::WriteOnTheOutputFile(const std::string & iNameOfEntity,
+                                 const std::vector< std::pair< std::string, std::string > > & iInfoToWrite)
 {
   this->AddTabulation();
   this->m_outfile << GetNameWithBrackets(iNameOfEntity) << std::endl;
-  std::vector< std::pair< std::string, std::string > >::iterator iter =
+  std::vector< std::pair< std::string, std::string > >::const_iterator iter =
     iInfoToWrite.begin();
   while ( iter != iInfoToWrite.end() )
     {
@@ -402,7 +428,7 @@ void GoDBExport::WriteOnTheOutputFile(std::string iNameOfEntity,
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void GoDBExport::WriteNumberOfEntities(std::string iNameOfEntity, size_t iNumber)
+void GoDBExport::WriteNumberOfEntities(const std::string & iNameOfEntity, size_t iNumber)
 {
   this->AddTabulation();
   std::string NameToWrite = "NumberOf";
@@ -415,7 +441,7 @@ void GoDBExport::WriteNumberOfEntities(std::string iNameOfEntity, size_t iNumber
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-std::string GoDBExport::GetNameWithBrackets(std::string iName)
+std::string GoDBExport::GetNameWithBrackets(const std::string & iName)
 {
   std::stringstream NameWithBrackets;
 
@@ -428,7 +454,7 @@ std::string GoDBExport::GetNameWithBrackets(std::string iName)
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-std::string GoDBExport::GetNameWithSlashBrackets(std::string iName)
+std::string GoDBExport::GetNameWithSlashBrackets(const std::string & iName)
 {
   std::stringstream NameWithBrackets;
 

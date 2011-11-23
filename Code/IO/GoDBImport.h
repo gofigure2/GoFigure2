@@ -38,6 +38,8 @@
 #include "vtkMySQLDatabase.h"
 #include "ContourMeshStructure.h"
 #include "ContourMeshContainer.h"
+#include "GoDBMeshRow.h"
+
 #include <vector>
 #include <map>
 
@@ -53,9 +55,9 @@ class QGOIO_EXPORT GoDBImport
 {
 public:
 
-  GoDBImport(std::string iServerName, std::string iLogin,
-             std::string iPassword, int iImagingSessionID,
-             std::string iFilename, int iCurrentTimePoint);
+  GoDBImport(const std::string & iServerName, const std::string & iLogin,
+             const std::string & iPassword, int iImagingSessionID,
+             const std::string & iFilename, int iCurrentTimePoint);
 
   virtual ~GoDBImport();
 
@@ -132,14 +134,14 @@ private:
   typedef std::map< int, int > IntMapType;
 
   /** \brief Return the name of the field contained in the line*/
-  std::string FindFieldName(std::string iLine);
+  std::string FindFieldName(const std::string & iLine);
 
   /** \brief Return the value contained in the line and "NoValueOnTheLine"
   if the line doesn't contain any*/
-  std::string GetValueForTheLine(std::string iLine);
+  std::string GetValueForTheLine(const std::string & iLine);
 
   /** \brief Return true if the line containes "Number Of"*/
-  bool IsLineForNumberOfEntities(std::string iLine);
+  bool IsLineForNumberOfEntities(const std::string & iLine);
 
   /** \brief Get the values from the Infile, save the non traces entities,
   fill the matching map for old and new IDs and return the current line content*/
@@ -185,9 +187,6 @@ private:
   {
     std::string LineContent;
 
-#ifdef HAS_OPENMP
-#pragma omp for
-#endif
     for ( int i = 0; i < iNumberOfEntities; i++ )
       {
       T EntityToSave;
@@ -232,16 +231,18 @@ private:
   void ReplaceTheFieldWithNewIDs(const IntMapType & iMapIDs,
                                  std::string iFieldName, T & ioEntity)
   {
-    typename IntMapType::const_iterator iter =
-      iMapIDs.find( atoi( ioEntity.GetMapValue(iFieldName).c_str() ) );
+    std::string temp = ioEntity.GetMapValue(iFieldName);
+    int value = atoi( temp.c_str() );
+
+    typename IntMapType::const_iterator iter = iMapIDs.find( value );
+
     //in case the value of the field name is 0 which corresponds to
-    //an not yet associated value, it won't be found in the map:
-    if ( iter == iMapIDs.end() )
+    //an not yet associated value, it won't be found in the map, just return
+    if ( iter != iMapIDs.end() )
       {
-      return;
+      int NewID = iter->second;
+      ioEntity.SetField(iFieldName, NewID);
       }
-    int NewID = iter->second;
-    ioEntity.SetField(iFieldName, NewID);
   }
 
   /** \brief replace old IDs found in the import file with
@@ -288,15 +289,12 @@ private:
 
     getline(this->m_InFile, ioLineContent);
 
-#ifdef HAS_OPENMP
-#pragma omp for
-#endif
     for ( int i = 0; i < NumberOfTraces; i++ )
       {
       ioLineContent = this->GetValuesFromInfile< T >(
         TraceToSave);
       //for mesh, need to get the new celltype/subcelltype:
-      if ( TraceToSave.GetTableName() == "mesh" )
+      /*if ( TraceToSave.GetTableName() == "mesh" )
         {
         if ( !iMapIDsSpecificOne.empty() )
           {
@@ -308,7 +306,7 @@ private:
           this->ReplaceTheFieldWithNewIDs< T >(
             iMapIDsSpecificTwo, "SubCellularID", TraceToSave);
           }
-        }
+        }*/
       this->ReplaceCommonFieldsForTraces(
         TraceToSave, iMapColorIDs, iMapCoordIDs, iMapCollectionIDs);
       int OldTraceID = atoi( TraceToSave.GetMapValue( TraceToSave.GetTableIDName() ).c_str() );
@@ -332,6 +330,11 @@ private:
       ioNewTracesIDs.push_back(NewTraceID);
       ioMapTraceIDs[OldTraceID] = NewTraceID;
       }
-  }
+    }
+
+  void SaveTrackFamilyEntities(const IntMapType & iMapTrackIDs,
+                               IntMapType & ioMapTrackFamilyIDs,
+                               std::string & ioLineContent);
+
 };
 #endif

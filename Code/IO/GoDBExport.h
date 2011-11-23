@@ -42,19 +42,19 @@
 
 /**
 \class GoDBExport
-\brief export the data from the database into a textfile 
+\brief export the data from the database into a textfile
 \ingroup DB
 */
 class QGOIO_EXPORT GoDBExport
 {
 public:
 
-  GoDBExport(std::string iServerName, std::string iLogin,
-             std::string iPassword, int iImagingSessionID,
-             std::string iFilename);
+  GoDBExport(const std::string & iServerName, const std::string & iLogin,
+             const std::string & iPassword, int iImagingSessionID,
+             const std::string & iFilename);
   virtual ~GoDBExport();
 
-  /** 
+  /**
   \brief get all the imagingsession info,the info
   for the contours, the meshes they belong to and the
   tracks the previous meshes belong to from the database
@@ -62,7 +62,7 @@ public:
   */
   void ExportContours();
 
-  /** 
+  /**
   \brief get all the imagingsession info,the info
   for the meshes with points(that can be visualized),
   the tracks they belong to and the lineages the
@@ -72,7 +72,7 @@ public:
   void ExportMeshes();
 
 private:
-  
+
   vtkMySQLDatabase *m_DatabaseConnector;
   std::string       m_ServerName;
   std::string       m_Password;
@@ -84,18 +84,19 @@ private:
   std::vector< std::string > m_VectorContourIDs;
   std::vector< std::string > m_VectorMeshIDs;
   std::vector< std::string > m_VectorTrackIDs;
+  std::vector< std::string > m_VectorTrackFamilyIDs;
   std::vector< std::string > m_VectorLineageIDs;
   std::vector< std::string > m_VectorChannelIDs;
 
-  /** 
+  /**
   \brief get the info for imagingsession from the database
   \return a vector of pair containing the name of the info as .first
   and the info as .second. for Imagingsession such as Name, creation date and
-  microscope name 
+  microscope name
   */
   std::vector< std::pair< std::string, std::string > > GetImagingSessionInfoFromDB();
 
-  /** 
+  /**
   \brief get one info for the current imagingsession from the database
   corresponding to the iNameInfo
   \param[in] iNameInfo name of the field in the database
@@ -103,14 +104,14 @@ private:
   corresponding info found in the Database for the table imagingsession
   */
   std::pair< std::string, std::string > GetOneInfoFromDBForImgSession(
-    std::string iNameInfo);
+    const std::string & iNameInfo);
 
-  /** 
+  /**
   \brief Write the generale info about the textfile
   */
   void WriteGeneraleInfo();
 
-  /** 
+  /**
   \brief get the info from the database for all the entities from a table or
   with a limitation defined with field and value and write them in the output file
   after having written first the number of entities to be described
@@ -119,31 +120,31 @@ private:
   \tparam T children of GoDBRow
   */
   template< typename T >
-  void WriteTableInfoFromDB(std::string iField, std::string iValue)
+  void WriteTableInfoFromDB(const std::string & iField, const std::string & iValue)
   {
     T TableRow;
 
     std::vector< std::string > ListTableIDs = ListSpecificValuesForOneColumn(
       this->m_DatabaseConnector, TableRow.GetTableName(),
       TableRow.GetTableIDName(), iField, iValue);
-    std::vector< std::string >::iterator iter = ListTableIDs.begin();
+    std::vector< std::string >::const_iterator iter = ListTableIDs.begin();
     while ( iter != ListTableIDs.end() )
       {
       std::vector< std::pair< std::string, std::string > > EntityInfo =
         this->GetOneEntityInfoFromDB(*iter, TableRow);
       this->WriteOnTheOutputFile(TableRow.GetTableName(), EntityInfo);
-      iter++;
+      ++iter;
       }
   }
 
-  /** 
+  /**
   \brief get the info from the database for all the entities from a table
   which IDs are in iListIDs and write them in the output file
   \param[in] iListIDs List of the IDs for which the info need to be written
   \tparam children of GoDBRow
   */
   template< typename T >
-  void WriteTableInfoFromDB(std::vector< std::string > iListIDs)
+  void WriteTableInfoFromDB(const std::vector< std::string > & iListIDs)
   {
     T TableRow;
 
@@ -153,31 +154,31 @@ private:
       return;
       }
     this->WriteNumberOfEntities( TableRow.GetTableName(), iListIDs.size() );
-    std::vector< std::string >::iterator iter = iListIDs.begin();
+    std::vector< std::string >::const_iterator iter = iListIDs.begin();
     while ( iter != iListIDs.end() )
       {
       std::vector< std::pair< std::string, std::string > > EntityInfo =
-        this->GetOneEntityInfoFromDB(*iter, TableRow);     
-      this->WriteOnTheOutputFile(TableRow.GetTableName(), EntityInfo); 
-      iter++;
+        this->GetOneEntityInfoFromDB(*iter, TableRow);
+      this->WriteOnTheOutputFile(TableRow.GetTableName(), EntityInfo);
+      ++iter;
       }
   }
 
-  /** 
+  /**
   \brief get the info with their names for an entity from the database
   and put them in a vector of pair of string (name of the info + value of the info)
   \param[in] iEntityID ID of the entity for which the info are needed
-  \param[in] iTableRow 
+  \param[in] iTableRow
   \tparam T children of GoDBRow
   \return vector of pair of string (name of the info + value of the info)
   */
   template< typename T >
   std::vector< std::pair< std::string, std::string > >
-  GetOneEntityInfoFromDB(std::string iEntityID, T iTableRow)
+  GetOneEntityInfoFromDB(const std::string & iEntityID, T iTableRow)
   {
-    std::vector< std::pair< std::string, std::string > > oEntityInfo = 
+    std::vector< std::pair< std::string, std::string > > oEntityInfo =
       std::vector< std::pair< std::string, std::string > >();
-    iTableRow.SetValuesForSpecificID(atoi( iEntityID.c_str() ), 
+    iTableRow.SetValuesForSpecificID(atoi( iEntityID.c_str() ),
       this->m_DatabaseConnector);
     std::vector< std::string >           FieldNames = iTableRow.GetVectorColumnNames();
     std::vector< std::string >::iterator iter = FieldNames.begin();
@@ -187,19 +188,19 @@ private:
       FieldInfo.first = *iter;
       FieldInfo.second = iTableRow.GetMapValue(*iter);
       oEntityInfo.push_back(FieldInfo);
-      iter++;
+      ++iter;
       }
     return oEntityInfo;
   }
 
-  /** 
+  /**
   \brief fill the different vectors needed for the queries
   depending if the vectors of IDs are empty or not: get the
   tables names, the key for the table and the tracesIDs
   \param[in,out] ioVectorTableNames names of the tables
   \param[in,out] ioVectorTracesIDs IDs of the traces
   \param[in,out] ioVectorFields names of the database fields
-  \param[in] IncludeChannelIDs 
+  \param[in] IncludeChannelIDs
   */
   void GetVectorsTableNamesTracesIDsAndFields(
     std::vector< std::string > & ioVectorTableNames,
@@ -207,132 +208,136 @@ private:
     std::vector< std::string > & ioVectorFields,
     bool IncludeChannelIDs = false);
 
-  /** 
+  /**
   \brief Get the celltype and subcelltype for the needed meshes from
   the database and write them on the output file
   */
   void WriteCellTypeAndSubCellTypeInfoFromDatabase();
 
-  /** 
+  /**
   \brief get the contours info which IDs are in the m_VectorContourIDs
   from the database and write them on the output file
   */
   void WriteContoursInfoFromDatabase();
 
-  /** 
+  /**
   \brief get the tracks info which IDs are in the m_VectorTrackIDs
   from the database and write them on the output file
   */
   void WriteTracksInfoFromDatabase();
 
-  /** 
+  /**
   \brief get the meshes info which IDs are in the m_VectorMeshIDs
   from the database and write them on the output file
   */
   void WriteMeshesInfoFromDatabase();
 
-  /** 
+  /**
   \brief get the lineages info which IDs are in the m_VectorLineageIDs
   from the database and write them on the output file
   */
   void WriteLineagesInfoFromDatabase();
 
-  /** 
+  void WriteTrackFamilyInfoFromDatabase();
+
+  /**
   \brief get the channels info which IDs are in the m_VectorChannelIDs
   from the database and write them on the output file
   */
   void WriteChannelsInfoFromDatabase();
 
-  /** 
+  /**
   \brief get the info for the intensities corresponding to the m_VectorMeshIDs
   and the m_VectorChannelIDs and write them on the output file
   */
   void WriteIntensityInfoFromDatabase();
 
-  /** 
+  /**
   \brief get the IDs of the contour belonging to the current imagingsession
   and fill the m_VectorContourIDs with them
   */
   void UpdateVectorContourIDsForExportContours();
 
-  /** 
+  /**
   \brief when exporting contours, if the contours belong to
   meshes, the info regarding these meshes are needed also, so fill
   m_VectorMeshIDs with these meshes IDs
   */
   void UpdateVectorMeshIDsForExportContours();
 
-  /** 
+  /**
   \brief when exporting meshes, we don't export the potential contours
   associated to the meshes, so we clear m_VectorContourIDs
   */
   void UpdateVectorContourIDsForExportMeshes();
 
-  /** 
+  /**
   \brief when exporting meshes, we export only the meshes with a 3D surface
   so we fill the m_VectorMeshIDs with the meshes with a non empty "Points"
   column from the database
   */
   void UpdateVectorMeshIDsForExportMeshes();
 
-  /** 
+  /**
   \brief when exporting meshes, the total intensity per channel has to be
   calculated, and the info for the channels need to be stored
   */
   void UpdateVectorChannelIDsForExportMeshes();
 
-  /** 
+  /**
   \brief check if for the meshes IDs found in the m_VectorMeshIDs,
   the corresponding meshes belongs to tracks, if so these tracks IDs
   are put in the m_VectorTrackIDs
   */
   void UpdateVectorTrackIDsToExportInfo();
 
-  /** 
+  void UpdateVectorTrackFamilyIDsToExportInfo();
+
+  /**
   \brief check if for the tracks IDs found in the m_VectorTrackIDs,
   the corresponding tracks belongs to lineages, if so these lineages IDs
   are put in the m_VectorLineageIDs
   */
   void UpdateVectorLineageIDsToExportInfo();
 
-  /** 
+  /**
   \brief fill the different vectors of traces IDs corresponding to
   the contours to export
   */
   void UpdateAllVectorTracesIDsToExportContours();
 
-  /** 
+  /**
   \brief fill the different vectors of traces IDs corresponding to
   the meshes to export
   */
   void UpdateAllVectorTracesIDsToExportMeshes();
 
-  /** 
+  /**
   \brief get the colors info from the database for the corresponding traces
   to export and write them in the output file
   */
   void WriteTheColorsInfoFromDatabase();
 
-  /** 
+  /**
   \brief get the coordinates without doublon corresponding to the coordidmax
   and min of the traces to export from the database and write them in the
   output file
   */
   void WriteCoordinatesInfoFromDatabase();
 
-  /** 
+  /**
   \brief put iName within brackets
   \param[in] iName
   \return iName within brackets
   */
-  std::string GetNameWithBrackets(std::string iName);
+  std::string GetNameWithBrackets(const std::string & iName);
 
-  /** 
-  \brief put iName into slash brackets 
+  /**
+  \brief put iName into slash brackets
   \param[in] iName
-  \return /iName within brackets 
+  \return /iName within brackets
   */
-  std::string GetNameWithSlashBrackets(std::string iName);
+  std::string GetNameWithSlashBrackets(const std::string & iName);
 
   /**
   \brief write on the output file the info contained in the vector with
@@ -340,17 +345,18 @@ private:
   \param[in] iNameOfEntity name of the entity described
   \param[in] iInfoToWrite info to be written in the output file
   */
-  void WriteOnTheOutputFile(std::string iNameOfEntity,
-                            std::vector< std::pair< std::string, std::string > > iInfoToWrite);
+  void WriteOnTheOutputFile(
+    const std::string & iNameOfEntity,
+    const std::vector< std::pair< std::string, std::string > > & iInfoToWrite);
 
-  /** 
+  /**
   \brief write on the output file the number of entities that are exported
   \param[in] iNameOfEntity entity name
   \param[in] iNumber number of entities
   */
-  void WriteNumberOfEntities(std::string iNameOfEntity, size_t iNumber);
+  void WriteNumberOfEntities(const std::string & iNameOfEntity, size_t iNumber);
 
-  /** 
+  /**
   \brief add 2 spaces to the output file for xml tabulation
   */
   void AddTabulation();

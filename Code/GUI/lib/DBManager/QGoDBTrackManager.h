@@ -281,7 +281,7 @@ protected:
   \param[in] iDatabaseConnector connection to the database
   \return false of the tracks are not overlapping, true if they are
   */
-  bool CheckOverlappingTracks(std::list<unsigned int> iTrackIDs,
+  bool CheckOverlappingTracks(const std::list<unsigned int> & iTrackIDs,
     unsigned int &ioTraceIDToKeep, unsigned int &ioTraceIDToDelete,
     vtkMySQLDatabase* iDatabaseConnector);
 
