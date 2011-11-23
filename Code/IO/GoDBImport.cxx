@@ -340,9 +340,6 @@ GoDBImport::SaveTraces< GoDBMeshRow >(
 
   getline(this->m_InFile, ioLineContent);
 
-#ifdef HAS_OPENMP
-#pragma omp for
-#endif
   for ( int i = 0; i < NumberOfTraces; i++ )
     {
     ioLineContent = this->GetValuesFromInfile< GoDBMeshRow >(TraceToSave);
@@ -405,9 +402,6 @@ GoDBImport::SaveTraces< GoDBLineageRow >(
 
   getline(this->m_InFile, ioLineContent);
 
-#ifdef HAS_OPENMP
-#pragma omp for
-#endif
   for ( int i = 0; i < NumberOfTraces; i++ )
     {
     ioLineContent = this->GetValuesFromInfile< GoDBLineageRow >(TraceToSave);
