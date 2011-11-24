@@ -280,10 +280,13 @@ private:
                   std::string & ioLineContent,
                   std::vector< int > & ioNewTracesIDs,
                   IntMapType & ioMapTraceIDs,
-                  const IntMapType &  iMapIDsSpecificOne,
-                  const IntMapType &  iMapIDsSpecificTwo
+                  const IntMapType & iMapIDsSpecificOne,
+                  const IntMapType & iMapIDsSpecificTwo
                   )
   {
+    (void) iMapIDsSpecificOne;
+    (void) iMapIDsSpecificTwo;
+
     T   TraceToSave;
     int NumberOfTraces = atoi( this->GetValueForTheLine(ioLineContent).c_str() );
 
@@ -293,28 +296,17 @@ private:
       {
       ioLineContent = this->GetValuesFromInfile< T >(
         TraceToSave);
-      //for mesh, need to get the new celltype/subcelltype:
-      /*if ( TraceToSave.GetTableName() == "mesh" )
-        {
-        if ( !iMapIDsSpecificOne.empty() )
-          {
-          this->ReplaceTheFieldWithNewIDs< T >(
-            iMapIDsSpecificOne, "CellTypeID", TraceToSave);
-          }
-        if ( !iMapIDsSpecificTwo.empty() )
-          {
-          this->ReplaceTheFieldWithNewIDs< T >(
-            iMapIDsSpecificTwo, "SubCellularID", TraceToSave);
-          }
-        }*/
+
       this->ReplaceCommonFieldsForTraces(
         TraceToSave, iMapColorIDs, iMapCoordIDs, iMapCollectionIDs);
       int OldTraceID = atoi( TraceToSave.GetMapValue( TraceToSave.GetTableIDName() ).c_str() );
-      /*in order the query works, the TraceID to be saved has to be set to 0 otherwise
-      if the TraceID already exists,the query will return the error
-      "Duplicate entry TraceID for key primary":*/
+
+      // in order the query works, the TraceID to be saved has to be set to 0 otherwise
+      // if the TraceID already exists,the query will return the error
+      // "Duplicate entry TraceID for key primary":
       TraceToSave.SetField(TraceToSave.GetTableIDName(), "0");
       int NewTraceID = TraceToSave.DoesThisBoundingBoxExist(this->m_DatabaseConnector);
+
       if ( NewTraceID == -1 )
         {
         NewTraceID = TraceToSave.SaveInDB(this->m_DatabaseConnector);

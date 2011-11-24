@@ -227,12 +227,12 @@ bool GoDBRow::SetValuesForSpecificID(int ID,
     return false;
     }
 
-  std::vector< std::string >::iterator iterResultQuery =
-    ResultQuery.begin();
+  std::vector< std::string >::iterator iterResultQuery = ResultQuery.begin();
 
   StringMapIterator iterMap = this->MapBegin();
+  StringMapIterator iterEnd = this->MapEnd();
 
-  while ( iterMap != this->MapEnd() )
+  while ( iterMap != iterEnd )
     {
     iterMap->second = *iterResultQuery;
     ++iterMap;

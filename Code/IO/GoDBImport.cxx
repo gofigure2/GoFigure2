@@ -520,6 +520,23 @@ GoDBImport::SaveTracesEntities(const IntMapType  & iMapColorIDs,
                                        MapCollectionIDs, LineContent,
                                        this->m_NewLineageIDs, MapLineageIDs,
                                        MapTrackIDs, MapIDsSpecificTwo );
+
+    std::vector< int >::iterator track_it = this->m_NewTracksIDs.begin();
+
+    while( track_it != this->m_NewTracksIDs.end() )
+      {
+      GoDBTrackRow track;
+      track.SetValuesForSpecificID( *track_it, this->m_DatabaseConnector );
+
+      unsigned int OldID = track.GetMapValue< unsigned int >( "lineageID" );
+
+      IntMapType::iterator lIt = MapLineageIDs.find( OldID );
+
+      track.SetField< unsigned int >( "lineageID", lIt->second );
+      track.SaveInDB(this->m_DatabaseConnector);
+
+      ++track_it;
+      }
     }
 
     {
