@@ -3539,6 +3539,8 @@ ShowTraces(const unsigned int& iTimePoint)
   // several time points
   this->m_ContourContainer->ShowActorsWithGivenTimePoint(iTimePoint);
   this->m_MeshContainer->ShowActorsWithGivenTimePoint(iTimePoint);
+  // show tracks that intersect current time point
+  this->m_TrackContainer->ShowActorsWithGivenTimePoint(iTimePoint);
 }
 //-------------------------------------------------------------------------
 

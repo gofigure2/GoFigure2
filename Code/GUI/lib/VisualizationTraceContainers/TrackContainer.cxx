@@ -2028,3 +2028,34 @@ AddVolume(const unsigned int& iTrackID, const double& iVolume)
     }
 }
 //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::ShowActorsWithGivenTimePoint(const unsigned int & iT)
+{
+
+  // go through all elements
+  MultiIndexContainerType::index< TraceID >::type::iterator
+  trace_it = m_Container.get< TraceID >().begin();
+  while ( trace_it != m_Container.get< TraceID >().end() )
+    {
+    //check size (nb of elemtents) of track
+    if(trace_it->PointsMap.size() > 0)
+      {
+      unsigned int min = ( trace_it->PointsMap.begin() )->first;
+      unsigned int max = ( trace_it->PointsMap.rbegin() )->first;
+
+      if(iT >= min && iT <= max)
+        {
+        ChangeActorsVisibility< TraceID >(trace_it, true);
+        }
+      else
+        {
+        ChangeActorsVisibility< TraceID >(trace_it, false);
+        }
+      }
+    ++trace_it;
+    }
+}
+
+//-------------------------------------------------------------------------
