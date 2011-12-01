@@ -58,6 +58,19 @@ endif()
 
 set(GoFigure2_DEPENDENCIES)
 
+#-------------------------
+
+OPTION( SUPER_BOOST "SuperBuild BOOST" ON )
+
+IF( SUPER_BOOST )
+  include("${CMAKE_CURRENT_SOURCE_DIR}/CMake/SuperBuild/External-Boost.cmake")
+  LIST(APPEND GoFigure2_DEPENDENCIES Boost)
+ELSE( SUPER_BOOST )
+  include( "${CMAKE_CURRENT_SOURCE_DIR}/CMake/ConfigBoost.cmake" )
+ENDIF( SUPER_BOOST )
+
+#-------------------------
+
 # REQUIRED MYSQLand QT TO BUILD VTK
 OPTION( SUPER_VTK "SuperBuild VTK" ON )
 
@@ -66,7 +79,7 @@ IF( SUPER_VTK )
   include("${CMAKE_CURRENT_SOURCE_DIR}/CMake/ConfigMySQL.cmake")
   # check if we have QT - COMPULSORY
   include("${CMAKE_CURRENT_SOURCE_DIR}/CMake/ConfigQT.cmake")
-  
+
   OPTION( SUPER_VTK_VIDEO "ENABLE THE VIDEO SUPPORT IN SUPERBUILD" OFF )
   IF( SUPER_VTK_VIDEO )
     if( NOT WIN32 )
@@ -103,17 +116,6 @@ IF( SUPER_ITK )
 ELSE( SUPER_ITK )
   include( "${CMAKE_CURRENT_SOURCE_DIR}/CMake/ConfigITK.cmake" )
 ENDIF( SUPER_ITK )
-
-#-------------------------
-
-OPTION( SUPER_BOOST "SuperBuild BOOST" ON )
-
-IF( SUPER_BOOST )
-  include("${CMAKE_CURRENT_SOURCE_DIR}/CMake/SuperBuild/External-Boost.cmake")
-  LIST(APPEND GoFigure2_DEPENDENCIES Boost)
-ELSE( SUPER_BOOST )
-  include( "${CMAKE_CURRENT_SOURCE_DIR}/CMake/ConfigBoost.cmake" )
-ENDIF( SUPER_BOOST )
 
 #---------------------------------------------------------------------------
 # Set superbuild boolean args

@@ -16,5 +16,12 @@ qtcreator-build/
 #OSX specifics
 .DS_Store
 
-*.orig
 
+*.swp
+
+# conflicts
+*.orig
+*.BASE.*
+*.BACKUP.*
+*.LOCAL.*
+*.REMOTE.*

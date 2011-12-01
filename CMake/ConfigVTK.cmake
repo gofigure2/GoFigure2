@@ -22,6 +22,10 @@ FIND_PACKAGE( VTK REQUIRED )
     ADD_DEFINITIONS( -DVTKTRUNK )
   ENDIF( ( ${VTK_MAJOR_VERSION} EQUAL 5 ) AND ( ${VTK_MINOR_VERSION} GREATER 6 ))
 
+  #----------------------------------------------------------
+  IF( NOT ${VTK_USE_BOOST} MATCHES "ON" )
+    MESSAGE( SEND_ERROR "VTK must be compiled with Boost support" )
+  ENDIF( NOT ${VTK_USE_BOOST} MATCHES "ON" )
 
   #----------------------------------------------------------
   # Check if mysql is enabled
