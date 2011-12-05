@@ -78,13 +78,7 @@ initTimePoint(const unsigned int& iTime)
 
     // update the container
     // Get Number of channels from reader
-    std::cout << " --------------------------- " << std::endl;
-   // int numberOfChannels = getNumberOfChannels();
-   // std::cout << "numberOfChannels: " << numberOfChannels << std::endl;
-
     int n = getNumberOfChannels();
-    std::cout << "n: " << n << std::endl;
-    std::cout << " --------------------------- " << std::endl;
     // while(numberOfChannels>0)
 
   #ifdef HAS_OPENMP
@@ -93,7 +87,6 @@ initTimePoint(const unsigned int& iTime)
     for( int kk = 0; kk < n; ++kk )
       {
       int numberOfChannels = n - ( kk + 1 );
-      std::cout << "numberOfChannels: " << numberOfChannels << std::endl;
 //    --numberOfChannels;
 
       // Get useful information from the reader
@@ -142,8 +135,6 @@ initTimePoint(const unsigned int& iTime)
       std::stringstream channelName;
       channelName << "Channel ";
       channelName << numberOfChannels;
-
-      std::cout << "name: " << channelName.str() << std::endl;
 
       // Update the MegaImageStructure
       // image, LUT, channel, time point
@@ -263,10 +254,6 @@ setDoppler(const unsigned int& iTime, const unsigned int& iPrevious)
     color.push_back(rgb[1]*255);
     color.push_back(rgb[2]*255);
     color.push_back(255);
-
-    std::cout << " R: " << color[0]
-              << " G: " << color[1]
-              << " G: " << color[2] << std::endl;
 
     // Create LUT
     vtkSmartPointer<vtkLookupTable> lut = createLUT(color[0],

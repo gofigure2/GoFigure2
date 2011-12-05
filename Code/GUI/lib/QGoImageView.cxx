@@ -228,7 +228,7 @@ QGoImageView::AddContour(vtkPolyData *iDataset, vtkProperty *iProperty)
   if ( iDataset )
     {
     #ifdef HAS_OPENMP
-    #pragma omp parallel for
+    #pragma omp for
     #endif
     for ( int i = 0; i < n; i++ )
       {
