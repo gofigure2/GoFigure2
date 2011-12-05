@@ -113,10 +113,8 @@ MultiScaleLoGDistanceImageFilter
 
   while ( sigma <= m_SigmaMax )
     {
-    std::cout << "Computing LoG for sigma = " << sigma << std::endl;
     m_LoGFilter->SetSigma(sigma);
     m_LoGFilter->Update();
-    std::cout << "Filtering LoG with distancemap " << std::endl;
     this->UpdateMaximumResponse(scaleLevel);
     sigma  = this->ComputeSigmaValue(scaleLevel); // compute sigma according to
                                                   // the scale level

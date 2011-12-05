@@ -98,7 +98,7 @@ public:
   how to display them in the table widget
   */
   virtual TWContainerType GetContainerLoadedWithAllFromDB(
-    vtkMySQLDatabase *iDatabaseConnector);
+    vtkMySQLDatabase *iDatabaseConnector,std::list<unsigned int> iListTPs = std::list<unsigned int>());
 
   /**
   \brief get the results of the queries and put them in the row container corresponding
@@ -171,7 +171,7 @@ protected:
 
   virtual void FillRowContainerWithDBValues(
     vtkMySQLDatabase *iDatabaseConnector, std::string iRestrictionName,
-    std::string iRestrictionValue);
+    std::string iRestrictionValue, std::list<unsigned int> iListTimepoints = std::list<unsigned int>());
 
   /** \todo Lydie: find a way to make it ok for all traces, now only for mesh*/
   /** \brief fill the row container with the values calculated and stored in th

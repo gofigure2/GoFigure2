@@ -46,6 +46,7 @@
 #include "vtkViewImage2D.h"
 
 // For the seed widget
+#include "vtkIntArray.h"
 #include "vtkConstrainedPointHandleRepresentation.h"
 #include "vtkSeedWidget.h"
 #include "vtkImageActorPointPlacer.h"
@@ -78,6 +79,7 @@ QGoImageView::QGoImageView(QWidget *iParent) : QWidget(iParent),
   m_ShowAnnotations(true),
   m_ShowSplinePlane(true)
 {
+  m_Image = vtkImageData::New();
   m_Pool = vtkViewImage2DCollection::New();
 }
 
@@ -85,30 +87,12 @@ QGoImageView::QGoImageView(QWidget *iParent) : QWidget(iParent),
 QGoImageView::
 ~QGoImageView()
 {
-  /*
-  std::vector<vtkSeedWidget*>::iterator seedWidgetIterator = m_SeedWidget.begin();
-  while (seedWidgetIterator != m_SeedWidget.end())
+  if(m_Image)
     {
-    (*seedWidgetIterator)->Delete();
-    ++seedWidgetIterator;
+    m_Image->Delete();
+    m_Image = 0;
     }
 
-  std::vector<vtkConstrainedPointHandleRepresentation*>::iterator
-  handleIterator = m_Handle.begin();
-  while (handleIterator != m_Handle.end())
-    {
-    (*handleIterator)->Delete();
-    ++handleIterator;
-    }
-
-  std::vector<vtkSeedRepresentation*>::iterator
-  seedIterator = m_SeedRep.begin();
-  while (seedIterator != m_SeedRep.end())
-    {
-    (*seedIterator)->Delete();
-    ++seedIterator;
-    }
-*/
   if ( m_Pool )
     {
     m_Pool->Delete();
@@ -243,32 +227,18 @@ QGoImageView::AddContour(vtkPolyData *iDataset, vtkProperty *iProperty)
 
   if ( iDataset )
     {
+    #ifdef HAS_OPENMP
+    #pragma omp parallel for
+    #endif
     for ( int i = 0; i < n; i++ )
       {
       vtkViewImage2D *viewer = m_Pool->GetItem(i);
       vtkActor *      temp = viewer->AddDataSet(iDataset, iProperty);
-      //viewer->Render();
       oActorVector[i] = temp;
       }
     }
 
   return oActorVector;
-}
-
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-void
-QGoImageView::ChangeActorProperty(vtkProp3D *iActor,
-                                  vtkProperty *iProperty)
-{
-  int n = m_Pool->GetNumberOfItems();
-
-  for ( int i = 0; i < n; i++ )
-    {
-    vtkViewImage2D *viewer = m_Pool->GetItem(i);
-    viewer->ChangeActorProperty(iActor, iProperty);
-    }
 }
 
 //--------------------------------------------------------------------------
@@ -349,7 +319,7 @@ QGoImageView::SetLookupTable(vtkLookupTable *iLut)
   if ( this->m_Image->GetNumberOfScalarComponents() == 1 )
     {
     m_Pool->SyncSetLookupTable(iLut);
-    m_Pool->SyncResetWindowLevel();
+    m_Pool->SyncUpdateWindowLevel();
     m_Pool->SyncRender();
     }
 }
@@ -398,13 +368,7 @@ QGoImageView::GetImageActor(const int & iId)
 }
 
 //-------------------------------------------------------------------------
-void
-QGoImageView::ChangeActorProperty(int iDir, vtkProp3D *iActor, vtkProperty *iProperty)
-{
-  m_Pool->GetItem(iDir)->ChangeActorProperty(iActor, iProperty);
-}
 
-//--------------------------------------------------------------------------
 void
 QGoImageView::ShowSplinePlane()
 {
@@ -424,7 +388,6 @@ QGoImageView::SetInterpolate(const int & val)
 void
 QGoImageView::EnableContourPickingMode()
 {
-  // qDebug() << "Contour Picking Mode";
   //Change cursor
   ChangeCursorShape(Qt::ArrowCursor);
   // Change mode in the collection
@@ -444,24 +407,18 @@ QGoImageView::InitializeSeedWidget()
 {
   int N = this->m_Pool->GetNumberOfItems();
 
-  // Enable seed interaction
-  this->m_Handle.resize(N);
-  this->m_SeedRep.resize(N);
-  this->m_SeedWidget.resize(N);
-
   for ( int i = 0; i < N; ++i )
     {
-    this->m_Handle[i] = vtkSmartPointer< vtkConstrainedPointHandleRepresentation >::New();
-    this->m_Handle[i]->GetProperty()->SetColor(1, 0, 0);
+    this->m_Handle.push_back(vtkSmartPointer< vtkConstrainedPointHandleRepresentation >::New());
+    this->m_Handle.back()->GetProperty()->SetColor(1, 0, 0);
 
-    this->m_SeedRep[i] = vtkSmartPointer< vtkSeedRepresentation >::New();
-    this->m_SeedRep[i]->SetHandleRepresentation(this->m_Handle[i]);
+    this->m_SeedRep.push_back(vtkSmartPointer< vtkSeedRepresentation >::New());
+    this->m_SeedRep.back()->SetHandleRepresentation(this->m_Handle.back());
 
-    this->m_SeedWidget[i] = vtkSmartPointer< vtkSeedWidget >::New();
-    this->m_SeedWidget[i]->SetRepresentation(this->m_SeedRep[i]);
-    this->m_SeedWidget[i]->SetRepresentation(this->m_SeedRep[i]);
+    this->m_SeedWidget.push_back(vtkSmartPointer< vtkSeedWidget >::New());
+    this->m_SeedWidget.back()->SetRepresentation(this->m_SeedRep.back());
 
-    this->m_SeedWidget[i]->SetInteractor(
+    this->m_SeedWidget.back()->SetInteractor(
       this->m_Pool->GetItem(i)->GetInteractor() );
 
     // to remove right click interaction in the one click widget
@@ -492,47 +449,29 @@ QGoImageView::EnableSeedWidget(bool iEnable)
     ++it;
     }
 }
-
-/// NOTE Returned value has to be deleted
 //-------------------------------------------------------------------------
-vtkPoints *
-QGoImageView::GetAllSeeds()
+
+//-------------------------------------------------------------------------
+void
+QGoImageView::
+GetSeeds(std::vector<vtkPoints*>& iPoints)
 {
-  double worldPosition[3];
-
-  vtkPoints *oPoints = vtkPoints::New();
-
-  for ( unsigned int i = 0; i < this->m_SeedWidget.size(); i++ )
+  for ( unsigned int i = 0; i < 3; i++ )
     {
+    double worldPosition[3];
     int N = this->m_SeedRep[i]->GetNumberOfSeeds();
+
     for ( int j = 0; j < N; j++ )
       {
       // Get World position (may be not accurate if we are between 8 pixels
       // (3D))
       this->m_SeedRep[i]->GetSeedWorldPosition(j, worldPosition);
-      // Get indexes of the closest point
-      int *index = this->m_Pool->GetItem(i)->GetImageCoordinatesFromWorldCoordinates(worldPosition);
 
-      // Convert it back into world position
-      //qDebug() << "SLICE NUMBER: " << this->m_Pool->GetItem(i)->GetSlice();
-      double spacing[3] = { 0., 0., 0. };
-      this->m_Pool->GetItem(i)->GetInput()->GetSpacing(spacing);
-      double correctedPosition[3];
-      correctedPosition[0] = static_cast< double >( index[0] ) * spacing[0];
-      correctedPosition[1] = static_cast< double >( index[1] ) * spacing[1];
-      correctedPosition[2] = static_cast< double >( index[2] ) * spacing[2];
-
-      //qDebug() << "CORRECTED: " << correctedPosition[0] << " - "
-      //          << correctedPosition[1] << " - "
-      //          << correctedPosition[2];
-
-      oPoints->InsertNextPoint(correctedPosition);
-      delete[] index;
+      iPoints[i]->InsertNextPoint(worldPosition);
       }
     }
-
-  return oPoints;
 }
+//-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
@@ -543,7 +482,7 @@ QGoImageView::ClearAllSeeds()
     for ( int k = this->m_SeedRep[i]->GetNumberOfSeeds() - 1; k >= 0; --k )
       {
       this->m_SeedWidget[i]->DeleteSeed(k);
-      this->m_SeedRep[i]->RemoveLastHandle();
+      this->m_SeedRep[i]->RemoveHandle(k);
       }
     }
   // automatically remove seeds from the visualization
@@ -659,8 +598,6 @@ QGoImageView::InitializeContourWidget()
 void
 QGoImageView::EnableContourWidget(bool iActivate)
 {
-  //qDebug() << "Contour ---Widget---" << iActivate;
-
   if ( iActivate )
     {
     DefaultMode();
@@ -690,6 +627,9 @@ QGoImageView::InitializeContourWidgetNodes(int iDir, vtkPolyData *iNodes)
 void
 QGoImageView::ReinitializeContourWidget()
 {
+#ifdef HAS_OPENMP
+#pragma omp for
+#endif
   for ( unsigned int i = 0; i < m_ContourWidget.size(); i++ )
     {
     InitializeContourWidgetNodes(i, NULL);

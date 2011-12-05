@@ -204,7 +204,7 @@
   </widget>
   <widget class="QToolBar" name="FileToolBar">
    <property name="windowTitle">
-    <string>toolBar</string>
+    <string>Open Files</string>
    </property>
    <property name="iconSize">
     <size>
@@ -285,9 +285,6 @@
    <property name="text">
     <string>About</string>
    </property>
-   <property name="menuRole">
-    <enum>QAction::AboutRole</enum>
-   </property>
   </action>
   <action name="actionAbout_Qt">
    <property name="text">
@@ -322,6 +319,11 @@
   <action name="actionGoFigure2_Website">
    <property name="text">
     <string>GoFigure2 website</string>
+   </property>
+  </action>
+  <action name="actionReport_a_bug">
+   <property name="text">
+    <string>Report a bug</string>
    </property>
   </action>
   <action name="actionUser_mailing_list">

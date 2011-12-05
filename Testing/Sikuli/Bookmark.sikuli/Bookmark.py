@@ -1,10 +1,14 @@
-import os
-address = os.getcwd()
+#import os
+#address = os.getcwd()
 #address = "/home/es1076/GITROOT/GoFigure2/Testing/Sikuli/gofigure2_images"
 
 #address = address+"/gofigure2_images"
-print address
-setBundlePath(address)
+#print address
+#<<<<<<< HEAD
+#setBundlePath(address)
+#=======
+#setBundlePath(address)
+#>>>>>>> develop
 
 start = time.time()
 
@@ -85,7 +89,8 @@ click("cancel.png")
 
 
 #Delete + ok
-click("File.png")
+#click("File.png")
+wait(1)
 click("Bookmarks.png")
 click("Delete_a_bookmark.png")
 Region(500,282,283,271).click("Test_Bookmark.png")

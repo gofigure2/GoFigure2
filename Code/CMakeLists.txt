@@ -1,8 +1,10 @@
+# add subdirectories
 ADD_SUBDIRECTORY( ExternalCode )
 ADD_SUBDIRECTORY( Database )
 ADD_SUBDIRECTORY( IO )
-ADD_SUBDIRECTORY( GUI )
 ADD_SUBDIRECTORY( Filters )
+ADD_SUBDIRECTORY( GUI )
+
 
 FILE( GLOB __source_file_h "${CMAKE_CURRENT_SOURCE_DIR}/*.h" )
 

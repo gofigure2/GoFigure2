@@ -136,6 +136,9 @@ MegaCaptureReader::SetMegaCaptureHeader(const std::string & iHeader)
 {
   m_HeaderReader->SetFileName(iHeader);
   m_HeaderReader->Read();
+
+  m_ChannelColor = m_HeaderReader->m_ChannelColor;
+
   m_Modified = true;
 }
 
@@ -256,6 +259,8 @@ MegaCaptureReader::Update()
 {
   if ( m_Modified )
     {
+    this->InvokeEvent( StartEvent() );
+
     std::map< unsigned int, std::list< std::string > > filelistperchannel;
 
     if ( m_TimeBased )
@@ -272,11 +277,13 @@ MegaCaptureReader::Update()
       }
 
     // prepare the final output
-
     std::map< unsigned int, std::list< std::string > >::iterator
       fch_it = filelistperchannel.begin();
     std::map< unsigned int, std::list< std::string > >::iterator
       fch_end = filelistperchannel.end();
+
+    size_t kk = 0;
+    size_t size = filelistperchannel.size() * fch_it->second.size();
 
     while ( fch_it != fch_end )
       {
@@ -284,6 +291,7 @@ MegaCaptureReader::Update()
 
       vtkSmartPointer< vtkImageAppend > volumeBuilder =
         vtkSmartPointer< vtkImageAppend >::New();
+      volumeBuilder->SetNumberOfThreads(VTK_MAX_THREADS);
       volumeBuilder->SetAppendAxis(2);
 
       std::list< std::string >::iterator f_it = fch_it->second.begin();
@@ -293,6 +301,9 @@ MegaCaptureReader::Update()
         {
         AddToVTKVolumeBuilder(counter, *f_it, volumeBuilder);
 
+        this->SetProgress( static_cast< float >( kk ) / static_cast< float >( size ) );
+
+        ++kk;
         ++f_it;
         ++counter;
         }
@@ -329,6 +340,8 @@ MegaCaptureReader::Update()
       ++fch_it;
       }
     m_TimeInterval = m_HeaderReader->m_TimeInterval;
+
+    this->InvokeEvent( EndEvent() );
     }
 }
 
@@ -372,6 +385,7 @@ MegaCaptureReader::GetImage(const unsigned int & iCh,
     {
     vtkSmartPointer< vtkImageAppend > volumeBuilder =
       vtkSmartPointer< vtkImageAppend >::New();
+    volumeBuilder->SetNumberOfThreads(VTK_MAX_THREADS);
     volumeBuilder->SetAppendAxis(2);
 
     std::list< std::string >::iterator f_it = filenames.begin();
@@ -402,5 +416,14 @@ MegaCaptureReader::GetOutputs()
 {
   return m_OutputImageMap;
 }
+//--------------------------------------------------------------------------
 
-} //end of namespace
+//--------------------------------------------------------------------------
+std::vector< std::vector< int > >
+MegaCaptureReader::
+GetChannelColor()
+{
+  return m_ChannelColor;
+}
+//--------------------------------------------------------------------------
+}//end of namespace

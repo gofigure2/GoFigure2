@@ -17,40 +17,52 @@ SET( QGOIO_SRC
   TraceStructure.cxx
   ContourMeshStructure.cxx
   TrackStructure.cxx
+  LineageStructure.cxx
   CreateDataBaseHelper.cxx
-  GoDBAuthorRow.cxx
-  GoDBChannelRow.cxx
-  GoDBCollectionOfTraces.cxx
-  GoDBColorRow.cxx
-  GoDBContourRow.cxx
-  GoDBCoordinateRow.cxx
-  GoDBImageRow.cxx
-  GoDBImgSessionRow.cxx
-  GoDBMeshRow.cxx
-  GoDBProjectRow.cxx
-  GoDBTraceRow.cxx
-  GoDBRow.cxx
-  GoDBTrackRow.cxx
-  GoDBLineageRow.cxx
-  GoDBNameDescRow.cxx
-  GoDBBookmarkRow.cxx
-  GoDBCellTypeRow.cxx
-  GoDBSubCellTypeRow.cxx
-  GoDBIntensityRow.cxx
   GoDBTableWidgetContainer.cxx
   GoDBTWContainerForContourMesh.cxx
   GoDBTWContainerForTrackLineage.cxx
   GoDBTWContainerForMesh.cxx
   GoDBTWContainerForTrack.cxx
+  GoDBTWContainerForLineage.cxx
   GoDBExport.cxx
   GoDBImport.cxx
+  GoDBCollectionOfTraces.cxx
+  
+  # GoDB*Row
+  GoDBRow/GoDBAuthorRow.cxx
+  GoDBRow/GoDBChannelRow.cxx
+  GoDBRow/GoDBColorRow.cxx
+  GoDBRow/GoDBContourRow.cxx
+  GoDBRow/GoDBCoordinateRow.cxx
+  GoDBRow/GoDBImageRow.cxx
+  GoDBRow/GoDBImgSessionRow.cxx
+  GoDBRow/GoDBMeshRow.cxx
+  GoDBRow/GoDBProjectRow.cxx
+  GoDBRow/GoDBTraceRow.cxx
+  GoDBRow/GoDBRow.cxx
+  GoDBRow/GoDBTrackRow.cxx
+  GoDBRow/GoDBTrackFamilyRow.cxx
+  GoDBRow/GoDBLineageRow.cxx
+  GoDBRow/GoDBNameDescRow.cxx
+  GoDBRow/GoDBBookmarkRow.cxx
+  GoDBRow/GoDBCellTypeRow.cxx
+  GoDBRow/GoDBSubCellTypeRow.cxx
+  GoDBRow/GoDBIntensityRow.cxx
+
+  # Mega related files
+  GoImage/GoImageProcessor.cxx
+  GoImage/GoMegaImageProcessor.cxx
+  GoImage/GoLSMImageProcessor.cxx
+  itkMegaCaptureImport.cxx
+  itkMegaCaptureReader.cxx
   MegaCaptureHeaderReader.cxx
+
   QueryDataBaseHelper.cxx
   SelectQueryDatabaseHelper.cxx
   QueryBuilderHelper.cxx
   # itkLsm3DSerieImport.cxx
-  itkMegaCaptureImport.cxx
-  itkMegaCaptureReader.cxx
+
   GoFigureFileInfoMultiIndexContainerHelper.cxx
   vtkPolyDataMySQLContourReader.cxx
   vtkPolyDataMySQLMeshReader.cxx
@@ -62,6 +74,14 @@ SET( QGOIO_SRC
 #  MeshTextFileImport.cxx
 #  TrackTextFileImport.cxx
 )
+
+SET_SOURCE_FILES_PROPERTIES(
+  GoDBRow/GoDBRow.cxx
+  GoDBRow/GoDBTraceRow.cxx
+  GoDBTableWidgetContainer.cxx
+  GoDBRow/GoDBNameDescRow.cxx
+  ABSTRACT
+  )
 
 ADD_LIBRARY( QGoIO
   ${QGOIO_SRC}

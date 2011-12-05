@@ -77,6 +77,7 @@
 #include <vtkCamera.h>
 #include <vtkRenderer.h>
 #include "vtkProperty.h"
+
 #include "vtkViewImage2DCommand.h"
 
 
@@ -91,6 +92,8 @@ vtkInteractorStyleImage2D::vtkInteractorStyleImage2D()
   this->RequestedPosition[0] = this->RequestedPosition[1] = 0;
 
   this->m_LeftButtonDown = false;
+
+  this->m_SynchronizeViews = true;
 
   this->m_Mode = InteractionTypeDefault;
 }
@@ -130,14 +133,6 @@ vtkInteractorStyleImage2D::OnMouseMove()
       break;
     case VTKIS_PICK:
       HighlightCurrentActor();
-      break;
-    case VTKIS_WINDOW_LEVEL:
-      this->Superclass::OnMouseMove();
-      // Send event to update Scalar bar in 3D view
-      if ( this->m_LeftButtonDown )
-        {
-        this->InvokeEvent(vtkViewImage2DCommand::WindowLevelEvent, NULL);
-        }
       break;
     default:
       this->Superclass::OnMouseMove();
@@ -421,7 +416,7 @@ vtkInteractorStyleImage2D::OnChar()
             // make sure we don't modify the planes actors
             if ( path != NULL )
               {
-              std::vector< vtkActor * >::iterator it2 = m_PlanesActors.begin();
+              std::vector< vtkProp3D * >::iterator it2 = m_PlanesActors.begin();
               while(it2!=m_PlanesActors.end())
                 {
                 if(path && dynamic_cast<vtkProp*>(*it2) == path->GetLastNode()->GetViewProp())
@@ -467,7 +462,7 @@ vtkInteractorStyleImage2D::OnChar()
             // make sure we don't modify the planes actors
             if ( path != NULL )
               {
-              std::vector< vtkActor * >::iterator it2 = m_PlanesActors.begin();
+              std::vector< vtkProp3D * >::iterator it2 = m_PlanesActors.begin();
               while(it2!=m_PlanesActors.end())
                 {
                 if(path && dynamic_cast<vtkProp*>(*it2) == path->GetLastNode()->GetViewProp())
@@ -566,8 +561,12 @@ vtkInteractorStyleImage2D::EndSliceMove()
     }
   this->StopState();
   this->InvokeEvent(vtkViewImage2DCommand::EndSliceMoveEvent, this);
+
   // Call one more time to update views...
-  this->InvokeEvent(vtkViewImage2DCommand::SyncViewsEvent, this);
+  if(m_SynchronizeViews)
+    {
+    this->InvokeEvent(vtkViewImage2DCommand::SyncViewsEvent, this);
+    }
 }
 
 //----------------------------------------------------------------------------
@@ -578,7 +577,10 @@ vtkInteractorStyleImage2D::SliceMove()
     {
     return;
     }
-  this->InvokeEvent(vtkViewImage2DCommand::SyncViewsEvent, this);
+  if(m_SynchronizeViews)
+    {
+    this->InvokeEvent(vtkViewImage2DCommand::SyncViewsEvent, this);
+    }
 }
 
 //----------------------------------------------------------------------------
@@ -632,7 +634,7 @@ vtkInteractorStyleImage2D::HighlightCurrentActor()
     // make sure we don't modify the planes actors
     if ( path != NULL )
       {
-      std::vector< vtkActor * >::iterator it2 = m_PlanesActors.begin();
+      std::vector< vtkProp3D * >::iterator it2 = m_PlanesActors.begin();
       while(it2!=m_PlanesActors.end())
         {
         if(path && dynamic_cast<vtkProp*>(*it2) == path->GetFirstNode()->GetViewProp())
@@ -691,8 +693,15 @@ vtkInteractorStyleImage2D::SetPickMode()
 }
 //----------------------------------------------------------------------------
 void
+vtkInteractorStyleImage2D::SynchronizeViews( bool iSynchronize)
+{
+  m_SynchronizeViews = iSynchronize;
+}
+
+//----------------------------------------------------------------------------
+void
 vtkInteractorStyleImage2D::
-SetPlanesActors( std::vector< vtkActor * > iBounds)
+SetPlanesActors( std::vector< vtkProp3D * > iBounds)
 {
   this->m_PlanesActors= iBounds;
 }

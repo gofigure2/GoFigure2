@@ -47,7 +47,7 @@ len = result.start(0)
 user = address[0:len]
 
 
-closeApp(user+"GITROOT/GoFigure2/BUILD/bin/gofigure")
+#closeApp(user+"GITROOT/GoFigure2/BUILD/bin/gofigure")
 
 
 #Tools

@@ -85,7 +85,7 @@ WatershedBasedCellSegmentation< TFeatureImage, TInputImage, TSegmentImage >::Gen
     fgFilter->SetLargestCellRadius (m_NucleusRadius);   // in real coordinates
     fgFilter->SetNumberOfThreads( this->GetNumberOfThreads() );
     fgFilter->Update();
-    std::cout << "Computed foreground" << std::endl;
+   // std::cout << "Computed foreground" << std::endl;
 
     m_ForegroundImg = fgFilter->GetOutput();
     m_ForegroundImg->DisconnectPipeline();
@@ -101,7 +101,7 @@ WatershedBasedCellSegmentation< TFeatureImage, TInputImage, TSegmentImage >::Gen
   distFilter->SetAlpha(m_Alpha);
   distFilter->SetBeta(m_Beta);
   distFilter->Update();
-  std::cout << "Computed distance map" << std::endl;
+  //std::cout << "Computed distance map" << std::endl;
 
   typename MinMaxCalculatorType::Pointer minMax = MinMaxCalculatorType::New();
   minMax->SetImage( distFilter->GetOutput() );
@@ -112,7 +112,7 @@ WatershedBasedCellSegmentation< TFeatureImage, TInputImage, TSegmentImage >::Gen
   idistance->SetInput( distFilter->GetOutput() );
   idistance->SetMaximum(max);
   idistance->Update();
-  std::cout << "Inverted distance map" << std::endl;
+ // std::cout << "Inverted distance map" << std::endl;
 
   WatershedFilterPointer wshed = WatershedFilterType::New();
   wshed->SetInput( idistance->GetOutput() );
@@ -141,7 +141,7 @@ WatershedBasedCellSegmentation< TFeatureImage, TInputImage, TSegmentImage >::Gen
   region.SetIndex(index2);
   region.SetSize(size2);
 
-  std::cout << "label: " << label << std::endl;
+ // std::cout << "label: " << label << std::endl;
 
   SegmentIteratorType It( output, output->GetLargestPossibleRegion() );
 
@@ -164,7 +164,7 @@ WatershedBasedCellSegmentation< TFeatureImage, TInputImage, TSegmentImage >::Gen
       ++It;
       }
     }
-  std::cout << "Computed watershed segmentation" << std::endl;
+ // std::cout << "Computed watershed segmentation" << std::endl;
 
 //   InputImagePointer smooth;
 //   {

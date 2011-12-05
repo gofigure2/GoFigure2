@@ -46,9 +46,11 @@
 #include <string>
 #include <algorithm>
 
-std::vector< std::string > ListAllValuesForOneColumn(vtkMySQLDatabase *DatabaseConnector,
-                                                     std::string ColumnName, std::string TableName,
-                                                     std::string OrderByColumnName)
+std::vector< std::string >
+ListAllValuesForOneColumn(vtkMySQLDatabase *DatabaseConnector,
+                          const std::string & ColumnName,
+                          const std::string & TableName,
+                          std::string OrderByColumnName)
 {
   std::string QueryString = SelectQueryStream(TableName, ColumnName, OrderByColumnName);
 
@@ -58,11 +60,16 @@ std::vector< std::string > ListAllValuesForOneColumn(vtkMySQLDatabase *DatabaseC
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-std::map< std::string, std::string > MapTwoColumnsFromTable(
-  vtkMySQLDatabase *DatabaseConnector, std::vector< std::string > iColumnNames,
-  std::string iTableName, std::string iField, std::string iValue)
+boost::unordered_map< std::string, std::string >
+MapTwoColumnsFromTable( vtkMySQLDatabase *DatabaseConnector,
+                        const std::vector< std::string > & iColumnNames,
+                        const std::string & iTableName,
+                        std::string iField,
+                        std::string iValue)
 {
-  std::map< std::string, std::string > Result = std::map< std::string, std::string >();
+  boost::unordered_map< std::string, std::string > Result =
+      boost::unordered_map< std::string, std::string >();
+
   if ( iColumnNames.size() != 2 )
     {
     std::cout << "can not map if the size of the vector for the selected fields is different than 2 ";
@@ -105,8 +112,10 @@ std::map< std::string, std::string > MapTwoColumnsFromTable(
 //------------------------------------------------------------------------------
 std::vector< std::pair< std::string, std::string > >
 VectorTwoColumnsFromTable(vtkMySQLDatabase *DatabaseConnector,
-                          std::string ColumnNameOne, std::string ColumnNameTwo,
-                          std::string TableName, std::string OrderByColumnName)
+                          const std::string & ColumnNameOne,
+                          const std::string & ColumnNameTwo,
+                          const std::string & TableName,
+                          const std::string & OrderByColumnName)
 {
   std::vector< std::pair< std::string, std::string > > result;
 
@@ -144,9 +153,11 @@ VectorTwoColumnsFromTable(vtkMySQLDatabase *DatabaseConnector,
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-std::vector< std::string > ListSpecificValuesForRow(
-  vtkMySQLDatabase *DatabaseConnector, std::string TableName, std::string field,
-  std::string value)
+std::vector< std::string >
+ListSpecificValuesForRow( vtkMySQLDatabase *DatabaseConnector,
+                          const std::string & TableName,
+                          const std::string & field,
+                          const std::string & value)
 {
   std::string QueryString = SelectQueryStreamCondition(TableName, "*", field, value);
 
@@ -157,8 +168,10 @@ std::vector< std::string > ListSpecificValuesForRow(
 
 //------------------------------------------------------------------------------
 int FindOneID(vtkMySQLDatabase *DatabaseConnector,
-              std::string TableName, std::string ColumnName,
-              std::string field, std::string value)
+              const std::string & TableName,
+              const std::string & ColumnName,
+              const std::string & field,
+              const std::string & value)
 {
   int ID = -1;
 
@@ -185,8 +198,9 @@ int FindOneID(vtkMySQLDatabase *DatabaseConnector,
 
 //------------------------------------------------------------------------------
 int FindOneID(vtkMySQLDatabase *DatabaseConnector,
-              std::string TableName, std::string ColumnName,
-              std::vector< FieldWithValue > iConditions)
+              const std::string & TableName,
+              const std::string & ColumnName,
+              const std::vector< FieldWithValue > & iConditions)
 {
   std::string QueryString = SelectQueryStreamListConditions(TableName,
                                                             ColumnName, iConditions, "AND");
@@ -206,9 +220,9 @@ int FindOneID(vtkMySQLDatabase *DatabaseConnector,
 
 //------------------------------------------------------------------------------
 std::vector< std::string > FindSeveralIDs(vtkMySQLDatabase *iDatabaseConnector,
-                                          std::string TableName,
-                                          std::string ColumnName,
-                                          std::vector< FieldWithValue > iConditions)
+                                          const std::string & TableName,
+                                          const std::string & ColumnName,
+                                          const std::vector< FieldWithValue > & iConditions)
 {
   std::string QueryString = SelectQueryStreamListConditions(TableName,
                                                             ColumnName, iConditions, "AND");
@@ -221,8 +235,10 @@ std::vector< std::string > FindSeveralIDs(vtkMySQLDatabase *iDatabaseConnector,
 //------------------------------------------------------------------------------
 std::vector< std::string > ListSpecificValuesForOneColumn(
   vtkMySQLDatabase *iDatabaseConnector,
-  std::string TableName, std::string ColumnName,
-  std::string field, std::string value, //bool Distinct,
+  const std::string & TableName,
+  const std::string & ColumnName,
+  const std::string & field,
+  const std::string & value, //bool Distinct,
   bool ExcludeZero)
 {
   std::vector< FieldWithValue > VectorConditions;
@@ -244,8 +260,11 @@ std::vector< std::string > ListSpecificValuesForOneColumn(
 //------------------------------------------------------------------------------
 std::vector< std::string > ListSpecificValuesForOneColumn(
   vtkMySQLDatabase *iDatabaseConnector,
-  std::string TableName, std::string ColumnName,
-  std::string field, std::string value, std::string ColumnNameOrder)
+  const std::string & TableName,
+  const std::string & ColumnName,
+  const std::string & field,
+  const std::string & value,
+  const std::string & ColumnNameOrder)
 {
   std::string QueryString = SelectQueryStreamCondition(TableName, ColumnName, field, value, ColumnNameOrder);
 
@@ -257,9 +276,12 @@ std::vector< std::string > ListSpecificValuesForOneColumn(
 //------------------------------------------------------------------------------
 std::vector< std::string > ListSpecificValuesForOneColumn(
   vtkMySQLDatabase *iDatabaseConnector,
-  std::string TableName, std::string ColumnName,
-  std::string field, std::vector< std::string > VectorValues,
-  bool Distinct, bool ExcludeZero)
+  const std::string & TableName,
+  const std::string & ColumnName,
+  const std::string & field,
+  const std::vector< std::string > & VectorValues,
+  bool Distinct,
+  bool ExcludeZero)
 {
   std::string Conditions;
 
@@ -288,9 +310,12 @@ std::vector< std::string > ListSpecificValuesForOneColumn(
 //------------------------------------------------------------------------------
 std::list< unsigned int > ListSpecificValuesForOneColumn(
   vtkMySQLDatabase *iDatabaseConnector,
-  std::string TableName, std::string ColumnName,
-  std::string field, std::list< unsigned int > iListValues,
-  bool Distinct, bool ExcludeZero)
+  const std::string & TableName,
+  const std::string & ColumnName,
+  const std::string & field,
+  const std::list< unsigned int > & iListValues,
+  bool Distinct,
+  bool ExcludeZero)
 {
   std::vector< unsigned int > VectorValues(
     iListValues.begin(), iListValues.end() );
@@ -325,9 +350,12 @@ std::list< unsigned int > ListSpecificValuesForOneColumn(
 //------------------------------------------------------------------------------
 std::list< unsigned int > ListSpecificValuesForOneColumn(
   vtkMySQLDatabase *iDatabaseConnector,
-  std::string TableName, std::string ColumnName,
-  std::string fieldOne, std::list< unsigned int > ListValuesOne,
-  std::string fieldTwo, std::string ValueFieldTwo)
+  const std::string & TableName,
+  const std::string & ColumnName,
+  const std::string & fieldOne,
+  const std::list< unsigned int > & ListValuesOne,
+  const std::string & fieldTwo,
+  const std::string & ValueFieldTwo)
 {
   std::vector< unsigned int > VectorValuesOne(
     ListValuesOne.begin(), ListValuesOne.end() );
@@ -344,9 +372,14 @@ std::list< unsigned int > ListSpecificValuesForOneColumn(
 
 //------------------------------------------------------------------------------
 std::vector< std::pair< std::string, std::string > >
-ListSpecificValuesForTwoColumns(vtkMySQLDatabase *DatabaseConnector,
-                                std::string TableName, std::string ColumnNameOne, std::string ColumnNameTwo,
-                                std::string field, std::string value, std::string ColumnNameOrder)
+ListSpecificValuesForTwoColumns(
+  vtkMySQLDatabase *DatabaseConnector,
+  const std::string & TableName,
+  const std::string & ColumnNameOne,
+  const std::string & ColumnNameTwo,
+  const std::string & field,
+  const std::string & value,
+  const std::string & ColumnNameOrder)
 {
   std::vector< std::pair< std::string, std::string > > result;
   std::vector< std::string >                           SelectedColumns(2);
@@ -385,9 +418,12 @@ ListSpecificValuesForTwoColumns(vtkMySQLDatabase *DatabaseConnector,
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-std::string ReturnOnlyOneValue(vtkMySQLDatabase *DatabaseConnector,
-                               std::string TableName, std::string ColumnName, std::string field,
-                               std::string value)
+std::string ReturnOnlyOneValue(
+  vtkMySQLDatabase *DatabaseConnector,
+  const std::string & TableName,
+  const std::string & ColumnName,
+  const std::string & field,
+  const std::string & value)
 {
   std::string result;
   std::string Conditions = GetConditions(field, value);
@@ -402,7 +438,8 @@ std::string ReturnOnlyOneValue(vtkMySQLDatabase *DatabaseConnector,
 //------------------------------------------------------------------------------
 int MaxValueForOneColumnInTable(
   vtkMySQLDatabase *DatabaseConnector,
-  std::string ColumnName, std::string TableName)
+  const std::string & ColumnName,
+  const std::string & TableName)
 {
   std::string What = "MAX(";
 
@@ -415,9 +452,12 @@ int MaxValueForOneColumnInTable(
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-int MaxValueForOneColumnInTable(vtkMySQLDatabase *DatabaseConnector,
-                                std::string ColumnName, std::string TableName, std::string field,
-                                std::string value)
+int MaxValueForOneColumnInTable(
+  vtkMySQLDatabase *DatabaseConnector,
+  const std::string & ColumnName,
+  const std::string & TableName,
+  const std::string & field,
+  const std::string & value)
 {
   std::string What = "MAX(";
 
@@ -430,9 +470,12 @@ int MaxValueForOneColumnInTable(vtkMySQLDatabase *DatabaseConnector,
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-int MaxValueForOneColumnInTable(vtkMySQLDatabase *DatabaseConnector,
-                                std::string ColumnName, std::string TableName, std::string field,
-                                std::vector< std::string > VectorValues)
+int MaxValueForOneColumnInTable(
+  vtkMySQLDatabase *DatabaseConnector,
+  const std::string & ColumnName,
+  const std::string & TableName,
+  const std::string & field,
+  const std::vector< std::string > & VectorValues)
 {
   std::string What = "MAX(";
 
@@ -445,9 +488,12 @@ int MaxValueForOneColumnInTable(vtkMySQLDatabase *DatabaseConnector,
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-int MinValueForOneColumnInTable(vtkMySQLDatabase *DatabaseConnector,
-                                std::string ColumnName, std::string TableName, std::string field,
-                                std::vector< std::string > VectorValues)
+int MinValueForOneColumnInTable(
+  vtkMySQLDatabase *DatabaseConnector,
+  const std::string & ColumnName,
+  const std::string & TableName,
+  const std::string & field,
+  const std::vector< std::string > & VectorValues)
 {
   std::string What = "MIN(";
 
@@ -463,10 +509,17 @@ int MinValueForOneColumnInTable(vtkMySQLDatabase *DatabaseConnector,
 //query: "SELECT TableOne.ColumnOne, TableTwo.ColumnTwo FROM TableOne
 //JOIN TableTwo ON (TableOne.Foreignkey = TableTwo.PrimaryKey)
 //WHERE field = value;
-std::vector< std::pair< int, std::string > > ListSpecificValuesForTwoColumnsAndTwoTables(
-  vtkMySQLDatabase *DatabaseConnector, std::string TableOne, std::string ColumnOne,
-  std::string TableTwo, std::string ColumnTwo, std::string ForeignKey, std::string PrimaryKey,
-  std::string field, std::string value)
+std::vector< std::pair< int, std::string > >
+ListSpecificValuesForTwoColumnsAndTwoTables(
+  vtkMySQLDatabase *DatabaseConnector,
+  const std::string & TableOne,
+  const std::string & ColumnOne,
+  const std::string & TableTwo,
+  const std::string & ColumnTwo,
+  const std::string & ForeignKey,
+  const std::string & PrimaryKey,
+  const std::string & field,
+  const std::string & value)
 {
   std::vector< std::pair< int, std::string > > result;
 
@@ -526,10 +579,15 @@ std::vector< std::pair< int, std::string > > ListSpecificValuesForTwoColumnsAndT
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-std::vector< std::vector< std::string > > GetValuesFromSeveralTables(
-  vtkMySQLDatabase *DatabaseConnector, std::string MainTable,
-  std::vector< std::string > SelectFields, std::string field,
-  std::string value, std::vector< std::string > JoinTablesOnTraceTable, bool Distinct)
+std::vector< std::vector< std::string > >
+GetValuesFromSeveralTables(
+  vtkMySQLDatabase *DatabaseConnector,
+  const std::string & MainTable,
+  const std::vector< std::string > & SelectFields,
+  const std::string & field,
+  const std::string & value,
+  const std::vector< std::string > & JoinTablesOnTraceTable,
+  bool Distinct)
 {
   std::vector< std::vector< std::string > > Results;
   vtkSQLQuery *                             query = DatabaseConnector->GetQueryInstance();
@@ -596,10 +654,102 @@ std::vector< std::vector< std::string > > GetValuesFromSeveralTables(
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-std::vector< std::vector< std::string > > GetValuesFromSeveralTables(
-  vtkMySQLDatabase *DatabaseConnector, std::string MainTable,
-  std::vector< std::string > SelectFields, std::vector< std::string > WhereAndConditions,
-  std::vector< std::string > JoinTablesOnTraceTable, bool Distinct)
+std::vector< std::vector< std::string > >
+GetValuesFromSeveralTables(
+  vtkMySQLDatabase *DatabaseConnector,
+  const std::string & MainTable,
+  const std::vector< std::string > & SelectFields,
+  const std::string & field,
+  const std::string & value,
+  const std::vector< std::string > & JoinTablesOnTraceTable,
+  bool Distinct,
+  const std::vector<FieldWithValue> & iWhereOrConditions)
+{
+  std::vector< std::vector< std::string > > Results;
+  vtkSQLQuery *                             query = DatabaseConnector->GetQueryInstance();
+
+  std::stringstream Querystream;
+  Querystream << "SELECT ";
+  if ( Distinct )
+    {
+    Querystream << "DISTINCT ";
+    }
+  unsigned int i;
+  for ( i = 0; i < SelectFields.size() - 1; i++ )
+    {
+    Querystream << SelectFields[i];
+    Querystream << ",";
+    }
+  Querystream << SelectFields[i];
+  Querystream << " FROM ";
+  Querystream << MainTable;
+  unsigned int j = 0;
+  while ( j < JoinTablesOnTraceTable.size() )
+    {
+    Querystream << " LEFT JOIN ";
+    Querystream << JoinTablesOnTraceTable[j];
+    Querystream << " ON ";
+    Querystream << JoinTablesOnTraceTable[j + 1];
+    Querystream << " ";
+    j = j + 2;
+    }
+  Querystream << "WHERE ( ";
+  Querystream << MainTable;
+  Querystream << ".";
+  Querystream << field;
+  Querystream << " = ";
+  Querystream << value;
+  Querystream << " AND (";
+  unsigned int k = 0;
+  while ( k < iWhereOrConditions.size() -1)
+    {
+    Querystream << iWhereOrConditions[k].Field;
+    Querystream << " = ";
+    Querystream << iWhereOrConditions[k].Value;
+    Querystream << " OR ";
+    k = k + 1;
+    }
+  Querystream << iWhereOrConditions[k].Field;
+  Querystream << " = ";
+  Querystream << iWhereOrConditions[k].Value;
+  Querystream << ") );";
+
+  query->SetQuery( Querystream.str().c_str() );
+  if ( !query->Execute() )
+    {
+    itkGenericExceptionMacro(
+      << "return info Contours query failed"
+      << query->GetLastErrorText() );
+    DatabaseConnector->Close();
+    DatabaseConnector->Delete();
+    query->Delete();
+    return Results;
+    }
+  while ( query->NextRow() )
+    {
+    std::vector< std::string > ResultsForOneRow;
+    for ( int k = 0; k < query->GetNumberOfFields(); k++ )
+      {
+      ResultsForOneRow.push_back( query->DataValue(k).ToString() );
+      }
+    Results.push_back(ResultsForOneRow);
+    }
+
+  query->Delete();
+
+  return Results;
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::vector< std::vector< std::string > >
+GetValuesFromSeveralTables(
+  vtkMySQLDatabase *DatabaseConnector,
+  const std::string & MainTable,
+  const std::vector< std::string > & SelectFields,
+  const std::vector< std::string > & WhereAndConditions,
+  const std::vector< std::string > & JoinTablesOnTraceTable,
+  bool Distinct)
 {
   std::vector< std::vector< std::string > > Results;
   vtkSQLQuery *                             query = DatabaseConnector->GetQueryInstance();
@@ -675,11 +825,16 @@ std::vector< std::vector< std::string > > GetValuesFromSeveralTables(
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-std::vector< std::string > GetSamefieldFromTwoTables(
-  vtkMySQLDatabase *DatabaseConnector, std::string iTableOne,
-  std::string iTableTwo, std::string iColumn, std::string iField,
-  std::string iValue, std::string iFieldTwo,
-  std::vector< std::string > iListConditionsTwo)
+
+std::vector< std::string >
+GetSamefieldFromTwoTables( vtkMySQLDatabase *DatabaseConnector,
+                           const std::string & iTableOne,
+                           const std::string & iTableTwo,
+                           const std::string & iColumn,
+                           const std::string & iField,
+                           const std::string & iValue,
+                           const std::string & iFieldTwo,
+                           const std::vector< std::string > & iListConditionsTwo)
 {
   std::vector< std::string > result;
   vtkSQLQuery *              query = DatabaseConnector->GetQueryInstance();
@@ -713,17 +868,38 @@ std::vector< std::string > GetSamefieldFromTwoTables(
 
   return result;
 }
-
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-std::vector< std::string > GetSamefieldsFromTwoTables(vtkMySQLDatabase *DatabaseConnector,
-                                                      std::string iTableOne,
-                                                      std::string iTableTwo,
-                                                      std::string iColumnOne,
-                                                      std::string iColumnTwo,
-                                                      std::string iField,
-                                                      std::string iValue)
+std::list< unsigned int >
+GetTwoFieldsFromTwoTables( vtkMySQLDatabase *iDatabaseConnector,
+                           const std::string & iTableOne,
+                           const std::string & iTableTwo,
+                           const FieldWithValue & iOnCondition,
+                           const std::string & iColumnOne,
+                           const std::string & iColumnTwo,
+                           const std::string & iField,
+                           const std::vector< std::string > & iListValues,
+                           bool Distinct)
+{
+  std::string QueryString = SelectQueryStreamListConditions(iTableOne, iColumnOne, iField, iListValues, Distinct);
+  QueryString += " UNION ";
+  std::string What = GetLeftJoinTwoTables(iTableOne, iTableTwo, iOnCondition);
+  QueryString += SelectQueryStreamListConditions(What, iColumnTwo, iField, iListValues, Distinct);
+
+  return ExecuteSelectQuery< std::list< unsigned int > >(iDatabaseConnector, QueryString);
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::vector< std::string >
+GetSamefieldsFromTwoTables(vtkMySQLDatabase *DatabaseConnector,
+                           const std::string & iTableOne,
+                           const std::string & iTableTwo,
+                           const std::string & iColumnOne,
+                           const std::string & iColumnTwo,
+                           const std::string & iField,
+                           const std::string & iValue)
 {
   std::vector< std::string > result;
   vtkSQLQuery *              query = DatabaseConnector->GetQueryInstance();
@@ -764,15 +940,16 @@ std::vector< std::string > GetSamefieldsFromTwoTables(vtkMySQLDatabase *Database
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-std::vector< std::string > GetSamefieldsFromTwoTables(vtkMySQLDatabase *DatabaseConnector,
-                                                      std::string iTableOne,
-                                                      std::string iTableTwo,
-                                                      std::string iColumnOne,
-                                                      std::string iColumnTwo,
-                                                      std::string iField,
-                                                      std::string iValue,
-                                                      std::string iFieldTwo,
-                                                      std::vector< std::string > iListConditionsTwo)
+std::vector< std::string >
+GetSamefieldsFromTwoTables(vtkMySQLDatabase *DatabaseConnector,
+                           const std::string & iTableOne,
+                           const std::string & iTableTwo,
+                           const std::string & iColumnOne,
+                           const std::string & iColumnTwo,
+                           const std::string & iField,
+                           const std::string & iValue,
+                           const std::string & iFieldTwo,
+                           const std::vector< std::string > & iListConditionsTwo)
 {
   std::vector< std::string > result;
   vtkSQLQuery *              query = DatabaseConnector->GetQueryInstance();
@@ -816,10 +993,11 @@ std::vector< std::string > GetSamefieldsFromTwoTables(vtkMySQLDatabase *Database
 
 //------------------------------------------------------------------------------
 std::vector< std::string > GetSameFieldsFromSeveralTables(
-  vtkMySQLDatabase *DatabaseConnector, std::vector< std::string > iColumnNames,
-  std::vector< std::string > iVectorTablesNames,
-  std::vector< std::string > iVectorConditionFieldNames,
-  std::vector< std::vector< std::string > > iVectorConditionsValues)
+  vtkMySQLDatabase *DatabaseConnector,
+  const std::vector< std::string > & iColumnNames,
+  const std::vector< std::string > & iVectorTablesNames,
+  const std::vector< std::string > & iVectorConditionFieldNames,
+  const std::vector< std::vector< std::string > > & iVectorConditionsValues)
 {
   std::vector< std::string > result;
   vtkSQLQuery *              query = DatabaseConnector->GetQueryInstance();
@@ -883,10 +1061,15 @@ std::vector< std::string > GetSameFieldsFromSeveralTables(
 // OR iFieldOne = iVectorConditionFieldOne(i+1...) AND (iFieldTwo =
 // iVectorConditionFieldTwo(j) OR
 //iVectorConditionFieldTwo(j+1)... ) );
-std::vector< std::string > GetSpecificValueFromOneTableWithConditionsOnTwoColumns(
-  vtkMySQLDatabase *DatabaseConnector, std::string iColumnName, std::string iTableName,
-  std::string iFieldOne, std::vector< std::string > iVectorConditionFieldOne,
-  std::string iFieldTwo, std::vector< std::string > iVectorConditionFieldTwo)
+std::vector< std::string >
+GetSpecificValueFromOneTableWithConditionsOnTwoColumns(
+  vtkMySQLDatabase *DatabaseConnector,
+  const std::string & iColumnName,
+  const std::string & iTableName,
+  const std::string & iFieldOne,
+  const std::vector< std::string > & iVectorConditionFieldOne,
+  const std::string & iFieldTwo,
+  const std::vector< std::string > & iVectorConditionFieldTwo)
 {
   std::vector< std::string > result;
   vtkSQLQuery *              query = DatabaseConnector->GetQueryInstance();
@@ -953,12 +1136,13 @@ std::vector< std::string > GetSpecificValueFromOneTableWithConditionsOnTwoColumn
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-std::list< unsigned int > GetColumnForBoundedValue(std::string iColumnName,
-                                                   std::string iTableName,
-                                                   std::string iImgSessionID,
-                                                   std::string iCoordType,
-                                                   std::string iValue,
-                                                   vtkMySQLDatabase *DatabaseConnector)
+std::list< unsigned int >
+GetColumnForBoundedValue(const std::string & iColumnName,
+                         const std::string &  iTableName,
+                         const std::string &  iImgSessionID,
+                         const std::string &  iCoordType,
+                         const std::string &  iValue,
+                         vtkMySQLDatabase *DatabaseConnector)
 {
   std::list< unsigned int > result;
   vtkSQLQuery *             query = DatabaseConnector->GetQueryInstance();
@@ -1028,9 +1212,11 @@ std::list< unsigned int > GetColumnForBoundedValue(std::string iColumnName,
 
 //-------------------------------------------------------------------------
 std::list< unsigned int > GetSpecificValuesEqualToZero(
-  vtkMySQLDatabase *iDatabaseConnector, std::string iColumnName, std::string iTableName,
-  std::vector< std::string > iVectorConditionFieldOne,
-  std::string iFieldTwo)
+  vtkMySQLDatabase *iDatabaseConnector,
+  const std::string & iColumnName,
+  const std::string & iTableName,
+  const std::vector< std::string > & iVectorConditionFieldOne,
+  const std::string & iFieldTwo)
 {
   std::list< unsigned int > result;
   vtkSQLQuery *             query = iDatabaseConnector->GetQueryInstance();
@@ -1074,9 +1260,13 @@ std::list< unsigned int > GetSpecificValuesEqualToZero(
 
 //-------------------------------------------------------------------------
 std::list< unsigned int > GetAllSelectedValuesFromTwoTables(
-  vtkMySQLDatabase *iDatabaseConnector, std::string iTableOne, std::string iTableTwo,
-  std::string iColumn, FieldWithValue iJoinCondition,
-  std::vector< FieldWithValue > iFieldsWithValues, bool Distinct)
+  vtkMySQLDatabase *iDatabaseConnector,
+  const std::string & iTableOne,
+  const std::string & iTableTwo,
+  const std::string & iColumn,
+  const FieldWithValue & iJoinCondition,
+  const std::vector< FieldWithValue > & iFieldsWithValues,
+  bool Distinct)
 {
   std::string Where = GetLeftJoinTwoTables(iTableOne, iTableTwo, iJoinCondition);
   std::string QueryString = SelectQueryStreamListConditions(Where, iColumn,
@@ -1088,14 +1278,26 @@ std::list< unsigned int > GetAllSelectedValuesFromTwoTables(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-std::vector< std::string > GetAllSelectedValuesFromTwoTables(
-  vtkMySQLDatabase *iDatabaseConnector, std::string iTableOne, std::string iTableTwo,
-  std::vector< std::string > iSelectedFields, FieldWithValue iJoinCondition,
-  std::vector< FieldWithValue > iFieldsWithValues)
+std::vector< std::string >
+GetAllSelectedValuesFromTwoTables(
+  vtkMySQLDatabase *iDatabaseConnector,
+  const std::string & iTableOne,
+  const std::string & iTableTwo,
+  const std::vector< std::string > & iSelectedFields,
+  const FieldWithValue & iJoinCondition,
+  const std::vector< FieldWithValue > & iFieldsWithValues,
+  std::string iConditionConnector,
+  std::string ColumnNameOrder)
 {
   std::string Where = GetLeftJoinTwoTables(iTableOne, iTableTwo, iJoinCondition);
+
   std::string QueryString = SelectQueryStreamListConditions(Where, iSelectedFields,
-                                                            iFieldsWithValues, "AND");
+       iFieldsWithValues, iConditionConnector, false, ColumnNameOrder);
+  /*if (!ColumnNameOrder.empty())
+    {
+    QueryString = SelectQueryStreamListConditions(Where, iSelectedFields, iFieldsWithValues, "AND",
+      false, ColumnNameOrder);
+    }*/
 
   return ExecuteSelectQuery< std::vector< std::string > >(iDatabaseConnector, QueryString);
 }
@@ -1103,16 +1305,18 @@ std::vector< std::string > GetAllSelectedValuesFromTwoTables(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-std::list< unsigned int > GetAllSelectedValuesFromTwoTables(vtkMySQLDatabase *iDatabaseConnector,
-                                                            std::string iTableOne,
-                                                            std::string iTableTwo,
-                                                            std::string iColumn,
-                                                            FieldWithValue iJoinCondition,
-                                                            std::string iField,
-                                                            std::vector< std::string > iVectorValues,
-                                                            bool Distinct)
+std::list< unsigned int >
+GetAllSelectedValuesFromTwoTables(vtkMySQLDatabase *iDatabaseConnector,
+                                  const std::string & iTableOne,
+                                  const std::string & iTableTwo,
+                                  const std::string & iColumn,
+                                  const FieldWithValue & iJoinCondition,
+                                  const std::string & iField,
+                                  const std::vector< std::string > & iVectorValues,
+                                  bool Distinct,
+                                  bool NonNULLRows)
 {
-  std::string Where = GetLeftJoinTwoTables(iTableOne, iTableTwo, iJoinCondition);
+  std::string Where = GetLeftJoinTwoTables(iTableOne, iTableTwo, iJoinCondition, NonNULLRows);
   std::string QueryString = SelectQueryStreamListConditions(Where, iColumn, iField, iVectorValues, Distinct);
 
   return ExecuteSelectQuery< std::list< unsigned int > >(iDatabaseConnector, QueryString);
@@ -1121,14 +1325,15 @@ std::list< unsigned int > GetAllSelectedValuesFromTwoTables(vtkMySQLDatabase *iD
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-std::list< unsigned int > GetAllSelectedValuesFromTwoTables(vtkMySQLDatabase *iDatabaseConnector,
-                                                            std::string iTableOne,
-                                                            std::string iTableTwo,
-                                                            std::string iColumn,
-                                                            FieldWithValue iJoinCondition,
-                                                            std::string iField,
-                                                            std::vector< std::string > iVectorValues,
-                                                            FieldWithValue iAndCondition)
+std::list< unsigned int >
+GetAllSelectedValuesFromTwoTables(vtkMySQLDatabase *iDatabaseConnector,
+                                  const std::string & iTableOne,
+                                  const std::string & iTableTwo,
+                                  const std::string & iColumn,
+                                  const FieldWithValue & iJoinCondition,
+                                  const std::string & iField,
+                                  const std::vector< std::string > & iVectorValues,
+                                  const FieldWithValue & iAndCondition)
 {
   std::string Where = GetLeftJoinTwoTables(iTableOne, iTableTwo, iJoinCondition);
   std::string Conditions = "(";
@@ -1147,11 +1352,33 @@ std::list< unsigned int > GetAllSelectedValuesFromTwoTables(vtkMySQLDatabase *iD
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+std::list<unsigned int>
+GetAllSelectedValuesFromTwoTables( vtkMySQLDatabase *iDatabaseConnector,
+                                   const std::string & iTableOne,
+                                   const std::string & iTableTwo,
+                                   const std::vector<std::string> & iSelectedFields,
+                                   const FieldWithValue & iJoinCondition,
+                                   const std::string & iField,
+                                   const std::string & iValue,
+                                   bool NonNULLRows)
+{
+  std::string Where = GetLeftJoinTwoTables(iTableOne, iTableTwo, iJoinCondition, true);
+  std::string QueryString = SelectQueryStreamCondition(Where, iSelectedFields,
+       iField, iValue);
+
+  return ExecuteSelectQuery< std::list< unsigned int > >(iDatabaseConnector, QueryString);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 int GetMaxValueFromTwoTables(vtkMySQLDatabase *iDatabaseConnector,
-                             std::string iTableOne, std::string iTableTwo,
-                             std::string iColumn, FieldWithValue iJoinCondition,
-                             std::string iField, std::vector< std::string > iVectorValues,
-                             FieldWithValue iAndCondition)
+                             const std::string & iTableOne,
+                             const std::string & iTableTwo,
+                             const std::string & iColumn,
+                             const FieldWithValue & iJoinCondition,
+                             const std::string & iField,
+                             const std::vector< std::string > & iVectorValues,
+                             const FieldWithValue & iAndCondition)
 {
   std::string What = "MAX(";
 
@@ -1172,11 +1399,16 @@ int GetMaxValueFromTwoTables(vtkMySQLDatabase *iDatabaseConnector,
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-std::list< unsigned int > GetListValuesFromTwoTablesAndCondition(
+std::list< unsigned int >
+GetListValuesFromTwoTablesAndCondition(
   vtkMySQLDatabase *iDatabaseConnector,
-  std::string iTableOne, std::string iTableTwo, std::string iColumn,
-  FieldWithValue iJoinCondition, std::string iField,
-  std::vector< std::string > iVectorValues, FieldWithValue iAndCondition)
+  const std::string & iTableOne,
+  const std::string & iTableTwo,
+  const std::string & iColumn,
+  const FieldWithValue & iJoinCondition,
+  const std::string & iField,
+  const std::vector< std::string > & iVectorValues,
+  const FieldWithValue & iAndCondition)
 {
   std::string Where = GetLeftJoinTwoTables(iTableOne, iTableTwo, iJoinCondition);
   std::string Conditions = "(";
@@ -1194,10 +1426,14 @@ std::list< unsigned int > GetListValuesFromTwoTablesAndCondition(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-std::list< unsigned int > GetDoublonValuesFromTwoTables(
-  vtkMySQLDatabase *iDatabaseConnector, std::string iTableOne, std::string iTableTwo,
-  std::string iColumn, FieldWithValue iJoinCondition, std::string iField,
-  std::vector< std::string > iVectValues)  //, std::string GroupByColumn)
+std::list< unsigned int >
+GetDoublonValuesFromTwoTables(vtkMySQLDatabase *iDatabaseConnector,
+                              const std::string & iTableOne,
+                              const std::string & iTableTwo,
+                              const std::string & iColumn,
+                              const FieldWithValue & iJoinCondition,
+                              const std::string & iField,
+                              const std::vector< std::string > & iVectValues)  //, std::string GroupByColumn)
 
 {
   std::string Where = GetLeftJoinTwoTables(iTableOne, iTableTwo, iJoinCondition);
@@ -1212,9 +1448,14 @@ std::list< unsigned int > GetDoublonValuesFromTwoTables(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-std::vector< std::string > GetOrderByWithLimit(vtkMySQLDatabase *iDatabaseConnector,
-                                               std::string iColumnName, std::string iTableName, std::string iField,
-                                               std::string iValue, bool ASC, std::string iNumberLimit)
+std::vector< std::string >
+GetOrderByWithLimit(vtkMySQLDatabase *iDatabaseConnector,
+                    const std::string & iColumnName,
+                    const std::string & iTableName,
+                    const std::string & iField,
+                    const std::string & iValue,
+                    bool ASC,
+                    const std::string & iNumberLimit)
 {
   std::stringstream QueryStream;
 
@@ -1236,8 +1477,11 @@ std::vector< std::string > GetOrderByWithLimit(vtkMySQLDatabase *iDatabaseConnec
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-std::string GetCoordinateValuesQueryString(std::string iTableName, std::string iField,
-                                           std::string iValue, bool iMin)
+std::string
+GetCoordinateValuesQueryString(const std::string & iTableName,
+                               const std::string & iField,
+                               const std::string & iValue,
+                               bool iMin)
 {
   std::stringstream Querystream;
 
@@ -1266,8 +1510,11 @@ std::string GetCoordinateValuesQueryString(std::string iTableName, std::string i
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-void ModifyStructureWithTCoordAndPoints(ContourMeshStructure & ioStructure,
-                                        unsigned int iTCoord, std::string iPoints, std::string iTraceName)
+void
+ModifyStructureWithSpecificities(ContourMeshStructure & ioStructure,
+                                 unsigned int iTCoord,
+                                 const std::string & iPoints,
+                                 const std::string & iTraceName)
 {
   ioStructure.TCoord = iTCoord;
   vtkPolyData *output = vtkPolyData::New();
@@ -1306,8 +1553,10 @@ void ModifyStructureWithTCoordAndPoints(ContourMeshStructure & ioStructure,
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-void ModifyStructureWithTCoordAndPoints(TrackStructure & ioStructure,
-                                        unsigned int iTCoord, std::string iPoints, std::string iTraceName)
+void ModifyStructureWithSpecificities(TrackStructure & ioStructure,
+                                      unsigned int iTCoord,
+                                      const std::string & iPoints,
+                                      const std::string & iTraceName)
 {
   (void)iTCoord;
   if ( iTraceName != "track" )
@@ -1338,12 +1587,33 @@ void ModifyStructureWithTCoordAndPoints(TrackStructure & ioStructure,
     ioStructure.Nodes = NULL;
     }
 }
-
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-std::list< double * > GetCenterBoundingBoxes(vtkMySQLDatabase *DatabaseConnector,
-                                             std::string iTableName, std::string iField, std::string iValue)
+void
+ModifyStructureWithSpecificities(LineageStructure & ioStructure,
+                                 unsigned int iTrackRootID,
+                                 const std::string & iPoints,
+                                 const std::string & iTraceName)
+{
+  (void) iPoints;
+  if ( iTraceName != "lineage" )
+    {
+    std::cout << "this method is only for lineage";
+    std::cout << "Debug: In " << __FILE__ << ", line " << __LINE__;
+    std::cout << std::endl;
+    return;
+    }
+  ioStructure.TrackRootID = iTrackRootID;
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+std::list< double * >
+GetCenterBoundingBoxes(vtkMySQLDatabase *DatabaseConnector,
+                       const std::string & iTableName,
+                       const std::string & iField,
+                       const std::string & iValue)
 {
   std::list< double * > Results =  std::list< double * >();
   vtkSQLQuery *         query = DatabaseConnector->GetQueryInstance();
@@ -1398,7 +1668,91 @@ std::list< double * > GetCenterBoundingBoxes(vtkMySQLDatabase *DatabaseConnector
     }
   return Results;
 }
-
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
+int NumberOfElementForGivenImagingSessionAndTrace(
+  vtkMySQLDatabase *DatabaseConnector,
+  unsigned int iImagingSession,
+  const std::string & iTrace)
+{
+  std::string What = "COUNT(*)";
+  std::string Where = iTrace;
+  std::string Condition = "ImagingSessionID = ";
+  std::stringstream s;
+  s << iImagingSession;
+  Condition += s.str();
+
+  std::string QueryString = SelectGeneralQueryConditions(What,Where,Condition);
+
+  return ExecuteSelectQueryOneValue< int >(DatabaseConnector,
+                                                    QueryString);
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+int NumberOfElementForGivenImagingSessionAndTraceForGivenTimePoint(
+  vtkMySQLDatabase *DatabaseConnector,
+  unsigned int iImagingSession,
+  const std::string & iTrace,
+  int iTimePoint)
+{
+  // What
+  std::string What = "COUNT(*)";
+
+  // Where
+  FieldWithValue CoordIDMin =
+      { "CoordIDMin",
+        "CoordID",
+        "=" };
+  std::string Where = GetLeftJoinTwoTables(iTrace,
+                                           "coordinate",
+                                           CoordIDMin);
+
+  // Condition
+  std::string Condition = "(ImagingSessionID = ";
+  std::stringstream s;
+  s << iImagingSession;
+  Condition += s.str();
+  Condition += " AND TCoord = ";
+  std::stringstream timePoint;
+  timePoint << iTimePoint;
+  Condition += timePoint.str() + ")";
+
+  std::string QueryString = SelectGeneralQueryConditions(What,Where,Condition);
+
+  int test = ExecuteSelectQueryOneValue< int >(DatabaseConnector,
+                                               QueryString);
+
+  return test;
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+/*
+int NumberOfTimePointsForGivenImagingSession(
+        vtkMySQLDatabase *DatabaseConnector,
+        unsigned int iImagingSession)
+{
+  FieldWithValue CoordMaxCondition =
+      { "CoordIDMax",
+        "CoordID",
+        "=" };
+
+  std::string What = GetLeftJoinTwoTables("imagingsession",
+                                          "coordinate",
+                                          CoordMaxCondition);
+  // std::string What = "COUNT(*)";
+  // std::string Where = iTrace;
+  // std::string Condition = "ImagingSessionID = ";
+  // std::stringstream s;
+  // s << iImagingSession;
+  // Condition += s.str();
+  //
+  // std::string QueryString = SelectGeneralQueryConditions(What,Where,Condition);
+  // return ExecuteSelectQueryOneValue< int >(DatabaseConnector,
+  //                                                  QueryString);
+}
+
+//------------------------------------------------------------------------------
+*/

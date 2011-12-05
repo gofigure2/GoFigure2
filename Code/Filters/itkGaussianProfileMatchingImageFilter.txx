@@ -220,7 +220,11 @@ template< class TFeatureImage, class TInputImage, class TSegmentImage >
 void
 GaussianProfileMatchingImageFilter< TFeatureImage, TInputImage, TSegmentImage >::ThreadedGenerateData(
   const ImageRegionType & windowRegion,
+#ifdef ITKv4
+  ThreadIdType threadId )
+#else
   int threadId)
+#endif
 {
   (void)threadId;
 

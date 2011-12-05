@@ -126,8 +126,9 @@ vtkViewImage2DCommand::Execute( vtkObject *caller,
   // Start
   if ( event == vtkCommand::StartWindowLevelEvent )
     {
-    this->InitialWindow = this->Viewer->GetColorWindow();
-    this->InitialLevel = this->Viewer->GetColorLevel();
+    //no since it is min an max now...!
+    this->InitialWindow = this->Viewer->GetLevel() - this->Viewer->GetWindow();
+    this->InitialLevel = this->Viewer->GetLevel() - this->InitialWindow/2;
     return;
     }
 
@@ -194,6 +195,7 @@ vtkViewImage2DCommand::Execute( vtkObject *caller,
     this->Viewer->Render();
     }
 }
+//----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
 void
@@ -206,6 +208,7 @@ vtkViewImage2DCommand::Windowing(vtkInteractorStyleImage2D *isi)
     }
 
   int *  size = this->Viewer->GetRenderWindow()->GetSize();
+
   double window = this->InitialWindow;
   double level = this->InitialLevel;
 
@@ -218,34 +221,48 @@ vtkViewImage2DCommand::Windowing(vtkInteractorStyleImage2D *isi)
         - isi->GetWindowLevelCurrentPosition()[1] ) / size[1];
 
   // Scale by current values
-  if ( fabs(window) > 0.01 ) { dx = dx * window; }
+  if ( fabs(window) > 0.01 ) { dy = dy * window; }
   else
     {
-    dx = dx * ( window < 0 ? -0.01 : 0.01 );
+    dy = dy * ( window < 0 ? -0.01 : 0.01 );
     }
-  if ( fabs(level) > 0.01 ) { dy = dy * level; }
+  if ( fabs(level) > 0.01 ) { dx = dx * level; }
   else
     {
-    dy = dy * ( level < 0 ? -0.01 : 0.01 );
+    dx = dx * ( level < 0 ? -0.01 : 0.01 );
     }
 
   // Abs so that direction does not flip
-  if ( window < 0.0 ) { dx = -1 * dx; }
-  if ( level < 0.0 ) { dy = -1 * dy; }
+  if ( window < 0.0 ) { dy = -1 * dy; }
+  if ( level < 0.0 ) { dx = -1 * dx; }
 
   // Compute new window level
-  double newWindow = dx + window;
-  double newLevel = level - dy;
+  double newWindow = window - dy;
+  double newLevel = level + dx;
 
   // Stay away from zero and really
   if ( fabs(newWindow) < 0.01 ) { newWindow = 0.01 * ( newWindow < 0 ? -1 : 1 ); }
   if ( fabs(newLevel) < 0.01 ) { newLevel = 0.01 * ( newLevel < 0 ? -1 : 1 ); }
 
-  this->Viewer->SetColorWindow(newWindow);
-  this->Viewer->SetColorLevel(newLevel);
-  this->Viewer->Render();
-}
+  // compute new window
+  double min = 0.0;
+  if(newLevel - newWindow /2 > 0)
+    min = newLevel - newWindow /2;
 
+  double max = this->Viewer->GetInput()->GetScalarRange()[1];
+  if(newLevel + newWindow /2 < this->Viewer->GetInput()->GetScalarRange()[1])
+    max = newLevel + newWindow /2;
+
+  // can happen if we move too fast
+  if(min > max - 2)
+    return;
+
+  this->Viewer->SetWindow(min);
+  this->Viewer->SetLevel(max);
+}
+//----------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------
 void vtkViewImage2DCommand::PrintInformation()
 {
   vtkRenderWindowInteractor *rwi =
@@ -285,7 +302,11 @@ void vtkViewImage2DCommand::PrintInformation()
     {
     os2 << "Value : " << this->Viewer->GetValueAtPosition (pos);
     }
-  else
+  // one display value for single channel images
+ /*
+  * \todo Nicolas- show channel value if we look at a multi channel image
+  */
+  /*else
     {
     os2 << "Value : [";
     for ( int i = 0; i < 3; i++ )
@@ -293,7 +314,8 @@ void vtkViewImage2DCommand::PrintInformation()
       os2 << this->Viewer->GetValueAtPosition (pos, i) << ", ";
       }
     os2 << "]";
-    }
+    }*/
+
 
   this->Viewer->GetCornerAnnotation()->SetText ( 3, os2.str().c_str() );
   this->Viewer->Render();
@@ -302,7 +324,9 @@ void vtkViewImage2DCommand::PrintInformation()
   // to allocated but not managed memory : have to cleanup :
   delete[] idx;
 }
+//----------------------------------------------------------------------------
 
+//----------------------------------------------------------------------------
 void vtkViewImage2DCommand::Zooming()
 {
   vtkRenderWindowInteractor *rwi =
@@ -321,7 +345,26 @@ void vtkViewImage2DCommand::Zooming()
   double z = pow(static_cast< double >( 1.1 ), factor);
 
   this->Viewer->SetZoom(z);
+
+  double parallel_scale =
+      this->Viewer->GetRenderer()->GetActiveCamera()->GetParallelScale();
+
+  if(parallel_scale == factor)
+    { std::cout << "are equal" << std::endl;}
+
+  double          t = parallel_scale / z;
+
+  this->Viewer->GetRenderer()->GetActiveCamera()->SetParallelScale(t);
+
+  //  ???
+    if ( this->Viewer->GetInteractorStyle()->GetInteractor()->GetLightFollowCamera() )
+      {
+        this->Viewer->GetRenderer()->UpdateLightsGeometryToFollowCamera();
+      }
+//    item->Render();
+
 }
+//----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
 void

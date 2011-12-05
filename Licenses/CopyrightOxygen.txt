@@ -1,6 +1,6 @@
  The copyright of the following icon belongs to the Oxygen Project:
  (http://www.oxygen-icons.org/)
- *mixer-video icon
+ *GoFigure2\Resources\video.png corresponds to mixer-video.png
 
  It can be found following this link:
  http://www.icon-king.com/projects/oxygen/

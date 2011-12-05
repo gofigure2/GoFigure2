@@ -169,5 +169,13 @@ int ContourMeshStructure::GetDirection()
 
   return oDir;
 }
+//--------------------------------------------------------------------------
 
+//--------------------------------------------------------------------------
+void
+ContourMeshStructure::
+ModifyCollectionID(unsigned int iCollectionID)
+{
+  this->CollectionID = iCollectionID;
+}
 //--------------------------------------------------------------------------

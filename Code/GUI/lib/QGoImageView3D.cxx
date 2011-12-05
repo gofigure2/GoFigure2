@@ -77,6 +77,10 @@
 #include "vtkImplicitPlaneWidget.h"
 #include "vtkPlane.h"
 
+#include "vtkLookupTable.h"
+
+#include "vtkPiecewiseFunction.h"
+
 #include <cstdlib>
 
 //-------------------------------------------------------------------------
@@ -311,6 +315,7 @@ QGoImageView3D::Update()
     {
     this->m_Pool->SyncRender();
     }
+
   QGoImageView::Update();
 }
 
@@ -496,8 +501,18 @@ QGoImageView3D::SetupVTKtoQtConnections()
   // when contours picked, send a signal
   VtkEventQtConnector->Connect(
     reinterpret_cast< vtkObject * >( View1->GetInteractorStyle() ),
-    vtkViewImage2DCommand::WindowLevelEvent,
-    this, SLOT( UpdateScalarBarIn3DView() ) );
+    vtkCommand::WindowLevelEvent,
+    this, SLOT( UpdateLUT() ) );
+
+  VtkEventQtConnector->Connect(
+    reinterpret_cast< vtkObject * >( View2->GetInteractorStyle() ),
+    vtkCommand::WindowLevelEvent,
+    this, SLOT( UpdateLUT() ) );
+
+  VtkEventQtConnector->Connect(
+    reinterpret_cast< vtkObject * >( View3->GetInteractorStyle() ),
+    vtkCommand::WindowLevelEvent,
+    this, SLOT( UpdateLUT() ) );
 
   ////////////////////////////////////////////////////////////////////////////
 
@@ -514,6 +529,8 @@ QGoImageView3D::SetupVTKtoQtConnections()
     reinterpret_cast< vtkObject * >( View3D ),
     vtkViewImage3DCommand::UpdateRenderEvent,
     this, SLOT( UpdateRenderWindows() ) );
+
+  ////////////////////////////////////////////////////////////////////////////
 }
 
 //--------------------------------------------------------------------------
@@ -524,18 +541,18 @@ QGoImageView3D::SetImage(vtkImageData *input)
 {
   if ( !input )
     {
-    return;
+    vtkSmartPointer<vtkImageData> test = vtkSmartPointer<vtkImageData>::New();
+    this->m_Image->ShallowCopy(test);
     }
   else
     {
     int dim[3];
     input->GetDimensions(dim);
 
-    if ( dim[0] + dim[1] + dim[2] > 0 )
-      {
-      m_Initialized = true;
-      this->m_Image = input;
-      }
+    assert ( dim[0] + dim[1] + dim[2] > 0 );
+
+    m_Initialized = true;
+    this->m_Image->ShallowCopy(input);
     }
 }
 
@@ -638,45 +655,41 @@ QGoImageView3D::SnapshotViewXYZ(
 void
 QGoImageView3D::SetFullScreenView(const int & iS)
 {
-  if ( IsFullScreen == iS )
-    {
-    IsFullScreen = 0;
-    }
-  else
+  if ( IsFullScreen != iS )
     {
     IsFullScreen = iS;
-    }
 
-  switch ( IsFullScreen )
-    {
-    default:
-    case 0:
+    switch ( IsFullScreen )
       {
-      Quadview();
-      break;
+      default:
+      case 0:
+        {
+        Quadview();
+        break;
+        }
+      case 1:
+        {
+        FullScreenViewXY();
+        break;
+        }
+      case 2:
+        {
+        FullScreenViewXZ();
+        break;
+        }
+      case 3:
+        {
+        FullScreenViewYZ();
+        break;
+        }
+      case 4:
+        {
+        FullScreenViewXYZ();
+        break;
+        }
       }
-    case 1:
-      {
-      FullScreenViewXY();
-      break;
-      }
-    case 2:
-      {
-      FullScreenViewXZ();
-      break;
-      }
-    case 3:
-      {
-      FullScreenViewYZ();
-      break;
-      }
-    case 4:
-      {
-      FullScreenViewXYZ();
-      break;
-      }
+    emit FullScreenViewChanged(IsFullScreen);
     }
-  emit FullScreenViewChanged(IsFullScreen);
 }
 
 //--------------------------------------------------------------------------
@@ -948,41 +961,10 @@ QGoImageView3D::AddContour(vtkPolyData *iDataset, vtkProperty *iProperty)
   vtkActor *temp = m_View3D->AddDataSet( (vtkDataSet *)iDataset,
                                          iProperty, false, false );
 
-  //m_View3D->Render();
   oList.push_back(temp);
 
   return oList;
 }
-
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-void
-QGoImageView3D::ChangeActorProperty(vtkProp3D *iActor, vtkProperty *iProperty)
-{
-  m_View3D->ChangeActorProperty(iActor, iProperty);
-  QGoImageView::ChangeActorProperty(iActor, iProperty);
-}
-
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
-void
-QGoImageView3D::ChangeActorProperty(int iDir, vtkProp3D *iActor, vtkProperty *iProperty)
-{
-  if ( ( iDir >= 0 ) && ( iDir < m_Pool->GetNumberOfItems() ) )
-    {
-    QGoImageView::ChangeActorProperty(iDir, iActor, iProperty);
-    }
-  else
-    {
-    if ( iDir == 3 )
-      {
-      m_View3D->ChangeActorProperty(iActor, iProperty);
-      }
-    }
-}
-
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
@@ -991,10 +973,13 @@ QGoImageView3D::RemoveActor(const int & iId, vtkActor *iActor)
 {
   if ( iId == 3 )
     {
+    // remove from renderer
+    // should be add/remove view property
     m_View3D->GetRenderer()->RemoveActor(iActor);
     }
   else
     {
+    // remove from renderer
     QGoImageView::RemoveActor(iId, iActor);
     }
 }
@@ -1007,10 +992,12 @@ QGoImageView3D::AddActor(const int & iId, vtkActor *iActor)
 {
   if ( iId == 3 )
     {
+    // add to renderer
     m_View3D->GetRenderer()->AddActor(iActor);
     }
   else
     {
+    // add to renderer
     QGoImageView::AddActor(iId, iActor);
     }
 }
@@ -1021,11 +1008,7 @@ QGoImageView3D::AddActor(const int & iId, vtkActor *iActor)
 void
 QGoImageView3D::SetLookupTable(vtkLookupTable *iLut)
 {
-  if ( this->m_Image->GetNumberOfScalarComponents() == 1 )
-    {
-    m_View3D->SetLookupTable(iLut);
-    }
-
+  m_View3D->SetLookupTable(iLut);
   QGoImageView::SetLookupTable(iLut);
 }
 
@@ -1211,11 +1194,17 @@ QGoImageView3D::EnablePlaneWidget(bool iValue)
 
 //-------------------------------------------------------------------------
 void
-QGoImageView3D::UpdateScalarBarIn3DView()
+QGoImageView3D::UpdateLUT()
 {
-  m_View3D->SetLookupTable( m_Pool->GetItem(0)->GetLookupTable() );
+  if(m_Pool->GetItem(0)->GetIsColor())
+    {
+    return;
+    }
+  // update tf function by modifying the widget
+  double window = m_Pool->GetItem(0)->GetWindow();
+  double color = m_Pool->GetItem(0)->GetLevel();
+  emit NewWindowLevel(window, color);
 }
-
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -1307,20 +1296,23 @@ QGoImageView3D::InitializePlaneWidget()
 /// \todo Add button to enable/disable tri planar rendering
 //-------------------------------------------------------------------------
 void
-QGoImageView3D::EnableVolumeRendering(bool iValue)
+QGoImageView3D::
+EnableVolumeRendering(const std::vector<vtkImageData*>& iImages,
+                      const std::vector<vtkPiecewiseFunction*>& iOpacities)
 {
-  if ( iValue )
-    {
-    //m_View3D->SetTriPlanarRenderingOff();
-    m_View3D->SetVolumeRenderingOn();
-    }
-  else
-    {
-    //m_View3D->SetTriPlanarRenderingOn();
-    m_View3D->SetVolumeRenderingOff();
-    }
+  m_View3D->SetVolumeRenderingOn(iImages, iOpacities);
+  m_View3D->Render();
 }
+//---------------------------------------------------------------------------
 
+//---------------------------------------------------------------------------
+void
+QGoImageView3D::
+DisableVolumeRendering()
+{
+  m_View3D->SetVolumeRenderingOff();
+  m_View3D->Render();
+}
 //---------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------
@@ -1330,32 +1322,11 @@ QGoImageView3D::UpdateCurrentActorSelection(vtkObject *caller)
   vtkInteractorStyleImage2D *t =
     static_cast< vtkInteractorStyleImage2D * >( caller );
 
-  m_CurrentActor = vtkActor::SafeDownCast ( t->GetCurrentProp() );
-
-  if ( t == m_Pool->GetItem(0)->GetInteractorStyle() )
-    {
-    //qDebug() << "in XY";
-    emit SelectionXYChanged();
-    }
-  else if ( t == m_Pool->GetItem(1)->GetInteractorStyle() )
-    {
-    //qDebug() << "in XZ";
-    emit SelectionXZChanged();
-    }
-  else if ( t == m_Pool->GetItem(2)->GetInteractorStyle() )
-    {
-    //qDebug() << "in YZ";
-    emit SelectionYZChanged();
-    }
-  else if ( t == (vtkInteractorStyleImage2D *)this->m_View3D->GetInteractorStyle3D() )
-    {
-    //qDebug() << "in 3D";
-    emit SelectionXYZChanged();
-    }
-  else
-    {
-    qWarning() << "no match";
-    }
+  if( t->GetCurrentProp() )
+  {
+    m_CurrentActor = vtkActor::SafeDownCast ( t->GetCurrentProp() );
+    emit SelectionChanged();
+  }
 }
 
 //---------------------------------------------------------------------------
@@ -1371,7 +1342,7 @@ QGoImageView3D::UpdateCurrentActorVisibility(vtkObject *caller)
     SafeDownCast( t->GetInteractorStyle3D()->GetCurrentProp() );
   m_CurrentState = t->GetInteractorStyle3D()->GetCurrentState();
 
-  emit VisibilityXYZChanged();
+  emit VisibilityChanged();
 }
 
 //-------------------------------------------------------------------------
@@ -1393,3 +1364,34 @@ QGoImageView3D::GetCurrentState()
 }
 
 //---------------------------------------------------------------------------
+
+//---------------------------------------------------------------------------
+void
+QGoImageView3D::SynchronizeViews( bool iSynchronize)
+{
+  int n = m_Pool->GetNumberOfItems();
+
+  for ( int i = 0; i < n; i++ )
+    {
+    vtkViewImage2D *viewer = m_Pool->GetItem(i);
+    m_Pool->SynchronizeViews( iSynchronize );
+    viewer->SynchronizeViews( iSynchronize );
+    }
+}
+//---------------------------------------------------------------------------
+
+//---------------------------------------------------------------------------
+void
+QGoImageView3D::ShowPlanes(bool iShow)
+{
+  if(iShow)
+  {
+  m_View3D->SetTriPlanarRenderingOn();
+  }
+else
+  {
+  m_View3D->SetTriPlanarRenderingOff();
+  }
+
+  m_View3D->Render();
+}

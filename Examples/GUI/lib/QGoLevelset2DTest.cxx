@@ -71,9 +71,9 @@ int main(int argc, char **argv)
   std::vector< vtkSmartPointer< vtkImageData > > imagesVector(1);
   imagesVector[0] = castFilter->GetOutput();
   levelSet2DFilter->setOriginalImageMC(&imagesVector);
-  levelSet2DFilter->setIterations(50);
-  levelSet2DFilter->setRadius(2);
-  levelSet2DFilter->setCurvature(10);
+//  levelSet2DFilter->setIterations(50);
+//  levelSet2DFilter->setRadius(2);
+//  levelSet2DFilter->setCurvature(10);
 
   double seedPos[3];
   seedPos[0] = 5;

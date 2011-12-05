@@ -711,14 +711,15 @@ std::list< unsigned int > GoDBCollectionOfTraces::GetListTracesIDsFromThisCollec
 
 //------------------------------------------------------------------------
 std::list< unsigned int > GoDBCollectionOfTraces::GetListCollectionIDs(
-  vtkMySQLDatabase *iDatabaseConnector, std::list< unsigned int > iListTracesIDs)
+  vtkMySQLDatabase *iDatabaseConnector, std::list< unsigned int > iListTracesIDs,
+  bool ExcludeZero, bool Distinct)
 {
   std::list< unsigned int > ListCollectionIDs = std::list< unsigned int >();
   if ( this->m_CollectionName != "None" )
     {
     ListCollectionIDs = ListSpecificValuesForOneColumn(
         iDatabaseConnector, this->m_TracesName, this->m_CollectionIDName,
-        this->m_TracesIDName, iListTracesIDs, true, true);
+        this->m_TracesIDName, iListTracesIDs, Distinct, ExcludeZero);
     }
   return ListCollectionIDs;
 }
@@ -904,6 +905,22 @@ std::list< unsigned int > GoDBCollectionOfTraces::GetTraceIDsBelongingToCollecti
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+std::list<unsigned int> GoDBCollectionOfTraces::GetTraceIDsBelongingToListTimePoints(
+    vtkMySQLDatabase *iDatabaseConnector,std::list<unsigned int> iListTPs)
+{
+  FieldWithValue JoinCondition = { "CoordIDMin", "CoordID", "=" };
+  std::vector< std::string > VectTimePoints = ListUnsgIntToVectorString(iListTPs);
+  FieldWithValue AndCondition =
+    {"imagingsessionID", ConvertToString<unsigned int>(this->m_ImgSessionID), "="};
+
+  return GetAllSelectedValuesFromTwoTables(iDatabaseConnector, this->m_TracesName,
+    "coordinate", this->m_TracesIDName, JoinCondition, "TCoord", VectTimePoints,
+     AndCondition);
+}
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 std::list< unsigned int > GoDBCollectionOfTraces::GetTimePointsForTraceIDs(
   vtkMySQLDatabase *iDatabaseConnector, std::list< unsigned int > iListTraceIDs)
 {
@@ -990,16 +1007,195 @@ std::vector< std::string > GoDBCollectionOfTraces::GetAttributesForTraces()
 {
   std::vector< std::string > oTraceAttributes;
   oTraceAttributes.push_back(this->m_TracesIDName);
-  oTraceAttributes.push_back(this->m_CollectionIDName);
+  if (this->m_CollectionIDName != "NoneID")
+    {
+    oTraceAttributes.push_back(this->m_CollectionIDName);
+    }
+  else
+    {
+    oTraceAttributes.push_back("TrackIDRoot");
+    }
   oTraceAttributes.push_back("Red");
   oTraceAttributes.push_back("Green");
   oTraceAttributes.push_back("Blue");
   oTraceAttributes.push_back("Alpha");
   oTraceAttributes.push_back("Points");
   oTraceAttributes.push_back("TCoord");
+
   return oTraceAttributes;
 }
 
 //-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
+int GoDBCollectionOfTraces::GetTraceIDWithLowestTimePoint(
+  vtkMySQLDatabase *iDatabaseConnector,
+  std::list<unsigned int> iListTraceIDs )
+{
+  int oTraceID = -1;
+  std::vector< std::string > SelectedFields(2);
+  SelectedFields.at(0) = "track.trackid";
+  SelectedFields.at(1) = "coordinate.TCoord";
+  FieldWithValue JoinCondition = { "CoordIDMin", "CoordID", "=" };
+  std::vector<FieldWithValue> Conditions = std::vector<FieldWithValue>();
+  std::list<unsigned int>::iterator iter = iListTraceIDs.begin();
+
+  while(iter != iListTraceIDs.end() )
+    {
+    unsigned int Value = *iter;
+    FieldWithValue Condition = {this->m_TracesIDName, ConvertToString<unsigned int>(Value), "="};
+    Conditions.push_back(Condition);
+    ++iter;
+    }
+
+  std::vector< std::string > ResultQuery
+    = GetAllSelectedValuesFromTwoTables(
+        iDatabaseConnector, this->m_TracesName, "coordinate", SelectedFields,
+        JoinCondition, Conditions, "OR", "TCoord");
+  if (ResultQuery.size()>2)
+    {
+      if (ResultQuery.at(1) != ResultQuery.at(3)) //if the 2 lowest timepoints are different
+        {
+        oTraceID = ss_atoi<int>(ResultQuery.at(0)); //return the 1rst traceID
+        }
+    }
+  return oTraceID;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+ std::list<unsigned int> GoDBCollectionOfTraces::GetTrackFamilyDataFromDB(
+   vtkMySQLDatabase *iDatabaseConnector)
+ {
+   std::vector<std::string> VectColumnsTrackFamily(3);
+   VectColumnsTrackFamily.at(0) = "TrackIDMother";
+   VectColumnsTrackFamily.at(1) = "TrackIDDaughter1";
+   VectColumnsTrackFamily.at(2) = "TrackIDDaughter2";
+   const FieldWithValue JoinCondition = {"TrackID", "TrackIDMother", "="};
+
+   return GetAllSelectedValuesFromTwoTables(  iDatabaseConnector,
+                                              std::string( "track" ),
+                                              std::string( "trackfamily" ),
+                                              VectColumnsTrackFamily,
+                                              JoinCondition,
+                                              std::string( "ImagingsessionID" ),
+                                              ConvertToString<unsigned int>(this->m_ImgSessionID),
+                                              true);
+ }
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+ std::list<unsigned int> GoDBCollectionOfTraces::GetTrackFamiliesForLineages(
+   vtkMySQLDatabase *iDatabaseConnector, std::list<unsigned int> iLineagesID)
+ {
+   FieldWithValue JoinCondition = { "trackID", "TrackIDMother", "=" };
+
+   std::vector<std::string> VectorLineages = ListUnsgIntToVectorString(iLineagesID);
+
+   return GetAllSelectedValuesFromTwoTables( iDatabaseConnector, "track", "trackfamily",
+     "trackfamily.trackfamilyID", JoinCondition, "track.lineageid", VectorLineages );
+ }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+ std::list<unsigned int> GoDBCollectionOfTraces::GetTrackFamilyID(
+   vtkMySQLDatabase *iDatabaseConnector, std::list<unsigned int> iListTrackIDs)
+{
+   FieldWithValue JoinCondition = { "trackID", "trackIDMother", "=" };
+   std::vector<std::string> VectTrackIDs = ListUnsgIntToVectorString(iListTrackIDs);
+   std::list<unsigned int> oList = GetTwoFieldsFromTwoTables(iDatabaseConnector,
+     this->m_TracesName, "trackfamily", JoinCondition, "track.trackfamilyID",
+     "trackfamily.trackfamilyID", this->m_TracesIDName, VectTrackIDs, true);
+   return oList;
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::string
+GoDBCollectionOfTraces::
+GetPoints(vtkMySQLDatabase *iDatabaseConnector, std::string iTraceName,
+          unsigned int iTraceID)
+{
+  // WHAT
+  std::string QueryString = "SELECT Points ";
+
+  // FROM
+  QueryString += "FROM " + iTraceName;
+
+  //WHERE
+  // trace to Trace (mysql not case sensitive on linux but just in case)
+  std::string traceID = iTraceName;
+  std::transform(iTraceName.begin(), ++iTraceName.begin(),traceID.begin(), ::toupper);
+  traceID += "ID";
+  QueryString += " WHERE " + traceID + " = ";
+  // iTraceID int to string
+  std::stringstream s;
+  s << iTraceID;
+  QueryString += s.str();
+
+  return ExecuteSelectQueryOneValue< std::string >( iDatabaseConnector,
+                                                    QueryString);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::vector<unsigned int>
+GoDBCollectionOfTraces::
+GetTrackFamily(vtkMySQLDatabase *iDatabaseConnector, unsigned int iTrackID)
+{
+  // WHAT
+  std::string QueryString = "SELECT * ";
+
+  // FROM
+  QueryString += "FROM trackfamily ";
+
+  //WHERE
+  // iTraceID int to string
+  std::stringstream s;
+  s << iTrackID;
+  std::string trackID = s.str();
+
+  QueryString += " WHERE (TrackIDDaughter1=" + trackID;
+  QueryString += " OR TrackIDDaughter2=" + trackID + ")";
+
+  return ExecuteSelectQuery< std::vector<unsigned int> >( iDatabaseConnector,
+                                                          QueryString);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+bool
+GoDBCollectionOfTraces::
+isMother(vtkMySQLDatabase *iDatabaseConnector, unsigned int iTrackID)
+{
+  // WHAT
+  std::string QueryString = "SELECT TrackIDMother ";
+
+  // FROM
+  QueryString += "FROM trackfamily ";
+
+  //WHERE
+  // iTraceID int to string
+  std::stringstream s;
+  s << iTrackID;
+  std::string trackID = s.str();
+
+  QueryString += " WHERE TrackIDMother=" + trackID;
+
+  std::string result =
+  ExecuteSelectQueryOneValue< std::string >( iDatabaseConnector, QueryString);
+
+  int numb;
+  std::stringstream(result) >> numb;
+
+  bool ismother = true;
+
+  if(numb <= 0)
+    {
+    ismother = false;
+    }
+
+  return ismother;
+}
 //-------------------------------------------------------------------------

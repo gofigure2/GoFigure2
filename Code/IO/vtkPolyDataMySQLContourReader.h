@@ -75,7 +75,7 @@ public:
 
 protected:
   vtkPolyDataMySQLContourReader();
-  ~vtkPolyDataMySQLContourReader();
+  virtual ~vtkPolyDataMySQLContourReader();
 
 private:
   vtkPolyDataMySQLContourReader(const vtkPolyDataMySQLContourReader &);

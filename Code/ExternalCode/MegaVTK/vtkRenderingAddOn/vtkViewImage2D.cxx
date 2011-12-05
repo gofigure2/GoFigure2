@@ -92,7 +92,6 @@
 // #include "vtkQuadricLODActor.h"
 #include "vtkActor.h"
 #include "vtkPolyDataMapper.h"
-#include "vtkProp3DCollection.h"
 #include "vtkPoints.h"
 #include "vtkIdList.h"
 #include "vtkOutlineSource.h"
@@ -595,6 +594,7 @@ vtkViewImage2D::UpdateSlicePlane(void)
     x[this->SliceOrientation] = bounds[2 * this->SliceOrientation];
     oldpoints->InsertPoint(i, x);
     }
+
   this->OrientationTransform->TransformPoints(oldpoints, points);
   this->SlicePlane->SetPoints(points);
 
@@ -714,9 +714,9 @@ vtkViewImage2D::ResetCamera(void)
 void
 vtkViewImage2D::Reset(void)
 {
-  this->ResetPosition();
-  this->ResetWindowLevel();
-  this->ResetCamera();
+  //this->ResetPosition();
+  //this->ResetWindowLevel();
+  //this->ResetCamera();
 }
 
 //----------------------------------------------------------------------------
@@ -893,14 +893,14 @@ vtkViewImage2D::AddDataSet(vtkPolyData *dataset,
                            const bool & intersection,
                            const bool & iDataVisibility)
 {
-  vtkCamera *cam = NULL;
+//  vtkCamera *cam = NULL;
 
-  if ( this->Renderer )
+  if ( !this->Renderer )
     {
-    cam = this->Renderer->GetActiveCamera();
-    }
-  else
-    {
+//    cam = this->Renderer->GetActiveCamera();
+//    }
+//  else
+//    {
     return NULL;
     }
 
@@ -909,19 +909,18 @@ vtkViewImage2D::AddDataSet(vtkPolyData *dataset,
     return NULL;
     }
 
-  vtkSmartPointer< vtkPolyDataMapper > mapper =
-    vtkSmartPointer< vtkPolyDataMapper >::New();
-  mapper->SetScalarVisibility(iDataVisibility);
+  if ( dataset->GetNumberOfPoints() <= 0 )
+    {
+    return NULL;
+    }
 
-  vtkActor *                                    actor = vtkActor::New();
-  vtkSmartPointer< vtkPlaneCutter >             cutter = 
-    vtkSmartPointer< vtkPlaneCutter >::New();
-  vtkSmartPointer< vtkExtractPolyDataGeometry > extracter =
-    vtkSmartPointer< vtkExtractPolyDataGeometry >::New();
+  vtkSmartPointer<vtkPolyDataMapper> mapper =
+      vtkSmartPointer<vtkPolyDataMapper>::New();
+  mapper->SetScalarVisibility(iDataVisibility);
+  mapper->ImmediateModeRenderingOn();
 
   // check if input data is 2D
   double *bounds = dataset->GetBounds();
-
   //  get normal
   double *normal = this->SliceImplicitPlane->GetNormal();
 
@@ -930,31 +929,31 @@ vtkViewImage2D::AddDataSet(vtkPolyData *dataset,
        || ( ( bounds[2] == bounds[3] ) && ( normal[2] == 0 ) && ( normal[0] == 0 ) )
        || ( ( bounds[4] == bounds[5] ) && ( normal[0] == 0 ) && ( normal[1] == 0 ) ) )
     {
-    //std::cout << "extract 2d" << std::endl;
+    vtkSmartPointer<vtkExtractPolyDataGeometry> extracter =
+        vtkSmartPointer<vtkExtractPolyDataGeometry>::New();
     extracter->SetInput(dataset);
     extracter->SetImplicitFunction(this->SliceImplicitPlane);
     extracter->Update();
     mapper->SetInput( extracter->GetOutput() );
     }
-  // i.e. if volume
+  // i.e. if we cut a volume
   else
     {
     if ( intersection )
       {
-      //std::cout << "intersection" << std::endl;
+      vtkSmartPointer<vtkPlaneCutter> cutter =
+          vtkSmartPointer<vtkPlaneCutter>::New();
       cutter->SetInput(dataset);
       cutter->SetCutFunction(this->SliceImplicitPlane);
-      cutter->Update();
       mapper->SetInput( cutter->GetOutput() );
       }
     else
       {
-      //std::cout << "else" << std::endl;
       mapper->SetInput(dataset);
       }
     }
 
-  mapper->Update();
+  vtkActor * actor = vtkActor::New();
   actor->SetMapper(mapper);
 
   if ( property )
@@ -965,73 +964,104 @@ vtkViewImage2D::AddDataSet(vtkPolyData *dataset,
   actor->GetProperty()->SetLineWidth(this->IntersectionLineWidth);
 
   this->Renderer->AddViewProp(actor);
-  this->Prop3DCollection->AddItem(actor);
 
   return actor;
 }
+//----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
-//vtkQuadricLODActor*
-vtkActor *
-vtkViewImage2D::AddDataSet(vtkDataSet *dataset,
-                           vtkProperty *property,
-                           const bool & intersection,
-                           const bool & iDataVisibility)
+std::map<double, vtkActor *>
+vtkViewImage2D::
+ExtractActors(vtkPolyData *iDataSet, ORIENTATION iOrientation)
 {
-  /* return this->AddDataSet( vtkPolyData::SafeDownCast( dataset ),
-     property, intersection, iDataVisibility );*/
-  vtkCamera *cam = NULL;
+  std::map<double, vtkActor*> contours;
 
-  if ( this->Renderer )
+  // create plane to extract contours (based on orientation)
+  double normal[3] = {0., 0., 0.};
+
+  switch (iOrientation)
     {
-    cam = this->Renderer->GetActiveCamera();
+    case XY:
+      {
+      normal[2] = 1;
+      break;
+      }
+    case XZ:
+      {
+      normal[1] = 1;
+      break;
+      }
+    case YZ:
+      {
+      normal[0] = 1;
+      break;
+      }
+    default:
+      {
+      break;
+      }
     }
-  else
+
+  double origin[3] = {0., 0., 0.};
+  origin[0] = iDataSet->GetCenter()[0];
+  origin[1] = iDataSet->GetCenter()[1];
+  origin[2] = iDataSet->GetCenter()[2];
+
+  double position = iDataSet->GetBounds()[4 - 2*iOrientation];
+  double maxPosition = iDataSet->GetBounds()[5 - 2*iOrientation];
+
+  /*std::cout << "position: "
+            << position << "-"
+            << maxPosition << std::endl;*/
+
+  // get information about image (spacing)
+  double spacing = this->GetInput()->GetSpacing()[2-iOrientation];
+
+  while( position < maxPosition)
     {
-    return NULL;
-    }
+    origin[2-iOrientation] = position;
 
-  if ( !dataset )
-    {
-    return NULL;
-    }
+/*
+    std::cout << "origin: "
+              << origin[0] << "-"
+              << origin[1] << "-"
+              << origin[2] << std::endl;
 
-  vtkSmartPointer< vtkPolyDataMapper > mapper =
-    vtkSmartPointer< vtkPolyDataMapper >::New();
-  mapper->SetScalarVisibility(iDataVisibility);
+    std::cout << "normal: "
+              << normal[0] << "-"
+              << normal[1] << "-"
+              << normal[2] << std::endl;
+              */
 
-  //vtkQuadricLODActor* actor = vtkQuadricLODActor::New();
-  vtkActor *actor = vtkActor::New();
+    vtkPlane* plane = vtkPlane::New();
+    plane->SetNormal(normal);
+    plane->SetOrigin(origin);
 
-  vtkSmartPointer< vtkCutter > cutter = vtkSmartPointer< vtkCutter >::New();
+    // cut
+    vtkCutter* cutter = vtkCutter::New();
+    cutter->SetInput(iDataSet);
+    cutter->SetCutFunction(plane);
+    cutter->Update();
+    plane->Delete();
 
-  if ( intersection )
-    {
-    //std::cout << "inter dataset" << std::endl;
-    cutter->SetInput(dataset);
-    cutter->SetCutFunction(this->SliceImplicitPlane);
+    vtkPolyDataMapper* mapper = vtkPolyDataMapper::New();
     mapper->SetInput( cutter->GetOutput() );
-    }
-  else
-    {
-    //std::cout << "else dataset" << std::endl;
-    mapper->SetInput( vtkPolyData::SafeDownCast(dataset) );
-    }
-  mapper->Update();
+    cutter->Delete();
 
-  actor->SetMapper(mapper);
-  if ( property )
-    {
-    actor->SetProperty(property);
+    vtkActor* actor = vtkActor::New();
+    actor->SetMapper(mapper);
+    actor->VisibilityOn();
+    mapper->Delete();
+
+    contours[position] = actor;
+
+    // increase position
+    position += spacing;
     }
-  actor->GetProperty()->BackfaceCullingOn();
-  actor->GetProperty()->SetLineWidth(this->IntersectionLineWidth);
 
-  this->Renderer->AddViewProp(actor);
-  this->Prop3DCollection->AddItem(actor);
-
-  return actor;
+  return contours;
 }
+//----------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------
 void
@@ -1041,15 +1071,15 @@ vtkViewImage2D::UpdateCenter(void)
     {
     return;
     }
-  vtkCamera *cam = NULL;
+//  vtkCamera *cam = NULL;
 
-  if ( this->Renderer )
+  if ( !this->Renderer )
     {
-    cam = this->Renderer->GetActiveCamera();
-    }
-  else
-    {
-    return;
+//    cam = this->Renderer->GetActiveCamera();
+//    }
+//  else
+//    {
+//    return;
     }
   int *dimensions = this->GetInput()->GetDimensions();
 

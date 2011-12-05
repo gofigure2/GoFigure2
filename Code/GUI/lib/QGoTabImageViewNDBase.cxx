@@ -72,26 +72,26 @@ void QGoTabImageViewNDBase::SetImage(vtkImageData *iImage)
   m_Image = iImage;
 
   int n = m_Image->GetNumberOfScalarComponents();
-  this->m_NavigationDockWidget->SetNumberOfChannels(n);
+  //this->m_NavigationDockWidget->SetNumberOfChannels(n);
 
   if ( n != 1 )
     {
     if ( ( n == 3 ) || ( n == 4 ) )
       {
-      this->m_NavigationDockWidget->SetChannel( 0, tr("Red") );
-      this->m_NavigationDockWidget->SetChannel( 1, tr("Green") );
-      this->m_NavigationDockWidget->SetChannel( 2, tr("Blue") );
+      //this->m_NavigationDockWidget->SetChannel( 0, tr("Red") );
+      //this->m_NavigationDockWidget->SetChannel( 1, tr("Green") );
+      //this->m_NavigationDockWidget->SetChannel( 2, tr("Blue") );
 
       if ( n == 4 )
         {
-        this->m_NavigationDockWidget->SetChannel( 3, tr("Alpha") );
+        //this->m_NavigationDockWidget->SetChannel( 3, tr("Alpha") );
         }
       }
     else
       {
       for ( int i = 0; i < n; i++ )
         {
-        this->m_NavigationDockWidget->SetChannel(i);
+        //this->m_NavigationDockWidget->SetChannel(i);
         }
       }
     }
@@ -135,7 +135,7 @@ void QGoTabImageViewNDBase::ShowAllChannels(bool iChecked)
     }
   else
     {
-    int ch = this->m_NavigationDockWidget->GetCurrentChannel();
+    int ch = 0;//this->m_NavigationDockWidget->GetCurrentChannel();
     if ( ch != -1 )
       {
       vtkSmartPointer< vtkImageExtractComponents > extract =

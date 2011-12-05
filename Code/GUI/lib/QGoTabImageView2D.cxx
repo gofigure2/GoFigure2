@@ -132,7 +132,7 @@ QGoTabImageView2D::QGoTabImageView2D(QWidget *iParent) :
 
   this->m_ViewActions.push_back( m_NavigationDockWidget->toggleViewAction() );
 
-  CreateModeActions();
+  //CreateModeActions();
 
   ReadSettings();
 }
@@ -166,10 +166,8 @@ QGoTabImageView2D::setupUi(QWidget *iParent)
     }
 
   m_ImageView = new QGoImageView2D(this);
+  this->setCentralWidget(m_ImageView);
   m_ImageView->SetBackgroundColor(m_BackgroundColor);
-
-  this->m_LayOut = new QHBoxLayout(iParent);
-  this->m_LayOut->addWidget(m_ImageView);
 
   retranslateUi(iParent);
 
@@ -350,12 +348,14 @@ QGoTabImageView2D::ChangeBackgroundColor()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoTabImageView2D::CreateModeActions()
+void QGoTabImageView2D::CreateModeToolBar(QMenu*iMenu, QToolBar* iToolBar)
 {
-  QActionGroup *group = new QActionGroup(this);
+  //QActionGroup *group = new QActionGroup(this);
 
   // Call superclass
-  QGoTabElementBase::CreateModeActions(group);
+  //QGoTabElementBase::CreateModeActions(group);
+  QGoTabElementBase::CreateModeToolBar(iMenu, iToolBar);
+  this->m_ToolBarList.push_back(this->m_ModeToolBar);
 }
 
 //-------------------------------------------------------------------------

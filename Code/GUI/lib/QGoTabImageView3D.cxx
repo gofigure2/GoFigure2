@@ -114,7 +114,7 @@ QGoTabImageView3D::QGoTabImageView3D(QWidget *iParent) :
 
   CreateAllViewActions();
 
-  CreateModeActions();
+  //CreateModeActions();
 
   ReadSettings();
 }
@@ -340,12 +340,14 @@ void QGoTabImageView3D::CreateAllViewActions()
 
 //--------------------------------------------------------------------------
 //-------------------------------------------------------------------------
-void QGoTabImageView3D::CreateModeActions()
+void QGoTabImageView3D::CreateModeToolBar(QMenu* iMenu, QToolBar* iToolBar)
 {
-  QActionGroup *group = new QActionGroup(this);
+  //QActionGroup *group = new QActionGroup(this);
 
   // Call superclass
-  QGoTabElementBase::CreateModeActions(group);
+  //QGoTabElementBase::CreateModeActions(group);
+  QGoTabElementBase::CreateModeToolBar(iMenu, iToolBar);
+  this->m_ToolBarList.push_back(this->m_ModeToolBar);
 }
 
 //--------------------------------------------------------------------------
@@ -370,6 +372,7 @@ void QGoTabImageView3D::setupUi(QWidget *iParent)
     }
 
   m_ImageView = new QGoImageView3D(this);
+  this->setCentralWidget(m_ImageView);
   m_ImageView->SetBackgroundColor(m_BackgroundColor);
 
   QObject::connect( m_ImageView, SIGNAL( SliceViewXYChanged(int) ),
@@ -383,9 +386,6 @@ void QGoTabImageView3D::setupUi(QWidget *iParent)
 
   QObject::connect( m_ImageView, SIGNAL( FullScreenViewChanged(int) ),
                     this, SIGNAL( FullScreenViewChanged(int) ) );
-
-  this->m_LayOut = new QHBoxLayout(iParent);
-  this->m_LayOut->addWidget(m_ImageView);
 
   retranslateUi(iParent);
 
@@ -669,6 +669,15 @@ void QGoTabImageView3D::SetBackgroundColorToImageViewer()
 void QGoTabImageView3D::SetImageToImageViewer(vtkImageData *image)
 {
   m_ImageView->SetImage(image);
+  // create LUT for the image
+  vtkSmartPointer<vtkLookupTable> bwLut =
+    vtkSmartPointer<vtkLookupTable>::New();
+  double*  range = image->GetScalarRange();
+  bwLut->SetTableRange (0, range[1]);
+  bwLut->SetValueRange (0, 1);
+  bwLut->SetSaturationRange(0.0, 0.0);
+  bwLut->Build();
+  m_ImageView->SetLookupTable(bwLut);
   m_ImageView->Update();
 
   for ( unsigned int i = 0; i < this->m_ContourWidget.size(); i++ )

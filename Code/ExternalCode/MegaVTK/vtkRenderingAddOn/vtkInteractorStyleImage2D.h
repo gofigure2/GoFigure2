@@ -175,7 +175,18 @@ public:
    */
   vtkProp * GetCurrentProp();
 
-  void SetPlanesActors( std::vector< vtkActor * > iBounds);
+  /*
+   * \brief Synchronize the views
+   * \param[in] iSynchronize Enable/disable synchronization
+   */
+  void SynchronizeViews( bool iSynchronize);
+
+  /*
+   * \brief Add plane actors to be able to get rid of them while picking,
+   *  wireframe mode. and surface mode
+   * \param[in] iSynchronize Enable/disable synchronization
+   */
+  void SetPlanesActors( std::vector< vtkProp3D * > iBounds);
 
 protected:
   vtkInteractorStyleImage2D();
@@ -192,7 +203,8 @@ private:
 
   unsigned int m_Mode;
   bool         m_LeftButtonDown;
-  std::vector< vtkActor * > m_PlanesActors;
+  bool         m_SynchronizeViews;
+  std::vector< vtkProp3D * > m_PlanesActors;
 };
 
 #endif

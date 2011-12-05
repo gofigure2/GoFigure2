@@ -94,7 +94,6 @@ MultiScaleLoGImageFilter
   int    scaleLevel = 1;
   while ( sigma <= m_SigmaMax )
     {
-    std::cout << "Computing LoG for sigma = " << sigma << std::endl;
     m_LaplacianFilter->SetSigma(sigma);
     m_LaplacianFilter->Update();
     this->UpdateMaximumResponse();

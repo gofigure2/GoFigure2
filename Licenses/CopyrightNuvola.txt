@@ -1,7 +1,8 @@
  The copyright of the following icons belongs to Mr David Vignoni:
- *manual-editing icon
- *folder-blue icon
- *viewmag icon
+ *GoFigure2\Resources\ContourEditing.png : pen taken from kedit.png
+ *GoFigure2\Resources\MeshEditing.png : pen taken from kedit.png
+ *GoFigure2\Resources\document-open corresponds to folder-blue.png
+ *GoFigure2\Resources\zoom.png corresponds to viewmag.png
 
  They can be found following this link: 
  http://www.icon-king.com/projects/nuvola/

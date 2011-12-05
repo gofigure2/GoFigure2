@@ -1,10 +1,10 @@
-import os
-address = os.getcwd()
+#import os
+#address = os.getcwd()
 #address should be ~/GITROOT/GoFigure2/Testing/Sikuli/gofigure2_images
 
 #address = address+"/gofigure2_images"
-print address
-setBundlePath(address)
+#print address
+#setBundlePath(address)
 
 start = time.time()
 
@@ -23,8 +23,8 @@ def ClickDelete(Region):
 #	a = getLastMatch()
 #	a.inside().click("WidgetTestDelete.png")
 	
-	
-TraceObject = ("SelectedColor.png","SelectedCellType.png","SelectedSubCellType.png")
+	#"SelectedColor.png",
+TraceObject = ("SelectedCellType.png","SelectedSubCellType.png")
 Action = ("Cancel","DeleteFields")
 for a in Action:
 	for i in TraceObject:

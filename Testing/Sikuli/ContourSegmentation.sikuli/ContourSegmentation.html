@@ -70,14 +70,14 @@
 <h2>ContourSegmentation.sikuli</h2> <a href="ContourSegmentation.zip">(Download this script)</a>
 </div>
 <pre class="sikuli-code">
-<span class="kw">import</span> os
-address = os.getcwd()
-<span class="cmt">#address = "/home/es1076/GITROOT/GoFigure2/Testing/Sikuli/gofigure2_images"
+<span class="cmt">#import os
+</span><span class="cmt">#address = os.getcwd()
+</span><span class="cmt">#address = "/home/es1076/GITROOT/GoFigure2/Testing/Sikuli/gofigure2_images"
 </span>
 <span class="cmt">#address = address+"/gofigure2_images"
 </span><span class="cmt">#print address
-</span>setBundlePath(address)
-
+</span><span class="cmt">#setBundlePath(address)
+</span>
 <span class="kw">def</span> DrawContour(View,xdecimal,ydecimal):
 
         xyView = <span class="skw">find</span>(Pattern(View).similar(<span class="dig">0.30</span>))
@@ -103,9 +103,9 @@ address = os.getcwd()
         <span class="skw">click</span>(Location(startx,starty))
         <span class="skw">wait</span>(<span class="dig">1</span>)
 
-
-<span class="skw">click</span>(<img src="ContourSegmentationIcon.png" />)
 <span class="skw">click</span>(<img src="TableWidgetIcon.png" />)
+<span class="skw">click</span>(<img src="ContourSegmentationIcon.png" />)
+
 <span class="skw">wait</span>(<span class="dig">1</span>)
 
 ViewRegion = (<img src="XY_ViewRegion.png" />,<img src="XZ_ViewRegion.png" />,<img src="YZ_ViewRegion.png" />,<span class="str">"last"</span>)
@@ -113,19 +113,34 @@ ViewRegion = (<img src="XY_ViewRegion.png" />,<img src="XZ_ViewRegion.png" />,<i
 <span class="kw">for</span> view <span class="kw">in</span> ViewRegion:
 
         <span class="kw">if</span> view == <span class="str">"last"</span>:
-                <span class="kw">for</span> i <span class="kw">in</span> ViewRegion[<span class="dig">0</span>:<span class="dig">3</span>]:
+                <span class="kw">for</span> i <span class="kw">in</span> ViewRegion[<span class="dig">0</span>:<span class="dig">2</span>]:
                         DrawContour(i,<span class="dig">0.5</span>,<span class="dig">0.5</span>)
         <span class="kw">else</span>:
                 DrawContour(view,<span class="dig">0.3</span>,<span class="dig">0.6</span>)
+
+
+        <span class="cmt">#reg = find(Pattern(view).similar(0.30))
+</span>
+        <span class="cmt">#table_quadview = reg.getRect()
+</span>
+        <span class="cmt">#quadview_image_BEFORE =capture(table_quadview)
+</span>
 
         <span class="skw">click</span>(<img src="ContourSettings.png" />)
         <span class="cmt">#change line width from 3 to 7
 </span>        <span class="skw">type</span>(Key.UP+Key.UP+Key.UP+Key.UP+Key.UP)
         <span class="skw">click</span>(<img src="cancel.png" />)
-        <span class="cmt">#check that nothing changed     
-</span>
 
-<span class="cmt">#can find 1 instance of blue circle image and then 3 instances of it.  Also red cirles for validation.
+        <span class="cmt">#find(Pattern(quadview_image_BEFORE).similar(.95))
+</span>
+        <span class="cmt">#check that nothing changed     
+</span>        <span class="cmt">#reg = find(Pattern(view).similar(0.30))
+</span>        <span class="cmt">#this should find a rough 30% image and just get the coordinates and then take real image below
+</span>        <span class="cmt">#table_quadview = reg.getRect()
+</span>
+        <span class="cmt">#quadview_image_BEFORE =capture(table_quadview)
+</span>
+<span class="cmt">#can find 1 instance of blue circle image and then 3 instances of it.  Also red circles for validation.
 </span>
 
         <span class="skw">click</span>(<img src="ContourSettings.png" />)
@@ -133,15 +148,21 @@ ViewRegion = (<img src="XY_ViewRegion.png" />,<img src="XZ_ViewRegion.png" />,<i
         <span class="cmt">#check that line width changed.
 </span>
         <span class="skw">click</span>(<img src="ContourReinit.png" />)
+
+        <span class="skw">click</span>(<img src="ContourSettings.png" />)
+        <span class="cmt">#change line width from 3 to 7
+</span>        <span class="skw">type</span>(Key.UP+Key.DOWN+Key.DOWN+Key.DOWN+Key.DOWN)
+        <span class="skw">click</span>(<img src="ok.png" />)
         <span class="cmt">#check that line disapears 
 </span>        <span class="kw">if</span> view == <span class="str">"last"</span>:
-                <span class="kw">for</span> i <span class="kw">in</span> ViewRegion[<span class="dig">0</span>:<span class="dig">3</span>]:
+                <span class="kw">for</span> i <span class="kw">in</span> ViewRegion[<span class="dig">0</span>:<span class="dig">2</span>]:
                         DrawContour(i,<span class="dig">0.5</span>,<span class="dig">0.5</span>)
         <span class="kw">else</span>:
                 DrawContour(view,<span class="dig">0.3</span>,<span class="dig">0.6</span>)
 
 
         <span class="skw">click</span>(<img src="Validate.png" />)
+        <span class="skw">click</span>(<img src="ContourReinit.png" />)
         <span class="cmt">#check that new contour is on View and in DB
 </span>
 
@@ -161,7 +182,7 @@ ViewRegion = (<img src="XY_ViewRegion.png" />,<img src="XZ_ViewRegion.png" />,<i
         <span class="kw">for</span> view <span class="kw">in</span> ViewRegion:
 
                 <span class="kw">if</span> view == <span class="str">"last"</span>:
-                        <span class="kw">for</span> i <span class="kw">in</span> ViewRegion[<span class="dig">0</span>:<span class="dig">3</span>]:
+                        <span class="kw">for</span> i <span class="kw">in</span> ViewRegion[<span class="dig">0</span>:<span class="dig">2</span>]:
                                 region = <span class="skw">find</span>(Pattern(i).similar(<span class="dig">0.30</span>))
                                 xclick = random.randint(region.x,region.w+region.x)
                                 yclick = random.randint(region.y,region.h+region.y)

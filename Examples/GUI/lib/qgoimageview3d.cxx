@@ -104,9 +104,9 @@ int main(int argc, char **argv)
   viewer->EnableBoxWidget(true);
   viewer->EnableBoxWidget(false);
 
-  vtkPoints *points = viewer->GetAllSeeds();
-  points->Delete();
-  viewer->ClearAllSeeds();
+  //vtkPoints *points = viewer->GetAllSeeds();
+  //points->Delete();
+  //viewer->ClearAllSeeds();
 
   if ( atoi(argv[2]) == 1 )
     {

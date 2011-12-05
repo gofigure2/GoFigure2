@@ -296,11 +296,35 @@ void GoDBTWContainerForMesh::GetValuesToFillForIntensityFromQueryResults
         {
         temp.push_back(IntensityValue);
         }
-      iterResult = iterResult + 2;
+
+      // iterResult = iterResult + 2;
+      if( iterResult != iResultQuery.end() )
+        {
+        ++iterResult;
+        }
+      else
+        {
+        itkGenericExceptionMacro( << "iterResult == iResultQuery" );
+        }
+      if( iterResult != iResultQuery.end() )
+        {
+        ++iterResult;
+        }
+      else
+        {
+        itkGenericExceptionMacro( << "iterResult == iResultQuery" );
+        }
       }
     else
       {
-      ++iterResult;
+      if( iterResult != iResultQuery.end() )
+        {
+        ++iterResult;
+        }
+      else
+        {
+        itkGenericExceptionMacro( << "iterResult == iResultQuery" );
+        }
 
       for ( i = 0; i < this->m_ChannelsInfo.size() - 1; i++ )
         {
@@ -309,11 +333,44 @@ void GoDBTWContainerForMesh::GetValuesToFillForIntensityFromQueryResults
           IntensityValue = *iterResult;
           temp.push_back(IntensityValue);
           }
-        iterResult = iterResult + 3;
+
+        // iterResult = iterResult + 3;
+        if( iterResult != iResultQuery.end() )
+          {
+          ++iterResult;
+          }
+        else
+          {
+          itkGenericExceptionMacro( << "iterResult == iResultQuery" );
+          }
+        if( iterResult != iResultQuery.end() )
+          {
+          ++iterResult;
+          }
+        else
+          {
+          itkGenericExceptionMacro( << "iterResult == iResultQuery" );
+          }
+        if( iterResult != iResultQuery.end() )
+          {
+          ++iterResult;
+          }
+        else
+          {
+          itkGenericExceptionMacro( << "iterResult == iResultQuery" );
+          }
         }
       IntensityValue = *iterResult;
       temp.push_back(IntensityValue);
-      ++iterResult;
+
+      if( iterResult != iResultQuery.end() )
+        {
+        ++iterResult;
+        }
+      else
+        {
+        itkGenericExceptionMacro( << "iterResult == iResultQuery" );
+        }
       }
     ioValuesToFill.push_back(temp);
     ++iterMeshID;
@@ -365,12 +422,26 @@ void GoDBTWContainerForMesh::GetValuesForSurfaceVolume(
 //--------------------------------------------------------------------------
 GoDBTableWidgetContainer::TWContainerType
 GoDBTWContainerForMesh::GetContainerLoadedWithAllFromDB(
-  vtkMySQLDatabase *iDatabaseConnector)
+  vtkMySQLDatabase *iDatabaseConnector, std::list<unsigned int> iListTPs)
 {
-  GoDBTableWidgetContainer::GetContainerLoadedWithAllFromDB(iDatabaseConnector);
-  std::vector< std::string > VectMeshIDs = ListSpecificValuesForOneColumn(
-      iDatabaseConnector, "mesh", "MeshID", "ImagingSessionID",
-      ConvertToString< unsigned int >(this->m_ImgSessionID) );
+  GoDBTableWidgetContainer::GetContainerLoadedWithAllFromDB(iDatabaseConnector, iListTPs);
+  std::vector< std::string > VectMeshIDs;
+  if (iListTPs.empty() )
+    {
+    VectMeshIDs = ListSpecificValuesForOneColumn(
+        iDatabaseConnector, "mesh", "MeshID", "ImagingSessionID",
+        ConvertToString< unsigned int >(this->m_ImgSessionID) );
+    }
+  else
+    {
+    FieldWithValue joinCondition = {"CoordIDMin", "CoordID", "="};
+    FieldWithValue andCondition = {"ImagingSessionID", ConvertToString< unsigned int >(this->m_ImgSessionID), "="};
+    std::vector< std::string > VectorValues = ListUnsgIntToVectorString(iListTPs);
+      std::list<unsigned int> MeshIDs = GetListValuesFromTwoTablesAndCondition(
+      iDatabaseConnector, "mesh", "coordinate","MeshID", joinCondition,
+      "coordinate.TCoord", VectorValues, andCondition);
+    VectMeshIDs = ListUnsgIntToVectorString(MeshIDs);
+    }
 
   this->FillRowContainerForMeshValues(iDatabaseConnector, VectMeshIDs);
   return this->m_RowContainer;

@@ -63,7 +63,6 @@
 #include <QDir>
 #include <QScrollArea>
 #include <QTextStream>
-#include <QDebug>
 
 // Qt Dialog Box
 #include "QGoLsmToMegaExportDialog.h"
@@ -89,7 +88,9 @@
 
 //--------------------------------------------------------------------------
 QGoMainWindow::QGoMainWindow(QWidget *iParent, Qt::WindowFlags iFlags) :
-  QMainWindow(iParent, iFlags)
+  QMainWindow(iParent, iFlags), m_ViewToolBar(NULL), m_ModeToolBar(NULL),
+  m_TracesToolBar(NULL), m_TraceSettingsToolBar(NULL),
+  m_MaxNumberOfTraces(5000)
 {
   QString title("<*)0|00|0>< ~~ <*)0|00|0><     GoFigure    ><0|00|0(*> ~~ ><0|00|0(*>");
 
@@ -100,12 +101,13 @@ QGoMainWindow::QGoMainWindow(QWidget *iParent, Qt::WindowFlags iFlags) :
   setCorner(Qt::BottomRightCorner, Qt::RightDockWidgetArea);
 
   QRect screen = QApplication::desktop()->availableGeometry(this);
-  QSize MaximumSize = screen.size();
+  int numberOfScreens = QApplication::desktop()->numScreens();
+  QSize MaximumSize = screen.size() * numberOfScreens;
   this->setMaximumSize(MaximumSize);
   // QSize IconSize = this->iconSize();
   QSize SizeIcon(22, 22);
   this->setIconSize(SizeIcon);
-  QSize IconSize = this->iconSize();
+  //QSize IconSize = this->iconSize();
 
   this->setCentralWidget(this->CentralTabWidget);
 
@@ -119,13 +121,21 @@ QGoMainWindow::QGoMainWindow(QWidget *iParent, Qt::WindowFlags iFlags) :
   this->statusbar->addPermanentWidget(&m_Bar);
 
   m_TabManager = new QGoTabManager(this, this->CentralTabWidget);
-  this->m_ViewToolBar = new QToolBar(tr("View"), this);
+  /*this->m_ViewToolBar = new QToolBar(tr("View"), this);
   this->m_ViewToolBar->setObjectName( tr("View") );
   this->addToolBar(Qt::TopToolBarArea, this->m_ViewToolBar);
 
   this->m_ModeToolBar = new QToolBar(tr("Mode"), this);
   this->m_ModeToolBar->setObjectName( tr("Mode") );
   this->addToolBar(Qt::TopToolBarArea, this->m_ModeToolBar);
+
+  this->m_TracesToolBar = new QToolBar(tr("Tools For Traces"), this);
+  this->m_TracesToolBar->setObjectName( tr("Traces") );
+  this->addToolBar(Qt::TopToolBarArea, this->m_TracesToolBar);
+
+  this->m_TraceSettingsToolBar = new QToolBar(tr("Settings For the Trace"), this);
+  this->m_TraceSettingsToolBar->setObjectName(tr("TraceSettingsToolBar"));
+  this->addToolBar(Qt::TopToolBarArea, this->m_TraceSettingsToolBar);*/
 
 //   m_LSMReader = vtkLSMReader::New();
   m_DBWizard  = new QGoWizardDB(this);
@@ -177,7 +187,12 @@ QGoMainWindow::QGoMainWindow(QWidget *iParent, Qt::WindowFlags iFlags) :
 //--------------------------------------------------------------------------
 QGoMainWindow::~QGoMainWindow()
 {
-//   m_LSMReader->Delete();
+  // clear will call destructor on all of the element in the list
+  // what is the point of the list?
+  if(this->m_LSMReader.back())
+    {
+    this->m_LSMReader.back()->Delete();
+    }
   this->WriteSettings();
   delete m_TabManager;
   delete m_DBWizard;
@@ -185,6 +200,19 @@ QGoMainWindow::~QGoMainWindow()
 }
 
 //--------------------------------------------------------------------------
+void
+QGoMainWindow::SetMaxNumberOfTraces( unsigned int iN )
+{
+  if( iN != 0 )
+    {
+    this->m_MaxNumberOfTraces = iN;
+    }
+  else
+    {
+    this->m_MaxNumberOfTraces = std::numeric_limits< unsigned int >::max();
+    }
+}
+
 
 //--------------------------------------------------------------------------
 void QGoMainWindow::CreateSignalSlotsConnection()
@@ -390,10 +418,13 @@ void QGoMainWindow::DisplayFilesfromDB(std::string iFirst_Filename)
   QObject::connect( w3t, SIGNAL( UpdateBookmarkOpenActions(std::vector< QAction * > ) ),
                     this->m_TabManager, SLOT( UpdateBookmarkMenu(std::vector< QAction * > ) ) );
 
-  // Load all contours and only display the ones from the first time point
+  // Load all traces
   LoadAllTracesFromDatabaseManager(TimePoint);
+  // Show contour/mesh for given T point
+  w3t->ShowTraces(TimePoint);
 
   this->menuBookmarks->setEnabled(true);
+  //this->addToolBar(w3t->GetTraceSettingsToolBar() );
 }
 
 //--------------------------------------------------------------------------
@@ -404,12 +435,32 @@ QGoMainWindow::LoadAllTracesFromDatabaseManager(const int & iT)
 {
   QApplication::setOverrideCursor( QCursor(Qt::WaitCursor) );
 
-  // Loads contours
-  LoadContoursFromDatabase(iT);
-  // Loads meshes
-  LoadMeshesFromDatabase(iT);
-  // Loads tracks
-  LoadTracksFromDatabase(iT);
+#ifdef HAS_OPENMP
+#pragma omp sections nowait
+#endif
+  {
+#ifdef HAS_OPENMP
+#pragma omp section
+#endif
+    {
+    // Loads contours
+    LoadContoursFromDatabase(iT);
+    }
+#ifdef HAS_OPENMP
+#pragma omp section
+#endif
+    {
+    // Loads meshes
+    LoadMeshesFromDatabase(iT);
+    }
+#ifdef HAS_OPENMP
+#pragma omp section
+#endif
+    {
+    // Loads tracks
+    LoadTracksFromDatabase(iT);
+    }
+  }
 
   QApplication::restoreOverrideCursor();
 }
@@ -420,34 +471,12 @@ QGoMainWindow::LoadAllTracesFromDatabaseManager(const int & iT)
 void
 QGoMainWindow::LoadContoursFromDatabase(const int & iT)
 {
-  /// \note let's keep for the time being iT parameter in the case where
-  /// we would only load traces for a given time point (that could be usefule
-  /// somehow).
-  (void)iT;
-
   QGoTabImageView3DwT *w3t =
     dynamic_cast< QGoTabImageView3DwT * >( this->CentralTabWidget->currentWidget() );
 
   if ( w3t )
     {
-    ContourContainer *temp = w3t->GetContourContainer();
-
-    if ( temp )
-      {
-      // let's iterate on the container with increasing TraceID
-      ContourContainer::MultiIndexContainerType::index< TraceID >::type::iterator
-        contour_list_it = temp->m_Container.get< TraceID >().begin();
-
-      // we don't need here to save this contour in the database,
-      // since they have just been extracted from it!
-      while ( contour_list_it != temp->m_Container.get< TraceID >().end() )
-        {
-        w3t->AddContourFromNodes< TraceID >(
-          contour_list_it);
-
-        ++contour_list_it;
-        }
-      }
+    w3t->CreateContoursActorsFromVisuContainer();
     }
 }
 
@@ -457,47 +486,12 @@ QGoMainWindow::LoadContoursFromDatabase(const int & iT)
 void
 QGoMainWindow::LoadMeshesFromDatabase(const int & iT)
 {
-  /// \note let's keep for the time being iT parameter in the case where
-  /// we would only load traces for a given time point (that could be usefule
-  /// somehow).
-  (void)iT;
-
   QGoTabImageView3DwT *w3t =
     dynamic_cast< QGoTabImageView3DwT * >( this->CentralTabWidget->currentWidget() );
 
   if ( w3t )
     {
-    MeshContainer *temp =  w3t->GetMeshContainer();
-    if ( temp )
-      {
-      // let's iterate on the container with increasing TraceID
-      MeshContainer::MultiIndexContainerType::index< TraceID >::type::iterator
-        mesh_list_it = temp->m_Container.get< TraceID >().begin();
-
-      // we don't need here to save this contour in the database,
-      // since they have just been extracted from it!
-      while ( mesh_list_it != temp->m_Container.get< TraceID >().end() )
-        {
-        // note here it only makes sense when the trace is a mesh (for now)
-        //std::cout << "IN WHILE" << std::endl;
-
-        if ( mesh_list_it->Nodes )
-          {
-          GoFigureMeshAttributes attributes =
-            w3t->ComputeMeshAttributes(
-              mesh_list_it->Nodes, // mesh
-              false, // do not need to compute intensity based measure
-              mesh_list_it->TCoord
-              );
-          w3t->m_DataBaseTables->PrintVolumeAreaForMesh(
-            &attributes, mesh_list_it->TraceID);
-          }
-
-        w3t->AddMeshFromNodes< TraceID >(mesh_list_it);
-
-        ++mesh_list_it;
-        }
-      }
+    w3t->CreateMeshesActorsFromVisuContainer();
     }
 }
 
@@ -523,12 +517,21 @@ QGoMainWindow::LoadTracksFromDatabase(const int & iT)
     if ( temp )
       {
       // let's iterate on the container with increasing TraceID
-      TrackContainer::MultiIndexContainerType::index< TraceID >::type::iterator
-        track_list_it = temp->m_Container.get< TraceID >().begin();
+      typedef TrackContainer::MultiIndexContainerType::index< TraceID >::type::iterator
+          TrackContainerIterator;
+
+      TrackContainerIterator track_list_it = temp->m_Container.get< TraceID >().begin();
+      TrackContainerIterator track_list_end = temp->m_Container.get< TraceID >().end();
+
+      size_t nb_tracks = temp->m_Container.get< TraceID >().size();
+
+      QProgressDialog progress( "Loading Tracks...", QString(), 0, nb_tracks );
+
+      size_t i = 0;
 
       // we don't need here to save this track in the database,
       // since they have just been extracted from it!
-      while ( track_list_it != temp->m_Container.get< TraceID >().end() )
+      while ( track_list_it != track_list_end )
         {
         if ( track_list_it->Nodes )
           {
@@ -539,8 +542,13 @@ QGoMainWindow::LoadTracksFromDatabase(const int & iT)
                                                                track_list_it->TraceID);
           }
         w3t->AddTrackFromNodes< TraceID >(track_list_it);
+
+        progress.setValue( i );
+
+        ++i;
         ++track_list_it;
         }
+      progress.setValue( nb_tracks );
       }
     }
 }
@@ -738,6 +746,7 @@ void QGoMainWindow::OpenLSMImage(const QString & iFile, const int & iTimePoint)
       CreateNewTabFor3DImage(m_LSMReader.back()->GetOutput(), iFile);
       break;
       }
+    default:
     case 4:
       {
       CreateNewTabFor3DwtImage(m_LSMReader.back(), iFile);
@@ -783,7 +792,7 @@ QGoMainWindow::CreateNewTabFor3DwtImage(
                                                 m_DBWizard->GetImagingSessionID(),
                                                 ImgSessionName);
 
-    w3t->m_DataBaseTables->FillTableFromDatabase();
+    w3t->m_DataBaseTables->FillTableFromDatabase(this->m_MaxNumberOfTraces);
     w3t->setWindowTitle( QString::fromStdString(ImgSessionName) );
     // **********************
     }
@@ -792,7 +801,11 @@ QGoMainWindow::CreateNewTabFor3DwtImage(
     w3t->setWindowTitle( QFileInfo( QString::fromStdString(iHeader) ).fileName() );
     }
 
-  SetupMenusFromTab(w3t);
+  //w3t->InitializeToolBarsAndMenus(this->menuTools, this->m_TracesToolBar);
+  //SetupMenusFromTab(w3t);
+  this->SetUpGeneralMenusToolBars(w3t);
+  this->SetUpMenusToolBarsFor3dwtImage(w3t);
+  this->SetupPluginsAndDockWidgetFromTab(w3t);
 
   return w3t;
 }
@@ -801,7 +814,7 @@ QGoMainWindow::CreateNewTabFor3DwtImage(
 
 //--------------------------------------------------------------------------
 void
-QGoMainWindow::SetupMenusFromTab(QGoTabElementBase *iT)
+QGoMainWindow::SetupPluginsAndDockWidgetFromTab(QGoTabElementBase *iT)
 {
   for ( std::list< QAction * >::iterator
         list_it = m_TabDimPluginActionMap[iT->GetTabDimensionType()].begin();
@@ -812,6 +825,7 @@ QGoMainWindow::SetupMenusFromTab(QGoTabElementBase *iT)
     ( *list_it )->setEnabled(true);
     }
 
+  //iT->CreateModeToolBar(this->menuMode, this->m_ModeToolBar);
   iT->SetPluginActions(m_TabDimPluginActionMap[iT->GetTabDimensionType()]);
 
   std::list< QGoTabElementBase::QGoDockWidgetStatusPair > dock_list = iT->DockWidget();
@@ -829,15 +843,67 @@ QGoMainWindow::SetupMenusFromTab(QGoTabElementBase *iT)
     }
 
   int idx = this->CentralTabWidget->addTab( iT, iT->windowTitle() );
+  /*this->menuView->setEnabled(true);
+  this->menuFiltering->setEnabled(true);
+  this->menuSegmentation->setEnabled(true);
+  this->menuTools->setEnabled(true);
+  this->menuMode->setEnabled(true);*/
+
+  this->CentralTabWidget->setCurrentIndex(idx);
+}
+
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoMainWindow::SetUpGeneralMenusToolBars(QGoTabElementBase *iT)
+{
+  if (!this->m_ViewToolBar)
+    {
+    this->m_ViewToolBar = new QToolBar(tr("View"), this);
+    this->m_ViewToolBar->setObjectName( tr("View") );
+    this->addToolBar(Qt::TopToolBarArea, this->m_ViewToolBar);
+    }
+
+  if(!this->m_ModeToolBar)
+    {
+    this->m_ModeToolBar = new QToolBar(tr("Mode"), this);
+    this->m_ModeToolBar->setObjectName( tr("Mode") );
+    this->addToolBar(Qt::TopToolBarArea, this->m_ModeToolBar);
+    }
+
+  iT->CreateModeToolBar(this->menuMode, this->m_ModeToolBar);
+
   this->menuView->setEnabled(true);
   this->menuFiltering->setEnabled(true);
   this->menuSegmentation->setEnabled(true);
   this->menuTools->setEnabled(true);
   this->menuMode->setEnabled(true);
-
-  this->CentralTabWidget->setCurrentIndex(idx);
 }
+//--------------------------------------------------------------------------
 
+//--------------------------------------------------------------------------
+void QGoMainWindow::SetUpMenusToolBarsFor3dwtImage(QGoTabImageView3DwT* iT)
+{
+  //this->SetupMenusFromTab(iT);
+  if (!this->m_TracesToolBar)
+    {
+    this->m_TracesToolBar = new QToolBar(tr("Tools For Traces"), this);
+    this->m_TracesToolBar->setObjectName( tr("Traces") );
+    this->addToolBar(Qt::TopToolBarArea, this->m_TracesToolBar);
+    this->addToolBarBreak(Qt::TopToolBarArea);
+    }
+  if (!this->m_TraceSettingsToolBar)
+    {
+    this->m_TraceSettingsToolBar = new QToolBar(tr("Settings For the Trace"), this);
+    m_TraceSettingsToolBar->setObjectName(tr("TraceSettingsToolBar"));
+    this->addToolBar(Qt::TopToolBarArea, m_TraceSettingsToolBar);
+    }
+
+  //iT->InitializeModeToolBar(this->menuMode, this->m_ModeToolBar);
+
+  iT->InitializeToolsForTracesToolBar(this->menuTools, this->m_TracesToolBar);
+  iT->InitializeTraceSettingsToolBar(this->m_TraceSettingsToolBar);
+}
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
@@ -849,7 +915,10 @@ QGoMainWindow::CreateNewTabFor3DwtImage(vtkLSMReader *iReader, const QString & i
   w3t->setWindowTitle( QFileInfo(iFile).fileName() );
   w3t->SetLSMReader(iReader, 0);
 
-  SetupMenusFromTab(w3t);
+  //SetupMenusFromTab(w3t);
+  this->SetUpGeneralMenusToolBars(w3t);
+  this->SetUpMenusToolBarsFor3dwtImage(w3t);
+  this->SetupPluginsAndDockWidgetFromTab(w3t);
 
   // w3t->m_DataBaseTables->hide();
   w3t->SetStatusBarPointer( this->statusBar() );
@@ -869,7 +938,9 @@ QGoMainWindow::CreateNewTabFor3DImage(vtkImageData *iInput, const QString & iFil
   w3->setWindowTitle( QFileInfo(iFile).fileName() );
   w3->Update();
 
-  SetupMenusFromTab(w3);
+  //SetupMenusFromTab(w3);
+  this->SetUpGeneralMenusToolBars(w3);
+  this->SetupPluginsAndDockWidgetFromTab(w3);
 
   return w3;
 }
@@ -886,7 +957,9 @@ QGoMainWindow::CreateNewTabFor2DImage(vtkImageData *iInput, const QString & iFil
   w2->setWindowTitle( QFileInfo(iFile).fileName() );
   w2->Update();
 
-  SetupMenusFromTab(w2);
+  //SetupMenusFromTab(w2);
+  this->SetUpGeneralMenusToolBars(w2);
+  this->SetupPluginsAndDockWidgetFromTab(w2);
 
   return w2;
 }
@@ -947,7 +1020,7 @@ void QGoMainWindow::on_actionReport_a_bug_triggered()
   search_dir << app_up_dir + "/share/doc/gofigure2/Resources";
   // on mac without install
   search_dir << app_up_up_up_dir + "/Resources";
- 
+
   QDir::setSearchPaths("BugEntryPath", search_dir);
 
   QFile file("BugEntryPath:BugEntry.txt");
@@ -970,7 +1043,6 @@ void QGoMainWindow::on_actionDeveloper_mailing_list_triggered()
 {
   QDesktopServices::openUrl( QUrl("mailto:gofigure2-developers@lists.sourceforge.net?subject=About GoFigure2") );
 }
-
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
@@ -1342,6 +1414,15 @@ void QGoMainWindow::ReadSettings()
 
   //  settings.setValue("vsplitterSizes", vSplitter->saveState());
   settings.endGroup();
+
+  settings.beginGroup("MemoryManagement");
+  unsigned int maxNumberOfTraces =
+      settings.value("MaxNumberOfTraces").toUInt();
+  if(maxNumberOfTraces)
+    {
+    this->m_MaxNumberOfTraces = maxNumberOfTraces;
+    }
+  settings.endGroup();
 }
 
 //--------------------------------------------------------------------------------
@@ -1360,6 +1441,9 @@ void QGoMainWindow::WriteSettings()
   settings.setValue( "state", saveState() );
   settings.endGroup();
   settings.setValue("DatabaseSetUp", this->m_DatabaseSetUp);
+  settings.beginGroup("MemoryManagement");
+  settings.setValue("MaxNumberOfTraces", this->m_MaxNumberOfTraces);
+  settings.endGroup();
 }
 
 //-------------------------------------------------------------------------

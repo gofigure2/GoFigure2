@@ -111,12 +111,12 @@ QString QGoAboutWidget::GetContributors()
   QString authors( tr("Authors:\n\n") );
 
   authors.append(" * 2008 ~ Arnaud Gelas\n");
-  authors.append(" * 2008 ~ Lydie Souhait\n");
   authors.append(" * 2009 ~ Nicolas Rannou\n");
   authors.append(" * 2008 ~ Kishore Mosaliganti\n");
-  authors.append(" * 2010 ~ Evan Schwab\n");
   authors.append(" * 2006 ~ Sean G. Megason\n");
   authors.append(" ------- \n" );
+  authors.append(" * 2008-11 ~ Lydie Souhait\n");
+  authors.append(" * 2010-11 ~ Evan Schwab\n");
   authors.append(" * 2010 ~ Antonin Perrot-Audet\n");
   authors.append(" * 2007-09 ~ Alexandre Gouaillard\n\n");
 
@@ -197,7 +197,6 @@ QString QGoAboutWidget::ReadLicenseText(QString iFilename)
   std::string test = LicenseText.toStdString();
   return LicenseText;
 }
-
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------

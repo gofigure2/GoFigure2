@@ -59,7 +59,7 @@
 
 namespace itk
 {
-class IKTQT_EXPORT QtProgressBar:public::QProgressBar
+class IKTQT_EXPORT QtProgressBar : public ::QProgressBar
 {
 public:
 

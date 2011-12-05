@@ -121,7 +121,6 @@ class vtkActor;
 class vtkDataSet;
 class vtkPolyData;
 class vtkProperty;
-class vtkProp3DCollection;
 class vtkDataSetCollection;
 class vtkMatrixToLinearTransform;
 class vtkViewImage2DCollectionCommand;
@@ -251,11 +250,10 @@ public:
   /// Description: Synchronize interpolate between views
   vtkSyncSetMacro (Interpolate, int, vtkViewImage2D);
 
-  /// Description: Synchronize dataset addition between views
-  virtual void SyncAddDataSet(vtkDataSet *dataset, vtkProperty *property = NULL);
-
   /// Description: Synchronize reset window level between views
   virtual void SyncResetWindowLevel(void);
+
+  void SyncUpdateWindowLevel(void);
 
   /// Description: Synchronize reset camera between views
   virtual void SyncResetCamera(void);
@@ -371,7 +369,16 @@ public:
    */
   void EnableContourPickingMode();
 
-  std::vector< vtkActor * > GetPlanesActors();
+  /**
+   * \brief Synchronize the 2d views
+   * \param[in] iSynchronize enable/disable synchronization
+   */
+  void SynchronizeViews( bool iSynchronize);
+
+  /**
+   * \brief Get the plane actors
+   */
+  std::vector< vtkProp3D * > GetPlanesActors();
 
 protected:
 
@@ -381,7 +388,7 @@ protected:
   vtkViewImage2DCollectionCommand *Command;
   vtkRenderWindow *                ExtraRenderWindow;
 
-  std::vector< vtkActor * > PlanesActors;
+  std::vector< vtkProp3D * > PlanesActors;
 
   unsigned int LinkSliceMove;
   unsigned int LinkColorWindowLevel;

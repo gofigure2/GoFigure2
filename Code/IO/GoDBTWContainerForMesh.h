@@ -51,7 +51,7 @@ public:
 
   //from mother class
   virtual TWContainerType GetContainerLoadedWithAllFromDB(
-    vtkMySQLDatabase *iDatabaseConnector);
+    vtkMySQLDatabase *iDatabaseConnector, std::list<unsigned int> iListTPs = std::list<unsigned int>());
   //from mother class
   virtual TWContainerType GetContainerForOneSpecificTrace(
     vtkMySQLDatabase *iDatabaseConnector, int iTraceID);

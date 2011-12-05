@@ -70,6 +70,9 @@ class vtkOrientedBoxWidget;
 // For the plane widget
 class vtkImplicitPlaneWidget;
 
+// volumre rendering
+class vtkPiecewiseFunction;
+
 /**
 \class QGoImageView3D
 \brief class for the visualization of 3D Image represented by one vtkImageData*.
@@ -115,10 +118,6 @@ public:
   int GetSliceViewXZ() const;
 
   int GetSliceViewYZ() const;
-
-  virtual void ChangeActorProperty(vtkProp3D *iActor, vtkProperty *iProperty);
-
-  void ChangeActorProperty(int iDir, vtkProp3D *iActor, vtkProperty *iProperty);
 
   // MODES
   /**
@@ -177,19 +176,15 @@ signals:
 
   void FullScreenViewChanged(int View);
 
-  void SelectionXYChanged();
+  void SelectionChanged();
 
-  void SelectionXZChanged();
-
-  void SelectionYZChanged();
-
-  void SelectionXYZChanged();
-
-  void VisibilityXYZChanged();
+  void VisibilityChanged();
 
   void CurrentActorUpdated();
 
   void UpdateRenderEvent();
+
+  void NewWindowLevel(double, double);
 
 public slots:
   QString SnapshotViewXY( const GoFigure::FileType & iType,
@@ -214,7 +209,7 @@ public slots:
 
   void SetCamera(int);
 
-  void UpdateScalarBarIn3DView();
+  void UpdateLUT();
 
   void ShowSplinePlane();
 
@@ -223,7 +218,10 @@ public slots:
   /**
    * \brief Creates a box in 3d view to allow multiple meshes selection
    */
-  void EnableVolumeRendering(bool iValue);
+  void EnableVolumeRendering(const std::vector<vtkImageData*>& iImages,
+                             const std::vector<vtkPiecewiseFunction*>& iOpacities);
+
+  void DisableVolumeRendering();
 
   void UpdateCurrentActorSelection(vtkObject *caller);
 
@@ -232,6 +230,18 @@ public slots:
   virtual void SetLookupTable(vtkLookupTable *);
 
   virtual void ShowScalarBar(const bool &);
+
+  /*
+   * \brief Synchronize the views
+   * \param[in] iSynchronize Enable/disable synchronization
+   */
+  void SynchronizeViews( bool iSynchronize);
+
+  /*
+   * \brief Show/hide the planes in the 3d view
+   * \param[in] iSynchronize Enable/disable synchronization
+   */
+  void ShowPlanes( bool iShow);
 
 protected:
   QSplitter *     VSplitter;

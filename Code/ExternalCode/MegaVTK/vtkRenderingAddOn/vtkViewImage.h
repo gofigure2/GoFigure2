@@ -76,7 +76,6 @@
 #include <vtkCornerAnnotation.h>
 #include <vtkActor.h>
 #include <vtkDataSet.h>
-#include <vtkProp3DCollection.h>
 
 #include <vector>
 
@@ -129,7 +128,6 @@ class vtkActor;
 class vtkDataSet;
 class vtkPolyData;
 class vtkProperty;
-class vtkProp3DCollection;
 class vtkMatrixToLinearTransform;
 class vtkRenderWindowInteractor;
 
@@ -250,14 +248,6 @@ public:
   virtual void SetTextProperty(vtkTextProperty *textproperty);
 
   /**
-   * \brief Get a pointer to the current vtkProp3DCollection
-   *
-   * All displayed dataset generates an actor which is added to the renderer.
-   * These actors are gathered in this vtkProp3DCollection for easier access.
-  */
-  vtkGetObjectMacro (Prop3DCollection, vtkProp3DCollection);
-
-  /**
    * \brief Set the world coordinates
    * \param[in] x x value
    * \param[in] y y value
@@ -273,22 +263,6 @@ public:
                            const double & y, const double & z);
 
   virtual void SetWorldCoordinates(double pos[3]) = 0;
-
-  /**
-    \brief Add a dataset to the view (has to be subclass of vtkPointSet).
-    The dataset will be cut through the implicit slice plane
-    (GetImplicitSlicePlane()).
-
-    This results in a loss of dimensionality, i.e. tetrahedron will be displayed
-    as triangles, triangles as lines, lines as points.
-    A vtkProperty of the dataset can be specified.
-  */
-  virtual vtkActor * AddDataSet(vtkDataSet *dataset,
-                                vtkProperty *property = NULL,
-                                const bool & intersection = true,
-                                const bool & iDataVisibility = true) = 0;
-
-  virtual void RemoveProp(vtkProp *iProp);
 
   /**
      \brief Set/Get the current slice to display (depending on the orientation
@@ -479,6 +453,8 @@ public:
   */
   virtual void ResetWindowLevel(void);
 
+  void UpdateWindowLevel();
+
   /**
    * \brief Get the current position in world coordinate.
    * \return double pointer to the current position in world coordinates
@@ -510,20 +486,17 @@ public:
   */
   vtkGetMacro(IsColor, bool);
 
-  /**
-   * \brief Change the property of an actor
-   * \param[in] iActor vtkProp3D pointer to the actor to be modified
-   * \param[in] iProperty vtkProperty pointer containing the new property to
-   * be applied
-  */
-  virtual void ChangeActorProperty(vtkProp3D *iActor,
-                                   vtkProperty *iProperty);
-
   /** \brief Set the linewidth for added dataset in the scene (when using AddDataSet) */
   vtkSetMacro( IntersectionLineWidth, float );
 
   /** \brief Get the linewidth for added dataset in the scene (when using AddDataSet) */
   vtkGetMacro( IntersectionLineWidth, float );
+
+  void SetWindow(double iWindow);
+  double GetWindow();
+
+  void SetLevel(double iLevel);
+  double GetLevel();
 
 protected:
 
@@ -571,11 +544,6 @@ protected:
   */
   vtkScalarBarActor *ScalarBarActor;
   /**
-     All displayed dataset generates an actor which is added to the renderer. (See AddDataSet()).
-     These actors are gathered in this vtkProp3DCollection for easier access.
-  */
-  vtkProp3DCollection *Prop3DCollection;
-  /**
      This vtkTransform instance carries the OrientationMatrix (see GetOrientationMatrix())
      and is used to quickly transform the slice plane in vtkViewImage2D.
   */
@@ -598,6 +566,9 @@ protected:
   double CurrentPoint[3];
 
   bool IsColor;
+
+  double Window;
+  double Level;
 };
 
 #endif /* _vtkViewImage_h_ */

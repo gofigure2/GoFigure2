@@ -40,46 +40,101 @@
 
 #include <iostream>
 
+#include "boost/program_options.hpp"
+
 #include "QGoMainWindow.h"
 
 int main(int argc, char **argv)
 {
-  QString inputfilename;
-
-  if ( argc > 1 )
-    {
-    for ( int i = 1; i < argc; i++ )
-      {
-      std::string temp = argv[i];
-      if ( temp == "--version" )
-        {
-        std::cout << "@GOFIGURE2_VERSION@" << std::endl;
-        return EXIT_SUCCESS;
-        }
-      if ( temp == "--i" )
-        {
-        inputfilename = argv[++i];
-        std::cout << inputfilename.toStdString().c_str() << std::endl;
-        }
-      if ( temp == "--help" )
-        {
-        std::cout << "GoFigure2 version @GOFIGURE2_VERSION@" << std::endl;
-        std::cout << std::endl;
-        std::cout << "gofigure [options]" << std::endl;
-        std::cout << "--i input file (single file)" << std::endl;
-        std::cout << "--help list of all options" << std::endl;
-        std::cout << "--version get the version number" << std::endl;
-        return EXIT_SUCCESS;
-        }
-      }
-    }
-
   QApplication app(argc, argv);
 
   QCoreApplication::setOrganizationName("MegasonLab");
   QCoreApplication::setOrganizationDomain(
     "http://gofigure2.sourceforge.net");
   QCoreApplication::setApplicationName("GoFigure2");
+
+  boost::program_options::options_description general_options( "Generic Options" );
+  general_options.add_options()
+      ("help,h", "Display this information")
+      ("version,v", "Display GoFigure2 version information" )
+      ("shortcuts", "Display all shortcuts");
+
+  boost::program_options::options_description config_options( "Configuration" );
+  config_options.add_options()
+      ("input,i", boost::program_options::value< std::vector< std::string > >(), "input file (single file)" )
+      ("max-meshes", boost::program_options::value< unsigned int >(), "Maximum number of meshes to load in memory (default 5000)" );
+
+  boost::program_options::options_description all_options( "Usage:\n  gofigure [options]" );
+  all_options.add( general_options ).add( config_options );
+
+  boost::program_options::variables_map vm;
+  boost::program_options::store(
+        boost::program_options::parse_command_line( argc, argv, all_options ), vm );
+  boost::program_options::notify( vm );
+
+  if( vm.count( "help" ) )
+    {
+    std::cout << all_options << "\n";
+    return EXIT_SUCCESS;
+    }
+
+  if( vm.count( "version" ) )
+    {
+    std::cout << "GoFigure2-v@GOFIGURE2_VERSION@" << std::endl;
+    return EXIT_SUCCESS;
+    }
+
+  if( vm.count( "shortcuts" ) )
+    {
+    std::cout <<  std::endl;
+    // -----------------------------------------------------
+
+    std::cout <<  "GoFigure2 Shortcuts"         << std::endl;
+    std::cout <<  "*******************" << std::endl;
+    std::cout <<  "CTRL+O : Open one image"   << std::endl;
+    std::cout <<  "CTRL+W : Close active tab" << std::endl;
+    std::cout <<  "CTRL+Q : Quit"             << std::endl;
+    std::cout <<  std::endl;
+    // -----------------------------------------------------
+
+    std::cout <<  "Navigation" <<std::endl;
+    std::cout <<  "**********" << std::endl;
+    std::cout << "UP ARROW              : change slice upward" << std::endl;
+    std::cout << "DOWN ARROW            : change slice downward" << std::endl;
+    std::cout << "CTRL+Z or LEFT ARROW  : previous time point" << std::endl;
+    std::cout << "CTRL+C or RIGHT ARROW : next time point" << std::endl;
+    std::cout <<  std::endl;
+    // -----------------------------------------------------
+
+    std::cout <<  "Editing Mode" << std::endl;
+    std::cout <<  "************" << std::endl;
+    std::cout <<  "1: Default mode" << std::endl;
+    std::cout <<  "2: Contour editing" << std::endl;
+    std::cout <<  "3: Mesh editing" << std::endl;
+    std::cout <<  std::endl;
+    // -----------------------------------------------------
+
+    std::cout <<  "Visualization" << std::endl;
+    std::cout <<  "*************" << std::endl;
+    std::cout <<  "t or T: Translate (Pan)" << std::endl;
+    std::cout <<  "b or B: Box" << std::endl;
+    std::cout <<  "z or Z: Zoom" << std::endl;
+    std::cout <<  "r or R: Reset window / level" << std::endl;
+    std::cout <<  "o or O: Reset to Origin" << std::endl;
+    std::cout <<  "p or P: trace picking" << std::endl;
+    std::cout <<  std::endl;
+    // -----------------------------------------------------
+
+    std::cout <<  "Editing" << std::endl;
+    std::cout <<  "*******" << std::endl;
+    std::cout <<  "A or CTRL+A: Apply" << std::endl;
+    std::cout <<  "D or CTRL+D: Reset / Delete" <<std::endl;
+    // -----------------------------------------------------
+
+    std::cout <<  std::endl;
+
+    return EXIT_SUCCESS;
+    }
 
   QPixmap pixmap( QString::fromUtf8(":/fig/splash.png") );
 
@@ -94,10 +149,33 @@ int main(int argc, char **argv)
   splash->showMessage("Application loading... please wait");
 
   QGoMainWindow *form = new QGoMainWindow;
-  if ( ( !inputfilename.isEmpty() ) && ( !inputfilename.isNull() ) )
+
+  QString inputfilename;
+
+  if( vm.count( "input" ) )
     {
-    form->SetSingleFileName(inputfilename);
+    std::vector< std::string > temp_filename =vm["input"].as< std::vector< std::string > >();
+
+    for( std::vector< std::string >::const_iterator it = temp_filename.begin();
+         it != temp_filename.end();
+         ++it )
+      {
+      inputfilename = QString::fromStdString( *it );
+
+      if ( ( !inputfilename.isEmpty() ) && ( !inputfilename.isNull() ) )
+        {
+        form->SetSingleFileName(inputfilename);
+        }
+      }
     }
+
+  if( vm.count( "max-meshes" ) )
+    {
+    unsigned int max_number_of_meshes = vm["max-meshes"].as< unsigned int >();
+
+    form->SetMaxNumberOfTraces( max_number_of_meshes );
+    }
+
   form->show();
 
   splash->showMessage("Application ready");

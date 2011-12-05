@@ -92,7 +92,6 @@
 #include "vtkProperty.h"
 #include "vtkActor.h"
 #include "vtkPolyDataMapper.h"
-#include "vtkProp3DCollection.h"
 #include "vtkPoints.h"
 #include "vtkIdList.h"
 #include "vtkOutlineSource.h"
@@ -117,7 +116,6 @@ vtkViewImage::vtkViewImage()
   this->TextProperty = vtkTextProperty::New();
   this->LookupTable = vtkLookupTable::New();
   this->ScalarBarActor = vtkScalarBarActor::New();
-  this->Prop3DCollection = vtkProp3DCollection::New();
   this->OrientationTransform = vtkMatrixToLinearTransform::New();
 
   this->OrientationMatrix->Identity();
@@ -151,6 +149,9 @@ vtkViewImage::vtkViewImage()
 
   this->IsColor = false;
 
+  this->Window = -1;
+  this->Level  = -1;
+
   // default DirectionAnnotation
   this->DirectionAnnotationMatrix[0][0] = "R";
   this->DirectionAnnotationMatrix[0][1] = "L";
@@ -169,15 +170,29 @@ void vtkViewImage::SetInput(vtkImageData *in)
 
     this->IsColor = ( in->GetNumberOfScalarComponents() > 1 );
 
+    //multi channel
     if ( this->IsColor )
       {
+      this->ImageActor->SetInput(this->WindowLevel->GetOutput());
       this->WindowLevel->SetLookupTable(NULL);
+      // because of rescaling
+      int type = in->GetScalarSize();
+      double threshold = pow(2, 8*type) - 1;
+      // reset window level in viewer!
+      this->WindowLevel->SetWindow(threshold);
+      this->WindowLevel->SetLevel(threshold/2);
       this->ShowScalarBar = false;
       this->ScalarBarActor->SetVisibility(this->ShowScalarBar);
       }
+    // single channel
     else
       {
+      this->ImageActor->SetInput(this->WindowLevel->GetOutput());
       this->WindowLevel->SetLookupTable(this->LookupTable);
+      this->WindowLevel->SetWindow(this->LookupTable->GetRange()[1] - this->LookupTable->GetRange()[0]);
+      this->WindowLevel->SetLevel(this->LookupTable->GetRange()[0] + (this->LookupTable->GetRange()[1]-this->LookupTable->GetRange()[0])/2);
+      this->SetWindow(this->LookupTable->GetRange()[0]);
+      this->SetLevel(this->LookupTable->GetRange()[1]);
       }
     }
 }
@@ -197,9 +212,6 @@ vtkViewImage::~vtkViewImage()
   this->CornerAnnotation->Delete();
   this->LookupTable->Delete();
   this->ScalarBarActor->Delete();
-
-  // delete the collection
-  this->Prop3DCollection->Delete();
 }
 
 //----------------------------------------------------------------------------
@@ -215,7 +227,7 @@ void vtkViewImage::SetOrientationMatrix(vtkMatrix4x4 *matrix)
 //----------------------------------------------------------------------------
 void vtkViewImage::SetLookupTable(vtkLookupTable *lookuptable)
 {
-  if ( !this->IsColor )
+  if ( lookuptable )
     {
     vtkSetObjectMacro2Body(LookupTable, vtkLookupTable, lookuptable);
     this->WindowLevel->SetLookupTable(this->LookupTable);
@@ -321,16 +333,7 @@ double vtkViewImage::GetValueAtPosition(double worldcoordinates[3],
 
   return value;
 }
-
 //----------------------------------------------------------------------------
-
-void vtkViewImage::RemoveProp(vtkProp *prop)
-{
-  this->Renderer->RemoveViewProp(prop);
-
-  unsigned int index = this->Prop3DCollection->IsItemPresent(prop);
-  this->Prop3DCollection->RemoveItem(index);
-}
 
 //----------------------------------------------------------------------------
 double * vtkViewImage::GetWorldCoordinatesFromImageCoordinates(int indices[3])
@@ -453,7 +456,7 @@ void vtkViewImage::ResetWindowLevel(void)
     return;
     }
 
-  if ( !this->IsColor )
+ if ( !this->IsColor )
     {
     double *range = input->GetScalarRange();
     double  window = range[1] - range[0];
@@ -461,6 +464,28 @@ void vtkViewImage::ResetWindowLevel(void)
 
     this->SetColorWindow(window);
     this->SetColorLevel(level);
+    }
+}
+
+//----------------------------------------------------------------------------
+void vtkViewImage::UpdateWindowLevel(void)
+{
+ if (this->IsColor)
+   return;
+
+ if ( LookupTable )
+    {
+    double *range = LookupTable->GetRange();
+    double  window = range[1] - range[0];
+    double  level = 0.5 * ( range[1] + range[0] );
+
+    this->SetColorWindow(window);
+    this->SetColorLevel(level);
+    }
+  else
+    {
+    this->SetColorWindow(0);
+    this->SetColorLevel(0);
     }
 }
 
@@ -515,25 +540,6 @@ void vtkViewImage::SetShowScalarBar(const bool & val)
 }
 
 //----------------------------------------------------------------------------
-
-//----------------------------------------------------------------------------
-void vtkViewImage::ChangeActorProperty(vtkProp3D *iActor,
-                                       vtkProperty *iProperty)
-{
-  if ( iActor && iProperty )
-    {
-    if ( Prop3DCollection->IsItemPresent(iActor) )
-      {
-      vtkActor *temp = dynamic_cast< vtkActor * >( iActor );
-      if ( temp )
-        {
-        temp->SetProperty(iProperty);
-        //temp->Modified();
-        //Render();
-        }
-      }
-    }
-}
 
 //----------------------------------------------------------------------------
 void vtkViewImage::Render()
@@ -689,4 +695,31 @@ void vtkViewImage::SetShowAnnotations(const int & iShowAnnotations)
 {
   this->ShowAnnotations = iShowAnnotations;
   this->CornerAnnotation->SetVisibility (iShowAnnotations);
+}
+//----------------------------------------------------------------------------
+void
+vtkViewImage::SetWindow(double iWindow)
+{
+  this->Window = iWindow;
+}
+
+//----------------------------------------------------------------------------
+double
+vtkViewImage::GetWindow()
+{
+  return this->Window;
+}
+
+//----------------------------------------------------------------------------
+void
+vtkViewImage::SetLevel(double iLevel)
+{
+  this->Level = iLevel;
+}
+
+//----------------------------------------------------------------------------
+double
+vtkViewImage::GetLevel()
+{
+  return this->Level;
 }

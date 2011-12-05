@@ -83,7 +83,7 @@ public:
 
 protected:
   vtkPolyDataMySQLTrackReader();
-  ~vtkPolyDataMySQLTrackReader();
+  virtual ~vtkPolyDataMySQLTrackReader();
 
 private:
   vtkPolyDataMySQLTrackReader(const vtkPolyDataMySQLTrackReader &);

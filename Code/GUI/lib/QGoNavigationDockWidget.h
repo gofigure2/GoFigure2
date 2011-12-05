@@ -35,22 +35,25 @@
 #ifndef __QGoNavigationDockWidget_h
 #define __QGoNavigationDockWidget_h
 
-#include <QDockWidget>
 #include <QComboBox>
 #include "ui_NavigationDockWidget.h"
 #include "GoFigureGlobalDefinition.h"
+#include "QGoDockWidget.h"
 
 #include "QGoGUILibConfigure.h"
 
 class QHBoxLayout;
 class QVBoxLayout;
 
+class QPushButton;
+class QCheckBox;
+
 /** \class QGoNavigationDockWidget
  *  \brief Dock Widget for browsing images (changing slice, time point...)
  *  \ingroup GUI
  */
 class QGOGUILIB_EXPORT QGoNavigationDockWidget:
-  public QDockWidget,
+  public QGoDockWidget,
   private Ui::NavigationDockWidget
 {
   Q_OBJECT
@@ -62,15 +65,6 @@ public:
 
   /** \brief Destructor */
   ~QGoNavigationDockWidget();
-
-  /** \brief Set the number of channels */
-  void SetNumberOfChannels(const unsigned int & iN);
-
-  /** \brief Set channel name
-  *    \param[in] i channel id
-  *    \param[in] iText channel name
-  */
-  void SetChannel( const unsigned int & i, const QString & iText = QString() );
 
  /** \brief Set the extent of the images in the X direction
  * \param[in] iMin XMin
@@ -96,14 +90,22 @@ public:
  */
   void SetTMinimumAndMaximum(const int & iMin, const int & iMax);
 
-  /** \brief Get the selected channel id */
-  int  GetCurrentChannel() const;
+  // new channels representation
+  void AddChannel(const QString& iName, const QColor& iColor,const unsigned int& iNumber,
+                  const bool& iChecked);
 
-  /** \brief Select and show all channels */
-  bool ShowAllChannels()   const;
+  void ModifyChannel(QString iName, QColor iColor);
 
-  /** \brief Get the channel name */
-  QString GetChannelName(const int &);
+  void VisibilityListChannels(const bool& iVisibility);
+
+  void AddDoppler(const QString& iName, const QColor& iColor,const unsigned int& iNumber,
+                  const bool& iChecked);
+
+  void VisibilityListDoppler(const bool& iVisibility);
+
+  void setChannelName(QString iChannelName);
+
+  void DeleteDopplerWidgets();
 
 public slots:
   /** Set X Slice */
@@ -124,13 +126,13 @@ public slots:
   /** Move to the next time point using shortcuts */
   void MoveToNextTimePoint();
 
-  void StepVisibility(int);
+  void UpdateWidget(int);
+
+  void visibilityChanged(bool);
+
+  int GetFirstVisibleChannel();
 
 signals:
-  void ShowAllChannelsChanged(bool iChanged);
-
-  void ShowOneChannelChanged(int Channel);
-
   void XSliceChanged(int Slice);
 
   void YSliceChanged(int Slice);
@@ -143,7 +145,20 @@ signals:
 
   void StepChanged(int Step);
 
+  void visibilityChanged(QString, bool);
+
+  void openTransferFunctionEditor(QString);
+
+  void DopplerSizeChanged(int iSize);
+
 protected:
   GoFigure::TabDimensionType m_Dimension;
+
+private:
+  QList<QPushButton*> m_ListPushButtons;
+  QList<QCheckBox*> m_ListCheckBoxes;
+  QList<QCheckBox*> m_ListDoppler;
+
+  bool              m_Classic;
 };
 #endif
