@@ -1997,7 +1997,6 @@ QGoTabImageView3DwT::VisualizeTrace(vtkPolyData *iTrace, double *iRGBA)
   // add actor to renderer and to Prop3d
   m_ImageView->AddActor(3, oActors[3]);
 
-  m_ImageView->UpdateRenderWindows();
 
   return oActors;
 }
@@ -2011,7 +2010,7 @@ QGoTabImageView3DwT::ValidateContour(int iTCoord)
   bool re_edit = this->m_ContourEditingWidget->GetReeditMode();
 
 #ifdef HAS_OPENMP
-#pragma omp for
+#pragma omp parallel for
 #endif
   for( int i = 0; i < m_ImageView->GetNumberOfImageViewers(); i++ )
     {
@@ -2047,6 +2046,8 @@ QGoTabImageView3DwT::ValidateContour(int iTCoord)
       m_ContourContainer->InsertCurrentElement();
       }
     }
+
+  m_ImageView->UpdateRenderWindows();
 
   if ( re_edit ) //need to set the widgets to a normal mode
     {
@@ -2318,6 +2319,8 @@ QGoTabImageView3DwT::SaveAndVisuContour(int iTCoord, vtkPolyData *iView)
   std::vector< vtkActor * > actors =
     VisualizeTrace(iView,
                    this->m_ContourContainer->m_CurrentElement.rgba);
+
+
   iView->Delete();
 
   // should be nodes
@@ -2394,6 +2397,9 @@ QGoTabImageView3DwT::SaveInDBAndRenderMeshForVisu(
     SaveAndVisuMesh(*iter, iTCoord);
     ++iter;
     }
+
+  m_ImageView->UpdateRenderWindows();
+
 }
 //-------------------------------------------------------------------------
 
@@ -2431,13 +2437,15 @@ QGoTabImageView3DwT::SplitInDBAndRenderMeshForVisu(
   if( N > 1)
     {
 #ifdef HAS_OPENMP
-#pragma omp for
+#pragma omp parallel for
 #endif
     for( size_t i = 1; i<N; ++i )
       {
       SaveAndVisuMesh( iVectPolydata[i], timePoint, 0 );
       }
     }
+
+  m_ImageView->UpdateRenderWindows();
 
 }
 //-------------------------------------------------------------------------
@@ -2470,6 +2478,9 @@ QGoTabImageView3DwT::MergeInDBAndRenderMeshForVisu(
 
   // Save mesh first mesh, provide track ID
   SaveAndVisuMesh(iVectPolydata, tCoord.front(), collectionID.front());
+
+  m_ImageView->UpdateRenderWindows();
+
 }
 //-------------------------------------------------------------------------
 
@@ -2507,6 +2518,7 @@ void QGoTabImageView3DwT::SaveInDBAndRenderContourForVisu(
     ++iter;
     }
 
+  m_ImageView->UpdateRenderWindows();
 }
 //-------------------------------------------------------------------------
 
@@ -2579,6 +2591,9 @@ QGoTabImageView3DwT::AddContourForMeshToContours(vtkPolyData *iInput)
     std::vector< vtkActor * > actors =
       VisualizeTrace(iInput,
                      this->m_ContourContainer->m_CurrentElement.rgba);
+
+    m_ImageView->UpdateRenderWindows();
+
     iInput->Delete();
 
     // update the container
@@ -2630,7 +2645,7 @@ ComputeMeshAttributes(vtkPolyData *iMesh,
     if( iIntensity )
       {
 #ifdef HAS_OPENMP
-#pragma omp for
+#pragma omp parallel for
 #endif
       for( size_t i = 0; i < NumberOfChannels; i++ )
         {
@@ -2691,7 +2706,7 @@ ComputeMeshAttributes(vtkPolyData *iMesh,
       {
 
 #ifdef HAS_OPENMP
-#pragma omp for
+#pragma omp parallel for
 #endif
       for( unsigned int i = boundChannel[0]; i <= boundChannel[1]; i++ )
         {
@@ -3497,7 +3512,7 @@ CreateMeshesActorsFromVisuContainer(std::list<unsigned int> iTPointToLoad)
         //while ( it0 != it1 )
 
 #ifdef HAS_OPENMP
-#pragma omp for
+#pragma omp parallel for
 #endif
         for( size_t i = 0; i < numberOfMeshes; i++ )
           {
@@ -3570,7 +3585,7 @@ UpdateTFEditor()
   int currentChannel = m_TransferFunctionDockWidget->GetCurrentWidget();
 
 #ifdef HAS_OPENMP
-#pragma omp for
+#pragma omp parallel for
 #endif
   for( unsigned int i = 0; i < NumberOfChannels; i++ )
     {
@@ -3655,7 +3670,7 @@ CreateDopplerTFEditor()
   std::vector<int> time = m_ImageProcessor->getDopplerTime(m_TCoord);
 
 #ifdef HAS_OPENMP
-#pragma omp for
+#pragma omp parallel for
 #endif
   for(unsigned int i=0; i<m_ImageProcessor->getDopplerSize(); ++i)
     {

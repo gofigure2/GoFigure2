@@ -782,7 +782,7 @@ void QGoPrintDatabase::ImportMeshes()
     }
 
 #if HAS_OPENMP
-#pragma omp for
+#pragma omp parallel for
 #endif
   for( int i = 0; i < p.size(); i++ )
     {
