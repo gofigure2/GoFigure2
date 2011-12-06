@@ -92,7 +92,6 @@
 
 class vtkViewImage3DCommand;
 class vtkSmartVolumeMapper;
-class vtkSmartVolumeMapper;
 class vtkVolume;
 class vtkImageActor;
 class vtkAxes;

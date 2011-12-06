@@ -78,17 +78,15 @@ initTimePoint(const unsigned int& iTime)
 
     // update the container
     // Get Number of channels from reader
-    int numberOfChannels = getNumberOfChannels();
-
-    int n = numberOfChannels;
+    int n = getNumberOfChannels();
     // while(numberOfChannels>0)
 
   #ifdef HAS_OPENMP
-  #pragma omp for
+  #pragma omp parallel for
   #endif
     for( int kk = 0; kk < n; ++kk )
       {
-      numberOfChannels = n - ( kk + 1 );
+      int numberOfChannels = n - ( kk + 1 );
 //    --numberOfChannels;
 
       // Get useful information from the reader
@@ -173,16 +171,16 @@ setTimePoint(const unsigned int& iTime)
 
     // update the container
     // Get Number of channels from reader
-    int numberOfChannels = getNumberOfChannels();
+    //int numberOfChannels = getNumberOfChannels();
 
-    int n = numberOfChannels;
+    int n = getNumberOfChannels();
 
   #ifdef HAS_OPENMP
-  #pragma omp for
+  #pragma omp parallel for
   #endif
     for( int kk = 0; kk < n; kk++ )
       {
-      numberOfChannels = n - ( kk + 1 );
+      int numberOfChannels = n - ( kk + 1 );
 
       // Get useful information from the reader
       // Nicolas Get Image or get output...?
@@ -235,7 +233,7 @@ setDoppler(const unsigned int& iTime, const unsigned int& iPrevious)
   std::vector<int> dopplerTime = getDopplerTime(iTime);
 
 #ifdef HAS_OPENMP
-#pragma omp for
+#pragma omp parallel for
 #endif
   for(unsigned int i=0; i<getDopplerSize(); ++i)
     {
@@ -256,10 +254,6 @@ setDoppler(const unsigned int& iTime, const unsigned int& iPrevious)
     color.push_back(rgb[1]*255);
     color.push_back(rgb[2]*255);
     color.push_back(255);
-
-    std::cout << " R: " << color[0]
-              << " G: " << color[1]
-              << " G: " << color[2] << std::endl;
 
     // Create LUT
     vtkSmartPointer<vtkLookupTable> lut = createLUT(color[0],

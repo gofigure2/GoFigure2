@@ -114,7 +114,6 @@
 #include <vtkPiecewiseFunction.h>
 #include <vtkColorTransferFunction.h>
 #include <vtkSmartVolumeMapper.h>
-#include <vtkSmartVolumeMapper.h>
 #include <vtkFiniteDifferenceGradientEstimator.h>
 #include <vtkVolumeTextureMapper2D.h>
 #include <vtkProperty.h>

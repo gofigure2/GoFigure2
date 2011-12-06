@@ -27,6 +27,25 @@ IF( WIN32 )
   ENDIF( NOT BORLAND )
 ENDIF( WIN32 )
 
+#-------------------------------------------------------------------------
+# When making one release: update GOFIGURE2_*_VERSION,
+# GOFIGURE2_WC_REVISION and the date of the release
+
+SET( GOFIGURE2_MAJOR_VERSION "0" )
+SET( GOFIGURE2_MINOR_VERSION "9" )
+SET( GOFIGURE2_WC_REVISION "0" )
+
+SET( DATE "12/06/2011" )
+
+SET( GOFIGURE2_VERSION
+  "${GOFIGURE2_MAJOR_VERSION}.${GOFIGURE2_MINOR_VERSION}.${GOFIGURE2_WC_REVISION}" )
+
+SET( GOFIGURE2_LIB_VERSION
+  "${GOFIGURE2_MAJOR_VERSION}.${GOFIGURE2_MINOR_VERSION}" )
+
+MESSAGE( STATUS "GoFigure2 version ${GOFIGURE2_VERSION}" )
+
+
 #---------------------------------------------------------------------------
 # CONFIGURE CMAKE
 #---------------------------------------------------------------------------
@@ -88,24 +107,7 @@ ELSE( SUPERBUILD )
 
   ENDIF()
 
-  #-------------------------------------------------------------------------
-  # When making one release: update GOFIGURE2_*_VERSION,
-  # GOFIGURE2_WC_REVISION and the date of the release
-  SET( GOFIGURE2_MAJOR_VERSION "0" )
-  SET( GOFIGURE2_MINOR_VERSION "8" )
-  SET( GOFIGURE2_WC_REVISION "develop" )
-
-  SET( DATE "10/01/2011" )
-
-  SET( GOFIGURE2_VERSION
-    "${GOFIGURE2_MAJOR_VERSION}.${GOFIGURE2_MINOR_VERSION}.${GOFIGURE2_WC_REVISION}" )
-
-  SET( GOFIGURE2_LIB_VERSION
-    "${GOFIGURE2_MAJOR_VERSION}.${GOFIGURE2_MINOR_VERSION}" )
-
-  MESSAGE( STATUS "GoFigure2 version ${GOFIGURE2_VERSION}" )
-
-  #-----------------------------------------------------------------------
+ #-----------------------------------------------------------------------
   # Export and Install configuration
   #
   # GOFIGURE2_INSTALL_BUNDLE_DIR       - bundle dir

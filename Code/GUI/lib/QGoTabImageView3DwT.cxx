@@ -33,6 +33,7 @@
 =========================================================================*/
 
 #include "QGoTabImageView3DwT.h"
+#include "QShortcut"
 #include "QDebug"
 #include "QShortcut"
 
@@ -508,6 +509,7 @@ QGoTabImageView3DwT::TranslateInteractorBehavior(bool iVisible)
 {
   if ( iVisible )
     {
+    // pan is translate now, for consistency with the shortcuts
     this->m_ImageView->PanMode();
     }
 }
@@ -1640,8 +1642,8 @@ QGoTabImageView3DwT::ChangeLookupTable()
 //-------------------------------------------------------------------------
 QString
 QGoTabImageView3DwT::SnapshotViewXY(
-  const GoFigure::FileType & iType,
-  const QString & iBaseName)
+  GoFigure::FileType iType,
+  QString iBaseName)
 {
   return m_ImageView->SnapshotViewXY(iType, iBaseName);
 }
@@ -1651,8 +1653,8 @@ QGoTabImageView3DwT::SnapshotViewXY(
 //-------------------------------------------------------------------------
 QString
 QGoTabImageView3DwT::SnapshotViewXZ(
-  const GoFigure::FileType & iType,
-  const QString & iBaseName)
+  GoFigure::FileType iType,
+  QString iBaseName)
 {
   return m_ImageView->SnapshotViewXZ(iType, iBaseName);
 }
@@ -1662,8 +1664,8 @@ QGoTabImageView3DwT::SnapshotViewXZ(
 //-------------------------------------------------------------------------
 QString
 QGoTabImageView3DwT::SnapshotViewYZ(
-  const GoFigure::FileType & iType,
-  const QString & iBaseName)
+  GoFigure::FileType iType,
+  QString iBaseName)
 {
   return m_ImageView->SnapshotViewYZ(iType, iBaseName);
 }
@@ -1673,8 +1675,8 @@ QGoTabImageView3DwT::SnapshotViewYZ(
 //-------------------------------------------------------------------------
 QString
 QGoTabImageView3DwT::SnapshotViewXYZ(
-  const GoFigure::FileType & iType,
-  const QString & iBaseName)
+  GoFigure::FileType iType,
+  QString iBaseName)
 {
   return m_ImageView->SnapshotViewXYZ(iType, iBaseName);
 }
@@ -1683,7 +1685,7 @@ QGoTabImageView3DwT::SnapshotViewXYZ(
 
 //-------------------------------------------------------------------------
 void
-QGoTabImageView3DwT::SetSliceViewXY(const int & iS)
+QGoTabImageView3DwT::SetSliceViewXY(int iS)
 {
   m_ImageView->SetSliceViewXY(iS);
 }
@@ -1692,7 +1694,7 @@ QGoTabImageView3DwT::SetSliceViewXY(const int & iS)
 
 //-------------------------------------------------------------------------
 void
-QGoTabImageView3DwT::SetSliceViewXZ(const int & iS)
+QGoTabImageView3DwT::SetSliceViewXZ(int iS)
 {
   m_ImageView->SetSliceViewXZ(iS);
 }
@@ -1701,7 +1703,7 @@ QGoTabImageView3DwT::SetSliceViewXZ(const int & iS)
 
 //-------------------------------------------------------------------------
 void
-QGoTabImageView3DwT::SetSliceViewYZ(const int & iS)
+QGoTabImageView3DwT::SetSliceViewYZ(int iS)
 {
   m_ImageView->SetSliceViewYZ(iS);
 }
@@ -1710,7 +1712,7 @@ QGoTabImageView3DwT::SetSliceViewYZ(const int & iS)
 
 //-------------------------------------------------------------------------
 void
-QGoTabImageView3DwT::SetFullScreenView(const int & iS)
+QGoTabImageView3DwT::SetFullScreenView(int iS)
 {
   m_ImageView->SetFullScreenView(iS);
 }
@@ -1995,9 +1997,9 @@ QGoTabImageView3DwT::VisualizeTrace(vtkPolyData *iTrace, double *iRGBA)
     }
 
   // add actor to renderer and to Prop3d
+
   m_ImageView->AddActor(3, oActors[3]);
 
-  m_ImageView->UpdateRenderWindows();
 
   return oActors;
 }
@@ -2047,6 +2049,8 @@ QGoTabImageView3DwT::ValidateContour(int iTCoord)
       m_ContourContainer->InsertCurrentElement();
       }
     }
+
+  m_ImageView->UpdateRenderWindows();
 
   if ( re_edit ) //need to set the widgets to a normal mode
     {
@@ -2318,6 +2322,8 @@ QGoTabImageView3DwT::SaveAndVisuContour(int iTCoord, vtkPolyData *iView)
   std::vector< vtkActor * > actors =
     VisualizeTrace(iView,
                    this->m_ContourContainer->m_CurrentElement.rgba);
+
+
   iView->Delete();
 
   // should be nodes
@@ -2394,6 +2400,8 @@ QGoTabImageView3DwT::SaveInDBAndRenderMeshForVisu(
     SaveAndVisuMesh(*iter, iTCoord);
     ++iter;
     }
+
+  m_ImageView->UpdateRenderWindows();
 }
 //-------------------------------------------------------------------------
 
@@ -2439,6 +2447,7 @@ QGoTabImageView3DwT::SplitInDBAndRenderMeshForVisu(
       }
     }
 
+  m_ImageView->UpdateRenderWindows();
 }
 //-------------------------------------------------------------------------
 
@@ -2470,6 +2479,8 @@ QGoTabImageView3DwT::MergeInDBAndRenderMeshForVisu(
 
   // Save mesh first mesh, provide track ID
   SaveAndVisuMesh(iVectPolydata, tCoord.front(), collectionID.front());
+
+  m_ImageView->UpdateRenderWindows();
 }
 //-------------------------------------------------------------------------
 
@@ -2507,6 +2518,7 @@ void QGoTabImageView3DwT::SaveInDBAndRenderContourForVisu(
     ++iter;
     }
 
+  m_ImageView->UpdateRenderWindows();
 }
 //-------------------------------------------------------------------------
 
@@ -2579,6 +2591,9 @@ QGoTabImageView3DwT::AddContourForMeshToContours(vtkPolyData *iInput)
     std::vector< vtkActor * > actors =
       VisualizeTrace(iInput,
                      this->m_ContourContainer->m_CurrentElement.rgba);
+
+    m_ImageView->UpdateRenderWindows();
+
     iInput->Delete();
 
     // update the container
@@ -2691,7 +2706,7 @@ ComputeMeshAttributes(vtkPolyData *iMesh,
       {
 
 #ifdef HAS_OPENMP
-#pragma omp for
+#pragma omp parallel for
 #endif
       for( unsigned int i = boundChannel[0]; i <= boundChannel[1]; i++ )
         {

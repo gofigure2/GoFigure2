@@ -999,13 +999,6 @@ void QGoMainWindow::on_actionUser_mailing_list_triggered()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoMainWindow::on_actionDeveloper_mailing_list_triggered()
-{
-  QDesktopServices::openUrl( QUrl("mailto:gofigure2-developers@lists.sourceforge.net?subject=About GoFigure2") );
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
 void QGoMainWindow::on_actionReport_a_bug_triggered()
 {
   QString url( "mailto:gofigure2-developers@lists.sourceforge.net?subject=Bug Report&body=" );
@@ -1041,6 +1034,14 @@ void QGoMainWindow::on_actionReport_a_bug_triggered()
   url.append( text );
 
   QDesktopServices::openUrl( QUrl( url ) );
+}
+
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoMainWindow::on_actionDeveloper_mailing_list_triggered()
+{
+  QDesktopServices::openUrl( QUrl("mailto:gofigure2-developers@lists.sourceforge.net?subject=About GoFigure2") );
 }
 //--------------------------------------------------------------------------
 

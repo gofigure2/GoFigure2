@@ -116,7 +116,7 @@ void GoDBCollectionOfTraces::DeleteTracesInDB(std::list< unsigned int > TracesTo
       }
 
     DeleteRow( DatabaseConnector, m_TracesName, m_TracesIDName,
-      ConvertToString< unsigned int >(ID) );
+               ConvertToString< unsigned int >(ID) );
     ++iter;
     }
 }
