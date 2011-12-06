@@ -193,7 +193,8 @@ IF( APPLE )
   SET( plugin_dest_dir gofigure.app/Contents/MacOS )
   SET( qtconf_dest_dir gofigure.app/Contents/Resources )
   SET( APPS
-    "\${CMAKE_INSTALL_PREFIX}/${GOFIGURE2_INSTALL_BUNDLE_DIR}/gofigure.app" )
+    "\${CMAKE_INSTALL_PREFIX}/gofigure.app" )
+#    "\${CMAKE_INSTALL_PREFIX}/${GOFIGURE2_INSTALL_BUNDLE_DIR}/gofigure.app" )
 ENDIF( APPLE )
 
 IF( WIN32 )
@@ -289,22 +290,6 @@ IF( USE_BUNDLE_UTILITIES )
     )
 
 ENDIF( USE_BUNDLE_UTILITIES )
-#-----------------------------------------------------
-# Here Let's take care of License files
-# copying them into the build's folder
-# and during the installation process
-FILE( GLOB
-  GOFIGURE2_LICENSE_FILES
-  "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Licenses/*.txt"
-  )
-
-FILE( GLOB
-  GOFIGURE2_RESOURCES_FILES
-  "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Resources/*.txt"
-  )
-
-#-----------------------------------------------------
-
 
 IF( APPLE )
   #---------------------------------------------------------------------------
@@ -314,35 +299,35 @@ IF( APPLE )
     file( WRITE \"\${CMAKE_INSTALL_PREFIX}/${GOFIGURE2_INSTALL_BUNDLE_DIR}/${qtconf_dest_dir}/qt.conf\" \"\")
     " COMPONENT Runtime
     )
-
-  INSTALL( FILES ${GOFIGURE2_LICENSE_FILES}
-    DESTINATION ${plugin_dest_dir}/Licenses
-    COMPONENT Runtime
-    )
-
- INSTALL( FILES ${GOFIGURE2_RESOURCES_FILES}
-    DESTINATION ${plugin_dest_dir}/Resources
-    COMPONENT Runtime
-    )
-
-ELSE( APPLE )
-  INSTALL( FILES ${GOFIGURE2_LICENSE_FILES}
-    DESTINATION ${GOFIGURE2_INSTALL_LICENSE_DIR}
-    COMPONENT Runtime
-    )
-
-  INSTALL( FILES ${GOFIGURE2_RESOURCES_FILES}
-    DESTINATION ${GOFIGURE2_INSTALL_RESOURCE_DIR}
-    COMPONENT Runtime
-    )
-
 ENDIF( APPLE )
 
-FILE( GLOB __source_file_h "${CMAKE_CURRENT_SOURCE_DIR}/*.h" )
-FILE( GLOB __binary_file_h "${CMAKE_CURRENT_BINARY_DIR}/*.h" )
+#-----------------------------------------------------
+# Here Let's take care of License and Resoources files
+FILE( GLOB
+  GOFIGURE2_LICENSE_FILES
+  "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Licenses/*.txt"
+  )
 
-INSTALL( FILES ${__source_file_h} ${__binary_file_h}
-    ${QGoMainWindow_UI_H}
+FILE( GLOB
+  GOFIGURE2_RESOURCES_FILE
+  "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Resources/*.txt"
+  )
+  
+# licence files
+INSTALL( FILES ${GOFIGURE2_LICENSE_FILES}
+  DESTINATION ${GOFIGURE2_INSTALL_LICENSE_DIR}
+  COMPONENT Runtime
+)
+
+# resources files
+INSTALL( FILES ${GOFIGURE2_RESOURCES_FILE}
+  DESTINATION ${GOFIGURE2_INSTALL_RESOURCSES_DIR}
+  COMPONENT Runtime
+)
+
+FILE( GLOB __source_file_h "${CMAKE_CURRENT_SOURCE_DIR}/*.h" )
+
+INSTALL( FILES ${__source_file_h} ${QGoMainWindow_UI_H}
   DESTINATION ${GOFIGURE2_INSTALL_HEADER_DIR}
   COMPONENT Development
 )
