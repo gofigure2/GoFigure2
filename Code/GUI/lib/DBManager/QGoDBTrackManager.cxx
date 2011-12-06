@@ -396,10 +396,10 @@ void QGoDBTrackManager::AddActionsContextMenu(QMenu *iMenu)
   SplitMergeMenu->addAction( tr("Merge your 2 tracks"), this, SLOT( MergeTracks() ) );
   iMenu->addAction( SplitMergeMenu->menuAction() );
 
-  this->m_CheckedTracesMenu->addAction( tr("Go to the end of this %1s")
+  this->m_CheckedTracesMenu->addAction( tr("Go to the end")
                                         .arg( this->m_TraceName.c_str() ),
                                         this, SLOT( GoToTrackEnd() ) );
-  this->m_CheckedTracesMenu->addAction( tr("Go to the beginning of this %1s")
+  this->m_CheckedTracesMenu->addAction( tr("Go to the beginning")
                                         .arg( this->m_TraceName.c_str() ),
                                         this, SLOT( GoToTrackBegin() ) );
   this->m_CheckedTracesMenu->addAction( tr("Create a new division from checked %1s")
