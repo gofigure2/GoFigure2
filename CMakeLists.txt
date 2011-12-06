@@ -50,18 +50,18 @@ MESSAGE( STATUS "GoFigure2 version ${GOFIGURE2_VERSION}" )
 # CONFIGURE CMAKE
 #---------------------------------------------------------------------------
 
-  SET( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
-    "${CMAKE_CURRENT_SOURCE_DIR}/CMake/"
-    "${CMAKE_CURRENT_SOURCE_DIR}/CMake/SuperBuild/"
+SET( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
+  "${CMAKE_CURRENT_SOURCE_DIR}/CMake/"
+  "${CMAKE_CURRENT_SOURCE_DIR}/CMake/SuperBuild/"
   )
 
-  IF( UNIX )
-    SET (CACHE CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
-  ENDIF( UNIX )
+IF( UNIX )
+  SET (CACHE CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
+ENDIF( UNIX )
 
 
 #---------------------------------------------------------------------------
-# SUPERBUILD - ENABLED BY DEFAULT
+# SUPERBUILD - DISABLED BY DEFAULT
 #---------------------------------------------------------------------------
 
 OPTION( SUPERBUILD "Use SuperBuild" OFF )
@@ -107,7 +107,7 @@ ELSE( SUPERBUILD )
 
   ENDIF()
 
- #-----------------------------------------------------------------------
+  #-----------------------------------------------------------------------
   # Export and Install configuration
   #
   # GOFIGURE2_INSTALL_BUNDLE_DIR       - bundle dir
@@ -147,7 +147,7 @@ ELSE( SUPERBUILD )
     SET( GOFIGURE2_INSTALL_RESOURCE_DIR "share/doc/gofigure2/Resources" )
   ENDIF( NOT GOFIGURE2_INSTALL_RESOURCE_DIR )
   
-#---------------------------------------------------------------------------
+  #---------------------------------------------------------------------------
   # Define CMAKE_whatever_OUTPUT_DIRECTORY
   #---------------------------------------------------------------------------
   # all target executables will be
@@ -161,43 +161,50 @@ ELSE( SUPERBUILD )
     ${GOFIGURE2_BINARY_DIR}/lib
   )
 
-  # all shared libraries will be in ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
-  # Note that modules (plugins) are considered as shared libraries
-  SET( CMAKE_LIBRARY_OUTPUT_DIRECTORY
-  #  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/plugins
-     ${GOFIGURE2_BINARY_DIR}/lib
-  )
+  IF( NOT APPLE )
+    # all shared libraries will be in ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
+    # Note that modules (plugins) are considered as shared libraries
+    SET( CMAKE_LIBRARY_OUTPUT_DIRECTORY
+    #  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/plugins
+       ${GOFIGURE2_BINARY_DIR}/lib
+    )
+  ELSE()
+    SET( CMAKE_LIBRARY_OUTPUT_DIRECTORY
+      ${GOFIGURE2_BINARY_DIR}/bin/gofigure.app/Contents/MacOS/
+      )
+  ENDIF()
+
   SET( GOFIGURE2_LIBRARY_DIRS ${GOFIGURE2_BINARY_DIR}/lib )
 
-#---------------------------------------------------------------------------
-# Export files (body of emails, etc...)
-#---------------------------------------------------------------------------
-# define useful variables
-IF( WIN32 )
-  SET( OS "Windows" )
-ELSE( WIN32 )
-  IF ( APPLE )
-    SET( OS "Mac OS X" )
-  ELSE( APPLE )
-    SET( OS "Linux" )
-  ENDIF( APPLE )
-ENDIF( WIN32 )
+  #---------------------------------------------------------------------------
+  # Export files (body of emails, etc...)
+  #---------------------------------------------------------------------------
+  # define useful variables
+  IF( WIN32 )
+    SET( OS "Windows" )
+  ELSE( WIN32 )
+    IF ( APPLE )
+      SET( OS "Mac OS X" )
+    ELSE( APPLE )
+      SET( OS "Linux" )
+    ENDIF( APPLE )
+  ENDIF( WIN32 )
 
-# Licences
-file(MAKE_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Licenses)
+  # Licences
+  file(MAKE_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Licenses)
 
-file(COPY        ${GOFIGURE2_SOURCE_DIR}/Licenses/
+  file(COPY        ${GOFIGURE2_SOURCE_DIR}/Licenses/
      DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Licenses)
 
-# Resources
-file(MAKE_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Resources)
+  # Resources
+  file(MAKE_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Resources)
 
-CONFIGURE_FILE( ${GOFIGURE2_SOURCE_DIR}/Resources/BugEntry.txt.in
- ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Resources/BugEntry.txt
- @ONLY
-)
+  CONFIGURE_FILE( ${GOFIGURE2_SOURCE_DIR}/Resources/BugEntry.txt.in
+    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Resources/BugEntry.txt
+    @ONLY
+    )
 
-#---------------------------------------------------------------------------
+  #---------------------------------------------------------------------------
   # Define TESTING_DATA_PATH
   #---------------------------------------------------------------------------
   SET( TESTING_DATA_PATH
@@ -418,5 +425,7 @@ CONFIGURE_FILE( ${GOFIGURE2_SOURCE_DIR}/Resources/BugEntry.txt.in
   ADD_CUSTOM_TARGET( uninstall
     "${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_BINARY_DIR}/GOFIGURE2Uninstall.cmake"
     )
+
+  INCLUDE( GOFIGURE2CPack.cmake )
 
 ENDIF( SUPERBUILD )
