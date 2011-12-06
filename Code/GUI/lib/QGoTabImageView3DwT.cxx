@@ -2000,7 +2000,6 @@ QGoTabImageView3DwT::VisualizeTrace(vtkPolyData *iTrace, double *iRGBA)
 
   m_ImageView->AddActor(3, oActors[3]);
 
-  m_ImageView->UpdateRenderWindows();
 
   return oActors;
 }
@@ -2050,6 +2049,8 @@ QGoTabImageView3DwT::ValidateContour(int iTCoord)
       m_ContourContainer->InsertCurrentElement();
       }
     }
+
+  m_ImageView->UpdateRenderWindows();
 
   if ( re_edit ) //need to set the widgets to a normal mode
     {
@@ -2399,6 +2400,8 @@ QGoTabImageView3DwT::SaveInDBAndRenderMeshForVisu(
     SaveAndVisuMesh(*iter, iTCoord);
     ++iter;
     }
+
+  m_ImageView->UpdateRenderWindows();
 }
 //-------------------------------------------------------------------------
 
@@ -2443,6 +2446,8 @@ QGoTabImageView3DwT::SplitInDBAndRenderMeshForVisu(
       SaveAndVisuMesh( iVectPolydata[i], timePoint, 0 );
       }
     }
+
+  m_ImageView->UpdateRenderWindows();
 }
 //-------------------------------------------------------------------------
 
@@ -2474,6 +2479,8 @@ QGoTabImageView3DwT::MergeInDBAndRenderMeshForVisu(
 
   // Save mesh first mesh, provide track ID
   SaveAndVisuMesh(iVectPolydata, tCoord.front(), collectionID.front());
+
+  m_ImageView->UpdateRenderWindows();
 }
 //-------------------------------------------------------------------------
 
@@ -2510,6 +2517,8 @@ void QGoTabImageView3DwT::SaveInDBAndRenderContourForVisu(
     SaveAndVisuContour(iTCoord, *iter);
     ++iter;
     }
+
+  m_ImageView->UpdateRenderWindows();
 }
 //-------------------------------------------------------------------------
 
@@ -2582,6 +2591,8 @@ QGoTabImageView3DwT::AddContourForMeshToContours(vtkPolyData *iInput)
     std::vector< vtkActor * > actors =
       VisualizeTrace(iInput,
                      this->m_ContourContainer->m_CurrentElement.rgba);
+
+    m_ImageView->UpdateRenderWindows();
 
     iInput->Delete();
 
