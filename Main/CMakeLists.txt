@@ -66,21 +66,23 @@ set( qt_menu_nib_sources )
 
 IF( APPLE )
 
-  IF(QT_MAC_USE_COCOA)
+  IF( QT_MAC_USE_COCOA )
     GET_FILENAME_COMPONENT( qt_menu_nib
      "@QT_QTGUI_LIBRARY_RELEASE@/Resources/qt_menu.nib"
       REALPATH )
+
     set( qt_menu_nib_sources
       "${qt_menu_nib}/classes.nib"
       "${qt_menu_nib}/info.nib"
       "${qt_menu_nib}/keyedobjects.nib"
       )
+
     SET_SOURCE_FILES_PROPERTIES(
       ${qt_menu_nib_sources}
       PROPERTIES
       MACOSX_PACKAGE_LOCATION Resources/qt_menu.nib
       )
-  ENDIF(QT_MAC_USE_COCOA)
+  ENDIF( QT_MAC_USE_COCOA )
 
   SET( MACOSX_BUNDLE_ICON_FILE
     ${GOFIGURE2_SOURCE_DIR}/Resources/myapp.icns
@@ -108,6 +110,9 @@ IF( APPLE )
   SET( MACOSX_BUNDLE_LONG_VERSION_STRING
     Version ${GOFIGURE2_VERSION}
     )
+
+  SET( GOFIGURE2_INSTALL_LICENSE_DIR    ${plugin_dest_dir}/Licenses   )
+  SET( GOFIGURE2_INSTALL_RESOURCE_DIR  ${plugin_dest_dir}/Resources  )
 
 ENDIF( APPLE )
 
@@ -240,37 +245,50 @@ INSTALL( TARGETS gofigure
   )
 
 #---------------------------------------------------------------------------
-# Use BundleUtilities to get all other dependencies for the application to
-# work. It takes a bundle or executable along with possible plugins and
-# inspects it for dependencies.  If they are not system dependencies,
-# they are copied.
 
-# directories to look for dependencies
-SET( DIRS
-  ${QT_LIBRARY_DIR}
-  ${QT_PLUGINS_DIR}
-  ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
-  ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
-  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
-  ${ITK_LIBRARY_DIRS}
-  ${VTK_LIBRARY_DIRS}
-  ${FFMPEG_LIBRARY_DIRS}
-)
+IF( WIN32 OR APPLE )
+  SET( USE_BUNDLE_UTILITIES TRUE )
+ELSE()
+  OPTION( INSTALLED_3RD_PART "Are Qt, VTK, ITK... installed?" TRUE )
+  SET( USE_BUNDLE_UTILITIES FALSE )
+ENDIF()
 
-# Now the work of copying dependencies into the bundle/package
-# The quotes are escaped and variables to use at install time have their $ i# escaped
-# An alternative is the do a configure_file() on a script and use
-# install(SCRIPT  ...).
-# Note that the image plugins depend on QtSvg and QtXml, and it got those
-# copied over.
-INSTALL( CODE "
+IF( USE_BUNDLE_UTILITIES )
+  #---------------------------------------------------------------------------
+  # Use BundleUtilities to get all other dependencies for the application to
+  # work. It takes a bundle or executable along with possible plugins and
+  # inspects it for dependencies.  If they are not system dependencies,
+  # they are copied.
+
+  # directories to look for dependencies
+  SET( DIRS
+#    ${QT_LIBRARY_DIR}
+#    ${QT_PLUGINS_DIR}
+#    ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
+#    ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
+#    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+#    ${ITK_LIBRARY_DIRS}
+#    ${VTK_LIBRARY_DIRS}
+#    ${FFMPEG_LIBRARY_DIRS}
+    " "
+  )
+
+  # Now the work of copying dependencies into the bundle/package
+  # The quotes are escaped and variables to use at install time have their $ i# escaped
+  # An alternative is the do a configure_file() on a script and use
+  # install(SCRIPT  ...).
+  # Note that the image plugins depend on QtSvg and QtXml, and it got those
+  # copied over.
+  INSTALL( CODE "
     file( GLOB_RECURSE QTPLUGINS
-    \"\${CMAKE_INSTALL_PREFIX}/${plugin_dest_dir}/plugins/*${CMAKE_SHARED_LIBRARY_SUFFIX}\" )
-    include( BundleUtilities )
-    fixup_bundle(\"${APPS}\" \"\${QTPLUGINS}\" \"${DIRS}\")
-  "
-  COMPONENT Runtime )
+      \"\${CMAKE_INSTALL_PREFIX}/${plugin_dest_dir}/plugins/*${CMAKE_SHARED_LIBRARY_SUFFIX}\" )
+      include( BundleUtilities )
+      fixup_bundle(\"${APPS}\" \"\${QTPLUGINS}\" \"${DIRS}\")
+    "
+    COMPONENT Runtime
+    )
 
+ENDIF( USE_BUNDLE_UTILITIES )
 #-----------------------------------------------------
 # Here Let's take care of License files
 # copying them into the build's folder
