@@ -67,7 +67,7 @@
 namespace itk
 {
 template< class TFeatureImage, class TInputImage, class TSegmentImage >
-class GOFILTERS_EXPORT GradientWeightedDistanceImageFilter:
+class GradientWeightedDistanceImageFilter:
   public ImageToImageFilter< TFeatureImage, TInputImage >
 {
 public:

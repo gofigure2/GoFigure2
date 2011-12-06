@@ -44,7 +44,7 @@ class vtkPolyData;
  * \class MeshToContourFilter
  * \brief
  **/
-class GOFILTERS_EXPORT MeshToContourFilter
+class MeshToContourFilter
 {
 public:
 

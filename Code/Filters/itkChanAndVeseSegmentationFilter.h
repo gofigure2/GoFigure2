@@ -59,7 +59,7 @@ namespace itk
  * \brief
 */
 template< class TFeatureImage >
-class GOFILTERS_EXPORT ChanAndVeseSegmentationFilter:public Object
+class ChanAndVeseSegmentationFilter:public Object
 {
 public:
   typedef ChanAndVeseSegmentationFilter Self;

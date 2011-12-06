@@ -66,7 +66,7 @@ namespace itk
  * \brief A filter to enhance 3D blob structures using LoG filter
  */
 template< class TInputImage, class TOutputImage = TInputImage >
-class GOFILTERS_EXPORT MultiScaleLoGImageFilter:
+class MultiScaleLoGImageFilter:
   public ImageToImageFilter< TInputImage, TOutputImage >
 {
 public:

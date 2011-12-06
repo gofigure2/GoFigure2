@@ -51,7 +51,7 @@ namespace itk
  * distance map information.
  */
 template< class InputImageType, class DistanceMapImageType = InputImageType, class OutputImageType = InputImageType >
-class GOFILTERS_EXPORT MultiScaleLoGDistanceImageFilter:
+class MultiScaleLoGDistanceImageFilter:
   public ImageToImageFilter< InputImageType, OutputImageType >
 {
 public:

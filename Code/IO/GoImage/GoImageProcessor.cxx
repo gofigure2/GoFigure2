@@ -418,7 +418,7 @@ getVisibleImages()
 #ifdef HAS_OPENMP
 #pragma omp for
 #endif
-  for( size_t j = 0; j < N; j++ )
+  for( int j = 0; j < N; j++ )
     {
     it0 = tempVector[j];
 

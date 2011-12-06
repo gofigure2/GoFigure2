@@ -58,7 +58,7 @@ namespace itk
 * in the segmentation.
 */
 template< class TInputImage, class TOutputImage = TInputImage >
-class GOFILTERS_EXPORT PreprocessImageFilter:public ImageToImageFilter<
+class PreprocessImageFilter:public ImageToImageFilter<
     TInputImage, TOutputImage >
 {
 public:

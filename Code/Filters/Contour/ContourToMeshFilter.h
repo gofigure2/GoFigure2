@@ -46,7 +46,7 @@ namespace itk
  * \brief
  */
 template< class TContainer >
-class GOFILTERS_EXPORT ContourToMeshFilter:public LightObject
+class ContourToMeshFilter:public LightObject
 {
 public:
   typedef ContourToMeshFilter        Self;

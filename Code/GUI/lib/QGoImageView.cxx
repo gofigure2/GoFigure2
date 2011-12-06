@@ -630,7 +630,7 @@ QGoImageView::ReinitializeContourWidget()
 #ifdef HAS_OPENMP
 #pragma omp for
 #endif
-  for ( unsigned int i = 0; i < m_ContourWidget.size(); i++ )
+  for ( int i = 0; i < m_ContourWidget.size(); i++ )
     {
     InitializeContourWidgetNodes(i, NULL);
     }

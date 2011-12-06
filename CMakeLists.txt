@@ -277,10 +277,15 @@ ELSE( SUPERBUILD )
     ${GOFIGURE2_SOURCE_DIR}/Code/Filters/
     ${GOFIGURE2_BINARY_DIR}/Code/Filters/
     ${GOFIGURE2_SOURCE_DIR}/Code/Filters/Contour/
+    ${GOFIGURE2_BINARY_DIR}/Code/Filters/Contour/
     ${GOFIGURE2_SOURCE_DIR}/Code/Filters/Mesh/
+    ${GOFIGURE2_BINARY_DIR}/Code/Filters/Mesh/
     ${GOFIGURE2_SOURCE_DIR}/Code/Filters/Mesh/Attributes/
+    ${GOFIGURE2_BINARY_DIR}/Code/Filters/Mesh/Attributes/
     ${GOFIGURE2_SOURCE_DIR}/Code/Filters/Mesh/Split/
+    ${GOFIGURE2_BINARY_DIR}/Code/Filters/Mesh/Split/
     ${GOFIGURE2_SOURCE_DIR}/Code/Filters/Mesh/Merge/
+    ${GOFIGURE2_BINARY_DIR}/Code/Filters/Mesh/Merge/
     ${GOFIGURE2_SOURCE_DIR}/Code/GUI/
     ${GOFIGURE2_BINARY_DIR}/Code/GUI/
     ${GOFIGURE2_SOURCE_DIR}/Code/GUI/lib/

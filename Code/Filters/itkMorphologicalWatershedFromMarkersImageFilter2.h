@@ -105,7 +105,7 @@ namespace itk
  * \ingroup ImageEnhancement  MathematicalMorphologyImageFilters
  */
 template< class TInputImage, class TLabelImage >
-class GOFILTERS_EXPORT MorphologicalWatershedFromMarkersImageFilter2:
+class MorphologicalWatershedFromMarkersImageFilter2:
   public ImageToImageFilter< TInputImage, TLabelImage >
 {
 public:

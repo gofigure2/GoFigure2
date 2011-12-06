@@ -45,7 +45,7 @@
 namespace itk
 {
 template< class TImage >
-class GOFILTERS_EXPORT vtkPolyDataToGoFigureMeshAttributes:public LightObject
+class vtkPolyDataToGoFigureMeshAttributes:public LightObject
 {
 public:
   typedef vtkPolyDataToGoFigureMeshAttributes Self;

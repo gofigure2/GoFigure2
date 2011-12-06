@@ -65,7 +65,7 @@
 namespace itk
 {
 template< class TFeatureImage, class TInputImage, class TSegmentImage >
-class GOFILTERS_EXPORT CellFeatureGenerator:
+class CellFeatureGenerator:
   public ImageToImageFilter< TFeatureImage, TInputImage >
 {
 public:

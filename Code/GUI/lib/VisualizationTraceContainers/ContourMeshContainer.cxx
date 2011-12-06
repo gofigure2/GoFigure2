@@ -427,3 +427,24 @@ AssignToGivenCollection(unsigned int iCollection,
     }
 }
 //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::list< unsigned int >
+ContourMeshContainer::GetHighlightedElementsTCoord()
+{
+  MultiIndexContainerHighlightedIterator it0, it1;
+
+  using boost::multi_index:: get;
+
+  boost::tuples::tie(it0, it1) =
+    m_Container.get< Highlighted >().equal_range(true);
+
+  std::list< unsigned int > oList;
+  while ( it0 != it1 )
+    {
+    oList.push_back(it0->TCoord);
+    ++it0;
+    }
+  return oList;
+}
+//-------------------------------------------------------------------------

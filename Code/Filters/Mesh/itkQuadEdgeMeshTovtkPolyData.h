@@ -52,7 +52,7 @@ namespace itk
   \class QuadEdgeMeshTovtkPolyData
   */
 template< class TMesh >
-class GOFILTERS_EXPORT QuadEdgeMeshTovtkPolyData : public Object
+class QuadEdgeMeshTovtkPolyData : public Object
 {
 public:
   typedef QuadEdgeMeshTovtkPolyData Self;

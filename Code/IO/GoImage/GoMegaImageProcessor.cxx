@@ -96,7 +96,7 @@ initTimePoint(const unsigned int& iTime)
 
       // capacity of image -> rescale in multichannelmode
       int type = image->GetScalarSize();
-      double threshold = pow(2, 8*type) - 1;
+      double threshold = pow((double)2, (int)8*type) - 1;
       m_MaxImage = threshold;
       // max pixel in image
       double range = image->GetScalarRange()[1];
@@ -189,7 +189,7 @@ setTimePoint(const unsigned int& iTime)
 
       // capacity of image -> rescale in multichannelmode
       int type = image->GetScalarSize();
-      double threshold = pow(2, 8*type) - 1;
+      double threshold = pow((double)2, (int)8*type) - 1;
       m_MaxImage = threshold;
       // max pixel in image
       double range = image->GetScalarRange()[1];
@@ -235,7 +235,7 @@ setDoppler(const unsigned int& iTime, const unsigned int& iPrevious)
 #ifdef HAS_OPENMP
 #pragma omp parallel for
 #endif
-  for(unsigned int i=0; i<getDopplerSize(); ++i)
+  for(int i=0; i<getDopplerSize(); ++i)
     {
     if(dopplerTime[i] >= 0)
     {

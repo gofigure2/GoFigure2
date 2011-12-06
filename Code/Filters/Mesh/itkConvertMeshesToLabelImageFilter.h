@@ -58,7 +58,7 @@ namespace itk
 template< class TImage,
           class TMesh = QuadEdgeMesh< typename TImage::PointType::CoordRepType,
                                       TImage::ImageDimension > >
-class GOFILTERS_EXPORT ConvertMeshesToLabelImageFilter : public Object
+class ConvertMeshesToLabelImageFilter : public Object
 {
 public:
   typedef ConvertMeshesToLabelImageFilter   Self;

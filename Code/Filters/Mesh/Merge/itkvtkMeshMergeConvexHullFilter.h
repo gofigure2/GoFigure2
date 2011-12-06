@@ -44,7 +44,7 @@
 namespace itk
 {
 template< class TFeatureImage, class TPolyDataContainer >
-class GOFILTERS_EXPORT vtkMeshMergeConvexHullFilter :
+class vtkMeshMergeConvexHullFilter :
     public vtkMeshMergeFilterBase< TFeatureImage, TPolyDataContainer >
 {
 public:

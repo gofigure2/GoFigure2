@@ -51,7 +51,7 @@
 namespace itk
 {
 template< class TInput, class TOutput >
-class GOFILTERS_EXPORT vtkPolyDataToBinaryMaskImageFilter:
+class vtkPolyDataToBinaryMaskImageFilter:
   public ImageToImageFilter< TInput, TOutput >
 {
 public:

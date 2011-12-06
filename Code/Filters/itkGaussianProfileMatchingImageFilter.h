@@ -62,7 +62,7 @@
 namespace itk
 {
 template< class TFeatureImage, class TInputImage, class TSegmentImage >
-class GOFILTERS_EXPORT GaussianProfileMatchingImageFilter:public ImageToImageFilter<
+class GaussianProfileMatchingImageFilter:public ImageToImageFilter<
     TFeatureImage, TInputImage >
 {
 public:

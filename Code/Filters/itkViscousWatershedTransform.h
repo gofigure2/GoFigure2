@@ -54,7 +54,7 @@
 namespace itk
 {
 template< class TFeatureImage, class TInputImage, class TSegmentImage >
-class GOFILTERS_EXPORT ViscousWatershedTransform:public ImageToImageFilter<
+class ViscousWatershedTransform:public ImageToImageFilter<
     TFeatureImage, TFeatureImage >
 {
 public:

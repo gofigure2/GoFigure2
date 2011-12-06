@@ -52,7 +52,7 @@ namespace itk
  *  \sa GoFigureMeshAttributes
  * */
 template< class TInput, class TMask >
-class GOFILTERS_EXPORT BinaryMaskImageToGoFigureMeshAttributes:public LightObject
+class BinaryMaskImageToGoFigureMeshAttributes:public LightObject
 {
 public:
   typedef BinaryMaskImageToGoFigureMeshAttributes Self;

@@ -45,7 +45,7 @@ class vtkPolyData;
 namespace itk
 {
 template< class TFeatureImage, class TPolyDataContainer >
-class GOFILTERS_EXPORT vtkMeshMergeFilterBase :
+class vtkMeshMergeFilterBase :
     public vtkMeshFilterBase< TFeatureImage >
 {
 public:

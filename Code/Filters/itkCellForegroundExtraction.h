@@ -68,7 +68,7 @@
 namespace itk
 {
 template< class TFeatureImage, class TInputImage, class TSegmentImage >
-class GOFILTERS_EXPORT CellForegroundExtraction:public ImageToImageFilter<
+class CellForegroundExtraction:public ImageToImageFilter<
     TFeatureImage, TSegmentImage >
 {
 public:

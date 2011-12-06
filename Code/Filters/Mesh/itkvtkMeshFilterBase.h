@@ -49,7 +49,7 @@
 namespace itk
 {
 template< class TFeatureImage >
-class GOFILTERS_EXPORT vtkMeshFilterBase : public Object
+class vtkMeshFilterBase : public Object
 {
 public:
   typedef Object Superclass;

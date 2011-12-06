@@ -59,7 +59,7 @@
 namespace itk
 {
 template< class TFeatureImage, class TInputImage, class TSegmentImage >
-class GOFILTERS_EXPORT WatershedBasedCellSegmentation:public ImageToImageFilter<
+class WatershedBasedCellSegmentation:public ImageToImageFilter<
     TFeatureImage, TSegmentImage >
 {
 public:

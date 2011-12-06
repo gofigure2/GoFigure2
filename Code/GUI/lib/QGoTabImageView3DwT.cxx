@@ -2441,7 +2441,7 @@ QGoTabImageView3DwT::SplitInDBAndRenderMeshForVisu(
 #ifdef HAS_OPENMP
 #pragma omp for
 #endif
-    for( size_t i = 1; i<N; ++i )
+    for( int i = 1; i<N; ++i )
       {
       SaveAndVisuMesh( iVectPolydata[i], timePoint, 0 );
       }
@@ -2647,7 +2647,7 @@ ComputeMeshAttributes(vtkPolyData *iMesh,
 #ifdef HAS_OPENMP
 #pragma omp for
 #endif
-      for( size_t i = 0; i < NumberOfChannels; i++ )
+      for( int i = 0; i < NumberOfChannels; i++ )
         {
         vtkSmartPointer< vtkImageExport > vtk_exporter =
           vtkSmartPointer< vtkImageExport >::New();
@@ -2708,7 +2708,7 @@ ComputeMeshAttributes(vtkPolyData *iMesh,
 #ifdef HAS_OPENMP
 #pragma omp parallel for
 #endif
-      for( unsigned int i = boundChannel[0]; i <= boundChannel[1]; i++ )
+      for( int i = boundChannel[0]; i <= boundChannel[1]; i++ )
         {
         temp_image[i] = m_ImageProcessor->getImageBW(i);
 
@@ -3514,7 +3514,7 @@ CreateMeshesActorsFromVisuContainer(std::list<unsigned int> iTPointToLoad)
 #ifdef HAS_OPENMP
 #pragma omp for
 #endif
-        for( size_t i = 0; i < numberOfMeshes; i++ )
+        for( int i = 0; i < numberOfMeshes; i++ )
           {
           it0 = tempvector[i];
 
@@ -3587,7 +3587,7 @@ UpdateTFEditor()
 #ifdef HAS_OPENMP
 #pragma omp for
 #endif
-  for( unsigned int i = 0; i < NumberOfChannels; i++ )
+  for( int i = 0; i < NumberOfChannels; i++ )
     {
     std::string name = m_ImageProcessor->getChannelName(i);
     m_TransferFunctionDockWidget->SetCurrentWidget(i);
@@ -3672,7 +3672,7 @@ CreateDopplerTFEditor()
 #ifdef HAS_OPENMP
 #pragma omp for
 #endif
-  for(unsigned int i=0; i<m_ImageProcessor->getDopplerSize(); ++i)
+  for(int i=0; i<m_ImageProcessor->getDopplerSize(); ++i)
     {
     if(time[i]>=0)
       {
