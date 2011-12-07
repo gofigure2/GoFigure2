@@ -160,6 +160,7 @@ TARGET_LINK_LIBRARIES( gofigure
   QGoGui
   QGoIO
   itkQt
+  ${Boost_LIBRARIES}
  )
 
 IF( BUILD_COMPARETOOL )
