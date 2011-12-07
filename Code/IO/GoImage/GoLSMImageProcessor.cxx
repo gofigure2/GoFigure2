@@ -214,12 +214,12 @@ setDoppler(const unsigned int& iTime, const unsigned int& iPrevious)
 
   std::vector<int> dopplerTime = getDopplerTime(iTime);
 
-  unsigned int dopplerSize = this->getDopplerSize();
+  int dopplerSize = static_cast<int>(this->getDopplerSize());
 
 #ifdef HAS_OPENMP
 #pragma omp for
 #endif
-  for(unsigned int i=0; i < dopplerSize; ++i)
+  for(int i=0; i < dopplerSize; ++i)
     {
     if(dopplerTime[i] >= 0)
       {
