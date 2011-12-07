@@ -3,10 +3,11 @@
 # ONLY MAC AND LINUX
 # TODO BUILD GOOD ARCH ON MAC i386 or x86_64????
 #-----------------------------------------------------------------------------
-set(proj FFMPEG)
+set( proj FFMPEG )
+set( SHARED_FFMPEG )
 
 IF( SUPER_SHARED_LIBS )
-  set( SHARED_FFMPEG --enable-shared )
+  set( SHARED_FFMPEG --enable-shared --disable-static )
 ENDIF( SUPER_SHARED_LIBS )
 
 OPTION( FFMPEG_GPL "Use a GPL version of FFMPEG" OFF )
@@ -57,15 +58,16 @@ set( FFMPEG_LIBRARY_DIRS ${FFMPEG_INSTALL_DIR}/lib/libavcodec
                          ${FFMPEG_INSTALL_DIR}/lib/libswscale
 )
 
-set( VIDEO_SUPPORT # turn ON ffmpeg encoder
-                   -DVTK_USE_FFMPEG_ENCODER:BOOL=ON
-                   # force VTK to use NEW headers
-                   #-DVTK_FFMPEG_CACHED_INCLUDE:PATH=${CMAKE_BINARY_DIR}/${proj}
-                   #-DVTK_FFMPEG_HAS_OLD_HEADER:BOOL=FALSE
-                   # set useful variables
-                   -DFFMPEG_INCLUDE_DIR:PATH=${FFMPEG_INSTALL_DIR}/include
-                   -DFFMPEG_avcodec_LIBRARY:FILEPATH=${FFMPEG_INSTALL_DIR}/lib/libavcodec${LIBRARY_SUFFIX}         
-                   -DFFMPEG_avformat_LIBRARY:FILEPATH=${FFMPEG_INSTALL_DIR}/lib/libavformat${LIBRARY_SUFFIX}
-                   -DFFMPEG_avutil_LIBRARY:FILEPATH=${FFMPEG_INSTALL_DIR}/lib/libavutil${LIBRARY_SUFFIX}
-                   -DFFMPEG_swscale_LIBRARY:FILEPATH=${FFMPEG_INSTALL_DIR}/lib/libswscale${LIBRARY_SUFFIX}
+set( VIDEO_SUPPORT
+  # turn ON ffmpeg encoder
+  -DVTK_USE_FFMPEG_ENCODER:BOOL=ON
+  # force VTK to use NEW headers
+  #-DVTK_FFMPEG_CACHED_INCLUDE:PATH=${CMAKE_BINARY_DIR}/${proj}
+  #-DVTK_FFMPEG_HAS_OLD_HEADER:BOOL=FALSE
+  # set useful variables
+  -DFFMPEG_INCLUDE_DIR:PATH=${FFMPEG_INSTALL_DIR}/include
+  -DFFMPEG_avcodec_LIBRARY:FILEPATH=${FFMPEG_INSTALL_DIR}/lib/libavcodec${LIBRARY_SUFFIX}
+  -DFFMPEG_avformat_LIBRARY:FILEPATH=${FFMPEG_INSTALL_DIR}/lib/libavformat${LIBRARY_SUFFIX}
+  -DFFMPEG_avutil_LIBRARY:FILEPATH=${FFMPEG_INSTALL_DIR}/lib/libavutil${LIBRARY_SUFFIX}
+  -DFFMPEG_swscale_LIBRARY:FILEPATH=${FFMPEG_INSTALL_DIR}/lib/libswscale${LIBRARY_SUFFIX}
 )
