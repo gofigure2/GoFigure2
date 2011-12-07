@@ -41,7 +41,9 @@
 #include <QToolBar>
 #include <QMenu>
 
-class QGoToolBarStatus:public QObject
+#include "QGoGUILibConfigure.h"
+
+class QGOGUILIB_EXPORT QGoToolBarStatus:public QObject
 {
   Q_OBJECT
 public:
