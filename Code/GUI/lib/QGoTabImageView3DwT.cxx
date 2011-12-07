@@ -2410,7 +2410,7 @@ void
 QGoTabImageView3DwT::SplitInDBAndRenderMeshForVisu(
   std::vector<vtkPolyData *> iVectPolydata)
 {
-  size_t N = iVectPolydata.size();
+  int N = static_cast< int >( iVectPolydata.size() );
 
   if( N == 0 )
     {
@@ -2441,7 +2441,7 @@ QGoTabImageView3DwT::SplitInDBAndRenderMeshForVisu(
 #ifdef HAS_OPENMP
 #pragma omp for
 #endif
-    for( int i = 1; i<N; ++i )
+    for( int i = 1; i < N; ++i )
       {
       SaveAndVisuMesh( iVectPolydata[i], timePoint, 0 );
       }
@@ -2640,7 +2640,7 @@ ComputeMeshAttributes(vtkPolyData *iMesh,
   GoFigureMeshAttributes oAttributes;
   if(!m_ImageProcessor->getDopplerMode())
     {
-    size_t NumberOfChannels = m_ImageProcessor->getNumberOfChannels();
+    int NumberOfChannels = static_cast< int >( m_ImageProcessor->getNumberOfChannels() );
 
     if( iIntensity )
       {
@@ -2708,7 +2708,9 @@ ComputeMeshAttributes(vtkPolyData *iMesh,
 #ifdef HAS_OPENMP
 #pragma omp parallel for
 #endif
-      for( int i = boundChannel[0]; i <= boundChannel[1]; i++ )
+      for( int i = static_cast< int >( boundChannel[0] );
+            i <= static_cast< int >( boundChannel[1] );
+            i++ )
         {
         temp_image[i] = m_ImageProcessor->getImageBW(i);
 
@@ -3505,7 +3507,7 @@ CreateMeshesActorsFromVisuContainer(std::list<unsigned int> iTPointToLoad)
           ++it0;
           }
 
-        size_t numberOfMeshes = tempvector.size();
+        int numberOfMeshes = static_cast< int >( tempvector.size() );
 
         // we don't need here to save this mesh in the database,
         // since they have just been extracted from it!
@@ -3581,7 +3583,7 @@ void
 QGoTabImageView3DwT::
 UpdateTFEditor()
 {
-  unsigned int NumberOfChannels = m_ImageProcessor->getNumberOfChannels();
+  int NumberOfChannels = static_cast< int >( m_ImageProcessor->getNumberOfChannels() );
   int currentChannel = m_TransferFunctionDockWidget->GetCurrentWidget();
 
 #ifdef HAS_OPENMP
@@ -3669,10 +3671,12 @@ CreateDopplerTFEditor()
 {
   std::vector<int> time = m_ImageProcessor->getDopplerTime(m_TCoord);
 
+  int N = static_cast< int >( m_ImageProcessor->getDopplerSize() );
+
 #ifdef HAS_OPENMP
 #pragma omp for
 #endif
-  for(int i=0; i<m_ImageProcessor->getDopplerSize(); ++i)
+  for(int i=0; i < N; ++i)
     {
     if(time[i]>=0)
       {

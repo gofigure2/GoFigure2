@@ -232,10 +232,12 @@ setDoppler(const unsigned int& iTime, const unsigned int& iPrevious)
 
   std::vector<int> dopplerTime = getDopplerTime(iTime);
 
+  int DopplerSize = static_cast< int >( this->getDopplerSize() );
+
 #ifdef HAS_OPENMP
 #pragma omp parallel for
 #endif
-  for(int i=0; i<getDopplerSize(); ++i)
+  for(int i=0; i < DopplerSize; ++i)
     {
     if(dopplerTime[i] >= 0)
     {

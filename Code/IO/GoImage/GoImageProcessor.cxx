@@ -404,7 +404,7 @@ getVisibleImages()
   boost::tuples::tie( it0, it1 ) =
     m_MegaImageContainer.get< Visibility >().equal_range(true);
 
-  size_t N(0);
+  int N(0);
 
   std::vector< IteratorType > tempVector;
 

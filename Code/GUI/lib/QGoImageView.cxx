@@ -627,10 +627,12 @@ QGoImageView::InitializeContourWidgetNodes(int iDir, vtkPolyData *iNodes)
 void
 QGoImageView::ReinitializeContourWidget()
 {
+  int N = static_cast< int >( m_ContourWidget.size() );
+
 #ifdef HAS_OPENMP
 #pragma omp for
 #endif
-  for ( int i = 0; i < m_ContourWidget.size(); i++ )
+  for ( int i = 0; i < N; i++ )
     {
     InitializeContourWidgetNodes(i, NULL);
     }

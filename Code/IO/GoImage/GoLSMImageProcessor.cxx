@@ -219,7 +219,7 @@ setDoppler(const unsigned int& iTime, const unsigned int& iPrevious)
 #ifdef HAS_OPENMP
 #pragma omp for
 #endif
-  for(int i=0; i < dopplerSize; ++i)
+  for(unsigned int i=0; i < dopplerSize; ++i)
     {
     if(dopplerTime[i] >= 0)
       {
