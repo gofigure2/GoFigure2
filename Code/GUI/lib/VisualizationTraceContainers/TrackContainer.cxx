@@ -437,6 +437,8 @@ RecomputeMap(TrackStructure* iStructure, std::list< double * >& iPoints)
 
   bool insertElement = iStructure->InsertElement(time, xyz);
 
+  (void) insertElement;
+
   assert ( insertElement );
 
   ++beginList;

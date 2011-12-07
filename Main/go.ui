@@ -323,7 +323,7 @@
   </action>
   <action name="actionReport_a_bug">
    <property name="text">
-    <string>Report a bug</string>
+    <string>Report a bug...</string>
    </property>
   </action>
   <action name="actionUser_mailing_list">
@@ -486,11 +486,6 @@
   <action name="actionCheck_For_Updates">
    <property name="text">
     <string>Check For Updates</string>
-   </property>
-  </action>
-  <action name="actionReport_a_bug">
-   <property name="text">
-    <string>Report a bug...</string>
    </property>
   </action>
  </widget>

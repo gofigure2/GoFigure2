@@ -3,6 +3,11 @@
 #
 #-----------------------------------------------------------------------------
 set(proj VTK)
+set(proj_DEPENDENCIES)
+
+if( SUPER_BOOST )
+  set( proj_DEPENDENCIES Boost )
+endif( SUPER_BOOST )
 
 ExternalProject_Add(${proj}
   DEPENDS ${VTK_DEPENDENCIES}
@@ -13,7 +18,7 @@ ExternalProject_Add(${proj}
   CMAKE_GENERATOR ${gen}
   CMAKE_ARGS
     ${ep_common_args}
-    -DBUILD_SHARED_LIBS:BOOL=ON
+    -DBUILD_SHARED_LIBS:BOOL=${SUPER_SHARED_LIBS}
     -DVTK_DEBUG_LEAKS:BOOL=${USE_VTK_DEBUG_LEAKS}
     -DVTK_INSTALL_LIB_DIR:PATH=${GoFigure2_INSTALL_LIB_DIR}
     -DVTK_USE_QT:BOOL=ON
@@ -24,8 +29,11 @@ ExternalProject_Add(${proj}
     -DMYSQL_LIBRARY:FILEPATH=${MYSQL_LIBRARIES}
     -DVTK_USE_BOOST:BOOL=ON
     ${VIDEO_SUPPORT}
+    ${Boost_SUPPORT}
     #${WINDOWS_FLAGS}
   INSTALL_COMMAND ""
+  DEPENDS
+    Boost
 )
 
 set(VTK_DIR ${CMAKE_BINARY_DIR}/${proj}-build)
