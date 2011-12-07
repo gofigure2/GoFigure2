@@ -35,8 +35,6 @@
 #ifndef __itkvtkMeshMergeFilterBase_h
 #define __itkvtkMeshMergeFilterBase_h
 
-#include "GoFiltersConfigure.h"
-
 #include "itkvtkMeshFilterBase.h"
 #include <list>
 

@@ -51,8 +51,6 @@
 #ifndef __itkMultiScaleLoGImageFilter_h
 #define __itkMultiScaleLoGImageFilter_h
 
-#include "GoFiltersConfigure.h"
-
 #include "itkImageToImageFilter.h"
 #include "itkImage.h"
 #include "itkMatrix.h"

@@ -43,8 +43,6 @@
 #define ITK_LEAN_AND_MEAN
 #endif
 
-#include "GoFiltersConfigure.h"
-
 #include "itkAffineTransform.h"
 #include "itkImageToImageFilter.h"
 #include "itkCastImageFilter.h"

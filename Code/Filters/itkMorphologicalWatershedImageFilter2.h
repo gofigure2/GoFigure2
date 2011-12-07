@@ -52,8 +52,6 @@
 #ifndef __itkMorphologicalWatershedImageFilter2_h
 #define __itkMorphologicalWatershedImageFilter2_h
 
-#include "GoFiltersConfigure.h"
-
 #include "itkImageToImageFilter.h"
 
 namespace itk

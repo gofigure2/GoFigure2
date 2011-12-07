@@ -238,7 +238,7 @@ ELSE( SUPERBUILD )
   INCLUDE( "${GOFIGURE2_SOURCE_DIR}/CMake/ConfigITK.cmake" )
 
   #----------------------------------------------------------
-  # Then find Boost. Note that we only need headers
+  # Then find Boost
   #### BOOST ####
   INCLUDE( "${GOFIGURE2_SOURCE_DIR}/CMake/ConfigBoost.cmake" )
 

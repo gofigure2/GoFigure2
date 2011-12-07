@@ -53,8 +53,6 @@
 
 #include "itkImageToImageFilter.h"
 
-#include "GoFiltersConfigure.h"
-
 namespace itk
 {
 /** \class MorphologicalWatershedFromMarkersImageFilter2

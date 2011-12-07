@@ -34,8 +34,6 @@
 #ifndef __itkvtkPolyDataToGoFigureMeshAttributes_h
 #define __itkvtkPolyDataToGoFigureMeshAttributes_h
 
-#include "GoFiltersConfigure.h"
-
 #include "itkLightObject.h"
 #include "itkvtkPolyDataToBinaryMaskImageFilter.h"
 #include "itkBinaryMaskImageToGoFigureMeshAttributes.h"
