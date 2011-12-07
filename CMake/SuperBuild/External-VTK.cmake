@@ -3,6 +3,11 @@
 #
 #-----------------------------------------------------------------------------
 set(proj VTK)
+set(proj_DEPENDENCIES)
+
+if( SUPER_BOOST )
+  set( proj_DEPENDENCIES Boost )
+endif( SUPER_BOOST )
 
 ExternalProject_Add(${proj}
   DEPENDS ${VTK_DEPENDENCIES}
@@ -24,8 +29,11 @@ ExternalProject_Add(${proj}
     -DMYSQL_LIBRARY:FILEPATH=${MYSQL_LIBRARIES}
     -DVTK_USE_BOOST:BOOL=ON
     ${VIDEO_SUPPORT}
+    ${Boost_SUPPORT}
     #${WINDOWS_FLAGS}
   INSTALL_COMMAND ""
+  DEPENDS
+    Boost
 )
 
 set(VTK_DIR ${CMAKE_BINARY_DIR}/${proj}-build)

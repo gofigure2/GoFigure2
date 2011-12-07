@@ -62,8 +62,14 @@ set(GoFigure2_DEPENDENCIES)
 
 OPTION( SUPER_BOOST "SuperBuild BOOST" ON )
 
+set( Boost_SUPPORT )
+
 IF( SUPER_BOOST )
   include("${CMAKE_CURRENT_SOURCE_DIR}/CMake/SuperBuild/External-Boost.cmake")
+  set( Boost_SUPPORT
+    -DBoost_INCLUDE_DIR:PATH=${CMAKE_BINARY_DIR}/Boost
+    -DBoost_LIBRARY_DIRS:PATH=${CMAKE_BINARY_DIR}/Boost-build/lib
+ )
   LIST(APPEND GoFigure2_DEPENDENCIES Boost)
 ELSE( SUPER_BOOST )
   include( "${CMAKE_CURRENT_SOURCE_DIR}/CMake/ConfigBoost.cmake" )
@@ -165,6 +171,7 @@ ExternalProject_Add(${proj}
     -DQT_QMAKE_EXECUTABLE:PATH=${QT_QMAKE_EXECUTABLE}
     -DBUILD_EXAMPLES:BOOL=${GOFIGURE2_EXAMPLE}
     -DOPENMP_SUPPORT:BOOL=${GOFIGURE2_OPENMP}
+    ${Boost_SUPPORT}
   INSTALL_COMMAND ""
   )
 
