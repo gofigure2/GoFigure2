@@ -19,7 +19,7 @@ set(ep_base        "${CMAKE_BINARY_DIR}")
 #set(ep_install_dir "${ep_base}/Install")
 
 # should be preset for user or for developer???
-OPTION( SUPER_SHARED_LIBS ON )
+OPTION( SUPER_SHARED_LIBS "Shared libraries" ON )
 
 IF( SUPER_SHARED_LIBS )
 	ADD_DEFINITIONS( -DGOFIGURE2_BUILD_SHARED_LIBS )
@@ -60,7 +60,15 @@ set(GoFigure2_DEPENDENCIES)
 
 #-------------------------
 
-OPTION( SUPER_BOOST "SuperBuild BOOST" ON )
+find_package( Boost 1.39 REQUIRED )
+
+if( Boost_FOUND )
+  set( SUPER_BOOST OFF )
+else()
+  set( SUPER_BOOST ON )
+endif()
+
+OPTION( SUPER_BOOST "SuperBuild BOOST" ${SUPER_BOOST} )
 
 set( Boost_SUPPORT )
 
