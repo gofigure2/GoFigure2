@@ -298,6 +298,11 @@ public:
   */
   bool UpdateTrackStructurePolyData(const TrackStructure& iTrackStructure);
 
+    /** \brief Display all elements for a given time point
+  *   \param[in] iT time point
+  */
+  void ShowActorsWithGivenTimePoint(const unsigned int & iT);
+
   /**
     \brief Update the points strings of the tracks
     for each element of the list
@@ -846,6 +851,72 @@ private:
   int m_TimeInterval;
   QString m_ActiveTrackScalars;
   QString m_ActiveDivisionScalars;
+
+    /**
+  \brief Change element visibility in the scene
+  \tparam TIndex refers to any index from the multi index container indices
+  \param[in] iBegin first element
+  \param[in] iEnd last element
+  \param[in] iVisibility
+  */
+  template< class TIndex >
+  void ChangeActorsVisibility(
+    typename MultiIndexContainerType::template index< TIndex >::type::iterator iBegin,
+    bool iVisibility)
+    {
+    typedef void ( QGoImageView3D::*ImageViewMember )(const int &, vtkActor *);
+    ImageViewMember f;
+
+    if ( iVisibility )
+      {
+      f = &QGoImageView3D::AddActor;
+      }
+    else
+      {
+      f = &QGoImageView3D::RemoveActor;
+      }
+
+    if ( iBegin->Visible != iVisibility )
+      {
+      iBegin->SetActorVisibility( iVisibility );
+
+      if( m_ImageView )
+        {
+        if ( iBegin->ActorXY )
+          {
+          ( m_ImageView->*f )(0, iBegin->ActorXY);
+          }
+        if ( iBegin->ActorXZ )
+          {
+          ( m_ImageView->*f )(1, iBegin->ActorXZ);
+          }
+        if ( iBegin->ActorYZ )
+          {
+          ( m_ImageView->*f )(2, iBegin->ActorYZ);
+          }
+        if ( iBegin->ActorXYZ )
+          {
+          ( m_ImageView->*f )(3, iBegin->ActorXYZ);
+          }
+        }
+
+      bool visible = iVisibility;
+      m_Container.get< TIndex >().
+          modify( iBegin , change_visible<TrackStructure>(visible) );
+
+      Qt::CheckState State;
+
+      if ( iVisibility )
+        {
+        State = Qt::Checked;
+        }
+      else
+        {
+        State = Qt::Unchecked;
+        }
+      emit TraceVisibilityChanged( iBegin->TraceID, State );
+      }
+    }
 
   Q_DISABLE_COPY(TrackContainer);
 };
