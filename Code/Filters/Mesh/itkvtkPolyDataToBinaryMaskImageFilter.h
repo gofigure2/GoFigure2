@@ -34,8 +34,6 @@
 #ifndef __itkvtkPolyDataToBinaryMaskImageFilter_h
 #define __itkvtkPolyDataToBinaryMaskImageFilter_h
 
-#include "GoFiltersConfigure.h"
-
 #include "itkImageToImageFilter.h"
 
 #include "vtkSmartPointer.h"

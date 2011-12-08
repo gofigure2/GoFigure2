@@ -35,8 +35,6 @@
 #ifndef __itkMultiScaleLoGDistanceImageFilter_h
 #define __itkMultiScaleLoGDistanceImageFilter_h
 
-#include "GoFiltersConfigure.h"
-
 #include "itkImageToImageFilter.h"
 #include <itkLaplacianRecursiveGaussianImageFilter.h>
 #include "itkImageRegionIterator.h"

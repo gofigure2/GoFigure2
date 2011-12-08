@@ -34,8 +34,6 @@
 #ifndef __MeshToContourFilter_h
 #define __MeshToContourFilter_h
 
-#include "GoFiltersConfigure.h"
-
 #include "map"
 
 class vtkPolyData;

@@ -34,8 +34,6 @@
 #ifndef __ContourToMeshFilter_h
 #define __ContourToMeshFilter_h
 
-#include "GoFiltersConfigure.h"
-
 #include "itkLightObject.h"
 #include "itkObjectFactory.h"
 

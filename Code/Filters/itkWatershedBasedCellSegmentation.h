@@ -43,8 +43,6 @@
 #define ITK_LEAN_AND_MEAN
 #endif
 
-#include "GoFiltersConfigure.h"
-
 #include "itkImageToImageFilter.h"
 #include "itkPreprocessImageFilter.h"
 #include "itkCellForegroundExtraction.h"

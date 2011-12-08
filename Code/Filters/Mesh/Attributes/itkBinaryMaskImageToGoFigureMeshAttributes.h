@@ -34,8 +34,6 @@
 #ifndef __itkBinaryMaskImageToGoFigureMeshAttributes_h
 #define __itkBinaryMaskImageToGoFigureMeshAttributes_h
 
-#include "GoFiltersConfigure.h"
-
 #include "itkLightObject.h"
 #include "itkShapeLabelObject.h"
 #include "itkStatisticsLabelObject.h"

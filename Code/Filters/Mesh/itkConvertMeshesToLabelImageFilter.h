@@ -38,8 +38,6 @@
 #pragma warning ( disable : 4786 )
 #endif
 
-#include "GoFiltersConfigure.h"
-
 #include "itkImageToImageFilter.h"
 #include "itkImage.h"
 

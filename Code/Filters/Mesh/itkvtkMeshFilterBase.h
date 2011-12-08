@@ -35,8 +35,6 @@
 #ifndef __itkvtkMeshFilterBase_h
 #define __itkvtkMeshFilterBase_h
 
-#include "GoFiltersConfigure.h"
-
 #include "itkObject.h"
 #include "itkConvertMeshesToLabelImageFilter.h"
 #include "itkvtkPolyDataToitkQuadEdgeMesh.h"

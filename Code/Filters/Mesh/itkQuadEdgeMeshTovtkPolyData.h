@@ -35,8 +35,6 @@
 #ifndef __itkQuadEdgeMeshTovtkPolyData_h
 #define __itkQuadEdgeMeshTovtkPolyData_h
 
-#include "GoFiltersConfigure.h"
-
 #include "vtkPoints.h"
 #include "vtkCellArray.h"
 #include "vtkPolyData.h"

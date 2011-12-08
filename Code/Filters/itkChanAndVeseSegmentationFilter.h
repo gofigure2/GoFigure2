@@ -35,8 +35,6 @@
 #ifndef __itkChanAndVeseSegmentationFilter_h
 #define __itkChanAndVeseSegmentationFilter_h
 
-#include "GoFiltersConfigure.h"
-
 #include "itkScalarChanAndVeseSparseLevelSetImageFilter.h"
 #include "itkScalarChanAndVeseLevelSetFunction.h"
 #include "itkScalarChanAndVeseLevelSetFunctionData.h"
