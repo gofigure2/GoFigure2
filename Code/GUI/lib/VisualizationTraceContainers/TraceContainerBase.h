@@ -447,8 +447,6 @@ public:
 
   std::list< unsigned int > GetHighlightedElementsCollectionID();
 
-  std::list< unsigned int > GetHighlightedElementsTCoord();
-
   /**
     \brief Get all highlighted elements by pair<ID, Polydata>.
     */

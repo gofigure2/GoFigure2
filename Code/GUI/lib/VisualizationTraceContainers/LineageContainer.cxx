@@ -79,7 +79,11 @@ bool LineageContainer::DeleteElement(const unsigned int & iId)
   MultiIndexContainerTraceIDIterator
     it = m_Container.get< TraceID >().find(iId);
 
-  return DeleteElement(it);
+  if( it != m_Container.get< TraceID >().end() )
+    {
+    return DeleteElement(it);
+    }
+  return false;
 }
 //-------------------------------------------------------------------------
 

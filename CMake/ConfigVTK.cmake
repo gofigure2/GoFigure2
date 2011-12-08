@@ -13,7 +13,7 @@ FIND_PACKAGE( VTK REQUIRED )
     MESSAGE( SEND_ERROR
       "GoFigure2 requires VTK 5.6 (your version of VTK is ${VTK_VERSION})" )
   ENDIF( ( ${VTK_MAJOR_VERSION} LESS 5 ) OR ( ${VTK_MINOR_VERSION} LESS 6 ) )
-  
+
   #----------------------------------------------------------
   # Check if version of VTK is > 5.6
   # Requiered to now if we can use setBitRate() and setBitRateTolerance
@@ -22,6 +22,10 @@ FIND_PACKAGE( VTK REQUIRED )
     ADD_DEFINITIONS( -DVTKTRUNK )
   ENDIF( ( ${VTK_MAJOR_VERSION} EQUAL 5 ) AND ( ${VTK_MINOR_VERSION} GREATER 6 ))
 
+  #----------------------------------------------------------
+  IF( NOT ${VTK_USE_BOOST} MATCHES "ON" )
+    MESSAGE( SEND_ERROR "VTK must be compiled with Boost support" )
+  ENDIF( NOT ${VTK_USE_BOOST} MATCHES "ON" )
 
   #----------------------------------------------------------
   # Check if mysql is enabled

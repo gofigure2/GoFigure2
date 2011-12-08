@@ -73,7 +73,7 @@ public:
 
   /** \brief Add a new Object of OriginalObjectType (exp: GoDBprojectRow) in
   the m_RowContainer and set the bool to false*/
-  void AddObject(OriginalObjectType & object)
+  void AddObject(const OriginalObjectType & object)
   {
     m_RowContainer.push_back( InternalObjectType(false, object) );
   }
@@ -82,36 +82,34 @@ public:
   note lydie:overwrite the object at the pos position in the
   m_RowContainer (not yet used)wouldn't that be better to call it "ReplaceObject" ?
   if the object has changed, why put the bool to true ??? */
-  void InsertObject(const int & pos, OriginalObjectType & object)
+  void InsertObject(const int & pos, const OriginalObjectType & object)
   {
     if ( pos > m_RowContainer.size() )
       {
       AddObject(object);
       return;
       }
-    InternalObjectType & temp =  m_RowContainer[pos];
     m_RowContainer[pos] = InternalObjectType(true, object);
-    delete temp;
   }
 
   /** \brief is there to be used in case there is a "WHERE" condition
   to add for the selection in PopulateFromDB()*/
-  void SetWhereString(std::string whereString)
+  void SetWhereString(const std::string& whereString)
   { this->m_WhereString = whereString; this->IsWhereStringSet = true; }
 
-  void SetServerName(std::string iServerName)
+  void SetServerName(const std::string& iServerName)
   { this->ServerName = iServerName; }
 
-  void SetDataBaseName(std::string iDataBaseName)
+  void SetDataBaseName(const std::string& iDataBaseName)
   { this->DataBaseName = iDataBaseName; }
 
-  void SetTableName(std::string iTableName)
+  void SetTableName(const std::string& iTableName)
   { this->TableName = iTableName; }
 
-  void SetUser(std::string iUser)
+  void SetUser(const std::string& iUser)
   { this->User = iUser; }
 
-  void SetPassword(std::string iPassword)
+  void SetPassword(const std::string& iPassword)
   { this->PassWord = iPassword; }
 
   void SetConnector(vtkMySQLDatabase *iDatabaseConnector)
@@ -156,7 +154,7 @@ public:
       while ( query->NextRow() )
         {
         OriginalObjectType object;
-        for ( unsigned int colID = 0; colID < m_ColumnNamesContainer.size(); colID++ )
+        for ( size_t colID = 0; colID < m_ColumnNamesContainer.size(); colID++ )
           {
           std::string ColumnName = m_ColumnNamesContainer[colID];
           object.SetField( ColumnName, query->DataValue(colID).ToString() );
@@ -238,9 +236,14 @@ private:
 
   bool SaveEachRow(vtkSQLQuery *query, bool Update = false);
 
-  bool SaveRows(vtkSQLQuery *query, std::string what, myIteratorType start, myIteratorType end);
+  bool SaveRows(vtkSQLQuery *query,
+                const std::string & what,
+                const myIteratorType & start,
+                const myIteratorType & end);
 
-  bool UpdateRows(vtkSQLQuery *query, myIteratorType start, myIteratorType end);
+  bool UpdateRows(vtkSQLQuery *query,
+                  const myIteratorType & start,
+                  const myIteratorType & end);
 
   // colum names container
   std::vector< std::string > m_ColumnNamesContainer;
@@ -268,7 +271,7 @@ GoDBRecordSet< TObject >::SaveEachRow(vtkSQLQuery *query, bool Update)
 
   while ( ( *firstFalseElement ).first && firstFalseElement  != end )
     {
-    firstFalseElement++;
+    ++firstFalseElement;
     }
 
   // Here we suppose read and write only, no overwrite
@@ -306,7 +309,10 @@ GoDBRecordSet< TObject >::SaveEachRow(vtkSQLQuery *query, bool Update)
 in the m_RowContainer located between start and end */
 template< class TObject >
 bool
-GoDBRecordSet< TObject >::SaveRows(vtkSQLQuery *query, std::string what, myIteratorType start, myIteratorType end)
+GoDBRecordSet< TObject >::SaveRows(vtkSQLQuery *query,
+                                   const std::string& what,
+                                   const myIteratorType& start,
+                                   const myIteratorType& end)
 {
   // safe test
   /*unsigned int NbOfCol = m_ColumnNamesContainer.size();
@@ -349,7 +355,7 @@ GoDBRecordSet< TObject >::SaveRows(vtkSQLQuery *query, std::string what, myItera
       std::cerr << rowQueryString.str().c_str() << std::endl;
       return false;
       }
-    rowIt++;
+    ++rowIt;
     }
   return true;
 }
@@ -358,7 +364,9 @@ GoDBRecordSet< TObject >::SaveRows(vtkSQLQuery *query, std::string what, myItera
 in the m_RowContainer located between start and end */
 template< class TObject >
 bool
-GoDBRecordSet< TObject >::UpdateRows(vtkSQLQuery *query, myIteratorType start, myIteratorType end)
+GoDBRecordSet< TObject >::UpdateRows(vtkSQLQuery *query,
+                                     const myIteratorType& start,
+                                     const myIteratorType& end)
 {
   myIteratorType rowIt = start;
 

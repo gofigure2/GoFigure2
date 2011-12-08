@@ -34,8 +34,6 @@
 #ifndef __MeshToContourFilter_h
 #define __MeshToContourFilter_h
 
-#include "GoFiltersConfigure.h"
-
 #include "map"
 
 class vtkPolyData;
@@ -44,7 +42,7 @@ class vtkPolyData;
  * \class MeshToContourFilter
  * \brief
  **/
-class GOFILTERS_EXPORT MeshToContourFilter
+class MeshToContourFilter
 {
 public:
 

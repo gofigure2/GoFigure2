@@ -227,6 +227,9 @@ QGoImageView::AddContour(vtkPolyData *iDataset, vtkProperty *iProperty)
 
   if ( iDataset )
     {
+    #ifdef HAS_OPENMP
+    #pragma omp for
+    #endif
     for ( int i = 0; i < n; i++ )
       {
       vtkViewImage2D *viewer = m_Pool->GetItem(i);
@@ -595,8 +598,6 @@ QGoImageView::InitializeContourWidget()
 void
 QGoImageView::EnableContourWidget(bool iActivate)
 {
-  //qDebug() << "Contour ---Widget---" << iActivate;
-
   if ( iActivate )
     {
     DefaultMode();
@@ -626,7 +627,12 @@ QGoImageView::InitializeContourWidgetNodes(int iDir, vtkPolyData *iNodes)
 void
 QGoImageView::ReinitializeContourWidget()
 {
-  for ( unsigned int i = 0; i < m_ContourWidget.size(); i++ )
+  int N = static_cast< int >( m_ContourWidget.size() );
+
+#ifdef HAS_OPENMP
+#pragma omp for
+#endif
+  for ( int i = 0; i < N; i++ )
     {
     InitializeContourWidgetNodes(i, NULL);
     }

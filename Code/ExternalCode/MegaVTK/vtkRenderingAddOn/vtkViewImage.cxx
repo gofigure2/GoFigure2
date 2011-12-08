@@ -177,7 +177,7 @@ void vtkViewImage::SetInput(vtkImageData *in)
       this->WindowLevel->SetLookupTable(NULL);
       // because of rescaling
       int type = in->GetScalarSize();
-      double threshold = pow(2, 8*type) - 1;
+      double threshold = pow((double)2, (int)8*type) - 1;
       // reset window level in viewer!
       this->WindowLevel->SetWindow(threshold);
       this->WindowLevel->SetLevel(threshold/2);

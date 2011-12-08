@@ -80,11 +80,11 @@ GoDBTraceRow::GoDBTraceRow(vtkMySQLDatabase *DatabaseConnector, vtkPolyData *Tra
 //-------------------------------------------------------------------------
 void GoDBTraceRow::InitializeMap()
 {
-  this->m_MapRow["ImagingSessionID"] = ConvertToString< int >(0);
-  this->m_MapRow["ColorID"] = ConvertToString< int >(1);
-  this->m_MapRow["CoordIDMax"] = ConvertToString< int >(0);
-  this->m_MapRow["CoordIDMin"] = ConvertToString< int >(0);
-  this->m_MapRow["Points"] = ConvertToString< int >(0);
+  this->m_MapRow["ImagingSessionID"] = std::string( "0" );//ConvertToString< int >(0);
+  this->m_MapRow["ColorID"] = std::string( "1" );//ConvertToString< int >(1);
+  this->m_MapRow["CoordIDMax"] = std::string( "0" );//ConvertToString< int >(0);
+  this->m_MapRow["CoordIDMin"] = std::string( "0" );//ConvertToString< int >(0);
+  this->m_MapRow["Points"] = std::string( "0" );//ConvertToString< int >(0);
 }
 
 //-------------------------------------------------------------------------

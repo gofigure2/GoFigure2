@@ -114,7 +114,6 @@
 #include <vtkPiecewiseFunction.h>
 #include <vtkColorTransferFunction.h>
 #include <vtkSmartVolumeMapper.h>
-#include <vtkSmartVolumeMapper.h>
 #include <vtkFiniteDifferenceGradientEstimator.h>
 #include <vtkVolumeTextureMapper2D.h>
 #include <vtkProperty.h>
@@ -336,7 +335,7 @@ void vtkViewImage3D::Render()
 void vtkViewImage3D::SetVolumeRenderingOff()
 {
   // triplanar rendering on
-  SetTriPlanarRenderingOn();
+  //SetTriPlanarRenderingOn();
 
   CleanVolumeRenderingVectors();
 }
@@ -375,7 +374,7 @@ void vtkViewImage3D::SetVolumeRenderingOn(const std::vector<vtkImageData*>& iIma
                                           const std::vector<vtkPiecewiseFunction*>& iOpacities)
 {
   // triplanar rendering off
-  SetTriPlanarRenderingOff();
+  //SetTriPlanarRenderingOff();
 
   int *size = this->GetInput()->GetDimensions();
 
@@ -687,6 +686,7 @@ vtkViewImage3D::AddDataSet(vtkDataSet *dataset,
     {
     // Generates bug in visu
     //actor3d->SetProperty( property );
+    actor3d->GetProperty()->BackfaceCullingOn();
     actor3d->GetProperty()->SetColor( property->GetColor() );
     actor3d->GetProperty()->SetOpacity( property->GetOpacity() );
     actor3d->GetProperty()->SetLineWidth(this->IntersectionLineWidth);

@@ -404,6 +404,8 @@ public:
   void AssignToGivenCollection(unsigned int iCollection,
                                std::list< unsigned int > iToBeAssigned);
 
+  std::list< unsigned int > GetHighlightedElementsTCoord();
+
 public slots:
 
   /**

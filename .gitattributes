@@ -1,0 +1,8 @@
+.git*             export-ignore
+.mailmap          export-ignore
+
+Dashboard/*        export-ignore
+
+Scripts/*          export-ignore
+
+Testing/Sikuli/*   export-ignore

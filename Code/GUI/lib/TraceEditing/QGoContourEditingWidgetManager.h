@@ -94,9 +94,16 @@ public:
   //void SetTSliceForDopplerView(QStringList iListTimePoints, int iChannelNumber);
 
 public slots:
+  void StartManualSegmentation(bool iValue);
   virtual void SetVisible(bool isVisible);
 
 signals:
+  //from the manual mode:
+  void ContourValidated(int iTCoord);
+  void reinitializeContour();
+  void changeContourRepresentationProperty(float iLinewidth, QColor iLinecolor,
+                                           QColor iNodecolor, QColor iActivenodecolor);
+  void ManualSegmentationActivated(bool);
 
 protected:
   QGoContourManualSegmentation*                   m_ManualMode;
@@ -114,14 +121,6 @@ protected:
 
   void SetManualMode(
     QStringList iListTimePoint, QWidget* iParent);
-
-signals:
-  //from the manual mode:
-  void ContourValidated(int iTCoord);
-  void reinitializeContour();
-  void changeContourRepresentationProperty(float iLinewidth, QColor iLinecolor,
-                                           QColor iNodecolor, QColor iActivenodecolor);
-  void ManualSegmentationActivated(bool);
 
 protected slots:
   /**

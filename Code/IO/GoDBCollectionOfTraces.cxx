@@ -116,7 +116,7 @@ void GoDBCollectionOfTraces::DeleteTracesInDB(std::list< unsigned int > TracesTo
       }
 
     DeleteRow( DatabaseConnector, m_TracesName, m_TracesIDName,
-      ConvertToString< unsigned int >(ID) );
+               ConvertToString< unsigned int >(ID) );
     ++iter;
     }
 }
@@ -910,10 +910,10 @@ std::list<unsigned int> GoDBCollectionOfTraces::GetTraceIDsBelongingToListTimePo
 {
   FieldWithValue JoinCondition = { "CoordIDMin", "CoordID", "=" };
   std::vector< std::string > VectTimePoints = ListUnsgIntToVectorString(iListTPs);
-  FieldWithValue AndCondition = 
+  FieldWithValue AndCondition =
     {"imagingsessionID", ConvertToString<unsigned int>(this->m_ImgSessionID), "="};
 
-  return GetAllSelectedValuesFromTwoTables(iDatabaseConnector, this->m_TracesName, 
+  return GetAllSelectedValuesFromTwoTables(iDatabaseConnector, this->m_TracesName,
     "coordinate", this->m_TracesIDName, JoinCondition, "TCoord", VectTimePoints,
      AndCondition);
 }
@@ -1048,7 +1048,7 @@ int GoDBCollectionOfTraces::GetTraceIDWithLowestTimePoint(
     ++iter;
     }
 
-  std::vector< std::string > ResultQuery 
+  std::vector< std::string > ResultQuery
     = GetAllSelectedValuesFromTwoTables(
         iDatabaseConnector, this->m_TracesName, "coordinate", SelectedFields,
         JoinCondition, Conditions, "OR", "TCoord");
@@ -1067,19 +1067,18 @@ int GoDBCollectionOfTraces::GetTraceIDWithLowestTimePoint(
  std::list<unsigned int> GoDBCollectionOfTraces::GetTrackFamilyDataFromDB(
    vtkMySQLDatabase *iDatabaseConnector)
  {
-   
    std::vector<std::string> VectColumnsTrackFamily(3);
    VectColumnsTrackFamily.at(0) = "TrackIDMother";
    VectColumnsTrackFamily.at(1) = "TrackIDDaughter1";
    VectColumnsTrackFamily.at(2) = "TrackIDDaughter2";
-   FieldWithValue JoinCondition = {"TrackID", "TrackIDMother", "="};
+   const FieldWithValue JoinCondition = {"TrackID", "TrackIDMother", "="};
 
    return GetAllSelectedValuesFromTwoTables(  iDatabaseConnector,
-                                              "track",
-                                              "trackfamily",
+                                              std::string( "track" ),
+                                              std::string( "trackfamily" ),
                                               VectColumnsTrackFamily,
                                               JoinCondition,
-                                              "ImagingsessionID",
+                                              std::string( "ImagingsessionID" ),
                                               ConvertToString<unsigned int>(this->m_ImgSessionID),
                                               true);
  }
@@ -1102,14 +1101,101 @@ int GoDBCollectionOfTraces::GetTraceIDWithLowestTimePoint(
 //-------------------------------------------------------------------------
  std::list<unsigned int> GoDBCollectionOfTraces::GetTrackFamilyID(
    vtkMySQLDatabase *iDatabaseConnector, std::list<unsigned int> iListTrackIDs)
- {
+{
    FieldWithValue JoinCondition = { "trackID", "trackIDMother", "=" };
    std::vector<std::string> VectTrackIDs = ListUnsgIntToVectorString(iListTrackIDs);
-   std::list<unsigned int> oList = GetTwoFieldsFromTwoTables(iDatabaseConnector, 
-     this->m_TracesName, "trackfamily", JoinCondition, "track.trackfamilyID", 
+   std::list<unsigned int> oList = GetTwoFieldsFromTwoTables(iDatabaseConnector,
+     this->m_TracesName, "trackfamily", JoinCondition, "track.trackfamilyID",
      "trackfamily.trackfamilyID", this->m_TracesIDName, VectTrackIDs, true);
    return oList;
- }
- //-------------------------------------------------------------------------
+}
+//-------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------
+std::string
+GoDBCollectionOfTraces::
+GetPoints(vtkMySQLDatabase *iDatabaseConnector, std::string iTraceName,
+          unsigned int iTraceID)
+{
+  // WHAT
+  std::string QueryString = "SELECT Points ";
+
+  // FROM
+  QueryString += "FROM " + iTraceName;
+
+  //WHERE
+  // trace to Trace (mysql not case sensitive on linux but just in case)
+  std::string traceID = iTraceName;
+  std::transform(iTraceName.begin(), ++iTraceName.begin(),traceID.begin(), ::toupper);
+  traceID += "ID";
+  QueryString += " WHERE " + traceID + " = ";
+  // iTraceID int to string
+  std::stringstream s;
+  s << iTraceID;
+  QueryString += s.str();
+
+  return ExecuteSelectQueryOneValue< std::string >( iDatabaseConnector,
+                                                    QueryString);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+std::vector<unsigned int>
+GoDBCollectionOfTraces::
+GetTrackFamily(vtkMySQLDatabase *iDatabaseConnector, unsigned int iTrackID)
+{
+  // WHAT
+  std::string QueryString = "SELECT * ";
+
+  // FROM
+  QueryString += "FROM trackfamily ";
+
+  //WHERE
+  // iTraceID int to string
+  std::stringstream s;
+  s << iTrackID;
+  std::string trackID = s.str();
+
+  QueryString += " WHERE (TrackIDDaughter1=" + trackID;
+  QueryString += " OR TrackIDDaughter2=" + trackID + ")";
+
+  return ExecuteSelectQuery< std::vector<unsigned int> >( iDatabaseConnector,
+                                                          QueryString);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+bool
+GoDBCollectionOfTraces::
+isMother(vtkMySQLDatabase *iDatabaseConnector, unsigned int iTrackID)
+{
+  // WHAT
+  std::string QueryString = "SELECT TrackIDMother ";
+
+  // FROM
+  QueryString += "FROM trackfamily ";
+
+  //WHERE
+  // iTraceID int to string
+  std::stringstream s;
+  s << iTrackID;
+  std::string trackID = s.str();
+
+  QueryString += " WHERE TrackIDMother=" + trackID;
+
+  std::string result =
+  ExecuteSelectQueryOneValue< std::string >( iDatabaseConnector, QueryString);
+
+  int numb;
+  std::stringstream(result) >> numb;
+
+  bool ismother = true;
+
+  if(numb <= 0)
+    {
+    ismother = false;
+    }
+
+  return ismother;
+}
 //-------------------------------------------------------------------------

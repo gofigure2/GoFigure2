@@ -31,7 +31,6 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-
 #include "QGoAboutWidget.h"
 #include <QCoreApplication>
 #include <QVBoxLayout>
@@ -222,7 +221,6 @@ void QGoAboutWidget::WriteLicenseText(QTabWidget *iTabWidget)
   this->AddTabAbout(
     this->ReadLicenseText("PoissonreconstructionCopyright.txt"),
     "Poisson Reconstruction", iTabWidget);
-
 #ifdef ENABLEFFMPEG
   this->AddTabAbout(this->ReadLicenseText("FFmpegCopyright.txt"),
                     "FFmpeg", iTabWidget);

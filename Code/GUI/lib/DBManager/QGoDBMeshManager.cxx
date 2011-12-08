@@ -90,7 +90,8 @@ void QGoDBMeshManager::DisplayInfoAndLoadVisuContainerForAllMeshes(
 
 //-------------------------------------------------------------------------
 void QGoDBMeshManager::DisplayInfoAndLoadVisuContainerForAllMeshesForSpecificTPs(
-  vtkMySQLDatabase *iDatabaseConnector, std::list<unsigned int> iListTPs)
+  vtkMySQLDatabase *iDatabaseConnector,
+  const std::list<unsigned int> & iListTPs)
 {
   this->DisplayInfoAndLoadVisuContainerWithAllTracesForSpecificTPs< ContourMeshContainer >
     (iDatabaseConnector, this->m_MeshContainerInfoForVisu, iListTPs);
@@ -99,7 +100,8 @@ void QGoDBMeshManager::DisplayInfoAndLoadVisuContainerForAllMeshesForSpecificTPs
 
 //-------------------------------------------------------------------------
  void QGoDBMeshManager::AddInfoInTWAndVisuContainerForMeshesForSpecificTPs(
-    vtkMySQLDatabase *iDatabaseConnector, std::list<unsigned int> iListTPs)
+   vtkMySQLDatabase *iDatabaseConnector,
+   const std::list<unsigned int> & iListTPs)
  {
    //this->AddInfoInTWAndContainerForVisuForSpecificTPs< ContourMeshContainer >
    //  (iDatabaseConnector, this->m_ContourContainerInfoForVisu, iListTPs);
@@ -119,8 +121,9 @@ void QGoDBMeshManager::DisplayInfoAndLoadVisuContainerForAllMeshesForSpecificTPs
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoDBMeshManager::AddInfoForMeshesInTWForSpecificTPs(vtkMySQLDatabase *iDatabaseConnector,
-    std::list<unsigned int> iListTPs)
+void QGoDBMeshManager::AddInfoForMeshesInTWForSpecificTPs(
+  vtkMySQLDatabase *iDatabaseConnector,
+  const std::list<unsigned int> & iListTPs)
 {
   //int IndexShowColumn = this->m_TWContainer->GetIndexShowColumn();
 
@@ -154,8 +157,9 @@ void QGoDBMeshManager::DisplayInfoForAllTraces(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoDBMeshManager::DisplayInfoForTracesForSpecificTPs(
-  vtkMySQLDatabase *iDatabaseConnector, std::list<unsigned int> iListTPs)
+void QGoDBMeshManager::
+DisplayInfoForTracesForSpecificTPs( vtkMySQLDatabase *iDatabaseConnector,
+                                    const std::list<unsigned int> & iListTPs)
 {
   int IndexShowColumn = this->m_TWContainer->GetIndexShowColumn();
   this->DisplayInfoForTracesForSpecificTPsTemplate<GoDBTWContainerForMesh >(
@@ -165,9 +169,10 @@ void QGoDBMeshManager::DisplayInfoForTracesForSpecificTPs(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoDBMeshManager::RemoveTracesFromTWAndContainerForVisuForSpecificTPs(
-                                                    vtkMySQLDatabase *iDatabaseConnector,
-                                                    std::list<unsigned int> iListTPs)
+void QGoDBMeshManager::
+RemoveTracesFromTWAndContainerForVisuForSpecificTPs(
+  vtkMySQLDatabase *iDatabaseConnector,
+  const std::list<unsigned int> & iListTPs)
 {
   this->RemoveTracesFromTWAndContainerForVisuForSpecificTPsTemplate< ContourMeshContainer >
     (iDatabaseConnector, this->m_MeshContainerInfoForVisu, iListTPs);
@@ -397,8 +402,9 @@ std::list< unsigned int > QGoDBMeshManager::UpdateTheTracesColor(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoDBMeshManager::UpdateBoundingBoxes(vtkMySQLDatabase *iDatabaseConnector,
-                                           std::list< unsigned int > iListTracesIDs)
+void QGoDBMeshManager::
+UpdateBoundingBoxes(vtkMySQLDatabase *iDatabaseConnector,
+                    const std::list< unsigned int > & iListTracesIDs)
 {
   std::list< unsigned int > ListMeshesWithNoPoints =
     this->m_CollectionOfTraces->GetListTracesIDWithNoPoints(
@@ -438,7 +444,8 @@ void QGoDBMeshManager::SetMeshBoundingBoxAndPoints(unsigned int iXCoordMin,
 
 //-------------------------------------------------------------------------
 void QGoDBMeshManager::UpdateTWAndContainerForImportedTraces(
-  std::vector< int > iVectorImportedTraces, vtkMySQLDatabase *iDatabaseConnector)
+  const std::vector< int > & iVectorImportedTraces,
+  vtkMySQLDatabase *iDatabaseConnector)
 {
   this->UpdateTWAndContainerWithImportedTracesTemplate<
     GoDBTWContainerForMesh >(this->m_TWContainer,
@@ -499,11 +506,14 @@ void QGoDBMeshManager::GetTracesInfoFromDBAndModifyContainerForVisu(
 
 //-------------------------------------------------------------------------
 MeshContainer * QGoDBMeshManager::GetMeshesInfoFromDBAndCreateContainerForVisu(
-  vtkMySQLDatabase *iDatabaseConnector, std::list< unsigned int > iListCollectionIDs)
+  vtkMySQLDatabase *iDatabaseConnector,
+  const std::list< unsigned int > & iListCollectionIDs)
 {
   std::list< unsigned int > ListMeshesInvolved =
     this->GetListTracesIDsBelongingToCollectionIDs(iDatabaseConnector, iListCollectionIDs);
+
   MeshContainer *                   oMeshContainer = new MeshContainer(this, NULL);
+
   std::list< ContourMeshStructure > ListMeshesInfo =
     this->m_CollectionOfTraces->GetListStructureFromDB< ContourMeshStructure >(
       iDatabaseConnector, this->m_ImgSessionID, ListMeshesInvolved);
@@ -877,12 +887,12 @@ GetListVolumes()
 //-------------------------------------------------------------------------
 std::list< std::pair<unsigned int, double> >
 QGoDBMeshManager::
-GetListVolumes(std::list<unsigned int> iMeshIDs)
+GetListVolumes(const std::list<unsigned int> & iMeshIDs)
 {
   std::list< std::pair<unsigned int, double> > oList;
   QGoTableWidget* tableWidget = this->GetTableWidget();
 
-  std::list<unsigned int>::iterator it = iMeshIDs.begin();
+  std::list<unsigned int>::const_iterator it = iMeshIDs.begin();
 
   while(it!=iMeshIDs.end())
     {
@@ -923,8 +933,8 @@ CleanTWAndContainerForGivenTimePoint(vtkMySQLDatabase *iDatabaseConnector,
 void
 QGoDBMeshManager::
 ModifyTrackIDInVisuContainer(unsigned int iTrackID,
-                                  std::list< unsigned int > iToTrack,
-                                  std::list< unsigned int > iToNull)
+                             const std::list< unsigned int > & iToTrack,
+                             const std::list< unsigned int > & iToNull)
 {
   m_MeshContainerInfoForVisu->AssignToGivenCollection(iTrackID, iToTrack);
   m_MeshContainerInfoForVisu->AssignToGivenCollection(0, iToNull);

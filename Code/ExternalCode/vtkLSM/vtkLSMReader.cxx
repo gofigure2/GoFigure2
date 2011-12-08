@@ -1358,6 +1358,9 @@ int vtkLSMReader::RequestData(
     }
   time_t end = time (NULL);
 
+  (void) start;
+  (void) end;
+
   vtkDebugMacro(<< "Dataset generation time: " << end - start);
 
   vtkUnsignedCharArray * uscarray;

@@ -267,8 +267,10 @@ void QGoDBTraceManager::ChangeTraceColor()
 //-------------------------------------------------------------------------
 
 //------------------------------------------------------------------------
-std::list< unsigned int > QGoDBTraceManager::GetListTracesIDsFromThisCollectionOf(
-  vtkMySQLDatabase *iDatabaseConnector, std::list< unsigned int > iListTraces)
+std::list< unsigned int >
+QGoDBTraceManager::GetListTracesIDsFromThisCollectionOf(
+  vtkMySQLDatabase *iDatabaseConnector,
+  const std::list< unsigned int > & iListTraces)
 {
   return this->m_CollectionOfTraces->GetListTracesIDsFromThisCollectionOf(
            iDatabaseConnector, iListTraces);
@@ -277,8 +279,10 @@ std::list< unsigned int > QGoDBTraceManager::GetListTracesIDsFromThisCollectionO
 //-------------------------------------------------------------------------
 
 //------------------------------------------------------------------------
-std::list< unsigned int > QGoDBTraceManager::GetListTracesIDsBelongingToCollectionIDs(
-  vtkMySQLDatabase *iDatabaseConnector, std::list< unsigned int > iListCollectionIDs)
+std::list< unsigned int >
+QGoDBTraceManager::GetListTracesIDsBelongingToCollectionIDs(
+  vtkMySQLDatabase *iDatabaseConnector,
+  const std::list< unsigned int > & iListCollectionIDs)
 {
   return this->m_CollectionOfTraces->GetTraceIDsBelongingToCollectionID(iDatabaseConnector,
                                                                         iListCollectionIDs);
@@ -287,11 +291,13 @@ std::list< unsigned int > QGoDBTraceManager::GetListTracesIDsBelongingToCollecti
 //-------------------------------------------------------------------------
 
 //------------------------------------------------------------------------
-void QGoDBTraceManager::DisplayInfoForExistingTraces(vtkMySQLDatabase *
-                                                     iDatabaseConnector, std::list< unsigned int > iListTraces)
+void
+QGoDBTraceManager::
+DisplayInfoForExistingTraces(vtkMySQLDatabase * iDatabaseConnector,
+                             const std::list< unsigned int > & iListTraces)
 {
   this->m_Table->setSortingEnabled(false);
-  std::list< unsigned int >::iterator iter = iListTraces.begin();
+  std::list< unsigned int >::const_iterator iter = iListTraces.begin();
   while ( iter != iListTraces.end() )
     {
     this->DisplayInfoForExistingTrace(iDatabaseConnector, *iter);
@@ -304,7 +310,7 @@ void QGoDBTraceManager::DisplayInfoForExistingTraces(vtkMySQLDatabase *
 
 //------------------------------------------------------------------------
 bool QGoDBTraceManager::CheckThatThereAreTracesToDelete(
-  std::list<unsigned int> iListTracesIDToDelete)
+  const std::list<unsigned int> & iListTracesIDToDelete)
 {
 
   if ( iListTracesIDToDelete.empty() )
@@ -318,12 +324,19 @@ bool QGoDBTraceManager::CheckThatThereAreTracesToDelete(
     }
   else
     {
-    int r = QMessageBox::warning(this->m_Table, tr(""),
+    switch( QMessageBox::warning(this->m_Table, tr(""),
                                  tr("Are you sure you want to delete\n"
                                     "permanently the selected %1s?").arg( this->m_TraceName.c_str() ),
-                                 QMessageBox::Yes,
-                                 QMessageBox::No | QMessageBox::Default);
-    return r;
+                                 QMessageBox::Yes | QMessageBox::No,
+                                 QMessageBox::No))
+      {
+      case QMessageBox::Yes:
+        return true;
+      case QMessageBox::No:
+        return false;
+      default:
+        return false;
+      }
     }
 }
 //-------------------------------------------------------------------------
@@ -345,8 +358,10 @@ void QGoDBTraceManager::DeleteTracesFromContextMenu()
 //-------------------------------------------------------------------------
 
 //------------------------------------------------------------------------
-void QGoDBTraceManager::UpdateCollectionID(vtkMySQLDatabase *iDatabaseConnector,
-                                           std::list< unsigned int > iListTracesIDs, int iCollectionID)
+void
+QGoDBTraceManager::UpdateCollectionID(vtkMySQLDatabase *iDatabaseConnector,
+                                      const std::list< unsigned int > & iListTracesIDs,
+                                      int iCollectionID)
 {
   this->m_CollectionOfTraces->UpdateCollectionIDOfSelectedTraces(iListTracesIDs,
                                                                  iCollectionID, iDatabaseConnector);
@@ -356,8 +371,10 @@ void QGoDBTraceManager::UpdateCollectionID(vtkMySQLDatabase *iDatabaseConnector,
 //-------------------------------------------------------------------------
 
 //------------------------------------------------------------------------
-std::list< unsigned int > QGoDBTraceManager::GetListCollectionIDs(
-  vtkMySQLDatabase *iDatabaseConnector, std::list< unsigned int > iListTracesIDs)
+std::list< unsigned int >
+QGoDBTraceManager::GetListCollectionIDs(
+  vtkMySQLDatabase *iDatabaseConnector,
+  const std::list< unsigned int > & iListTracesIDs)
 {
   return this->m_CollectionOfTraces->GetListCollectionIDs(
            iDatabaseConnector, iListTracesIDs);
@@ -366,12 +383,13 @@ std::list< unsigned int > QGoDBTraceManager::GetListCollectionIDs(
 //-------------------------------------------------------------------------
 
 //------------------------------------------------------------------------
-void QGoDBTraceManager::UpdateBoundingBoxes(vtkMySQLDatabase *iDatabaseConnector,
-                                            std::list< unsigned int > iListTracesIDs,
-                                            bool UpdateTW)
+void
+QGoDBTraceManager::UpdateBoundingBoxes(vtkMySQLDatabase *iDatabaseConnector,
+                                       const std::list< unsigned int > & iListTracesIDs,
+                                       bool UpdateTW)
 {
-  this->m_CollectionOfTraces->
-  RecalculateDBBoundingBox(iDatabaseConnector, iListTracesIDs);
+  this->m_CollectionOfTraces->RecalculateDBBoundingBox(iDatabaseConnector, iListTracesIDs);
+
   if ( UpdateTW )
     {
     this->DisplayInfoForExistingTraces(iDatabaseConnector, iListTracesIDs);
@@ -402,7 +420,7 @@ QGoDBTraceManager::GetAllTraceIDsWithColor(
   vtkMySQLDatabase *iDatabaseConnector, std::string & ioIDToSelect)
 {
   ioIDToSelect = this->m_LastSelectedTraceAsCollection;
-  
+
   return this->m_CollectionOfTraces->GetAllTracesIDsWithColor(
            iDatabaseConnector);
 }
@@ -452,7 +470,6 @@ void QGoDBTraceManager::GoToTheTrace()
                               CoordCenter.GetMapValue<int>("ZCoord"),
                               CoordCenter.GetMapValue<int>("TCoord") );
 }
-
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------

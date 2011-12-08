@@ -52,8 +52,6 @@
 #ifndef __itkMorphologicalWatershedImageFilter2_h
 #define __itkMorphologicalWatershedImageFilter2_h
 
-#include "GoFiltersConfigure.h"
-
 #include "itkImageToImageFilter.h"
 
 namespace itk
@@ -79,7 +77,7 @@ namespace itk
  * \ingroup ImageEnhancement  MathematicalMorphologyImageFilters
  */
 template< class TInputImage, class TOutputImage >
-class GOFILTERS_EXPORT MorphologicalWatershedImageFilter2:
+class MorphologicalWatershedImageFilter2:
   public ImageToImageFilter< TInputImage, TOutputImage >
 {
 public:

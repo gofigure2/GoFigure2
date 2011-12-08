@@ -157,6 +157,8 @@ protected:
 private:
   QList<QPushButton*> m_ListPushButtons;
   QList<QCheckBox*> m_ListCheckBoxes;
-  QList<QWidget*> m_ListDoppler;
+  QList<QCheckBox*> m_ListDoppler;
+
+  bool              m_Classic;
 };
 #endif

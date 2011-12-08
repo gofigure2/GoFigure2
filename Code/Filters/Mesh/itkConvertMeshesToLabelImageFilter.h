@@ -38,8 +38,6 @@
 #pragma warning ( disable : 4786 )
 #endif
 
-#include "GoFiltersConfigure.h"
-
 #include "itkImageToImageFilter.h"
 #include "itkImage.h"
 
@@ -58,7 +56,7 @@ namespace itk
 template< class TImage,
           class TMesh = QuadEdgeMesh< typename TImage::PointType::CoordRepType,
                                       TImage::ImageDimension > >
-class GOFILTERS_EXPORT ConvertMeshesToLabelImageFilter : public Object
+class ConvertMeshesToLabelImageFilter : public Object
 {
 public:
   typedef ConvertMeshesToLabelImageFilter   Self;

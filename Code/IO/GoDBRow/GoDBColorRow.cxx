@@ -47,12 +47,12 @@ void GoDBColorRow::InitializeMap()
 {
   this->m_TableName = "color";
   this->m_TableIDName = "ColorID";
-  this->m_MapRow[this->m_TableIDName] = ConvertToString< int >(0);
+  this->m_MapRow[this->m_TableIDName] = std::string( "0" );//ConvertToString< int >(0);
   //this->m_MapRow["Name"] = "";
-  this->m_MapRow["Red"] = ConvertToString< int >(0);
-  this->m_MapRow["Green"] = ConvertToString< int >(0);
-  this->m_MapRow["Blue"] = ConvertToString< int >(0);
-  this->m_MapRow["Alpha"] = ConvertToString< int >(0);
+  this->m_MapRow["Red"] = std::string( "0" );//ConvertToString< int >(0);
+  this->m_MapRow["Green"] = std::string( "0" );//ConvertToString< int >(0);
+  this->m_MapRow["Blue"] = std::string( "0" );//ConvertToString< int >(0);
+  this->m_MapRow["Alpha"] = std::string( "0" );//ConvertToString< int >(0);
   //this->m_MapRow["Description"] = "";
   //std::string NoDescription = "None";
   //this->SetField("Description", NoDescription);

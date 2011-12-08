@@ -35,8 +35,6 @@
 #ifndef __itkvtkMeshMergeFilterBase_h
 #define __itkvtkMeshMergeFilterBase_h
 
-#include "GoFiltersConfigure.h"
-
 #include "itkvtkMeshFilterBase.h"
 #include <list>
 
@@ -45,7 +43,7 @@ class vtkPolyData;
 namespace itk
 {
 template< class TFeatureImage, class TPolyDataContainer >
-class GOFILTERS_EXPORT vtkMeshMergeFilterBase :
+class vtkMeshMergeFilterBase :
     public vtkMeshFilterBase< TFeatureImage >
 {
 public:

@@ -35,8 +35,6 @@
 #ifndef __itkvtkMeshFilterBase_h
 #define __itkvtkMeshFilterBase_h
 
-#include "GoFiltersConfigure.h"
-
 #include "itkObject.h"
 #include "itkConvertMeshesToLabelImageFilter.h"
 #include "itkvtkPolyDataToitkQuadEdgeMesh.h"
@@ -49,7 +47,7 @@
 namespace itk
 {
 template< class TFeatureImage >
-class GOFILTERS_EXPORT vtkMeshFilterBase : public Object
+class vtkMeshFilterBase : public Object
 {
 public:
   typedef Object Superclass;

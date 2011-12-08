@@ -42,8 +42,6 @@
 #define ITK_LEAN_AND_MEAN
 #endif
 
-#include "GoFiltersConfigure.h"
-
 #include "itkImageToImageFilter.h"
 #include "itkCastImageFilter.h"
 #include "itkMedianImageFilter.h"
@@ -58,7 +56,7 @@ namespace itk
 * in the segmentation.
 */
 template< class TInputImage, class TOutputImage = TInputImage >
-class GOFILTERS_EXPORT PreprocessImageFilter:public ImageToImageFilter<
+class PreprocessImageFilter:public ImageToImageFilter<
     TInputImage, TOutputImage >
 {
 public:

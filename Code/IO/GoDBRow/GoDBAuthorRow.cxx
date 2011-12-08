@@ -46,9 +46,9 @@ void GoDBAuthorRow::InitializeMap()
 {
   this->m_TableName = "author";
   this->m_TableIDName = "authorID";
-  this->m_MapRow["authorID"] = ConvertToString< int >(0);
+  this->m_MapRow["authorID"] = std::string( "0" );//ConvertToString< int >(0);
   this->m_MapRow["LastName"] = "";
-  this->m_MapRow["FirstName"] = ConvertToString< int >(0);
+  this->m_MapRow["FirstName"] = std::string( "0" );//ConvertToString< int >(0);
   this->m_MapRow["MiddleName"] = "<none>";
 }
 

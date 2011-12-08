@@ -99,7 +99,7 @@ void QGoDBTrackManager::DisplayInfoForAllTraces(
 
 //-------------------------------------------------------------------------
 void QGoDBTrackManager::DisplayInfoForTracesForSpecificTPs(
-    vtkMySQLDatabase *iDatabaseConnector, std::list<unsigned int> iListTPs)
+    vtkMySQLDatabase *iDatabaseConnector, const std::list<unsigned int> & iListTPs)
 {
   (void) iListTPs;
   this->DisplayInfoForAllTraces(iDatabaseConnector);
@@ -174,7 +174,8 @@ std::list< unsigned int > QGoDBTrackManager::UpdateTheTracesColor(
 
 //-------------------------------------------------------------------------
 void QGoDBTrackManager::UpdateTWAndContainerForImportedTraces(
-  std::vector< int > iVectorImportedTraces, vtkMySQLDatabase *iDatabaseConnector)
+  const std::vector< int > & iVectorImportedTraces,
+  vtkMySQLDatabase *iDatabaseConnector)
 {
   this->UpdateTWAndContainerWithImportedTracesTemplate<
     GoDBTWContainerForTrack >(this->m_TWContainer,
@@ -220,7 +221,7 @@ void QGoDBTrackManager::DeleteCheckedTraces(vtkMySQLDatabase *iDatabaseConnector
 
 //-------------------------------------------------------------------------
 void QGoDBTrackManager::DeleteListTraces(vtkMySQLDatabase *iDatabaseConnector,
-                                         std::list< unsigned int > iListTraces)
+                                         const std::list< unsigned int > & iListTraces)
 {
   this->DeleteTracesTemplate< TrackContainer >(iDatabaseConnector,
                                                this->m_TrackContainerInfoForVisu, iListTraces, false);
@@ -240,8 +241,7 @@ std::list< unsigned int > QGoDBTrackManager::GetListHighlightedIDs()
 void QGoDBTrackManager::UpdateHighlightedElementsInVisuContainer(
   int iTraceID)
 {
-  this->m_TrackContainerInfoForVisu->
-  UpdateElementHighlightingWithGivenTraceID(iTraceID);
+  this->m_TrackContainerInfoForVisu->UpdateElementHighlightingWithGivenTraceID(iTraceID);
 }
 
 //-------------------------------------------------------------------------
@@ -340,7 +340,8 @@ void QGoDBTrackManager::SaveTrackStructure(
 
 //-------------------------------------------------------------------------
 void QGoDBTrackManager::UpdatePointsOfCurrentElementForImportedTrack(
-  std::map< unsigned int, double * > iMeshesInfo, vtkMySQLDatabase *iDatabaseConnector)
+  std::map< unsigned int, double * > iMeshesInfo,
+  vtkMySQLDatabase *iDatabaseConnector)
 {
   this->m_TrackContainerInfoForVisu->ImportTrackInCurrentElement(iMeshesInfo);
   this->SaveTrackCurrentElement(iDatabaseConnector);
@@ -362,10 +363,11 @@ void QGoDBTrackManager::UpdateTrackPolydataForVisu(vtkMySQLDatabase *iDatabaseCo
 
 //-------------------------------------------------------------------------
 void QGoDBTrackManager::UpdateBoundingBoxes(
-  vtkMySQLDatabase *iDatabaseConnector, std::list< unsigned int > iListTracesIDs)
+  vtkMySQLDatabase *iDatabaseConnector,
+  const std::list< unsigned int > & iListTracesIDs)
 {
   QGoDBTraceManager::UpdateBoundingBoxes(iDatabaseConnector, iListTracesIDs, false);
-  std::list< unsigned int >::iterator iter = iListTracesIDs.begin();
+  std::list< unsigned int >::const_iterator iter = iListTracesIDs.begin();
   while ( iter != iListTracesIDs.end() )
     {
     this->UpdateTrackPolydataForVisu(iDatabaseConnector, *iter);
@@ -394,6 +396,12 @@ void QGoDBTrackManager::AddActionsContextMenu(QMenu *iMenu)
   SplitMergeMenu->addAction( tr("Merge your 2 tracks"), this, SLOT( MergeTracks() ) );
   iMenu->addAction( SplitMergeMenu->menuAction() );
 
+  this->m_CheckedTracesMenu->addAction( tr("Go to the end")
+                                        .arg( this->m_TraceName.c_str() ),
+                                        this, SLOT( GoToTrackEnd() ) );
+  this->m_CheckedTracesMenu->addAction( tr("Go to the beginning")
+                                        .arg( this->m_TraceName.c_str() ),
+                                        this, SLOT( GoToTrackBegin() ) );
   this->m_CheckedTracesMenu->addAction( tr("Create a new division from checked %1s")
                                         .arg( this->m_TraceName.c_str() ),
                                         this, SLOT( CreateCorrespondingTrackFamily() ) );
@@ -419,9 +427,10 @@ void QGoDBTrackManager::TrackIDToEmit()
   else
     {
     emit NeedToGetDatabaseConnection();
-    emit TrackToSplit( HighlightedTrackIDs.front(),
-                       this->GetListTracesIDsFromThisCollectionOf(this->m_DatabaseConnector,
-                                                                  HighlightedTrackIDs) );
+    std::list<unsigned int> list_meshes =
+        this->GetListTracesIDsFromThisCollectionOf(this->m_DatabaseConnector,
+                                                   HighlightedTrackIDs);
+    emit TrackToSplit( HighlightedTrackIDs.front(), list_meshes );
     emit DBConnectionNotNeededAnymore();
     }
 }
@@ -459,8 +468,8 @@ void QGoDBTrackManager::DisplayOnlyCalculatedValuesForExistingTrack(
 
     assert( timeInterval != 0 );
 
-    std::vector< std::string > ColumnNames (7);
-    std::vector< std::string > Values (7);
+    std::vector< std::string > ColumnNames (9);
+    std::vector< std::string > Values (9);
 
     ColumnNames.at(0) = "Deplacement";
     Values.at(0) = ConvertToString< double >(iTrackAttributes->total_length);
@@ -478,6 +487,10 @@ void QGoDBTrackManager::DisplayOnlyCalculatedValuesForExistingTrack(
         (iTrackAttributes->max_speed / static_cast< double >( timeInterval ));
     ColumnNames.at(6) = "AvgVolume";
     Values.at(6) = ConvertToString< double >(iTrackAttributes->avg_volume);
+    ColumnNames.at(7) = "NumberOfMeshes";
+    Values.at(7) = ConvertToString< unsigned int >(iTrackAttributes->number_meshes);
+    ColumnNames.at(8) = "Tmax - Tmin";
+    Values.at(8) = ConvertToString< unsigned int >(iTrackAttributes->temporal_extent);
 
     this->m_Table->AddValuesForID(ColumnNames, Values, iTrackID, "trackID");
     }
@@ -488,6 +501,7 @@ void QGoDBTrackManager::DisplayOnlyCalculatedValuesForExistingTrack(
 //-------------------------------------------------------------------------
 void QGoDBTrackManager::MergeTracks()
 {
+
   std::list< unsigned int > CheckedTrack =
     this->m_TrackContainerInfoForVisu->GetHighlightedElementsTraceID();
   if ( CheckedTrack.size() != 2 )
@@ -512,6 +526,67 @@ void QGoDBTrackManager::MergeTracks()
       }
     else
       {
+      //if first is mother of a lineage, doin't do anything
+      bool isMother =
+          this->isMother(this->m_DatabaseConnector, TrackIDToDelete);
+
+      if(isMother)
+        {
+        emit DBConnectionNotNeededAnymore();
+        QMessageBox msgBox;
+        msgBox.setText(
+            tr("The first track is already a mother track !!") );
+        msgBox.exec();
+        return;
+        }
+
+      // if second is dauther of a lineage, don't do anything
+      std::vector<unsigned int> family1 =
+          this->GetTrackFamily(this->m_DatabaseConnector, TrackIDToKeep);
+
+      if(family1.size() > 0)
+        {
+        emit DBConnectionNotNeededAnymore();
+        QMessageBox msgBox;
+        msgBox.setText(
+            tr("The second track is already a daughter track !!") );
+        msgBox.exec();
+        return;
+        }
+
+      // delete smallest track (in time)
+      //  strategy:
+      // 1-delete previous division
+      // 2-create new track
+      // 3-create new division
+      // therefore we ensure to have a correct lineage tree
+      unsigned int oldMotherID = 0;
+      unsigned int oldDaughter = 0;
+      // delete mother division
+      std::vector<unsigned int> family =
+          this->GetTrackFamily(this->m_DatabaseConnector, TrackIDToDelete);
+
+      // if track belongs to a lineage
+      if(family.size() > 0)
+        {
+        oldMotherID = family[1];
+        if(family[2] == TrackIDToDelete)
+          {
+          oldDaughter = family[3];
+          }
+        else
+          {
+          oldDaughter = family[2];
+          }
+
+        // Delete old track mother division
+        std::list<unsigned int> oldList;
+        oldList.push_back(oldMotherID);
+        this->DeleteTheDivisions(oldList);
+        }
+      // connection is closed above...
+      emit NeedToGetDatabaseConnection();
+      // merge
       std::list< unsigned int > TraceIDToDelete;
       TraceIDToDelete.push_back(TrackIDToDelete);
       std::list< unsigned int > MeshesBelongingToTrackToDelete =
@@ -519,6 +594,17 @@ void QGoDBTrackManager::MergeTracks()
           this->m_DatabaseConnector, TraceIDToDelete);
       this->DeleteListTraces(this->m_DatabaseConnector, TraceIDToDelete);
       emit MeshesToAddToTrack(MeshesBelongingToTrackToDelete, TrackIDToKeep);
+
+      // if track belongs to a lineage
+      if(family.size() > 0)
+        {
+        // Create division old mother and new daughter
+        std::list<unsigned int> newdaughter;
+        newdaughter.push_back(oldMotherID);
+        newdaughter.push_back(oldDaughter);
+        newdaughter.push_back(TrackIDToKeep);
+        this->CreateCorrespondingTrackFamily(newdaughter);
+        }
       }
     emit DBConnectionNotNeededAnymore();
     }
@@ -579,11 +665,22 @@ bool QGoDBTrackManager::CheckOverlappingTracks(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoDBTrackManager::CreateCorrespondingTrackFamily()
+void QGoDBTrackManager::CreateCorrespondingTrackFamily( std::list<unsigned int> iDivisions )
 {
   int MotherID = 0;
   std::list<unsigned int> DaughtersIDs = std::list<unsigned int>();
-  std::list<unsigned int> CheckedTracks = this->GetListHighlightedIDs();
+  std::list<unsigned int> CheckedTracks;
+
+  if(iDivisions.size())
+    {
+    CheckedTracks = iDivisions;
+    }
+  else
+    {
+    CheckedTracks =
+      this->GetListHighlightedIDs();
+    }
+
   if (CheckedTracks.size() != 3)
     {
     QMessageBox msgBox;
@@ -594,7 +691,7 @@ void QGoDBTrackManager::CreateCorrespondingTrackFamily()
     }
   emit NeedToGetDatabaseConnection();
   if (this->IdentifyMotherDaughtersToCreateTrackFamily(this->m_DatabaseConnector,
-    this->GetListHighlightedIDs(), MotherID, DaughtersIDs) )
+    CheckedTracks, MotherID, DaughtersIDs) )
     {
     int TrackFamilyID =  this->CreateTrackFamily(this->m_DatabaseConnector,
       MotherID, DaughtersIDs);
@@ -639,8 +736,9 @@ void QGoDBTrackManager::CreateCorrespondingTrackFamily()
 //-------------------------------------------------------------------------
 bool QGoDBTrackManager::IdentifyMotherDaughtersToCreateTrackFamily(
   vtkMySQLDatabase* iDatabaseConnector,
-  std::list<unsigned int> iListTracksID, int &ioMotherID,
-  std::list<unsigned int> &ioDaughtersID)
+  const std::list<unsigned int> & iListTracksID,
+  int &ioMotherID,
+  std::list<unsigned int> & ioDaughtersID)
 {
   //get the trackid with the lowest timepoint and check that there is only one:
   ioMotherID = this->m_CollectionOfTraces->GetTraceIDWithLowestTimePoint(
@@ -654,7 +752,7 @@ bool QGoDBTrackManager::IdentifyMotherDaughtersToCreateTrackFamily(
     return false;
     }
   //check that none of the 2 others tracks overlap the mother:
-  std::list<unsigned int>::iterator iter = iListTracksID.begin();
+  std::list<unsigned int>::const_iterator iter = iListTracksID.begin();
   //to change: modify the method CheckOverlappingTracks:
   unsigned int ioTraceIDToKeep = 0;
   unsigned int ioTraceIDToDelete = 0;
@@ -676,7 +774,7 @@ bool QGoDBTrackManager::IdentifyMotherDaughtersToCreateTrackFamily(
         }
       ioDaughtersID.push_back(*iter);
       }
-    iter++;
+    ++iter;
     }
   return true;
 }
@@ -685,7 +783,7 @@ bool QGoDBTrackManager::IdentifyMotherDaughtersToCreateTrackFamily(
 
 //-------------------------------------------------------------------------
 int QGoDBTrackManager::CreateTrackFamily(vtkMySQLDatabase* iDatabaseConnector,
-   unsigned int iMotherTrackID, std::list<unsigned int> iDaughtersID)
+   unsigned int iMotherTrackID, const std::list<unsigned int> & iDaughtersID)
 {
   int oTrackFamilyID = -1;
   //check that the mother is not already a mother in a trackfamily:
@@ -706,7 +804,7 @@ int QGoDBTrackManager::CreateTrackFamily(vtkMySQLDatabase* iDatabaseConnector,
     std::cout << std::endl;
     return oTrackFamilyID;
     }
-  std::list<unsigned int>::iterator iter = iDaughtersID.begin();
+  std::list<unsigned int>::const_iterator iter = iDaughtersID.begin();
   unsigned int TrackIDDaughterOne = *iter;
   ++iter;
   unsigned int TrackIDDaughterTwo = *iter;
@@ -787,12 +885,22 @@ void QGoDBTrackManager::LoadInfoVisuContainerForTrackFamilies(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoDBTrackManager::DeleteTheDivisions()
+void QGoDBTrackManager::DeleteTheDivisions(std::list<unsigned int> iDivisions)
 {
   //check that the selected traces are all mother, if not message in the status bar:
   std::list<unsigned int> TrackIDNotMother = std::list<unsigned int>();
-  std::list<unsigned int> CheckedTracks =
-    this->m_TrackContainerInfoForVisu->GetHighlightedElementsTraceID();
+  std::list<unsigned int> CheckedTracks;
+
+  if(iDivisions.size())
+    {
+    CheckedTracks = iDivisions;
+    }
+  else
+    {
+    CheckedTracks =
+      this->m_TrackContainerInfoForVisu->GetHighlightedElementsTraceID();
+    }
+
   std::list<unsigned int> TrackIDsWithNoLineage = std::list<unsigned int>();
   std::list<unsigned int> LineagesToDelete = std::list<unsigned int>();
   if (CheckedTracks.empty() )
@@ -1087,9 +1195,9 @@ std::list<unsigned int> QGoDBTrackManager::GetDivisionIDsTheTrackBelongsTo(
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-void QGoDBTrackManager::UpdateDivisions(std::list<unsigned int> iListMotherTrackIDs)
+void QGoDBTrackManager::UpdateDivisions(const std::list<unsigned int> & iListMotherTrackIDs)
 {
-  std::list<unsigned int>::iterator iter = iListMotherTrackIDs.begin();
+  std::list<unsigned int>::const_iterator iter = iListMotherTrackIDs.begin();
   while (iter != iListMotherTrackIDs.end() )
     {
     this->m_TrackContainerInfoForVisu->CreateDivisionPolydata(*iter);
@@ -1109,9 +1217,9 @@ AddVolume(const unsigned int& iTrackID, const double& iVolume)
 //-------------------------------------------------------------------------
 void
 QGoDBTrackManager::
-AddVolumes(std::list< std::pair<unsigned int, double> > iVolumes)
+AddVolumes(const std::list< std::pair<unsigned int, double> > & iVolumes)
 {
-  std::list< std::pair<unsigned int, double> >::iterator it =
+  std::list< std::pair<unsigned int, double> >::const_iterator it =
           iVolumes.begin();
   while(it != iVolumes.end())
     {
@@ -1124,9 +1232,9 @@ AddVolumes(std::list< std::pair<unsigned int, double> > iVolumes)
 //-------------------------------------------------------------------------
 void
 QGoDBTrackManager::
-RemoveVolumes(std::list< std::pair<unsigned int, double> > iVolumes)
+RemoveVolumes(const std::list< std::pair<unsigned int, double> > & iVolumes)
 {
-  std::list< std::pair<unsigned int, double> >::iterator it =
+  std::list< std::pair<unsigned int, double> >::const_iterator it =
           iVolumes.begin();
   while(it != iVolumes.end())
     {
@@ -1139,10 +1247,10 @@ RemoveVolumes(std::list< std::pair<unsigned int, double> > iVolumes)
 //-------------------------------------------------------------------------
 void
 QGoDBTrackManager::
-AddVolumes(std::list< std::pair<unsigned int, double> > iVolumes,
+AddVolumes(const std::list< std::pair<unsigned int, double> > & iVolumes,
            unsigned int iTrackID)
 {
-  std::list< std::pair<unsigned int, double> >::iterator it =
+  std::list< std::pair<unsigned int, double> >::const_iterator it =
           iVolumes.begin();
   while(it != iVolumes.end())
     {
@@ -1155,15 +1263,142 @@ AddVolumes(std::list< std::pair<unsigned int, double> > iVolumes,
 //-------------------------------------------------------------------------
 void
 QGoDBTrackManager::
-RemoveVolumes(std::list< std::pair<unsigned int, double> > iVolumes,
+RemoveVolumes(const std::list< std::pair<unsigned int, double> > & iVolumes,
               unsigned int iTrackID)
 {
-  std::list< std::pair<unsigned int, double> >::iterator it =
+  std::list< std::pair<unsigned int, double> >::const_iterator it =
           iVolumes.begin();
   while(it != iVolumes.end())
     {
     this->m_TrackContainerInfoForVisu->AddVolume(iTrackID, (-1)*((*it).second));
     ++it;
     }
+}
+//-------------------------------------------------------------------------
+
+//------------------------------------------------------------------------
+void QGoDBTrackManager::GoToTrackEnd()
+{
+  // open db connection
+  emit NeedToGetDatabaseConnection();
+
+  // make sure only one trace is checked
+  std::list< unsigned int > ListCheckedTraces =
+    this->GetListHighlightedIDs();
+  if ( ListCheckedTraces.size() != 1 )
+    {
+    QMessageBox msgBox;
+    msgBox.setText(
+      tr("Please select one and only one %1 to go to")
+      .arg( this->m_TraceName.c_str() ) );
+    msgBox.exec();
+    return;
+    }
+
+  //get last point of the trace from db
+  std::stringstream points( this->m_CollectionOfTraces->GetPoints(
+                                this->m_DatabaseConnector,
+                                this->m_TraceName,
+                                ListCheckedTraces.front()) );
+
+  int numberOfPoints = 0;
+  int count = 1;
+  points >> numberOfPoints;
+
+  if( numberOfPoints > 0)
+    {
+    // go to the last point
+    double point = 0.0;
+    while( count < numberOfPoints )
+      {
+      points >> point;
+      points >> point;
+      points >> point;
+      points >> point;
+      ++count;
+      }
+
+    double x = 0;
+    points >> x;
+    double y = 0;
+    points >> y;
+    double z = 0;
+    points >> z;
+    double t = 0;
+    points >> t;
+
+    emit NeedToGoToTheRealLocation( x,y,z, static_cast<int>(t) );
+    }
+
+  // close db connection
+  emit DBConnectionNotNeededAnymore();
+}
+//-------------------------------------------------------------------------
+
+//------------------------------------------------------------------------
+void QGoDBTrackManager::GoToTrackBegin()
+{
+  // open db connection
+  emit NeedToGetDatabaseConnection();
+
+  // make sure only one trace is checked
+  std::list< unsigned int > ListCheckedTraces =
+    this->GetListHighlightedIDs();
+  if ( ListCheckedTraces.size() != 1 )
+    {
+    QMessageBox msgBox;
+    msgBox.setText(
+      tr("Please select one and only one %1 to go to")
+      .arg( this->m_TraceName.c_str() ) );
+    msgBox.exec();
+    return;
+    }
+
+  //get last point of the trace from db
+  std::stringstream points( this->m_CollectionOfTraces->GetPoints(
+                                this->m_DatabaseConnector,
+                                this->m_TraceName,
+                                ListCheckedTraces.front()) );
+
+  int numberOfPoints = 0;
+  points >> numberOfPoints;
+
+  if( numberOfPoints > 0)
+    {
+    double x = 0;
+    points >> x;
+    double y = 0;
+    points >> y;
+    double z = 0;
+    points >> z;
+    double t = 0;
+    points >> t;
+
+    // go to the last point of the track
+    emit NeedToGoToTheRealLocation( x,y,z, static_cast<int>(t) );
+    }
+
+  // close db connection
+  emit DBConnectionNotNeededAnymore();
+}
+//-------------------------------------------------------------------------
+
+//------------------------------------------------------------------------
+std::vector<unsigned int>
+QGoDBTrackManager::GetTrackFamily(vtkMySQLDatabase* iDatabaseConnector,
+                                  unsigned int iTrackID)
+{
+  return this->m_CollectionOfTraces->GetTrackFamily(iDatabaseConnector,
+                                                 iTrackID);
+}
+//-------------------------------------------------------------------------
+
+//------------------------------------------------------------------------
+bool
+QGoDBTrackManager::isMother(vtkMySQLDatabase* iDatabaseConnector,
+                            unsigned int iTrackID)
+{
+  return this->m_CollectionOfTraces->isMother(iDatabaseConnector,
+                                              iTrackID);
 }
 //-------------------------------------------------------------------------

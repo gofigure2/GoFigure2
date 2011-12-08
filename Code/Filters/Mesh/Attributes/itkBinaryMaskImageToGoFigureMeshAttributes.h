@@ -34,8 +34,6 @@
 #ifndef __itkBinaryMaskImageToGoFigureMeshAttributes_h
 #define __itkBinaryMaskImageToGoFigureMeshAttributes_h
 
-#include "GoFiltersConfigure.h"
-
 #include "itkLightObject.h"
 #include "itkShapeLabelObject.h"
 #include "itkStatisticsLabelObject.h"
@@ -52,7 +50,7 @@ namespace itk
  *  \sa GoFigureMeshAttributes
  * */
 template< class TInput, class TMask >
-class GOFILTERS_EXPORT BinaryMaskImageToGoFigureMeshAttributes:public LightObject
+class BinaryMaskImageToGoFigureMeshAttributes:public LightObject
 {
 public:
   typedef BinaryMaskImageToGoFigureMeshAttributes Self;

@@ -35,8 +35,6 @@
 #ifndef __itkQuadEdgeMeshTovtkPolyData_h
 #define __itkQuadEdgeMeshTovtkPolyData_h
 
-#include "GoFiltersConfigure.h"
-
 #include "vtkPoints.h"
 #include "vtkCellArray.h"
 #include "vtkPolyData.h"
@@ -52,7 +50,7 @@ namespace itk
   \class QuadEdgeMeshTovtkPolyData
   */
 template< class TMesh >
-class GOFILTERS_EXPORT QuadEdgeMeshTovtkPolyData : public Object
+class QuadEdgeMeshTovtkPolyData : public Object
 {
 public:
   typedef QuadEdgeMeshTovtkPolyData Self;

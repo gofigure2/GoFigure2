@@ -54,9 +54,6 @@ setReader(vtkLSMReader* iReader)
   m_BoundsChannel[0] = 0;
   m_BoundsChannel[1] = numberOfChannels -1;
 
-  (m_LSMReader->GetTimePointOutput(m_BoundsChannel[0], m_BoundsTime[0]))->
-      GetExtent(m_Extent);
-
   m_TimeInterval = m_LSMReader->GetTimeInterval();
 }
 //--------------------------------------------------------------------------
@@ -66,81 +63,87 @@ void
 GoLSMImageProcessor::
 initTimePoint(const unsigned int& iTime)
 {
-  //check if time point exists
-  if(iTime >= m_BoundsTime[0] && iTime <= m_BoundsTime[1])
+  if( iTime != this->m_CurrentTimePoint )
     {
-    m_MegaImageContainer.clear();
-    }
-  else
-    {
-    return;
-    }
-
-  // update the container
-  // Get Number of channels from reader
-  int numberOfChannels = getNumberOfChannels();
-
-  while(numberOfChannels>0)
-    {
-    --numberOfChannels;
-
-    vtkSmartPointer<vtkLSMReader> reader =
-        vtkSmartPointer<vtkLSMReader>::New();
-    reader->SetFileName(m_LSMReader->GetFileName());
-    reader->SetUpdateChannel(numberOfChannels);
-    reader->SetUpdateTimePoint(iTime);
-    reader->Update();
-
-   // get image
-    vtkSmartPointer<vtkImageData> image = reader->GetOutput();
-
-    // capacity of image -> rescale in multichannelmode
-    int type = image->GetScalarSize();
-    double threshold = pow(2, 8*type) - 1;
-    m_MaxImage = threshold;
-    // max pixel in image
-    double range = image->GetScalarRange()[1];
-    if(m_MaxThreshold < range){
-      m_MaxThreshold = range;
+    //check if time point exists
+    if(iTime >= m_BoundsTime[0] && iTime <= m_BoundsTime[1])
+      {
+      m_MegaImageContainer.clear();
       }
+    else
+      {
+      return;
+      }
+    this->m_CurrentTimePoint = iTime;
 
-    // Get Color
-    double random1 = reader->
-        GetChannelColorComponent(numberOfChannels, 0);
-    double value1 = random1;
+    // update the container
+    // Get Number of channels from reader
+    int numberOfChannels = this->getNumberOfChannels();
 
-    double random2 = reader->
-        GetChannelColorComponent(numberOfChannels, 1);
-    double value2 = random2;
+  #ifdef HAS_OPENMP
+  #pragma omp for
+  #endif
+    for( int i = 0; i < numberOfChannels; i++ )
+      {
+      vtkSmartPointer<vtkLSMReader> reader =
+        vtkSmartPointer<vtkLSMReader>::New();
+      reader->SetFileName(m_LSMReader->GetFileName());
+      reader->SetUpdateChannel( i );
+      reader->SetUpdateTimePoint(iTime);
+      reader->Update();
 
-    double random3 = reader->
-        GetChannelColorComponent(numberOfChannels, 2);
-    double value3 = random3;
+       // get image
+      vtkSmartPointer<vtkImageData> image = reader->GetOutput();
 
-    std::vector<double> color;
-    color.push_back(value1);
-    color.push_back(value2);
-    color.push_back(value3);
-    color.push_back(255);
+      // capacity of image -> rescale in multichannelmode
+      int type = image->GetScalarSize();
+      double threshold = pow((double)2, (int)8*type) - 1;
+      m_MaxImage = threshold;
+      // max pixel in image
+      double range = image->GetScalarRange()[1];
+      if(m_MaxThreshold < range)
+        {
+        m_MaxThreshold = range;
+        }
 
-    // Create LUT
-    vtkSmartPointer<vtkLookupTable> lut = createLUT(color[0],
-                                                    color[1],
-                                                    color[2],
-                                                    color[3]);
-    // create name...
-    std::stringstream channelName;
-    channelName << "Channel ";
-    channelName << numberOfChannels;
+      // Get Color
+      double random1 = reader->
+        GetChannelColorComponent(i, 0);
+      double value1 = random1;
 
-    // Update the MegaImageStructure
-    // image, LUT, channel, time point
-    m_MegaImageContainer.insert(GoMegaImageStructure(numberOfChannels,
-                                                     lut,
-                                                     image,
-                                                     color,
-                                                     true,
-                                                     channelName.str()));
+      double random2 = reader->
+        GetChannelColorComponent(i, 1);
+      double value2 = random2;
+
+      double random3 = reader->
+        GetChannelColorComponent(i, 2);
+      double value3 = random3;
+
+      std::vector<double> color( 4 );
+      color[0] = value1;
+      color[1] = value2;
+      color[2] = value3;
+      color[3] = 255;
+
+      // Create LUT
+      vtkSmartPointer<vtkLookupTable> lut = createLUT(color[0],
+                                                      color[1],
+                                                      color[2],
+                                                      color[3]);
+      // create name...
+      std::stringstream channelName;
+      channelName << "Channel ";
+      channelName << i;
+
+      // Update the MegaImageStructure
+      // image, LUT, channel, time point
+      m_MegaImageContainer.insert(GoMegaImageStructure(i,
+                                                       lut,
+                                                       image,
+                                                       color,
+                                                       true,
+                                                       channelName.str()));
+      }
     }
 }
 //--------------------------------------------------------------------------
@@ -150,37 +153,43 @@ void
 GoLSMImageProcessor::
 setTimePoint(const unsigned int& iTime)
 {
-  //check if time point exists
-  if(iTime < m_BoundsTime[0] && iTime <= m_BoundsTime[1])
+  if( iTime != this->m_CurrentTimePoint )
     {
-    return;
-    }
-
-  // update the container
-  // Get Number of channels from reader
-  int numberOfChannels = getNumberOfChannels();
-
-  while(numberOfChannels>0)
-    {
-    --numberOfChannels;
-
-    vtkSmartPointer<vtkLSMReader> reader =
-        vtkSmartPointer<vtkLSMReader>::New();
-    reader->SetFileName(m_LSMReader->GetFileName());
-    reader->SetUpdateChannel(numberOfChannels);
-    reader->SetUpdateTimePoint(iTime);
-    reader->Update();
-
-   // get image
-    vtkSmartPointer<vtkImageData> image = reader->GetOutput();
-
-    // could iterate on sth else...
-    GoMegaImageStructureMultiIndexContainer::index<Index>::type::iterator it =
-        m_MegaImageContainer.get< Index >().find(numberOfChannels);
-
-    if(it!=m_MegaImageContainer.get< Index >().end())
+    //check if time point exists
+    if(iTime < m_BoundsTime[0] && iTime <= m_BoundsTime[1])
       {
-      m_MegaImageContainer.get< Index >().modify( it , set_image(image) );
+      return;
+      }
+
+    this->m_CurrentTimePoint = iTime;
+
+    // update the container
+    // Get Number of channels from reader
+    int numberOfChannels = this->getNumberOfChannels();
+
+  #ifdef HAS_OPENMP
+  #pragma omp for
+  #endif
+    for( int i = 0; i < numberOfChannels; i++ )
+      {
+      vtkSmartPointer<vtkLSMReader> reader =
+        vtkSmartPointer<vtkLSMReader>::New();
+      reader->SetFileName(m_LSMReader->GetFileName());
+      reader->SetUpdateChannel( i );
+      reader->SetUpdateTimePoint(iTime);
+      reader->Update();
+
+       // get image
+      vtkSmartPointer<vtkImageData> image = reader->GetOutput();
+
+      // could iterate on sth else...
+      GoMegaImageStructureMultiIndexContainer::index<Index>::type::iterator it =
+        m_MegaImageContainer.get< Index >().find( i );
+
+      if(it!=m_MegaImageContainer.get< Index >().end())
+        {
+        m_MegaImageContainer.get< Index >().modify( it , set_image(image) );
+        }
       }
     }
 }
@@ -205,7 +214,12 @@ setDoppler(const unsigned int& iTime, const unsigned int& iPrevious)
 
   std::vector<int> dopplerTime = getDopplerTime(iTime);
 
-  for(unsigned int i=0; i<getDopplerSize(); ++i)
+  int dopplerSize = static_cast<int>(this->getDopplerSize());
+
+#ifdef HAS_OPENMP
+#pragma omp for
+#endif
+  for(int i=0; i < dopplerSize; ++i)
     {
     if(dopplerTime[i] >= 0)
       {
@@ -221,7 +235,7 @@ setDoppler(const unsigned int& iTime, const unsigned int& iPrevious)
 
       // hue: 0 to 0.7
       double* rgb = vtkMath::HSVToRGB(
-            static_cast<double>(i)/static_cast<double>(getDopplerSize()),1,1);
+            static_cast<double>(i)/static_cast<double>(dopplerSize),1,1);
 
       // color from red to blue
       std::vector<double> color;

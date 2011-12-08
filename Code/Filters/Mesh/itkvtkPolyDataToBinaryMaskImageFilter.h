@@ -34,8 +34,6 @@
 #ifndef __itkvtkPolyDataToBinaryMaskImageFilter_h
 #define __itkvtkPolyDataToBinaryMaskImageFilter_h
 
-#include "GoFiltersConfigure.h"
-
 #include "itkImageToImageFilter.h"
 
 #include "vtkSmartPointer.h"
@@ -51,7 +49,7 @@
 namespace itk
 {
 template< class TInput, class TOutput >
-class GOFILTERS_EXPORT vtkPolyDataToBinaryMaskImageFilter:
+class vtkPolyDataToBinaryMaskImageFilter:
   public ImageToImageFilter< TInput, TOutput >
 {
 public:

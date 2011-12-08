@@ -44,23 +44,23 @@ GoDBImgSessionRow::GoDBImgSessionRow()
 //-------------------------------------------------------------------------
 void GoDBImgSessionRow::InitializeMap()
 {
-  this->m_MapRow["ImagingSessionID"] = ConvertToString< int >(0);
-  this->m_MapRow["CoordIDMax"] = ConvertToString< int >(0);
-  this->m_MapRow["CoordIDMin"] = ConvertToString< int >(0);
+  this->m_MapRow["ImagingSessionID"] = std::string( "0" );//ConvertToString< int >(0);
+  this->m_MapRow["CoordIDMax"] = std::string( "0" );//ConvertToString< int >(0);
+  this->m_MapRow["CoordIDMin"] = std::string( "0" );//ConvertToString< int >(0);
   this->m_MapRow["Name"] = "";
   this->m_MapRow["Description"] = "";
-  this->m_MapRow["ImagesTimeInterval"] = ConvertToString< float >(0);
-  this->m_MapRow["RealPixelDepth"] = ConvertToString< float >(0);
-  this->m_MapRow["RealPixelHeight"] = ConvertToString< float >(0);
-  this->m_MapRow["RealPixelWidth"] = ConvertToString< float >(0);
+  this->m_MapRow["ImagesTimeInterval"] = std::string( "0" );//ConvertToString< float >(0);
+  this->m_MapRow["RealPixelDepth"] = std::string( "0" );//ConvertToString< float >(0);
+  this->m_MapRow["RealPixelHeight"] = std::string( "0" );//ConvertToString< float >(0);
+  this->m_MapRow["RealPixelWidth"] = std::string( "0" );//ConvertToString< float >(0);
   this->m_MapRow["ProjectName"] = "";
   this->m_MapRow["MicroscopeName"] = "";
   this->m_MapRow["CreationDate"] = "";
-  this->m_MapRow["XImageSize"] = ConvertToString< int >(0);
-  this->m_MapRow["YImageSize"] = ConvertToString< int >(0);
-  this->m_MapRow["XTileOverlap"] = ConvertToString< float >(0);
-  this->m_MapRow["YTileOverlap"] = ConvertToString< float >(0);
-  this->m_MapRow["ZTileOverlap"] = ConvertToString< float >(0);
+  this->m_MapRow["XImageSize"] = std::string( "0" );//ConvertToString< int >(0);
+  this->m_MapRow["YImageSize"] = std::string( "0" );//ConvertToString< int >(0);
+  this->m_MapRow["XTileOverlap"] = std::string( "0" );//ConvertToString< float >(0);
+  this->m_MapRow["YTileOverlap"] = std::string( "0" );//ConvertToString< float >(0);
+  this->m_MapRow["ZTileOverlap"] = std::string( "0" );//ConvertToString< float >(0);
 }
 
 //-------------------------------------------------------------------------

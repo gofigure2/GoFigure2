@@ -33,6 +33,7 @@
 =========================================================================*/
 
 #include "QGoTabImageView3DwT.h"
+#include "QShortcut"
 #include "QDebug"
 #include "QShortcut"
 
@@ -279,7 +280,7 @@ QGoTabImageView3DwT::
   unsigned int minch = m_MegaCaptureReader->GetMinChannel();
   unsigned int maxch = m_MegaCaptureReader->GetMaxChannel();
 
-  for ( unsigned int i = minch; i < maxch + 1; i++ )
+  for( unsigned int i = minch; i < maxch + 1; i++ )
     {
     vtkImageData *temp = m_MegaCaptureReader->GetOutput(i);
     if ( temp )
@@ -474,6 +475,7 @@ QGoTabImageView3DwT::ManualInteractorBehavior(bool iVisible)
 void
 QGoTabImageView3DwT::SeedInteractorBehavior(bool iVisible)
 {
+  DefaultInteractorBehavior(iVisible);
   this->m_ImageView->EnableSeedWidget(iVisible);
 }
 
@@ -507,6 +509,7 @@ QGoTabImageView3DwT::TranslateInteractorBehavior(bool iVisible)
 {
   if ( iVisible )
     {
+    // pan is translate now, for consistency with the shortcuts
     this->m_ImageView->PanMode();
     }
 }
@@ -638,6 +641,11 @@ QGoTabImageView3DwT::CreateDataBaseTablesConnection()
 
   QObject::connect( this->m_DataBaseTables, SIGNAL( NeedToGoToTheLocation(int, int, int, int) ),
                     this, SLOT( GoToLocation(int, int, int, int) ) );
+
+  QObject::connect( this->m_DataBaseTables,
+                    SIGNAL( NeedToGoToTheRealLocation(double, double, double, int) ),
+                    this,
+                    SLOT( GoToRealLocation(double, double, double, int) ) );
 
   QObject::connect( this->m_DataBaseTables->toggleViewAction(), SIGNAL (toggled(bool) ),
                     this, SLOT(SetTraceSettingsToolBarVisible(bool) ) );
@@ -826,7 +834,7 @@ QGoTabImageView3DwT::CreateAllViewActions()
   ActionDisplaySplinePlanes->setStatusTip( tr(" Display spline planes on each view") );
 
   QIcon displaysplineplaneicon;
-  displaysplineplaneicon.addPixmap(QPixmap( QString::fromUtf8(":/fig/C_M_L.png") ),
+  displaysplineplaneicon.addPixmap(QPixmap( QString::fromUtf8(":/fig/C_M_L_Border.png") ),
                                    QIcon::Normal, QIcon::Off);
   ActionDisplaySplinePlanes->setIcon(displaysplineplaneicon);
   this->m_ViewNoToolBarActions.push_back(ActionDisplaySplinePlanes);
@@ -968,6 +976,21 @@ QGoTabImageView3DwT::CreateAllViewActions()
 
   QObject::connect( SynchronizeViewsAction, SIGNAL( toggled(bool) ),
                     this->m_ImageView, SLOT( SynchronizeViews(bool) ) );
+
+  // Show/hide the planes
+  QAction *PlaneVisibilityAction =
+    new QAction(tr("show planes in the 3d view"), this);
+  PlaneVisibilityAction->setCheckable(true);
+  PlaneVisibilityAction->setChecked(true);
+  this->m_ViewActions.push_back(PlaneVisibilityAction);
+
+  QIcon PlaneVisibilityicon;
+  PlaneVisibilityicon.addPixmap(QPixmap( QString::fromUtf8(":/fig/C_M_L.png") ),
+                                QIcon::Normal, QIcon::Off);
+  PlaneVisibilityAction->setIcon(PlaneVisibilityicon);
+
+  QObject::connect( PlaneVisibilityAction, SIGNAL( toggled(bool) ),
+                    this->m_ImageView, SLOT( ShowPlanes(bool) ) );
 }
 
 //-------------------------------------------------------------------------
@@ -991,7 +1014,7 @@ void QGoTabImageView3DwT::StartDopplerView()
   QStringList  channel;
   unsigned int* boundChannel = m_ImageProcessor->getBoundsChannel();
 
-  for ( unsigned int i = boundChannel[0]; i < boundChannel[1]+1; ++i )
+  for( unsigned int i = boundChannel[0]; i < boundChannel[1]+1; ++i )
     {
     channel << QString::number(i, 10);
     }
@@ -1382,11 +1405,13 @@ InitializeImageRelatedWidget()
   unsigned int NumberOfChannels = m_ImageProcessor->getNumberOfChannels();
   int* extent = m_ImageProcessor->getExtent();
 
+  assert( extent );
+
   // Initialize the widgets with the good number of channels
   // it will update the size of the related combobox
   m_NavigationDockWidget->blockSignals(true);
 
-  for ( unsigned int i = 0; i < NumberOfChannels; i++ )
+  for( unsigned int i = 0; i < NumberOfChannels; i++ )
     {
     std::string name = m_ImageProcessor->getChannelName(i);
     // channel color
@@ -1567,20 +1592,24 @@ QGoTabImageView3DwT::SetTimePoint(const int & iTimePoint)
   // for the trace widget, navigation widget and table widget
   emit TimePointChanged(m_TCoord);
 
-  // clean table widget and container
-  // then load new traces in TW and put polydatas in container
-  std::list<unsigned int> timePoints =
-          this->m_DataBaseTables->
-          UpdateTableWidgetAndContainersForGivenTimePoint(
-          m_TCoord);
+  //if we use the database, update table and traces!
+  if(m_DataBaseTables->IsDatabaseUsed())
+   {
+    // clean table widget and container
+    // then load new traces in TW and put polydatas in container
+    std::list<unsigned int> timePoints =
+            this->m_DataBaseTables->
+            UpdateTableWidgetAndContainersForGivenTimePoint(
+            m_TCoord);
 
-  // create actors
-  // function has to be splitted-> remove duplications
-  this->CreateContoursActorsFromVisuContainer(timePoints);
-  this->CreateMeshesActorsFromVisuContainer(timePoints);
+    // create actors if we use the database
+    // function has to be splitted-> remove duplications
+    this->CreateContoursActorsFromVisuContainer(timePoints);
+    this->CreateMeshesActorsFromVisuContainer(timePoints);
 
-  //show time specific actors
-  this->ShowTraces(m_TCoord);
+    //show time specific actors
+    this->ShowTraces(m_TCoord);
+    }
 
   m_ImageView->Update();
 
@@ -1613,8 +1642,8 @@ QGoTabImageView3DwT::ChangeLookupTable()
 //-------------------------------------------------------------------------
 QString
 QGoTabImageView3DwT::SnapshotViewXY(
-  const GoFigure::FileType & iType,
-  const QString & iBaseName)
+  GoFigure::FileType iType,
+  QString iBaseName)
 {
   return m_ImageView->SnapshotViewXY(iType, iBaseName);
 }
@@ -1624,8 +1653,8 @@ QGoTabImageView3DwT::SnapshotViewXY(
 //-------------------------------------------------------------------------
 QString
 QGoTabImageView3DwT::SnapshotViewXZ(
-  const GoFigure::FileType & iType,
-  const QString & iBaseName)
+  GoFigure::FileType iType,
+  QString iBaseName)
 {
   return m_ImageView->SnapshotViewXZ(iType, iBaseName);
 }
@@ -1635,8 +1664,8 @@ QGoTabImageView3DwT::SnapshotViewXZ(
 //-------------------------------------------------------------------------
 QString
 QGoTabImageView3DwT::SnapshotViewYZ(
-  const GoFigure::FileType & iType,
-  const QString & iBaseName)
+  GoFigure::FileType iType,
+  QString iBaseName)
 {
   return m_ImageView->SnapshotViewYZ(iType, iBaseName);
 }
@@ -1646,8 +1675,8 @@ QGoTabImageView3DwT::SnapshotViewYZ(
 //-------------------------------------------------------------------------
 QString
 QGoTabImageView3DwT::SnapshotViewXYZ(
-  const GoFigure::FileType & iType,
-  const QString & iBaseName)
+  GoFigure::FileType iType,
+  QString iBaseName)
 {
   return m_ImageView->SnapshotViewXYZ(iType, iBaseName);
 }
@@ -1656,7 +1685,7 @@ QGoTabImageView3DwT::SnapshotViewXYZ(
 
 //-------------------------------------------------------------------------
 void
-QGoTabImageView3DwT::SetSliceViewXY(const int & iS)
+QGoTabImageView3DwT::SetSliceViewXY(int iS)
 {
   m_ImageView->SetSliceViewXY(iS);
 }
@@ -1665,7 +1694,7 @@ QGoTabImageView3DwT::SetSliceViewXY(const int & iS)
 
 //-------------------------------------------------------------------------
 void
-QGoTabImageView3DwT::SetSliceViewXZ(const int & iS)
+QGoTabImageView3DwT::SetSliceViewXZ(int iS)
 {
   m_ImageView->SetSliceViewXZ(iS);
 }
@@ -1674,7 +1703,7 @@ QGoTabImageView3DwT::SetSliceViewXZ(const int & iS)
 
 //-------------------------------------------------------------------------
 void
-QGoTabImageView3DwT::SetSliceViewYZ(const int & iS)
+QGoTabImageView3DwT::SetSliceViewYZ(int iS)
 {
   m_ImageView->SetSliceViewYZ(iS);
 }
@@ -1683,7 +1712,7 @@ QGoTabImageView3DwT::SetSliceViewYZ(const int & iS)
 
 //-------------------------------------------------------------------------
 void
-QGoTabImageView3DwT::SetFullScreenView(const int & iS)
+QGoTabImageView3DwT::SetFullScreenView(int iS)
 {
   m_ImageView->SetFullScreenView(iS);
 }
@@ -1905,7 +1934,7 @@ QGoTabImageView3DwT::GetBoundingBox(vtkPolyData *iElement)
     double       Min[3], Max[3];
     int          k = 0;
     unsigned int i;
-    for ( i = 0; i < 3; i++ )
+    for( i = 0; i < 3; i++ )
       {
       Min[i] = bounds[k++];
       Max[i] = bounds[k++];
@@ -1917,7 +1946,7 @@ QGoTabImageView3DwT::GetBoundingBox(vtkPolyData *iElement)
     int extent[6];
     m_ImageProcessor->getImageBW()->GetExtent(extent);
 
-    for ( i = 0; i < 3; i++ )
+    for( i = 0; i < 3; i++ )
       {
       if ( min_idx[i] > extent[2 * i] )
         {
@@ -1968,9 +1997,9 @@ QGoTabImageView3DwT::VisualizeTrace(vtkPolyData *iTrace, double *iRGBA)
     }
 
   // add actor to renderer and to Prop3d
+
   m_ImageView->AddActor(3, oActors[3]);
 
-  m_ImageView->UpdateRenderWindows();
 
   return oActors;
 }
@@ -1982,7 +2011,11 @@ void
 QGoTabImageView3DwT::ValidateContour(int iTCoord)
 {
   bool re_edit = this->m_ContourEditingWidget->GetReeditMode();
-  for ( int i = 0; i < m_ImageView->GetNumberOfImageViewers(); i++ )
+
+#ifdef HAS_OPENMP
+#pragma omp for
+#endif
+  for( int i = 0; i < m_ImageView->GetNumberOfImageViewers(); i++ )
     {
     vtkPolyData *nodes = m_ImageView->GetContourRepresentationNodePolydata(i);
 
@@ -2017,13 +2050,14 @@ QGoTabImageView3DwT::ValidateContour(int iTCoord)
       }
     }
 
+  m_ImageView->UpdateRenderWindows();
+
   if ( re_edit ) //need to set the widgets to a normal mode
     {
     this->m_TraceSettingsToolBar->setEnabled(true);
     this->m_TraceSettingsWidget->setEnabled(true);
     this->m_ContourEditingWidget->SetReeditMode(false);
     m_ImageView->ReinitializeContourWidget();
-    //m_ContourSegmentationDockWidget->hide();
     this->m_ContourEditingWidget->GetDockWidget()->hide();
     }
 }
@@ -2078,10 +2112,8 @@ QGoTabImageView3DwT::ReEditContour(const unsigned int & iId)
 
       this->m_TraceSettingsToolBar->setEnabled(false);
       this->m_TraceSettingsWidget->setEnabled(false);
-    //this->m_ContourSegmentationDockWidget->show();
-      //this->m_ContourSegmentationDockWidget->SegmentationMethod(0);
-      //this->m_ContourSegmentationDockWidget->SetReeditMode(true);
       this->m_ContourEditingWidget->SetReeditMode(true);
+      // go to manual segmentation
       this->m_ContourEditingWidget->GetDockWidget()->show();
 
       }
@@ -2271,6 +2303,13 @@ QGoTabImageView3DwT::SaveAndVisuContour(int iTCoord, vtkPolyData *iView)
     return -1;
     }
 
+  // if there are no points in the polydata
+  if ( iView->GetNumberOfPoints() == 0 )
+    {
+    std::cerr << "No points in the contour you want to save" << std::endl;
+    return 0;
+    }
+
   vtkPolyData *contour_nodes = vtkPolyData::New();
   CreateContour(contour_nodes, iView);
 
@@ -2283,13 +2322,14 @@ QGoTabImageView3DwT::SaveAndVisuContour(int iTCoord, vtkPolyData *iView)
   std::vector< vtkActor * > actors =
     VisualizeTrace(iView,
                    this->m_ContourContainer->m_CurrentElement.rgba);
+
+
   iView->Delete();
 
   // should be nodes
   // update the container
   m_ContourContainer->UpdateCurrentElementFromVisu(actors,
                                                    contour_nodes,
-                                                   //m_TCoord,
                                                    iTCoord,
                                                    false, //highlighted
                                                    true); //visible
@@ -2350,11 +2390,6 @@ QGoTabImageView3DwT::SaveMesh(vtkPolyData *iView, int iTCoord, int iCollectionID
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
-/*void
-QGoTabImageView3DwT::SaveAndVisuMeshFromSegmentation(vtkPolyData *iView, int iTCoord)
-{
-  SaveAndVisuMesh(iView, m_TCoord, iTCoord);
-}*/
 void
 QGoTabImageView3DwT::SaveInDBAndRenderMeshForVisu(
   std::vector<vtkPolyData *> iVectPolydata, int iTCoord)
@@ -2365,6 +2400,8 @@ QGoTabImageView3DwT::SaveInDBAndRenderMeshForVisu(
     SaveAndVisuMesh(*iter, iTCoord);
     ++iter;
     }
+
+  m_ImageView->UpdateRenderWindows();
 }
 //-------------------------------------------------------------------------
 
@@ -2373,8 +2410,12 @@ void
 QGoTabImageView3DwT::SplitInDBAndRenderMeshForVisu(
   std::vector<vtkPolyData *> iVectPolydata)
 {
-  if( iVectPolydata.size() == 0 )
+  int N = static_cast< int >( iVectPolydata.size() );
+
+  if( N == 0 )
+    {
     return;
+    }
 
   // get mesh trace ID
   std::list< unsigned int > traceID =
@@ -2390,15 +2431,23 @@ QGoTabImageView3DwT::SplitInDBAndRenderMeshForVisu(
   // need it so when we split next mesh, time point and track ID will be accurate
   m_MeshContainer->UpdateElementHighlighting(traceID.front());
 
-  // Save mesh first mesh, provide track ID
-  SaveAndVisuMesh(iVectPolydata[0], tCoord.front(), collectionID.front());
+  unsigned int timePoint = tCoord.front();
 
-  if( iVectPolydata.size() > 1)
+  // Save mesh first mesh, provide track ID
+  SaveAndVisuMesh(iVectPolydata[0], timePoint, collectionID.front());
+
+  if( N > 1)
     {
-    for(size_t i=1; i<iVectPolydata.size(); ++i)
-      SaveAndVisuMesh(iVectPolydata[i], tCoord.front(), 0);
+#ifdef HAS_OPENMP
+#pragma omp for
+#endif
+    for( int i = 1; i < N; ++i )
+      {
+      SaveAndVisuMesh( iVectPolydata[i], timePoint, 0 );
+      }
     }
 
+  m_ImageView->UpdateRenderWindows();
 }
 //-------------------------------------------------------------------------
 
@@ -2430,6 +2479,8 @@ QGoTabImageView3DwT::MergeInDBAndRenderMeshForVisu(
 
   // Save mesh first mesh, provide track ID
   SaveAndVisuMesh(iVectPolydata, tCoord.front(), collectionID.front());
+
+  m_ImageView->UpdateRenderWindows();
 }
 //-------------------------------------------------------------------------
 
@@ -2463,14 +2514,11 @@ void QGoTabImageView3DwT::SaveInDBAndRenderContourForVisu(
   std::vector<vtkPolyData *>::iterator iter = iVectPolydata.begin();
   while(iter != iVectPolydata.end())
     {
-      std::cout << "receive polydata" << std::endl;
-    vtkPolyData* data = vtkPolyData::New();
-    data->DeepCopy(*iter);
-    this->AddContour(data);
-    //SaveAndVisuContour(*iter, m_TCoord, iTCoord);
+    SaveAndVisuContour(iTCoord, *iter);
     ++iter;
     }
 
+  m_ImageView->UpdateRenderWindows();
 }
 //-------------------------------------------------------------------------
 
@@ -2543,6 +2591,9 @@ QGoTabImageView3DwT::AddContourForMeshToContours(vtkPolyData *iInput)
     std::vector< vtkActor * > actors =
       VisualizeTrace(iInput,
                      this->m_ContourContainer->m_CurrentElement.rgba);
+
+    m_ImageView->UpdateRenderWindows();
+
     iInput->Delete();
 
     // update the container
@@ -2589,26 +2640,31 @@ ComputeMeshAttributes(vtkPolyData *iMesh,
   GoFigureMeshAttributes oAttributes;
   if(!m_ImageProcessor->getDopplerMode())
     {
-    for ( size_t i = 0; i < m_ImageProcessor->getNumberOfChannels(); i++ )
+    int NumberOfChannels = static_cast< int >( m_ImageProcessor->getNumberOfChannels() );
+
+    if( iIntensity )
       {
-      vtkSmartPointer< vtkImageExport > vtk_exporter =
-        vtkSmartPointer< vtkImageExport >::New();
-      itk::VTKImageImport< ImageType >::Pointer itk_importer =
-        itk::VTKImageImport< ImageType >::New();
-
-      vtk_exporter->SetInput(m_ImageProcessor->getImageBW(i));
-
-      ConnectPipelines< vtkImageExport, itk::VTKImageImport< ImageType >::Pointer >(
-        vtk_exporter, itk_importer);
-      calculator->SetImage( itk_importer->GetOutput() );
-      calculator->Update();
-
-      oAttributes.m_Volume = calculator->GetPhysicalSize();
-      oAttributes.m_Area = calculator->GetArea();
-      oAttributes.m_Size = calculator->GetSize();
-
-      if ( iIntensity )
+#ifdef HAS_OPENMP
+#pragma omp for
+#endif
+      for( int i = 0; i < NumberOfChannels; i++ )
         {
+        vtkSmartPointer< vtkImageExport > vtk_exporter =
+          vtkSmartPointer< vtkImageExport >::New();
+        itk::VTKImageImport< ImageType >::Pointer itk_importer =
+          itk::VTKImageImport< ImageType >::New();
+
+        vtk_exporter->SetInput(m_ImageProcessor->getImageBW(i));
+
+        ConnectPipelines< vtkImageExport, itk::VTKImageImport< ImageType >::Pointer >(
+          vtk_exporter, itk_importer);
+        calculator->SetImage( itk_importer->GetOutput() );
+        calculator->Update();
+
+        oAttributes.m_Volume = calculator->GetPhysicalSize();
+        oAttributes.m_Area = calculator->GetArea();
+        oAttributes.m_Size = calculator->GetSize();
+
         std::string channelname = m_ImageProcessor->getChannelName(i);
 
         oAttributes.m_TotalIntensityMap[channelname] =
@@ -2616,10 +2672,24 @@ ComputeMeshAttributes(vtkPolyData *iMesh,
         oAttributes.m_MeanIntensityMap[channelname] =
           calculator->GetMeanIntensity();
         }
-      else
-        {
-        break;
-        }
+      }
+    else
+      {
+      vtkSmartPointer< vtkImageExport > vtk_exporter =
+          vtkSmartPointer< vtkImageExport >::New();
+      itk::VTKImageImport< ImageType >::Pointer itk_importer =
+        itk::VTKImageImport< ImageType >::New();
+
+      vtk_exporter->SetInput( m_ImageProcessor->getImageBW( 0 ) );
+
+      ConnectPipelines< vtkImageExport, itk::VTKImageImport< ImageType >::Pointer >(
+            vtk_exporter, itk_importer);
+      calculator->SetImage( itk_importer->GetOutput() );
+      calculator->Update();
+
+      oAttributes.m_Volume = calculator->GetPhysicalSize();
+      oAttributes.m_Area = calculator->GetArea();
+      oAttributes.m_Size = calculator->GetSize();
       }
     }
   else
@@ -2632,16 +2702,52 @@ ComputeMeshAttributes(vtkPolyData *iMesh,
     // load real image
     m_ImageProcessor->initTimePoint(iTCoord);
 
-    for ( unsigned int i = boundChannel[0]; i <= boundChannel[1]; i++ )
+    if( iIntensity )
       {
-      temp_image[i] = m_ImageProcessor->getImageBW(i);
+
+#ifdef HAS_OPENMP
+#pragma omp parallel for
+#endif
+      for( int i = static_cast< int >( boundChannel[0] );
+            i <= static_cast< int >( boundChannel[1] );
+            i++ )
+        {
+        temp_image[i] = m_ImageProcessor->getImageBW(i);
+
+        vtkSmartPointer< vtkImageExport > vtk_exporter =
+          vtkSmartPointer< vtkImageExport >::New();
+        itk::VTKImageImport< ImageType >::Pointer itk_importer =
+          itk::VTKImageImport< ImageType >::New();
+
+        vtk_exporter->SetInput(temp_image[i]);
+
+        ConnectPipelines< vtkImageExport, itk::VTKImageImport< ImageType >::Pointer >(
+          vtk_exporter, itk_importer);
+        calculator->SetImage( itk_importer->GetOutput() );
+        calculator->Update();
+
+        oAttributes.m_Volume = calculator->GetPhysicalSize();
+        oAttributes.m_Area = calculator->GetArea();
+        oAttributes.m_Size = calculator->GetSize();
+
+        std::string channelname = m_ImageProcessor->getChannelName(i);
+
+        oAttributes.m_TotalIntensityMap[channelname] =
+            static_cast< int >( calculator->GetSumIntensity() );
+        oAttributes.m_MeanIntensityMap[channelname] =
+            calculator->GetMeanIntensity();
+        }
+      }
+    else
+      {
+      temp_image[0] = m_ImageProcessor->getImageBW(0);
 
       vtkSmartPointer< vtkImageExport > vtk_exporter =
         vtkSmartPointer< vtkImageExport >::New();
       itk::VTKImageImport< ImageType >::Pointer itk_importer =
         itk::VTKImageImport< ImageType >::New();
 
-      vtk_exporter->SetInput(temp_image[i]);
+      vtk_exporter->SetInput(temp_image[0]);
 
       ConnectPipelines< vtkImageExport, itk::VTKImageImport< ImageType >::Pointer >(
         vtk_exporter, itk_importer);
@@ -2649,23 +2755,8 @@ ComputeMeshAttributes(vtkPolyData *iMesh,
       calculator->Update();
 
       oAttributes.m_Volume = calculator->GetPhysicalSize();
-      //qDebug() << "volume:" << oAttributes.m_Volume;
       oAttributes.m_Area = calculator->GetArea();
       oAttributes.m_Size = calculator->GetSize();
-
-      if ( iIntensity )
-        {
-        std::string channelname = m_ImageProcessor->getChannelName(i);
-
-        oAttributes.m_TotalIntensityMap[channelname] =
-          static_cast< int >( calculator->GetSumIntensity() );
-        oAttributes.m_MeanIntensityMap[channelname] =
-          calculator->GetMeanIntensity();
-        }
-      else
-        {
-        break;
-        }
       }
     // load doppler image
     // visibility should be updated...
@@ -2808,6 +2899,23 @@ QGoTabImageView3DwT::GoToLocation(int iX, int iY, int iZ, int iT)
   this->SetSliceViewXY(iZ);
   this->SetSliceViewXZ(iY);
   this->SetSliceViewYZ(iX);
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoTabImageView3DwT::GoToRealLocation(double iX, double iY, double iZ, int iT)
+{
+  double p[3];
+  p[0] = iX;
+  p[1] = iY;
+  p[2] = iZ;
+
+  int *index = this->GetImageCoordinatesFromWorldCoordinates( p );
+
+  this->GoToLocation( index[0], index[1], index[2], iT);
+
+  delete[] index;
 }
 //-------------------------------------------------------------------------
 
@@ -3392,10 +3500,26 @@ CreateMeshesActorsFromVisuContainer(std::list<unsigned int> iTPointToLoad)
         size_t i = 0;
         progress.setValue( i );
 
+        std::vector< MeshContainerTCoordIterator > tempvector;
+        while( it0 != it1 )
+          {
+          tempvector.push_back(it0);
+          ++it0;
+          }
+
+        int numberOfMeshes = static_cast< int >( tempvector.size() );
+
         // we don't need here to save this mesh in the database,
         // since they have just been extracted from it!
-        while ( it0 != it1 )
+        //while ( it0 != it1 )
+
+#ifdef HAS_OPENMP
+#pragma omp for
+#endif
+        for( int i = 0; i < numberOfMeshes; i++ )
           {
+          it0 = tempvector[i];
+
           if ( it0->Nodes )
             {
             // bug here, don't use TCoord
@@ -3409,9 +3533,9 @@ CreateMeshesActorsFromVisuContainer(std::list<unsigned int> iTPointToLoad)
               &attributes, it0->TraceID);
             }
           this->AddMeshFromNodes< TCoord >( it0 );
-          ++it0;
+          //++it0;
 
-          ++i;
+          //++i;
           progress.setValue( i );
           }
 
@@ -3459,9 +3583,13 @@ void
 QGoTabImageView3DwT::
 UpdateTFEditor()
 {
-  unsigned int NumberOfChannels = m_ImageProcessor->getNumberOfChannels();
+  int NumberOfChannels = static_cast< int >( m_ImageProcessor->getNumberOfChannels() );
+  int currentChannel = m_TransferFunctionDockWidget->GetCurrentWidget();
 
-  for ( unsigned int i = 0; i < NumberOfChannels; i++ )
+#ifdef HAS_OPENMP
+#pragma omp for
+#endif
+  for( int i = 0; i < NumberOfChannels; i++ )
     {
     std::string name = m_ImageProcessor->getChannelName(i);
     m_TransferFunctionDockWidget->SetCurrentWidget(i);
@@ -3477,15 +3605,16 @@ UpdateTFEditor()
         m_ImageProcessor->getImageBW(name)->GetScalarRange()[1]);
     }
 
+  m_TransferFunctionDockWidget->SetCurrentWidget(currentChannel);
 }
 //------------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::
-PolydatasRequested(){
-  std::list< vtkPolyData* > elements =
-      this->m_MeshContainer-> GetHighlightedElements();
+PolydatasRequested()
+{
+  std::list< vtkPolyData* > elements = this->m_MeshContainer-> GetHighlightedElements();
   emit RequestedPolydatas(elements);
 }
 //-------------------------------------------------------------------------
@@ -3542,7 +3671,12 @@ CreateDopplerTFEditor()
 {
   std::vector<int> time = m_ImageProcessor->getDopplerTime(m_TCoord);
 
-  for(unsigned int i=0; i<m_ImageProcessor->getDopplerSize(); ++i)
+  int N = static_cast< int >( m_ImageProcessor->getDopplerSize() );
+
+#ifdef HAS_OPENMP
+#pragma omp for
+#endif
+  for(int i=0; i < N; ++i)
     {
     if(time[i]>=0)
       {

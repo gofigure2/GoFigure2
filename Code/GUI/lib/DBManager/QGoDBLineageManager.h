@@ -62,12 +62,12 @@ public:
                                            int iTraceID);
 
   /**
-  \brief set the m_LineageContainerInfoForVisu and the m_TrackContainerInfoForVisu 
+  \brief set the m_LineageContainerInfoForVisu and the m_TrackContainerInfoForVisu
   to the iContainerForVisu and iTrackContainerInfoForvisu
   \param[in] iContainerForVisu common container for the visu and database
   \param[in] iTrackContainerInfoForvisu common container for tracks for the visu and database
   */
-  void SetLineagesInfoContainersForVisu( LineageContainer *iContainerForVisu, 
+  void SetLineagesInfoContainersForVisu( LineageContainer *iContainerForVisu,
     TrackContainer *iTrackContainerInfoForvisu);
 
   /**
@@ -92,9 +92,10 @@ public:
   std::list< unsigned int > UpdateTheTracesColor(vtkMySQLDatabase *iDatabaseConnector);
 
   //virtual pure method in QGoDBTraceManager
-  virtual void UpdateTWAndContainerForImportedTraces(std::vector< int > iVectorImportedTraces,
-                                                     vtkMySQLDatabase *iDatabaseConnector);
-  
+  virtual void UpdateTWAndContainerForImportedTraces(
+    const std::vector< int > & iVectorImportedTraces,
+    vtkMySQLDatabase *iDatabaseConnector);
+
   /**
   \brief delete the traces of the list from the database, the TW and the
   container for visu
@@ -102,7 +103,7 @@ public:
   \param[in] iListTraces list of the tracesIDs to be deleted
   */
   void DeleteListTraces(vtkMySQLDatabase *iDatabaseConnector,
-    std::list<unsigned int> iListTraces);
+    const std::list<unsigned int> & iListTraces);
 
   //virtual pure method in QGoDBTraceManager
   virtual void DeleteCheckedTraces( vtkMySQLDatabase *iDatabaseConnector);
@@ -111,7 +112,7 @@ public:
   virtual std::list< unsigned int > GetListHighlightedIDs();
 
   virtual void UpdateBoundingBoxes(vtkMySQLDatabase *iDatabaseConnector,
-                                   std::list< unsigned int > iListTracesIDs,
+                                   const std::list< unsigned int > & iListTracesIDs,
                                    bool UpdateTW = true);
 
 public slots:
@@ -137,7 +138,8 @@ protected:
 
   //virtual pure method in QGoDBTraceManager
   virtual void DisplayInfoForTracesForSpecificTPs(
-    vtkMySQLDatabase *iDatabaseConnector, std::list<unsigned int> iListTPs);
+    vtkMySQLDatabase *iDatabaseConnector,
+    const std::list<unsigned int> & iListTPs);
 
   //virtual pure method in QGoDBTraceManager
   virtual void GetTracesInfoFromDBAndModifyContainerForVisu(
@@ -153,20 +155,21 @@ protected:
   \param[in] iLineageID ID of the lineage the TrackIDRoot needs to be updated
   \param[in] iTrackIDRoot ID of the track to be the root of the lineage
   */
-  void UpdateTrackRootSelectedLineage(vtkMySQLDatabase* iDatabaseConnector, 
+  void UpdateTrackRootSelectedLineage(vtkMySQLDatabase* iDatabaseConnector,
     unsigned int iLineageID, unsigned int iTrackIDRoot);
 
    /*
-   * \brief Update the scalars and colors for all the divisions of a 
+   * \brief Update the scalars and colors for all the divisions of a
    lineage in the trackContainer for the visu
    */
   void UpdateDivisionsInTrackContainer(unsigned int iLineageID);
- 
+
   /**
-  \brief delete the divisions of a lineage in the database and in the visu 
+  \brief delete the divisions of a lineage in the database and in the visu
   */
   void DeleteDivisionsForLineages(
-  vtkMySQLDatabase *iDatabaseConnector, std::list<unsigned int> iLineageID);
+  vtkMySQLDatabase *iDatabaseConnector,
+    const std::list<unsigned int> & iLineageID);
 
   void DeleteADivision(
   vtkMySQLDatabase *iDatabaseConnector, unsigned int iTrackFamilyID);

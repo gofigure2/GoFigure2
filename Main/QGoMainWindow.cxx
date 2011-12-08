@@ -435,12 +435,32 @@ QGoMainWindow::LoadAllTracesFromDatabaseManager(const int & iT)
 {
   QApplication::setOverrideCursor( QCursor(Qt::WaitCursor) );
 
-  // Loads contours
-  LoadContoursFromDatabase(iT);
-  // Loads meshes
-  LoadMeshesFromDatabase(iT);
-  // Loads tracks
-  LoadTracksFromDatabase(iT);
+#ifdef HAS_OPENMP
+#pragma omp sections nowait
+#endif
+  {
+#ifdef HAS_OPENMP
+#pragma omp section
+#endif
+    {
+    // Loads contours
+    LoadContoursFromDatabase(iT);
+    }
+#ifdef HAS_OPENMP
+#pragma omp section
+#endif
+    {
+    // Loads meshes
+    LoadMeshesFromDatabase(iT);
+    }
+#ifdef HAS_OPENMP
+#pragma omp section
+#endif
+    {
+    // Loads tracks
+    LoadTracksFromDatabase(iT);
+    }
+  }
 
   QApplication::restoreOverrideCursor();
 }
@@ -497,11 +517,11 @@ QGoMainWindow::LoadTracksFromDatabase(const int & iT)
     if ( temp )
       {
       // let's iterate on the container with increasing TraceID
-      TrackContainer::MultiIndexContainerType::index< TraceID >::type::iterator
-        track_list_it = temp->m_Container.get< TraceID >().begin();
+      typedef TrackContainer::MultiIndexContainerType::index< TraceID >::type::iterator
+          TrackContainerIterator;
 
-      TrackContainer::MultiIndexContainerType::index< TraceID >::type::iterator
-        track_list_end = temp->m_Container.get< TraceID >().end();
+      TrackContainerIterator track_list_it = temp->m_Container.get< TraceID >().begin();
+      TrackContainerIterator track_list_end = temp->m_Container.get< TraceID >().end();
 
       size_t nb_tracks = temp->m_Container.get< TraceID >().size();
 
@@ -979,13 +999,6 @@ void QGoMainWindow::on_actionUser_mailing_list_triggered()
 //--------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------
-void QGoMainWindow::on_actionDeveloper_mailing_list_triggered()
-{
-  QDesktopServices::openUrl( QUrl("mailto:gofigure2-developers@lists.sourceforge.net?subject=About GoFigure2") );
-}
-//--------------------------------------------------------------------------
-
-//--------------------------------------------------------------------------
 void QGoMainWindow::on_actionReport_a_bug_triggered()
 {
   QString url( "mailto:gofigure2-developers@lists.sourceforge.net?subject=Bug Report&body=" );
@@ -1021,6 +1034,14 @@ void QGoMainWindow::on_actionReport_a_bug_triggered()
   url.append( text );
 
   QDesktopServices::openUrl( QUrl( url ) );
+}
+
+//--------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------
+void QGoMainWindow::on_actionDeveloper_mailing_list_triggered()
+{
+  QDesktopServices::openUrl( QUrl("mailto:gofigure2-developers@lists.sourceforge.net?subject=About GoFigure2") );
 }
 //--------------------------------------------------------------------------
 

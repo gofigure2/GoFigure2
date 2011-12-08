@@ -64,8 +64,6 @@ public:
    */
   QGoManualSegmentationSettingsDialog *m_SettingsDialog;
 
-  virtual void setVisible(bool iVisible);
-
 signals:
 /*
  * \brief Signal sent if "Reinitialize" button clicked

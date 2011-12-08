@@ -43,8 +43,6 @@
 #define ITK_LEAN_AND_MEAN
 #endif
 
-#include "GoFiltersConfigure.h"
-
 #include "itkAffineTransform.h"
 #include "itkImageToImageFilter.h"
 #include "itkCastImageFilter.h"
@@ -68,7 +66,7 @@
 namespace itk
 {
 template< class TFeatureImage, class TInputImage, class TSegmentImage >
-class GOFILTERS_EXPORT CellForegroundExtraction:public ImageToImageFilter<
+class CellForegroundExtraction:public ImageToImageFilter<
     TFeatureImage, TSegmentImage >
 {
 public:

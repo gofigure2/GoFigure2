@@ -27,21 +27,41 @@ IF( WIN32 )
   ENDIF( NOT BORLAND )
 ENDIF( WIN32 )
 
+#-------------------------------------------------------------------------
+# When making one release: update GOFIGURE2_*_VERSION,
+# GOFIGURE2_WC_REVISION and the date of the release
+
+SET( GOFIGURE2_MAJOR_VERSION "0" )
+SET( GOFIGURE2_MINOR_VERSION "9" )
+SET( GOFIGURE2_WC_REVISION "0" )
+
+SET( DATE "12/07/2011" )
+
+SET( GOFIGURE2_VERSION
+  "${GOFIGURE2_MAJOR_VERSION}.${GOFIGURE2_MINOR_VERSION}.${GOFIGURE2_WC_REVISION}" )
+
+SET( GOFIGURE2_LIB_VERSION
+  "${GOFIGURE2_MAJOR_VERSION}.${GOFIGURE2_MINOR_VERSION}" )
+
+MESSAGE( STATUS "GoFigure2 version ${GOFIGURE2_VERSION}" )
+
+
 #---------------------------------------------------------------------------
 # CONFIGURE CMAKE
 #---------------------------------------------------------------------------
 
-  SET( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
-    "${CMAKE_CURRENT_SOURCE_DIR}/CMake/"
-    "${CMAKE_CURRENT_SOURCE_DIR}/CMake/SuperBuild/"
+SET( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
+  "${CMAKE_CURRENT_SOURCE_DIR}/CMake/"
+  "${CMAKE_CURRENT_SOURCE_DIR}/CMake/SuperBuild/"
   )
 
-  IF( UNIX )
-    SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
-  ENDIF( UNIX )
+IF( UNIX )
+  SET (CACHE CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
+ENDIF( UNIX )
+
 
 #---------------------------------------------------------------------------
-# SUPERBUILD - ENABLED BY DEFAULT
+# SUPERBUILD - DISABLED BY DEFAULT
 #---------------------------------------------------------------------------
 
 OPTION( SUPERBUILD "Use SuperBuild" OFF )
@@ -59,25 +79,33 @@ ELSE( SUPERBUILD )
   # CMake >= 2.8.2 MUST be installed (which is required by ITK)
   CMAKE_MINIMUM_REQUIRED( VERSION 2.8.2 )
 
-  #---------------------------------------------------------------------------
-
   PROJECT( GOFIGURE2 )
 
-  # When making one release: update GOFIGURE2_*_VERSION,
-  # GOFIGURE2_WC_REVISION and the date of the release
-  SET( GOFIGURE2_MAJOR_VERSION "0" )
-  SET( GOFIGURE2_MINOR_VERSION "8" )
-  SET( GOFIGURE2_WC_REVISION "develop" )
+  #-------------------------------------------------------------------------
+  OPTION( OPENMP_SUPPORT "Enable OpenMP support if possible" ON )
 
-  SET( DATE "10/01/2011" )
+  IF( OPENMP_SUPPORT )
 
-  SET( GOFIGURE2_VERSION
-    "${GOFIGURE2_MAJOR_VERSION}.${GOFIGURE2_MINOR_VERSION}.${GOFIGURE2_WC_REVISION}" )
+    FIND_PACKAGE( OpenMP )
 
-  SET( GOFIGURE2_LIB_VERSION
-    "${GOFIGURE2_MAJOR_VERSION}.${GOFIGURE2_MINOR_VERSION}" )
+    IF( OPENMP_FOUND )
+      MESSAGE( STATUS "OpenMP found" )
 
-  MESSAGE( STATUS "GoFigure2 version ${GOFIGURE2_VERSION}" )
+      ADD_DEFINITIONS( -DHAS_OPENMP )
+
+      SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}" )
+      SET( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}" )
+    ELSE()
+      MESSAGE( STATUS "OpenMP not found" )
+
+      REMOVE_DEFINITIONS( -DHAS_OPENMP )
+    ENDIF()
+
+  ELSE()
+
+      REMOVE_DEFINITIONS( -DHAS_OPENMP )
+
+  ENDIF()
 
   #-----------------------------------------------------------------------
   # Export and Install configuration
@@ -119,7 +147,7 @@ ELSE( SUPERBUILD )
     SET( GOFIGURE2_INSTALL_RESOURCE_DIR "share/doc/gofigure2/Resources" )
   ENDIF( NOT GOFIGURE2_INSTALL_RESOURCE_DIR )
   
-#---------------------------------------------------------------------------
+  #---------------------------------------------------------------------------
   # Define CMAKE_whatever_OUTPUT_DIRECTORY
   #---------------------------------------------------------------------------
   # all target executables will be
@@ -133,43 +161,50 @@ ELSE( SUPERBUILD )
     ${GOFIGURE2_BINARY_DIR}/lib
   )
 
-  # all shared libraries will be in ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
-  # Note that modules (plugins) are considered as shared libraries
-  SET( CMAKE_LIBRARY_OUTPUT_DIRECTORY
-  #  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/plugins
-     ${GOFIGURE2_BINARY_DIR}/lib
-  )
+  IF( NOT APPLE )
+    # all shared libraries will be in ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
+    # Note that modules (plugins) are considered as shared libraries
+    SET( CMAKE_LIBRARY_OUTPUT_DIRECTORY
+    #  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/plugins
+       ${GOFIGURE2_BINARY_DIR}/lib
+    )
+  ELSE()
+    SET( CMAKE_LIBRARY_OUTPUT_DIRECTORY
+      ${GOFIGURE2_BINARY_DIR}/bin/gofigure.app/Contents/MacOS/
+      )
+  ENDIF()
+
   SET( GOFIGURE2_LIBRARY_DIRS ${GOFIGURE2_BINARY_DIR}/lib )
 
-#---------------------------------------------------------------------------
-# Export files (body of emails, etc...)
-#---------------------------------------------------------------------------
-# define useful variables
-IF( WIN32 )
-  SET( OS "Windows" )
-ELSE( WIN32 )
-  IF ( APPLE )
-    SET( OS "Mac OS X" )
-  ELSE( APPLE )
-    SET( OS "Linux" )
-  ENDIF( APPLE )
-ENDIF( WIN32 )
+  #---------------------------------------------------------------------------
+  # Export files (body of emails, etc...)
+  #---------------------------------------------------------------------------
+  # define useful variables
+  IF( WIN32 )
+    SET( OS "Windows" )
+  ELSE( WIN32 )
+    IF ( APPLE )
+      SET( OS "Mac OS X" )
+    ELSE( APPLE )
+      SET( OS "Linux" )
+    ENDIF( APPLE )
+  ENDIF( WIN32 )
 
-# Licences
-file(MAKE_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Licenses)
+  # Licences
+  file(MAKE_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Licenses)
 
-file(COPY        ${GOFIGURE2_SOURCE_DIR}/Licenses/
+  file(COPY        ${GOFIGURE2_SOURCE_DIR}/Licenses/
      DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Licenses)
 
-# Resources
-file(MAKE_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Resources)
+  # Resources
+  file(MAKE_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Resources)
 
-CONFIGURE_FILE( ${GOFIGURE2_SOURCE_DIR}/Resources/BugEntry.txt.in
- ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Resources/BugEntry.txt
- @ONLY
-)
+  CONFIGURE_FILE( ${GOFIGURE2_SOURCE_DIR}/Resources/BugEntry.txt.in
+    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Resources/BugEntry.txt
+    @ONLY
+    )
 
-#---------------------------------------------------------------------------
+  #---------------------------------------------------------------------------
   # Define TESTING_DATA_PATH
   #---------------------------------------------------------------------------
   SET( TESTING_DATA_PATH
@@ -203,7 +238,7 @@ CONFIGURE_FILE( ${GOFIGURE2_SOURCE_DIR}/Resources/BugEntry.txt.in
   INCLUDE( "${GOFIGURE2_SOURCE_DIR}/CMake/ConfigITK.cmake" )
 
   #----------------------------------------------------------
-  # Then find Boost. Note that we only need headers
+  # Then find Boost
   #### BOOST ####
   INCLUDE( "${GOFIGURE2_SOURCE_DIR}/CMake/ConfigBoost.cmake" )
 
@@ -242,10 +277,15 @@ CONFIGURE_FILE( ${GOFIGURE2_SOURCE_DIR}/Resources/BugEntry.txt.in
     ${GOFIGURE2_SOURCE_DIR}/Code/Filters/
     ${GOFIGURE2_BINARY_DIR}/Code/Filters/
     ${GOFIGURE2_SOURCE_DIR}/Code/Filters/Contour/
+    ${GOFIGURE2_BINARY_DIR}/Code/Filters/Contour/
     ${GOFIGURE2_SOURCE_DIR}/Code/Filters/Mesh/
+    ${GOFIGURE2_BINARY_DIR}/Code/Filters/Mesh/
     ${GOFIGURE2_SOURCE_DIR}/Code/Filters/Mesh/Attributes/
+    ${GOFIGURE2_BINARY_DIR}/Code/Filters/Mesh/Attributes/
     ${GOFIGURE2_SOURCE_DIR}/Code/Filters/Mesh/Split/
+    ${GOFIGURE2_BINARY_DIR}/Code/Filters/Mesh/Split/
     ${GOFIGURE2_SOURCE_DIR}/Code/Filters/Mesh/Merge/
+    ${GOFIGURE2_BINARY_DIR}/Code/Filters/Mesh/Merge/
     ${GOFIGURE2_SOURCE_DIR}/Code/GUI/
     ${GOFIGURE2_BINARY_DIR}/Code/GUI/
     ${GOFIGURE2_SOURCE_DIR}/Code/GUI/lib/
@@ -390,5 +430,7 @@ CONFIGURE_FILE( ${GOFIGURE2_SOURCE_DIR}/Resources/BugEntry.txt.in
   ADD_CUSTOM_TARGET( uninstall
     "${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_BINARY_DIR}/GOFIGURE2Uninstall.cmake"
     )
+
+  INCLUDE( GOFIGURE2CPack.cmake )
 
 ENDIF( SUPERBUILD )

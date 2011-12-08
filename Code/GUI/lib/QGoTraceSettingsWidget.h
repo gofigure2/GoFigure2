@@ -241,7 +241,7 @@ signals:
   void TraceChanged( int );
 
 protected:
-  QLabel *                    m_CollectionName;  
+  QLabel *                    m_CollectionName;
   QLabel*                     m_LabelCellType;
   QLabel*                     m_LabelSubCellType;
   std::string *               m_SelectedCellType;
@@ -251,7 +251,7 @@ protected:
   //bool                        m_IsToolBarVisible;
 
   void SetUpUi();
-  
+
   /**
   \brief add the SelectedColorCombobox to the layout and make the signal/slot connections
   for it
@@ -345,8 +345,8 @@ protected slots:
   void UpdateValueSelectedCellType(std::string iCellType);
   void UpdateValueSelectedSubCellType(std::string iSubCellType);
   void UpdateValueSelectedColor(ItemColorComboboxData iColorData);
-  /** 
-  brief update the correspodning collection when the current trace has been changed 
+  /**
+  brief update the correspodning collection when the current trace has been changed
   and emit a signal that the trace has been changed
   */
   void CurrentTraceToUpdate(int iIndex);

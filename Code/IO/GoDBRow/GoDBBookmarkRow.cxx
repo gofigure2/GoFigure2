@@ -47,10 +47,10 @@ GoDBBookmarkRow::GoDBBookmarkRow()
 //-------------------------------------------------------------------------
 void GoDBBookmarkRow::InitializeMap()
 {
-  this->m_MapRow["BookmarkID"] = ConvertToString< int >(0);
+  this->m_MapRow["BookmarkID"] = std::string( "0" );//ConvertToString< int >(0);
   this->m_MapRow["Name"] = "";
-  this->m_MapRow["ImagingSessionID"] = ConvertToString< int >(0);
-  this->m_MapRow["CoordID"] = ConvertToString< int >(0);
+  this->m_MapRow["ImagingSessionID"] = std::string( "0" );//ConvertToString< int >(0);
+  this->m_MapRow["CoordID"] = std::string( "0" );//ConvertToString< int >(0);
   this->m_MapRow["CreationDate"] = "";
   this->m_MapRow["Description"] = "";
   std::string NoDescription = "None";

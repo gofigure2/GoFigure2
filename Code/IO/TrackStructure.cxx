@@ -287,6 +287,10 @@ TrackStructure::ComputeAttributes() const
                                                           / oAttributes.distance ) );
     }
 
+  oAttributes.number_meshes = static_cast< unsigned int >( PointsMap.size() );
+
+  oAttributes.temporal_extent = ( t1 - tmin );
+
   oAttributes.avg_volume = this->m_AverageVolume/( static_cast< double >( PointsMap.size() ) );
 
   return oAttributes;
@@ -334,10 +338,22 @@ void
 TrackStructure::
 ModifyDivisionColorActor( const double* iColor )
 {
-  this->TreeNode.ActorXY->GetProperty()->SetColor(const_cast<double*>(iColor));
-  this->TreeNode.ActorXZ->GetProperty()->SetColor(const_cast<double*>(iColor));
-  this->TreeNode.ActorYZ->GetProperty()->SetColor(const_cast<double*>(iColor));
-  this->TreeNode.ActorXYZ->GetProperty()->SetColor(const_cast<double*>(iColor));
+  if( this->TreeNode.ActorXY )
+    {
+    this->TreeNode.ActorXY->GetProperty()->SetColor(const_cast<double*>(iColor));
+    }
+  if( this->TreeNode.ActorXZ )
+    {
+    this->TreeNode.ActorXZ->GetProperty()->SetColor(const_cast<double*>(iColor));
+    }
+  if( this->TreeNode.ActorYZ )
+    {
+    this->TreeNode.ActorYZ->GetProperty()->SetColor(const_cast<double*>(iColor));
+    }
+  if( this->TreeNode.ActorXYZ )
+    {
+    this->TreeNode.ActorXYZ->GetProperty()->SetColor(const_cast<double*>(iColor));
+    }
 }
 //--------------------------------------------------------------------------
 

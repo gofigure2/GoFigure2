@@ -95,14 +95,14 @@ public:
   void DisplayInfoAndLoadVisuContainerForAllContours(vtkMySQLDatabase *iDatabaseConnector);
 
   void DisplayInfoAndLoadVisuContainerForAllContoursForSpecificTPs(
-    vtkMySQLDatabase *iDatabaseConnector, std::list<unsigned int> iListTPs);
+    vtkMySQLDatabase *iDatabaseConnector, const std::list<unsigned int> & iListTPs);
 
    void AddInfoInTWAndVisuContainerForContoursForSpecificTPs(
-    vtkMySQLDatabase *iDatabaseConnector, std::list<unsigned int> iListTPs);
+    vtkMySQLDatabase *iDatabaseConnector, const std::list<unsigned int> & iListTPs);
 
   void RemoveTracesFromTWAndContainerForVisuForSpecificTPs(
                                                     vtkMySQLDatabase *iDatabaseConnector,
-                                                    std::list<unsigned int> iListTPs);
+                                                    const std::list<unsigned int> & iListTPs);
 
   /**
   \brief is called when the user choses the change color action in the
@@ -118,7 +118,7 @@ public:
   virtual std::list< unsigned int > UpdateTheTracesColor(vtkMySQLDatabase *iDatabaseConnector);
 
   //virtual pure method in QGoDBTraceManager
-  virtual void UpdateTWAndContainerForImportedTraces(std::vector< int > iVectorImportedTraces,
+  virtual void UpdateTWAndContainerForImportedTraces(const std::vector< int > & iVectorImportedTraces,
                                                      vtkMySQLDatabase *iDatabaseConnector);
   //virtual pure method in QGoDBTraceManager
   virtual void DeleteCheckedTraces(vtkMySQLDatabase *iDatabaseConnector);
@@ -159,11 +159,11 @@ protected:
   virtual void DisplayInfoForAllTraces(vtkMySQLDatabase *iDatabaseConnector);
 
   //virtual pure method in QGoDBTraceManager
-  virtual void DisplayInfoForTracesForSpecificTPs(vtkMySQLDatabase *iDatabaseConnector, 
-    std::list<unsigned int> iListTPs);
+  virtual void DisplayInfoForTracesForSpecificTPs(vtkMySQLDatabase *iDatabaseConnector,
+    const std::list<unsigned int> & iListTPs);
 
-  void AddInfoForContoursInTWForSpecificTPs(vtkMySQLDatabase *iDatabaseConnector, 
-    std::list<unsigned int> iListTPs);
+  void AddInfoForContoursInTWForSpecificTPs(vtkMySQLDatabase *iDatabaseConnector,
+    const std::list<unsigned int> & iListTPs);
 
   //virtual pure method in QGoDBTraceManager
   virtual void GetTracesInfoFromDBAndModifyContainerForVisu(

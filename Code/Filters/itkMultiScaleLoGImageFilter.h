@@ -51,8 +51,6 @@
 #ifndef __itkMultiScaleLoGImageFilter_h
 #define __itkMultiScaleLoGImageFilter_h
 
-#include "GoFiltersConfigure.h"
-
 #include "itkImageToImageFilter.h"
 #include "itkImage.h"
 #include "itkMatrix.h"
@@ -66,7 +64,7 @@ namespace itk
  * \brief A filter to enhance 3D blob structures using LoG filter
  */
 template< class TInputImage, class TOutputImage = TInputImage >
-class GOFILTERS_EXPORT MultiScaleLoGImageFilter:
+class MultiScaleLoGImageFilter:
   public ImageToImageFilter< TInputImage, TOutputImage >
 {
 public:

@@ -71,14 +71,14 @@ public:
   void DisplayInfoAndLoadVisuContainerForAllMeshes(vtkMySQLDatabase *iDatabaseConnector);
 
   void DisplayInfoAndLoadVisuContainerForAllMeshesForSpecificTPs(
-    vtkMySQLDatabase *iDatabaseConnector, std::list<unsigned int> iListTPs);
+    vtkMySQLDatabase *iDatabaseConnector, const std::list<unsigned int> & iListTPs);
 
   void AddInfoInTWAndVisuContainerForMeshesForSpecificTPs(
-    vtkMySQLDatabase *iDatabaseConnector, std::list<unsigned int> iListTPs);
+    vtkMySQLDatabase *iDatabaseConnector, const std::list<unsigned int> & iListTPs);
 
   void RemoveTracesFromTWAndContainerForVisuForSpecificTPs(
                                                     vtkMySQLDatabase *iDatabaseConnector,
-                                                    std::list<unsigned int> iListTPs);
+                                                    const std::list<unsigned int> & iListTPs);
 
   virtual void DisplayInfoForLastCreatedTrace(vtkMySQLDatabase *iDatabaseConnector);
 
@@ -89,7 +89,8 @@ public:
                                            int iTraceID);
 
   void DisplayInfoForExistingTraceForMesh(vtkMySQLDatabase *iDatabaseConnector,
-                                          int iTraceID, GoFigureMeshAttributes *iMeshAttributes);
+                                          int iTraceID,
+                                          GoFigureMeshAttributes *iMeshAttributes);
 
   /**
   \brief display in the TW the volume and area extracted from iMeshAttributes
@@ -126,13 +127,13 @@ public:
                                    GoFigureMeshAttributes *iMeshAttributes,
                                    unsigned int iTrackID);
 
-  unsigned int SaveNewMeshWithNoTrackFromVisu(unsigned int iXCoordMin, 
-                                              unsigned int iYCoordMin, 
+  unsigned int SaveNewMeshWithNoTrackFromVisu(unsigned int iXCoordMin,
+                                              unsigned int iYCoordMin,
                                               unsigned int iZCoordMin,
-                                              unsigned int iXCoordMax, 
+                                              unsigned int iXCoordMax,
                                               unsigned int iYCoordMax,
-                                              unsigned int iZCoordMax, 
-                                              int iTShift, 
+                                              unsigned int iZCoordMax,
+                                              int iTShift,
                                               vtkPolyData *iTraceNodes,
                                               vtkMySQLDatabase *iDatabaseConnector,
                                               GoFigureMeshAttributes *iMeshAttributes);
@@ -141,7 +142,7 @@ public:
                                  unsigned int iZCoordMin,
                                  unsigned int iXCoordMax, unsigned int iYCoordMax,
                                  unsigned int iZCoordMax, vtkPolyData *iTraceNodes,
-                                 vtkMySQLDatabase *iDatabaseConnector, 
+                                 vtkMySQLDatabase *iDatabaseConnector,
                                  GoFigureMeshAttributes *iMeshAttributes);
 
   /**
@@ -153,11 +154,13 @@ public:
   \brief update the bounding boxes for the meshes with no points
   */
   void UpdateBoundingBoxes(vtkMySQLDatabase *iDatabaseConnector,
-                           std::list< unsigned int > iListTracesIDs);
+                           const std::list< unsigned int > & iListTracesIDs);
 
   //virtual pure method in QGoDBTraceManager
-  virtual void UpdateTWAndContainerForImportedTraces(std::vector< int > iVectorImportedTraces,
-                                                     vtkMySQLDatabase *iDatabaseConnector);
+  virtual void UpdateTWAndContainerForImportedTraces(
+    const std::vector< int > & iVectorImportedTraces,
+    vtkMySQLDatabase *iDatabaseConnector);
+
   //virtual pure method in QGoDBTraceManager
   virtual void DeleteCheckedTraces(vtkMySQLDatabase *iDatabaseConnector);
 
@@ -178,7 +181,7 @@ public:
 
   /**
   \brief get the info needed from the database for the meshes who belongs
-  to the collectionIDs contained in iListCollectionIDs and create a new 
+  to the collectionIDs contained in iListCollectionIDs and create a new
   container for visu for these meshes
   \param[in] iDatabaseConnector connection to the database
   \param[in] iListCollectionIDs list of collectionIDs of the meshes needed
@@ -186,7 +189,7 @@ public:
   */
   MeshContainer* GetMeshesInfoFromDBAndCreateContainerForVisu(
     vtkMySQLDatabase* iDatabaseConnector,
-    std::list< unsigned int > iListCollectionIDs);
+    const std::list< unsigned int > & iListCollectionIDs);
 
   //method in QGoDBTraceManager
   virtual std::list< NameWithColorData > GetAllTraceIDsWithColor(
@@ -201,7 +204,7 @@ public:
     * \brief Get volume of given mesh IDs
     */
   std::list< std::pair<unsigned int, double> > GetListVolumes(
-          std::list<unsigned int> iMeshIDs);
+          const std::list<unsigned int> & iMeshIDs);
 
   /**
     * \brief Get volume of given mesh ID
@@ -212,8 +215,8 @@ public:
                                             const std::list<unsigned int>& iTimePoints);
 
   void ModifyTrackIDInVisuContainer(unsigned int iTrackID,
-                                    std::list< unsigned int > iToTrack,
-                                    std::list< unsigned int > iToNull);
+                                    const std::list< unsigned int > & iToTrack,
+                                    const std::list< unsigned int > & iToNull);
 
 
 public slots:
@@ -270,7 +273,7 @@ public slots:
   \param[in] iListMeshIDs list of the meshIDs to be checked
   \param[in,out] ioListMeshIDsToBePartOfTrack list of meshIDs with only
   one per timepoint
-  \param[in,out] ioListMeshIDsToReassign list of meshIDs that will not be 
+  \param[in,out] ioListMeshIDsToReassign list of meshIDs that will not be
   part of the track
   \return message to be printed in the status bar with the list of meshIDs
   that won't be part of the selected trackid
@@ -282,13 +285,13 @@ public slots:
     std::list<unsigned int> & ioListMeshIDsToReassign);
 
   /**
-  \brief for the track, get the list of its meshes 
+  \brief for the track, get the list of its meshes
   with a timepoint inferior than the checked mesh
   \param[in] iTrackID ID of the track
   \param[in] iDatabaseConnector connection to the database
   \param[in] iListMeshesBelongingToTrack list of the meshes
   belonging to this track
-  \return list of the meshes with a timepoint inferior than 
+  \return list of the meshes with a timepoint inferior than
   the checked mesh
   */
   std::list<unsigned int> GetMeshesWithTimePointInfToTheCheckedOne(
@@ -312,11 +315,11 @@ protected:
   virtual void DisplayInfoForAllTraces(vtkMySQLDatabase *iDatabaseConnector);
 
   //virtual pure method in QGoDBTraceManager
-  virtual void DisplayInfoForTracesForSpecificTPs(vtkMySQLDatabase *iDatabaseConnector, 
-    std::list<unsigned int> iListTPs);
+  virtual void DisplayInfoForTracesForSpecificTPs(vtkMySQLDatabase *iDatabaseConnector,
+    const std::list<unsigned int> & iListTPs);
 
-  void AddInfoForMeshesInTWForSpecificTPs(vtkMySQLDatabase *iDatabaseConnector, 
-    std::list<unsigned int> iListTPs);
+  void AddInfoForMeshesInTWForSpecificTPs(vtkMySQLDatabase *iDatabaseConnector,
+    const std::list<unsigned int> & iListTPs);
 
   void SetMeshBoundingBoxAndPoints(unsigned int iXCoordMin,
                                    unsigned int iYCoordMin,
@@ -335,7 +338,7 @@ protected:
     std::list<unsigned int> iVectIDs = std::list< unsigned int >());
 
   /**
-  \brief check that there is one and only one mesh checked belonging to 
+  \brief check that there is one and only one mesh checked belonging to
   the track and return its ID and its timepoint
   \param[in] iDatabaseConnector connection to the database
   \param[in] iTrackID ID of the track the mesh belongs to

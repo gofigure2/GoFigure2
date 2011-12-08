@@ -81,19 +81,21 @@ public:
   \param[in] iIndexShowColumn index of the show column in the TW Container(
   for contour and mesh)
   */
-  void DisplayInitialContent(TWContainerType iTWRowContainer,
-                      std::vector< int > iIndexColorTraceRowContainer,
-                      std::vector< int > iIndexColorCollectionRowContainer,
-                      std::string iTraceName, std::string iCollectionName,
-                      std::list< std::pair< std::string, std::string > > iColumnNames,
-                      Qt::CheckState iState,
-                      int iIndexShowColumn = 0);
+  void DisplayInitialContent(const TWContainerType & iTWRowContainer,
+                             const std::vector< int > & iIndexColorTraceRowContainer,
+                             const std::vector< int > & iIndexColorCollectionRowContainer,
+                             const std::string & iTraceName,
+                             const std::string & iCollectionName,
+                             const std::list< std::pair< std::string, std::string > > & iColumnNames,
+                             Qt::CheckState iState,
+                             int iIndexShowColumn = 0);
 
-  void InsertNewRows(TWContainerType iTWRowContainer,
-                    std::vector< int > iIndexColorTraceRowContainer,
-                    std::vector< int > iIndexColorCollectionRowContainer,
-                    std::string iTraceName, std::string iCollectionName,
-                    Qt::CheckState iVisible = Qt::Checked);
+  void InsertNewRows(const TWContainerType & iTWRowContainer,
+                     const std::vector< int > & iIndexColorTraceRowContainer,
+                     const std::vector< int > & iIndexColorCollectionRowContainer,
+                     const std::string & iTraceName,
+                     const std::string & iCollectionName,
+                     Qt::CheckState iVisible = Qt::Checked);
   /**
   \brief Insert a new row and fill the cells with the data
   contained in the RowContainer
@@ -106,11 +108,12 @@ public:
   \param[in] iTraceName name of the trace
   \param[in] iCollectionName name of the collection
  */
-  void InsertOnlyOneNewRow(TWContainerType iTWRowContainer,
-                    std::vector< int > iIndexColorTraceRowContainer,
-                    std::vector< int > iIndexColorCollectionRowContainer,
-                    std::string iTraceName, std::string iCollectionName,
-                    Qt::CheckState iVisible = Qt::Checked);
+  void InsertOnlyOneNewRow(const TWContainerType & iTWRowContainer,
+                           const std::vector< int > & iIndexColorTraceRowContainer,
+                           const std::vector< int > & iIndexColorCollectionRowContainer,
+                           const std::string & iTraceName,
+                           const std::string & iCollectionName,
+                           Qt::CheckState iVisible = Qt::Checked);
 
   /**
   \brief Replace the data in the cells corresponding to the traceID with
@@ -125,14 +128,15 @@ public:
   \param[in] iCollectionName name of the collection
   \param[in] iTraceID ID of the trace to be updated
   */
-  void UpdateRow(TWContainerType iTWRowContainer,
-                 std::vector< int > iIndexColorTraceRowContainer,
-                 std::vector< int > iIndexColorCollectionRowContainer,
-                 std::string iTraceName, std::string iCollectionName,
+  void UpdateRow(const TWContainerType & iTWRowContainer,
+                 const std::vector< int > & iIndexColorTraceRowContainer,
+                 const std::vector< int > & iIndexColorCollectionRowContainer,
+                 const std::string & iTraceName,
+                 const std::string & iCollectionName,
                  int iTraceID);
 
 
-  void DeleteRowsWithSpecificTimePoints(QStringList iListTPs);
+  void DeleteRowsWithSpecificTimePoints(const QStringList & iListTPs);
 
   /**
   \brief delete the rows previously checked by the user
@@ -140,7 +144,8 @@ public:
   \param[in] iTraceIDs list of the traceIDs for which the rows need to be
   deleted
   */
-  void DeleteCheckedRows(std::string iTraceNameID, std::list< unsigned int > iTraceIDs);
+  void DeleteCheckedRows(const std::string & iTraceNameID,
+                         const std::list< unsigned int > & iTraceIDs);
 
   /**
   \brief add values in the table for the corresponding traceID and column names
@@ -149,9 +154,10 @@ public:
   \param[in] iID ID of the trace where to display the values
   \param[in] iColumnNameForTraceID name of the traceID
   */
-  void AddValuesForID(std::vector< std::string > iColumnsNames,
-                      std::vector< std::string > iValues, unsigned int iID,
-                      std::string iColumnNameForTraceID);
+  void AddValuesForID(const std::vector< std::string > & iColumnsNames,
+                      const std::vector< std::string > & iValues,
+                      unsigned int iID,
+                      const std::string & iColumnNameForTraceID);
 
   /**
   \brief calculate the center of the bounding box for the only selected trace
@@ -162,7 +168,8 @@ public:
   \return GoDBCoordinateRow corresponds to the center of the bounding box for
   the trace
   */
-  GoDBCoordinateRow GetCoordinateCenterBoundingBox(unsigned int iTraceID, std::string iTraceName);
+  GoDBCoordinateRow GetCoordinateCenterBoundingBox(unsigned int iTraceID,
+                                                   const std::string & iTraceName);
 
   /**
   \brief set the state of the checkbox for the check/uncheck column and the TraceID row
@@ -174,7 +181,7 @@ public:
   changed, if set to false will not emit,set to true by default
   */
   void SetCheckStateForTraceID(unsigned int iTraceID,
-                               std::string iTraceName,
+                               const std::string & iTraceName,
                                Qt::CheckState iState,
                                bool EmitSignal = true);
 
@@ -188,7 +195,7 @@ public:
   changed, if set to false will not emit,set to true by default
   */
   void SetVisibleStateForTraceID(unsigned int iTraceID,
-                                 std::string iTraceName,
+                                 const std::string & iTraceName,
                                  Qt::CheckState iState,
                                  bool EmitSignal = true);
 
@@ -200,7 +207,7 @@ public:
   \param[in,out] ioColumnName name of the column of the values
   */
   std::map<unsigned int, std::string> GetTraceIDAndColumnsValues(
-    std::string iTraceIDName, std::string &ioColumnName);
+    const std::string & iTraceIDName, std::string &ioColumnName);
 
 /**
   \brief update the checkboxes and icon of the visible column for the iListTraceIDs following iState
@@ -208,8 +215,9 @@ public:
   \param[in] iState state to which the column IsVisible needs to be modified for iListTraceIDs
   \param[in] iTraceName name of the trace
   */
-  void SetVisibleStateForListTraceIDs( std::list<unsigned int> iListTraceIDs,
-    Qt::CheckState iState,std::string iTraceName);
+  void SetVisibleStateForListTraceIDs( const std::list<unsigned int> & iListTraceIDs,
+                                       Qt::CheckState iState,
+                                       const std::string & iTraceName);
 
   /**
   \brief hide all rows who have a timepoint different than iTimePoint
@@ -226,10 +234,11 @@ public:
   table with their tooltips
   */
   void DisplayColumnNames(
-    std::list< std::pair<std::string, std::string > > iColumnNamesAndToolTip);
+    const std::list< std::pair<std::string, std::string > >& iColumnNamesAndToolTip);
 
-  QString GetValue(unsigned int iTraceID, std::string iTraceName,
-               std::string iColumn);
+  QString GetValue(unsigned int iTraceID,
+                   const std::string & iTraceName,
+                   const std::string & iColumn);
 
   void DeleteRowsAndColumns();
 
@@ -243,8 +252,9 @@ public slots:
   \param[in] iTraceNameID name of the traceID
   \param[in] iState state to which the checkboxes need to be modified
   */
-  void ChangeCheckStateSelectedRows(std::string iTraceName,std::string iTraceNameID,
-    Qt::CheckState iState);
+  void ChangeCheckStateSelectedRows(std::string iTraceName,
+                                    std::string iTraceNameID,
+                                    Qt::CheckState iState);
 
   /**
   \brief check/uncheck the visible boxes for the rows where at least one cell is
@@ -254,8 +264,8 @@ public slots:
   \param[in] iState state to which the visibility need to be modified
   */
   void ChangeVisibilityStateSelectedRows(std::string iTraceName,
-                                                       std::string iTraceNameID,
-                                                       Qt::CheckState iState);
+                                         std::string iTraceNameID,
+                                         Qt::CheckState iState);
 
   /**
   \brief convert the text in the selection to a QString with  anti slash n and anti slash t
@@ -290,7 +300,7 @@ protected:
   \param[in] iRowIndex index of the row for which the value is needed
   \return corresponding value for the item
   */
-  int GetValueForItem(std::string iColumnName, int iRowIndex);
+  int GetValueForItem(const std::string & iColumnName, int iRowIndex);
 
   /**
   \brief calculate the mean value for both columns in the given row
@@ -299,8 +309,9 @@ protected:
   \param[in] iRowIndex index of the row for which the mean value is needed
   \return the mean value of both columns in the given row
   */
-  std::string GetMeanValue(std::string iColumnNameOne,
-                           std::string iColumnNameTwo, unsigned int iRowIndex);
+  std::string GetMeanValue(const std::string & iColumnNameOne,
+                           const std::string & iColumnNameTwo,
+                           unsigned int iRowIndex);
 
   /**
   \brief return the row index where the given value is located when specifying
@@ -309,7 +320,7 @@ protected:
   \param[in] iColumn name of the column in which to look for
   \return the row index where the value was found
   */
-  int findValueGivenColumn(int iValue, QString iColumn);
+  int findValueGivenColumn(int iValue, const QString & iColumn);
 
   /**
   \brief return the column index who has a column header matching
@@ -317,7 +328,7 @@ protected:
   \param[in] iColumnName name of the column the index is needed
   \return index of the column
   */
-  int findColumnName(QString iColumnName);
+  int findColumnName(const QString & iColumnName);
 
   /**
   \brief put the text in the cells which are part of the range in a
@@ -325,7 +336,8 @@ protected:
   \param[in] iRange selected cells
   \param[in,out] istr text of the selected cells
   */
-  void PrepareRangeToCopy(QTableWidgetSelectionRange iRange, QString & istr);
+  void PrepareRangeToCopy(const QTableWidgetSelectionRange & iRange,
+                          QString & istr);
 
   /**
   \brief return the RowIndex corresponding to the TraceID
@@ -334,7 +346,7 @@ protected:
   \return the index of the row where the traceID was found
   */
   int GetRowForTraceID(unsigned int iTraceID,
-                       std::string iTraceName);
+                       const std::string & iTraceName);
 
   /**
   \brief change the state for the check/uncheck checkbox to iState and emit a signal
@@ -375,7 +387,7 @@ protected:
   \return QStringList of the values for the column where the user has selected at
   least once cell in the same row
   */
-  QStringList ValuesForSelectedRows(QString iColumnName);
+  QStringList ValuesForSelectedRows(const QString & iColumnName);
 
   /**
   \brief Put checkboxes in the column "check/uncheck"
@@ -403,10 +415,10 @@ protected:
   be displayed
   \param[in] iStartRow index of the first row where to display the color
   */
-  void SetColorForTable(TWContainerType iTWRowContainer,
+  void SetColorForTable(const TWContainerType & iTWRowContainer,
                         unsigned int iIndexTWRowContainer,
-                        std::vector< int > iIndexColorRowContainer,
-                        std::string iNameGroupColor,
+                        const std::vector< int > & iIndexColorRowContainer,
+                        const std::string & iNameGroupColor,
                         unsigned int iIndexRowTW);
 
   QStringList recordHeaderNamesOrder();
@@ -418,21 +430,24 @@ protected:
   \param[in] iHeaderCol name of the column
   \return true if the value needs to be displayed, false if not
   */
-  bool CheckValueToDisplayData(std::string iValue, std::string iHeaderCol);
+  bool CheckValueToDisplayData(const std::string & iValue,
+                               const std::string & iHeaderCol);
 
-  void InsertNewRow(TWContainerType iTWRowContainer,
+  void InsertNewRow(const TWContainerType & iTWRowContainer,
                     unsigned int iIndexTWRowContainer,
-                    std::vector< int > iIndexColorTraceRowContainer,
-                    std::vector< int > iIndexColorCollectionRowContainer,
-                    std::string iTraceName, std::string iCollectionName,
+                    const std::vector< int > & iIndexColorTraceRowContainer,
+                    const std::vector< int > & iIndexColorCollectionRowContainer,
+                    const std::string & iTraceName,
+                    const std::string & iCollectionName,
                     Qt::CheckState iVisible = Qt::Checked);
 
-  void DisplayDataForOneRow(TWContainerType iTWRowContainer,
+  void DisplayDataForOneRow(const TWContainerType & iTWRowContainer,
                             unsigned int iIndexTWRowContainer,
                             int iIndexTWRow,
-                            std::vector< int > iIndexColorTraceRowContainer,
-                            std::vector< int > iIndexColorCollectionRowContainer,
-                            std::string iTraceName, std::string iCollectionName);
+                            const std::vector< int > & iIndexColorTraceRowContainer,
+                            const std::vector< int > & iIndexColorCollectionRowContainer,
+                            const std::string & iTraceName,
+                            const std::string & iCollectionName);
 
 protected slots:
   /**

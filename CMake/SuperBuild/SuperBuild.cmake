@@ -58,6 +58,25 @@ endif()
 
 set(GoFigure2_DEPENDENCIES)
 
+#-------------------------
+
+OPTION( SUPER_BOOST "SuperBuild BOOST" ON )
+
+set( Boost_SUPPORT )
+
+IF( SUPER_BOOST )
+  include("${CMAKE_CURRENT_SOURCE_DIR}/CMake/SuperBuild/External-Boost.cmake")
+  set( Boost_SUPPORT
+    -DBoost_INCLUDE_DIR:PATH=${CMAKE_BINARY_DIR}/Boost
+    -DBoost_LIBRARY_DIRS:PATH=${CMAKE_BINARY_DIR}/Boost-build/lib
+ )
+  LIST(APPEND GoFigure2_DEPENDENCIES Boost)
+ELSE( SUPER_BOOST )
+  include( "${CMAKE_CURRENT_SOURCE_DIR}/CMake/ConfigBoost.cmake" )
+ENDIF( SUPER_BOOST )
+
+#-------------------------
+
 # REQUIRED MYSQLand QT TO BUILD VTK
 OPTION( SUPER_VTK "SuperBuild VTK" ON )
 
@@ -66,7 +85,7 @@ IF( SUPER_VTK )
   include("${CMAKE_CURRENT_SOURCE_DIR}/CMake/ConfigMySQL.cmake")
   # check if we have QT - COMPULSORY
   include("${CMAKE_CURRENT_SOURCE_DIR}/CMake/ConfigQT.cmake")
-  
+
   OPTION( SUPER_VTK_VIDEO "ENABLE THE VIDEO SUPPORT IN SUPERBUILD" OFF )
   IF( SUPER_VTK_VIDEO )
     if( NOT WIN32 )
@@ -104,17 +123,6 @@ ELSE( SUPER_ITK )
   include( "${CMAKE_CURRENT_SOURCE_DIR}/CMake/ConfigITK.cmake" )
 ENDIF( SUPER_ITK )
 
-#-------------------------
-
-OPTION( SUPER_BOOST "SuperBuild BOOST" ON )
-
-IF( SUPER_BOOST )
-  include("${CMAKE_CURRENT_SOURCE_DIR}/CMake/SuperBuild/External-Boost.cmake")
-  LIST(APPEND GoFigure2_DEPENDENCIES Boost)
-ELSE( SUPER_BOOST )
-  include( "${CMAKE_CURRENT_SOURCE_DIR}/CMake/ConfigBoost.cmake" )
-ENDIF( SUPER_BOOST )
-
 #---------------------------------------------------------------------------
 # Set superbuild boolean args
 #
@@ -143,6 +151,7 @@ ENDIF( SUPER_BOOST )
 
 set(proj GoFigure2)
 option( GOFIGURE2_EXAMPLE "Force building GoFigure2's example" OFF )
+option( GOFIGURE2_OPENMP "Enable OpenMP support for GoFigure2" ON )
 
 ExternalProject_Add(${proj}
   DEPENDS ${GoFigure2_DEPENDENCIES}
@@ -161,6 +170,8 @@ ExternalProject_Add(${proj}
     # QT (From VTK)
     -DQT_QMAKE_EXECUTABLE:PATH=${QT_QMAKE_EXECUTABLE}
     -DBUILD_EXAMPLES:BOOL=${GOFIGURE2_EXAMPLE}
+    -DOPENMP_SUPPORT:BOOL=${GOFIGURE2_OPENMP}
+    ${Boost_SUPPORT}
   INSTALL_COMMAND ""
   )
 

@@ -106,8 +106,8 @@ void GoDBContourRow::InitializeMap()
   this->m_TableIDName = "contourID";
   this->m_CollectionName = "mesh";
   this->m_CollectionIDName = "meshID";
-  this->m_MapRow[this->m_TableIDName] = ConvertToString< int >(0);
-  this->m_MapRow["meshID"] = ConvertToString< int >(0);
+  this->m_MapRow[this->m_TableIDName] = std::string( "0" );//ConvertToString< int >(0);
+  this->m_MapRow["meshID"] = std::string( "0" );//ConvertToString< int >(0);
 }
 
 //-------------------------------------------------------------------------

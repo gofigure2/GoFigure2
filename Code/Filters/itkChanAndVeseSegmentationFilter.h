@@ -35,8 +35,6 @@
 #ifndef __itkChanAndVeseSegmentationFilter_h
 #define __itkChanAndVeseSegmentationFilter_h
 
-#include "GoFiltersConfigure.h"
-
 #include "itkScalarChanAndVeseSparseLevelSetImageFilter.h"
 #include "itkScalarChanAndVeseLevelSetFunction.h"
 #include "itkScalarChanAndVeseLevelSetFunctionData.h"
@@ -59,7 +57,7 @@ namespace itk
  * \brief
 */
 template< class TFeatureImage >
-class GOFILTERS_EXPORT ChanAndVeseSegmentationFilter:public Object
+class ChanAndVeseSegmentationFilter:public Object
 {
 public:
   typedef ChanAndVeseSegmentationFilter Self;

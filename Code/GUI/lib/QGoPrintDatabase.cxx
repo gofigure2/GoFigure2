@@ -776,31 +776,34 @@ void QGoPrintDatabase::ImportMeshes()
                                             tr("Open Meshes Export Files"), "",
                                             tr("TextFile (*.txt)") );
 
-  QStringList::Iterator it = p.begin();
-
-  while ( it != p.end() )
+  if( p.size() != 0 )
     {
-    emit        PrintMessage( tr("Warning: Close and reopen your imagingsession once the import is done !!") );
-    QFileInfo   pathInfo(*it);
-    std::string filename = (*it).toStdString();
+    emit PrintMessage( tr("Warning: Close and reopen your imagingsession once the import is done !!") );
+    }
+
+#if HAS_OPENMP
+#pragma omp for
+#endif
+  for( int i = 0; i < p.size(); i++ )
+    {
+    QFileInfo   pathInfo( p[i] );
+    std::string filename = ( p[i] ).toStdString();
     //import into the database:
     GoDBImport ImportHelper(this->m_Server, this->m_User,
                             this->m_Password, this->m_ImgSessionID, filename,
                             *this->m_SelectedTimePoint);
     ImportHelper.ImportMeshes();
 
-    std::vector< int > NewMeshIDs = ImportHelper.GetVectorNewMeshIDs();
-    std::vector< int > NewTrackIDs = ImportHelper.GetVectorNewTracksIDs();
+//    std::vector< int > NewMeshIDs = ImportHelper.GetVectorNewMeshIDs();
+//    std::vector< int > NewTrackIDs = ImportHelper.GetVectorNewTracksIDs();
 
-    this->OpenDBConnection();
-    this->m_MeshesManager->UpdateTWAndContainerForImportedTraces(NewMeshIDs,
-                                                                 this->m_DatabaseConnector);
-    this->m_TracksManager->UpdateTWAndContainerForImportedTraces(NewTrackIDs,
-                                                                 this->m_DatabaseConnector);
-    this->CloseDBConnection();
-    this->InitializeTheComboboxesNotTraceRelated();
-
-    ++it;
+//    this->OpenDBConnection();
+//    this->m_MeshesManager->UpdateTWAndContainerForImportedTraces(NewMeshIDs,
+//                                                                 this->m_DatabaseConnector);
+//    this->m_TracksManager->UpdateTWAndContainerForImportedTraces(NewTrackIDs,
+//                                                                 this->m_DatabaseConnector);
+//    this->CloseDBConnection();
+//    this->InitializeTheComboboxesNotTraceRelated();
     }
 }
 
@@ -1522,10 +1525,11 @@ void QGoPrintDatabase::SetTracksManager()
                     this, SLOT( ChangeTrackColor() ) );
   QObject::connect( this->m_TracksManager, SIGNAL( CheckedTracesToDelete() ),
                     this, SLOT( DeleteCheckedTracks() ) );
-
   QObject::connect( this->m_TracksManager, SIGNAL( NeedToGetDatabaseConnection() ),
                     this, SLOT( PassDBConnectionToTracksManager() ) );
-
+  QObject::connect( this->m_TracksManager,
+                    SIGNAL( NeedToGoToTheRealLocation(double, double, double, int) ),
+                    this, SIGNAL( NeedToGoToTheRealLocation(double, double, double, int) ) );
   QObject::connect( this->m_TracksManager,
                     SIGNAL( DBConnectionNotNeededAnymore() ),
                     this,
@@ -1695,7 +1699,10 @@ void QGoPrintDatabase::SplitTheTrack(unsigned int iTrackID,
   std::list< unsigned int > ListMeshesForNewTrack =
     this->m_MeshesManager->GetMeshesWithTimePointInfToTheCheckedOne(
       iTrackID, this->m_DatabaseConnector, iListMeshIDs);
-  this->CreateNewTrackFromListMeshes(ListMeshesForNewTrack);
+  if(ListMeshesForNewTrack.size() != 0)
+    {
+    this->CreateNewTrackFromListMeshes(ListMeshesForNewTrack);
+    }
   this->CloseDBConnection();
 }
 
@@ -1722,7 +1729,48 @@ void QGoPrintDatabase::CreateNewTrackFromListMeshes(
   // remove all meshes from previous track avg_volume, from mesh ID
   temp = this->m_MeshesManager->GetListVolumes(ListMeshToBelongToTheTrack);
   // update tracks volumes
+  // do remove add at same time?
   this->m_TracksManager->RemoveVolumes(temp);
+
+  //  strategy:
+  // 1-delete previous division
+  // 2-create new track
+  // 3-create new division
+  // therefore we ensure to have a correct lineage tree
+
+  // Get old track mother and 2 daughters from database
+  unsigned int oldMotherID = 0;
+  unsigned int oldTrackID = 0;
+  unsigned int newTrackID = NewTrackID;
+  unsigned int oldDaughter = 0;
+
+  std::list< std::pair<unsigned int, double> >::const_iterator it =
+          temp.begin();
+  if(it != temp.end())
+    {
+    oldTrackID = (*it).first;
+    }
+
+  // get track family from daughter
+  std::vector<unsigned int> family =
+      this->m_TracksManager->GetTrackFamily(this->m_DatabaseConnector, oldTrackID);
+  // if track belongs to a lineage
+  if(family.size() > 0)
+    {
+    oldMotherID = family[1];
+    if(family[2] == oldTrackID)
+      {
+      oldDaughter = family[3];
+      }
+    else
+      {
+      oldDaughter = family[2];
+      }
+    // Delete old track mother division
+    std::list<unsigned int> oldList;
+    oldList.push_back(oldMotherID);
+    this->m_TracksManager->DeleteTheDivisions(oldList);
+    }
 
   //at that moment, do nothing for the checked meshes not selected to be part of
   // the track
@@ -1732,13 +1780,24 @@ void QGoPrintDatabase::CreateNewTrackFromListMeshes(
     }
 
   // remove all meshes from previous track avg_volume, from mesh ID
-  temp = this->m_MeshesManager->GetListVolumes(ListMeshToBelongToTheTrack);
+  //temp = this->m_MeshesManager->GetListVolumes(ListMeshToBelongToTheTrack);
   // update tracks volumes
   this->m_TracksManager->AddVolumes(temp, NewTrackID);
-
   this->AddCheckedTracesToCollection< QGoDBMeshManager, QGoDBTrackManager >(
     this->m_MeshesManager, this->m_TracksManager,
     NewTrackID, ListMeshToBelongToTheTrack);
+
+  // if track belongs to a lineage
+  if(family.size() > 0)
+    {
+    // Create division old mother and new daughter
+    std::list<unsigned int> newdaughter;
+    newdaughter.push_back(oldMotherID);
+    newdaughter.push_back(oldDaughter);
+    newdaughter.push_back(newTrackID);
+    this->m_TracksManager->CreateCorrespondingTrackFamily(newdaughter);
+    }
+
   this->CloseDBConnection();
 }
 
@@ -1817,6 +1876,7 @@ AddListMeshesToATrack(std::list< unsigned int > iListMeshes, unsigned int iTrack
   std::list< unsigned int > ListMeshToBelongToTheTrack;
   std::list< unsigned int > ListNullMeshToBelongToTheTrack;
   std::list< std::pair<unsigned int, double> > temp;
+
   if ( iTrackID == 0 )
     {
     ListMeshToBelongToTheTrack = iListMeshes;
@@ -1866,6 +1926,7 @@ AddListMeshesToATrack(std::list< unsigned int > iListMeshes, unsigned int iTrack
   this->m_MeshesManager->ModifyTrackIDInVisuContainer(iTrackID,
                                                       ListMeshToBelongToTheTrack,
                                                       ListNullMeshToBelongToTheTrack);
+
   this->CloseDBConnection();
 }
 
@@ -1911,10 +1972,12 @@ void QGoPrintDatabase::SplitMergeTracksWithWidget(
 
   if ( win->exec() )
     {
-    std::list< std::list< unsigned int > >              ListTracksToCreate = win->GetListOfTracksToBeCreated();
+    std::list< std::list< unsigned int > > ListTracksToCreate =
+        win->GetListOfTracksToBeCreated();
     std::map< unsigned int, std::list< unsigned int > > ListTracksToUpdate =
-      win->GetListOfTracksToBeUpdated();
-    std::list< unsigned int > ListTracksToDelete = win->GetListOfTracksToBeDeleted();
+        win->GetListOfTracksToBeUpdated();
+    //std::list< unsigned int > ListTracksToDelete =
+    //    win->GetListOfTracksToBeDeleted();
     if ( !ListTracksToCreate.empty() )
       {
       this->CreateNewTrackFromListMeshes(ListTracksToCreate);
@@ -1923,12 +1986,12 @@ void QGoPrintDatabase::SplitMergeTracksWithWidget(
       {
       this->AddListMeshesToATrack(ListTracksToUpdate);
       }
-    if ( !ListTracksToDelete.empty() )
+    /*if ( !ListTracksToDelete.empty() )
       {
       this->DeleteListTraces< QGoDBTrackManager, QGoDBMeshManager, QGoDBMeshManager >(
         this->m_TracksManager, this->m_MeshesManager, this->m_MeshesManager,
         ListTracksToDelete);
-      }
+      }*/
     }
   delete win;
 }
@@ -1991,7 +2054,6 @@ UpdateTableWidgetAndContainersForGivenTimePoint(
 
   if(this->m_VisibleTimePoints.size() > 0)
     {
-     std::cout << "in if " << std::endl;
     // list to be removed
     std::list<unsigned int> listToRemove;
     listToRemove = m_VisibleTimePoints;

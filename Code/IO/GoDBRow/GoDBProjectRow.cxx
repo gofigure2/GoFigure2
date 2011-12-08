@@ -45,7 +45,7 @@ void GoDBProjectRow::InitializeMap()
 {
   this->m_MapRow["Name"] = "";
   this->m_MapRow["Description"] = "";
-  this->m_MapRow["AuthorID"] = ConvertToString< int >(0);
+  this->m_MapRow["AuthorID"] = std::string( "0" );//ConvertToString< int >(0);
   this->m_MapRow["CreationDate"] = "";
   this->m_MapRow["DatabaseVersion"] = "";
 }

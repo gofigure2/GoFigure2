@@ -47,17 +47,17 @@ GoDBCoordinateRow::GoDBCoordinateRow()
 //-------------------------------------------------------------------------
 void GoDBCoordinateRow::InitializeMap()
 {
-  this->m_MapRow["CoordID"]    = ConvertToString< int >(0);
-  this->m_MapRow["PCoord"]     = ConvertToString< int >(0);
-  this->m_MapRow["RCoord"]     = ConvertToString< int >(0);
-  this->m_MapRow["CCoord"]     = ConvertToString< int >(0);
-  this->m_MapRow["XTileCoord"] = ConvertToString< int >(0);
-  this->m_MapRow["YTileCoord"] = ConvertToString< int >(0);
-  this->m_MapRow["ZTileCoord"] = ConvertToString< int >(0);
-  this->m_MapRow["XCoord"]     = ConvertToString< float >(0);
-  this->m_MapRow["YCoord"]     = ConvertToString< float >(0);
-  this->m_MapRow["ZCoord"]     = ConvertToString< float >(0);
-  this->m_MapRow["TCoord"]     = ConvertToString< float >(0);
+  this->m_MapRow["CoordID"]    = std::string( "0" );//ConvertToString< int >(0);
+  this->m_MapRow["PCoord"]     = std::string( "0" );//ConvertToString< int >(0);
+  this->m_MapRow["RCoord"]     = std::string( "0" );//ConvertToString< int >(0);
+  this->m_MapRow["CCoord"]     = std::string( "0" );//ConvertToString< int >(0);
+  this->m_MapRow["XTileCoord"] = std::string( "0" );//ConvertToString< int >(0);
+  this->m_MapRow["YTileCoord"] = std::string( "0" );//ConvertToString< int >(0);
+  this->m_MapRow["ZTileCoord"] = std::string( "0" );//ConvertToString< int >(0);
+  this->m_MapRow["XCoord"]     = std::string( "0" );//ConvertToString< float >(0);
+  this->m_MapRow["YCoord"]     = std::string( "0" );//ConvertToString< float >(0);
+  this->m_MapRow["ZCoord"]     = std::string( "0" );//ConvertToString< float >(0);
+  this->m_MapRow["TCoord"]     = std::string( "0" );//ConvertToString< float >(0);
 }
 
 //-------------------------------------------------------------------------

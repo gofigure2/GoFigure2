@@ -34,8 +34,6 @@
 #ifndef __ContourToMeshFilter_h
 #define __ContourToMeshFilter_h
 
-#include "GoFiltersConfigure.h"
-
 #include "itkLightObject.h"
 #include "itkObjectFactory.h"
 
@@ -46,7 +44,7 @@ namespace itk
  * \brief
  */
 template< class TContainer >
-class GOFILTERS_EXPORT ContourToMeshFilter:public LightObject
+class ContourToMeshFilter:public LightObject
 {
 public:
   typedef ContourToMeshFilter        Self;

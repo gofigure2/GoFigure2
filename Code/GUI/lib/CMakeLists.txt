@@ -398,7 +398,6 @@ SET( QGoGUI_LIBS
   ${ITK_LIBRARIES}
   QVTK
   QGoIO
-  GoFilters
   vtkRenderingAddOn2
   PoissonReconstruction
   ctk

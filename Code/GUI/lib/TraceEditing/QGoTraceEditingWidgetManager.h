@@ -43,6 +43,7 @@
 #include <QAction>
 #include <QHash>
 #include <QDockWidget>
+#include <vector>
 
 class GoImageProcessor;
 
@@ -56,7 +57,7 @@ class QGOGUILIB_EXPORT QGoTraceEditingWidgetManager: public QObject
 {
   Q_OBJECT
 public:
-  QGoTraceEditingWidgetManager(std::string iTraceName,
+  explicit QGoTraceEditingWidgetManager(std::string iTraceName,
     std::vector<QString> iVectChannels,
     int iTimeMin, int iTimeMax,
     std::vector< vtkPoints* >* iSeeds,
@@ -106,6 +107,11 @@ signals:
   void TracesSplittedFromAlgo(std::vector<vtkPolyData *> iVectPolydata);
   void TracesMergedFromAlgo(vtkPolyData * iPolydata);
 
+  /**
+  \brief emit true to get the seeds widget enabled and false to disable it
+  */
+  void SetSeedInteractorBehaviour(bool enable);
+
 protected:
   QGoDockWidget*              m_TraceEditingDockWidget;
   QGoTraceEditingWidget*      m_TraceEditingWidget;
@@ -148,14 +154,6 @@ protected:
     emit TracesCreatedFromAlgo(NewTraces, this->GetSelectedTimePoint() );
     emit ClearAllSeeds();
     }
-
-signals:
-  /**
-  \brief emit true to get the seeds widget enabled and false to disable it
-  */
-  void SetSeedInteractorBehaviour(bool enable);
-
-protected slots:
 
 };
 

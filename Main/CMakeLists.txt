@@ -66,21 +66,23 @@ set( qt_menu_nib_sources )
 
 IF( APPLE )
 
-  IF(QT_MAC_USE_COCOA)
+  IF( QT_MAC_USE_COCOA )
     GET_FILENAME_COMPONENT( qt_menu_nib
      "@QT_QTGUI_LIBRARY_RELEASE@/Resources/qt_menu.nib"
       REALPATH )
+
     set( qt_menu_nib_sources
       "${qt_menu_nib}/classes.nib"
       "${qt_menu_nib}/info.nib"
       "${qt_menu_nib}/keyedobjects.nib"
       )
+
     SET_SOURCE_FILES_PROPERTIES(
       ${qt_menu_nib_sources}
       PROPERTIES
       MACOSX_PACKAGE_LOCATION Resources/qt_menu.nib
       )
-  ENDIF(QT_MAC_USE_COCOA)
+  ENDIF( QT_MAC_USE_COCOA )
 
   SET( MACOSX_BUNDLE_ICON_FILE
     ${GOFIGURE2_SOURCE_DIR}/Resources/myapp.icns
@@ -108,6 +110,9 @@ IF( APPLE )
   SET( MACOSX_BUNDLE_LONG_VERSION_STRING
     Version ${GOFIGURE2_VERSION}
     )
+
+  SET( GOFIGURE2_INSTALL_LICENSE_DIR    ${plugin_dest_dir}/Licenses   )
+  SET( GOFIGURE2_INSTALL_RESOURCE_DIR  ${plugin_dest_dir}/Resources  )
 
 ENDIF( APPLE )
 
@@ -188,7 +193,8 @@ IF( APPLE )
   SET( plugin_dest_dir gofigure.app/Contents/MacOS )
   SET( qtconf_dest_dir gofigure.app/Contents/Resources )
   SET( APPS
-    "\${CMAKE_INSTALL_PREFIX}/${GOFIGURE2_INSTALL_BUNDLE_DIR}/gofigure.app" )
+    "\${CMAKE_INSTALL_PREFIX}/gofigure.app" )
+#    "\${CMAKE_INSTALL_PREFIX}/${GOFIGURE2_INSTALL_BUNDLE_DIR}/gofigure.app" )
 ENDIF( APPLE )
 
 IF( WIN32 )
@@ -240,53 +246,50 @@ INSTALL( TARGETS gofigure
   )
 
 #---------------------------------------------------------------------------
-# Use BundleUtilities to get all other dependencies for the application to
-# work. It takes a bundle or executable along with possible plugins and
-# inspects it for dependencies.  If they are not system dependencies,
-# they are copied.
 
-# directories to look for dependencies
-SET( DIRS
-  ${QT_LIBRARY_DIR}
-  ${QT_PLUGINS_DIR}
-  ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
-  ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
-  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
-  ${ITK_LIBRARY_DIRS}
-  ${VTK_LIBRARY_DIRS}
-  ${FFMPEG_LIBRARY_DIRS}
-)
+IF( WIN32 OR APPLE )
+  SET( USE_BUNDLE_UTILITIES TRUE )
+ELSE()
+  OPTION( INSTALLED_3RD_PART "Are Qt, VTK, ITK... installed?" TRUE )
+  SET( USE_BUNDLE_UTILITIES FALSE )
+ENDIF()
 
-# Now the work of copying dependencies into the bundle/package
-# The quotes are escaped and variables to use at install time have their $ i# escaped
-# An alternative is the do a configure_file() on a script and use
-# install(SCRIPT  ...).
-# Note that the image plugins depend on QtSvg and QtXml, and it got those
-# copied over.
-INSTALL( CODE "
+IF( USE_BUNDLE_UTILITIES )
+  #---------------------------------------------------------------------------
+  # Use BundleUtilities to get all other dependencies for the application to
+  # work. It takes a bundle or executable along with possible plugins and
+  # inspects it for dependencies.  If they are not system dependencies,
+  # they are copied.
+
+  # directories to look for dependencies
+  SET( DIRS
+#    ${QT_LIBRARY_DIR}
+#    ${QT_PLUGINS_DIR}
+#    ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
+#    ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
+#    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+#    ${ITK_LIBRARY_DIRS}
+#    ${VTK_LIBRARY_DIRS}
+#    ${FFMPEG_LIBRARY_DIRS}
+    " "
+  )
+
+  # Now the work of copying dependencies into the bundle/package
+  # The quotes are escaped and variables to use at install time have their $ i# escaped
+  # An alternative is the do a configure_file() on a script and use
+  # install(SCRIPT  ...).
+  # Note that the image plugins depend on QtSvg and QtXml, and it got those
+  # copied over.
+  INSTALL( CODE "
     file( GLOB_RECURSE QTPLUGINS
-    \"\${CMAKE_INSTALL_PREFIX}/${plugin_dest_dir}/plugins/*${CMAKE_SHARED_LIBRARY_SUFFIX}\" )
-    include( BundleUtilities )
-    fixup_bundle(\"${APPS}\" \"\${QTPLUGINS}\" \"${DIRS}\")
-  "
-  COMPONENT Runtime )
+      \"\${CMAKE_INSTALL_PREFIX}/${plugin_dest_dir}/plugins/*${CMAKE_SHARED_LIBRARY_SUFFIX}\" )
+      include( BundleUtilities )
+      fixup_bundle(\"${APPS}\" \"\${QTPLUGINS}\" \"${DIRS}\")
+    "
+    COMPONENT Runtime
+    )
 
-#-----------------------------------------------------
-# Here Let's take care of License files
-# copying them into the build's folder
-# and during the installation process
-FILE( GLOB
-  GOFIGURE2_LICENSE_FILES
-  "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Licenses/*.txt"
-  )
-
-FILE( GLOB
-  GOFIGURE2_RESOURCES_FILES
-  "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Resources/*.txt"
-  )
-
-#-----------------------------------------------------
-
+ENDIF( USE_BUNDLE_UTILITIES )
 
 IF( APPLE )
   #---------------------------------------------------------------------------
@@ -296,35 +299,35 @@ IF( APPLE )
     file( WRITE \"\${CMAKE_INSTALL_PREFIX}/${GOFIGURE2_INSTALL_BUNDLE_DIR}/${qtconf_dest_dir}/qt.conf\" \"\")
     " COMPONENT Runtime
     )
-
-  INSTALL( FILES ${GOFIGURE2_LICENSE_FILES}
-    DESTINATION ${plugin_dest_dir}/Licenses
-    COMPONENT Runtime
-    )
-
- INSTALL( FILES ${GOFIGURE2_RESOURCES_FILES}
-    DESTINATION ${plugin_dest_dir}/Resources
-    COMPONENT Runtime
-    )
-
-ELSE( APPLE )
-  INSTALL( FILES ${GOFIGURE2_LICENSE_FILES}
-    DESTINATION ${GOFIGURE2_INSTALL_LICENSE_DIR}
-    COMPONENT Runtime
-    )
-
-  INSTALL( FILES ${GOFIGURE2_RESOURCES_FILES}
-    DESTINATION ${GOFIGURE2_INSTALL_RESOURCE_DIR}
-    COMPONENT Runtime
-    )
-
 ENDIF( APPLE )
 
-FILE( GLOB __source_file_h "${CMAKE_CURRENT_SOURCE_DIR}/*.h" )
-FILE( GLOB __binary_file_h "${CMAKE_CURRENT_BINARY_DIR}/*.h" )
+#-----------------------------------------------------
+# Here Let's take care of License and Resoources files
+FILE( GLOB
+  GOFIGURE2_LICENSE_FILES
+  "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Licenses/*.txt"
+  )
 
-INSTALL( FILES ${__source_file_h} ${__binary_file_h}
-    ${QGoMainWindow_UI_H}
+FILE( GLOB
+  GOFIGURE2_RESOURCES_FILE
+  "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Resources/*.txt"
+  )
+  
+# licence files
+INSTALL( FILES ${GOFIGURE2_LICENSE_FILES}
+  DESTINATION ${GOFIGURE2_INSTALL_LICENSE_DIR}
+  COMPONENT Runtime
+)
+
+# resources files
+INSTALL( FILES ${GOFIGURE2_RESOURCES_FILE}
+  DESTINATION ${GOFIGURE2_INSTALL_RESOURCE_DIR}
+  COMPONENT Runtime
+)
+
+FILE( GLOB __source_file_h "${CMAKE_CURRENT_SOURCE_DIR}/*.h" )
+
+INSTALL( FILES ${__source_file_h} ${QGoMainWindow_UI_H}
   DESTINATION ${GOFIGURE2_INSTALL_HEADER_DIR}
   COMPONENT Development
 )
