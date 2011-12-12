@@ -102,7 +102,8 @@ private:
                   vtkSmartPointer<vtkTree> iOldTree,
                   vtkSmartPointer<vtkMutableDirectedGraph> iNewGraph,
                   vtkDoubleArray* iTrackIDArray,
-                  unsigned int iDepth, vtkDoubleArray* iDepthArray);
+                  unsigned int iDepth, vtkDoubleArray* iDepthArray,
+                  vtkDoubleArray* iFirstTP, vtkDoubleArray* iLastTP);
 
   void UpdateGraph();
 

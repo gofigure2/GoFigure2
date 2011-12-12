@@ -703,7 +703,8 @@ public:
                      vtkIdType mother,
                      unsigned int iDepth,
                      vtkDoubleArray* iDepthArray,
-                     vtkDoubleArray* iIDArray);
+                     vtkDoubleArray* iIDArray,
+                     vtkDoubleArray* iFirstTPArray, vtkDoubleArray* iLastTPArray);
 
 signals:
   /** \brief When one track has been picked (highlighted) from the visualization */

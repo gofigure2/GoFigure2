@@ -1719,23 +1719,36 @@ ExportLineage(const unsigned int& iTrackID)
   vtkDoubleArray* depth = vtkDoubleArray::New();
   depth->SetName("Lineage Depth");
 
-  vtkStringArray* cellType = vtkStringArray::New();
-  depth->SetName("Cell Type");
+  //vtkStringArray* cellType = vtkStringArray::New();
+  //depth->SetName("Cell Type");
+
+  //
+  vtkDoubleArray* firstTP = vtkDoubleArray::New();
+  firstTP->SetName("First Time Point");
+
+  vtkDoubleArray* lastTP = vtkDoubleArray::New();
+  lastTP->SetName("Last Time Point");
+
 
   UpdateLineage(motherIt,
                    graph,
                 pedigree,
                        0,  // mother vtkIDtype
                        0,depth,// depth information
-                       id); // id info
+                       id,
+                       firstTP, lastTP); // id info
 
   graph->GetVertexData()->AddArray(id);
   graph->GetVertexData()->AddArray(depth);
+  graph->GetVertexData()->AddArray(firstTP);
+  graph->GetVertexData()->AddArray(lastTP);
 
   // delete array
   id->Delete();
   depth->Delete();
-  cellType->Delete();
+  //cellType->Delete();
+  firstTP->Delete();
+  lastTP->Delete();
 
   return graph;
 }
@@ -1747,7 +1760,9 @@ TrackContainer::
 UpdateLineage(MultiIndexContainerTraceIDIterator& it,
               vtkMutableDirectedGraph* iGraph, unsigned int iPedrigree,
               vtkIdType mother, unsigned int iDepth,
-              vtkDoubleArray* iDepthArray, vtkDoubleArray* iIDArray)
+              vtkDoubleArray* iDepthArray,
+              vtkDoubleArray* iIDArray,
+              vtkDoubleArray* iFirstTPArray, vtkDoubleArray* iLastTPArray)
 {
   // Update mother ID
   vtkIdType motherPedigree = iPedrigree;
@@ -1756,6 +1771,9 @@ UpdateLineage(MultiIndexContainerTraceIDIterator& it,
   iIDArray->InsertValue(iPedrigree, it->TraceID);
   // add info
   iDepthArray->InsertValue(iPedrigree, iDepth);
+  // add info
+  iFirstTPArray->InsertValue( iPedrigree, it->PointsMap.begin()->first );
+  iLastTPArray->InsertValue( iPedrigree, (--it->PointsMap.end())->first );
 
   if( it->IsLeaf() )
     {
@@ -1773,7 +1791,10 @@ UpdateLineage(MultiIndexContainerTraceIDIterator& it,
     // add edge
     iPedrigree = iGraph->AddChild(motherPedigree);
     //go through tree
-    UpdateLineage(childIt,iGraph, iPedrigree, motherPedigree, iDepth+1, iDepthArray,iIDArray);
+    UpdateLineage(childIt,iGraph, iPedrigree, motherPedigree, iDepth+1,
+        iDepthArray,
+        iIDArray,
+        iFirstTPArray, iLastTPArray);
     ++itDivision;
     }
 }

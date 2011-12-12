@@ -323,6 +323,16 @@ void QGoLineageViewerWidget::UpdateGraph()
   depth->SetName("Lineage Depth");
   depth->InsertValue(rootID, 0);
 
+    vtkSmartPointer<vtkDoubleArray> firstTP =
+      vtkSmartPointer<vtkDoubleArray>::New();
+  firstTP->SetName("First Time Point");
+  firstTP->InsertValue(rootID, 0);
+
+    vtkSmartPointer<vtkDoubleArray> lastTP =
+      vtkSmartPointer<vtkDoubleArray>::New();
+  lastTP->SetName("Last Time Point");
+  lastTP->InsertValue(rootID, 0);
+
   // fill the new graph
   std::list<std::pair<QString, vtkSmartPointer<vtkTree> > >::iterator
           it = m_ListOfTrees.begin();
@@ -334,13 +344,16 @@ void QGoLineageViewerWidget::UpdateGraph()
                 it->second,            // old graph
                 newGraph,              // new graph
                 id,                    // Track ID array
-                1, depth);             // original depth, depth array
+                1, depth,             // original depth, depth array
+                firstTP, lastTP);
 
     ++it;
     }
 
   newGraph->GetVertexData()->AddArray(id);
   newGraph->GetVertexData()->AddArray(depth);
+  newGraph->GetVertexData()->AddArray(firstTP);
+  newGraph->GetVertexData()->AddArray(lastTP);
 
 
   m_Graph->CheckedDeepCopy(newGraph);
@@ -359,7 +372,8 @@ void QGoLineageViewerWidget::UpdateTree(vtkIdType iParentID,
                                vtkSmartPointer<vtkTree> iOldTree,
                                vtkSmartPointer<vtkMutableDirectedGraph> iNewGraph,
                                vtkDoubleArray* iTrackIDArray,
-                               unsigned int iDepth, vtkDoubleArray* iDepthArray)
+                               unsigned int iDepth, vtkDoubleArray* iDepthArray,
+                               vtkDoubleArray* iFirstTP, vtkDoubleArray* iLastTP)
 {
   // build new tree
   vtkIdType newRoot = iNewGraph->AddChild(iParentID);
@@ -371,6 +385,14 @@ void QGoLineageViewerWidget::UpdateTree(vtkIdType iParentID,
 
   iDepthArray->InsertValue(newRoot, iDepth);
 
+  vtkDataArray* firstTP = iOldTree->GetVertexData()->GetArray("First Time Point");
+  double valueFirstTP = firstTP->GetTuple1(iOldID);
+  iFirstTP->InsertValue( newRoot, valueFirstTP );
+
+  vtkDataArray* lastTP = iOldTree->GetVertexData()->GetArray("Last Time Point");
+  double valueLastTP = lastTP->GetTuple1(iOldID);
+  iLastTP->InsertValue( newRoot, valueLastTP );
+
   // go through tree
   vtkSmartPointer<vtkAdjacentVertexIterator> it =
       vtkSmartPointer<vtkAdjacentVertexIterator>::New();
@@ -380,7 +402,8 @@ void QGoLineageViewerWidget::UpdateTree(vtkIdType iParentID,
     {
     UpdateTree(newRoot, it->Next() , iOldTree, iNewGraph,
                iTrackIDArray,
-               iDepth+1, iDepthArray);
+               iDepth+1, iDepthArray,
+               iFirstTP, iLastTP);
     }
 
 }
