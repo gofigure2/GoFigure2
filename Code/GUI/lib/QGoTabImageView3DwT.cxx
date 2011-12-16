@@ -75,7 +75,7 @@
 
 #include "vtkPolyDataMapper.h"
 #include "vtkOutlineFilter.h"
-
+#include "vtkPolyDataReader.h"
 //VTK FILTERS
 #include "vtkImageExport.h"
 
@@ -93,6 +93,7 @@
 #include <QColorDialog>
 #include <QInputDialog>
 #include <QProgressDialog>
+#include <QFileDialog>
 
 #include "vtkBox.h"
 #include "vtkClipPolyData.h"
@@ -1123,10 +1124,14 @@ void QGoTabImageView3DwT::GetTheRelatedToDBActions()
   QAction *ImportTracksAction = new QAction(tr("Tracks"), this);
   ImportTracksAction->setStatusTip(
     tr("Import the data of the tracks from the text file into the GoFigure database" ) );
+  QAction *ImportVTKMeshAction = new QAction(tr("*.vtk mesh"), this);
+  ImportVTKMeshAction->setStatusTip(
+    tr("Import a vtk mesh into gofigure. Format: \"timepoint_trackid.vtk\"" ) );
 
   ImportMenu->addAction(ImportContoursAction);
   ImportMenu->addAction(ImportMeshesAction);
   ImportMenu->addAction(ImportTracksAction);
+  ImportMenu->addAction(ImportVTKMeshAction);
 
   QMenu *  ExportMenu = new QMenu(tr("Export"), this);
   QAction *ExportContoursAction = new QAction(tr("Contours"), this);
@@ -1158,6 +1163,8 @@ void QGoTabImageView3DwT::GetTheRelatedToDBActions()
                     this, SLOT ( ImportMeshes() ) );
   QObject::connect( ImportTracksAction, SIGNAL ( triggered() ),
                     this, SLOT ( ImportTracks() ) );
+  QObject::connect( ImportVTKMeshAction, SIGNAL ( triggered() ),
+                    this, SLOT ( ImportVTKMesh() ) );
   QObject::connect( ExportLineagesAction, SIGNAL ( triggered() ),
                     m_LineageContainer,
                     SIGNAL( ExportLineages() ) );
@@ -2886,6 +2893,46 @@ void QGoTabImageView3DwT::ImportTracks()
     // NewTrackIDs
     this->m_TrackContainer->UpdateTracksStrings(NewTrackIDs);
     GoToDefaultMenu();
+    }
+}
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void QGoTabImageView3DwT::ImportVTKMesh()
+{
+  if ( this->m_DataBaseTables->IsDatabaseUsed() )
+    {
+    QStringList p = QFileDialog::getOpenFileNames( this,
+                                              tr("Open vtk Files"), "",
+                                              tr("VTK Files (*.vtk)") );
+
+    vtkSmartPointer<vtkPolyDataReader> reader =
+        vtkSmartPointer<vtkPolyDataReader>::New();
+
+    vtkSmartPointer<vtkPolyData> polydata =
+        vtkSmartPointer<vtkPolyData>::New();
+
+    for( int i = 0; i < p.size(); i++ )
+      {
+      // we assume that the names are correct (check to be implemented)
+      QFileInfo pathInfo( p[i] );
+      QString basename = pathInfo.baseName();
+      QStringList basenamelist = basename.split("_");
+      std::string filename = ( p[i] ).toStdString();
+      std::cout << "Reading: " << filename << std::endl;
+      reader->SetFileName(filename.c_str());
+      reader->Update();
+
+      polydata->DeepCopy(reader->GetOutput());
+
+      std::cout << "time: " << basenamelist[0].toInt() << std::endl;
+      std::cout << "collection: " << basenamelist[1].toInt() << std::endl;
+
+      SaveAndVisuMesh(polydata.GetPointer(),
+          basenamelist[0].toInt(),  // time point
+          basenamelist[1].toInt()); // collection id
+      }
     }
 }
 

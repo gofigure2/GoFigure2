@@ -730,6 +730,8 @@ protected slots:
 
   void ImportTracks();
 
+  void ImportVTKMesh();
+
   /**
   \brief access to the megacapture reader to get the entity of interest images through time.
   updates the navigation widget.
