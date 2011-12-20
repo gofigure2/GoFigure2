@@ -10,7 +10,8 @@ if( SUPER_BOOST )
 endif( SUPER_BOOST )
 
 ExternalProject_Add(${proj}
-  DEPENDS ${VTK_DEPENDENCIES}
+  DEPENDS
+    ${proj_DEPENDENCIES}
   SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj}
   BINARY_DIR ${proj}-build
   GIT_REPOSITORY "${git_protocol}://vtk.org/VTK.git"
@@ -32,8 +33,6 @@ ExternalProject_Add(${proj}
     ${Boost_SUPPORT}
     #${WINDOWS_FLAGS}
   INSTALL_COMMAND ""
-  DEPENDS
-    ${proj_DEPENDENCIES}
 )
 
 set(VTK_DIR ${CMAKE_BINARY_DIR}/${proj}-build)
