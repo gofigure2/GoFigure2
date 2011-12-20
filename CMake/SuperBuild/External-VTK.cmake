@@ -33,7 +33,7 @@ ExternalProject_Add(${proj}
     #${WINDOWS_FLAGS}
   INSTALL_COMMAND ""
   DEPENDS
-    Boost
+    ${proj_DEPENDENCIES}
 )
 
 set(VTK_DIR ${CMAKE_BINARY_DIR}/${proj}-build)
