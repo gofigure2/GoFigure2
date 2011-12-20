@@ -4,7 +4,7 @@
 set(proj ITK)
 
 #if( WIN32 )
-  set( ITK_TAG "release" )
+  set( ITK_TAG "v3.20.1" )
 #else()
 #  set( ITK_TAG "4c21663d41017824a21f25cbacd9c3bdf00c72a0" )
 #endif()
