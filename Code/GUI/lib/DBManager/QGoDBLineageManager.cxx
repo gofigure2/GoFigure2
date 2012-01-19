@@ -632,11 +632,25 @@ UpdateStatus(std::list<unsigned int> check, std::list<unsigned int> unckeck)
     {
     unsigned int lineageID =
         this->m_LineageContainerInfoForVisu->GetTraceIDFromTrackRootID(*itcheck);
+    // check lineage in tw
     ShowTheTraceInTW(lineageID, Qt::Checked);
+    // update visibility in the container to true
+    this->m_LineageContainerInfoForVisu->SetTraceVisibility(lineageID, true);
     ++itcheck;
     }
 
-//update visibility in the container
+  // hide
+  std::list<unsigned int>::iterator ituncheck = unckeck.begin();
+  while(ituncheck != unckeck.end())
+    {
+    unsigned int lineageID =
+        this->m_LineageContainerInfoForVisu->GetTraceIDFromTrackRootID(*ituncheck);
+    // uncheck lineage in tw
+    ShowTheTraceInTW(lineageID, Qt::Unchecked);
+    // update visibility in the container to false
+    this->m_LineageContainerInfoForVisu->SetTraceVisibility(lineageID, false);
+    ++ituncheck;
+    }
 }
 //-------------------------------------------------------------------------
 

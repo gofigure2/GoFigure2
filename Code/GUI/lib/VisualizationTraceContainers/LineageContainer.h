@@ -163,6 +163,8 @@ public:
    */
   double* GetLineageColor( const unsigned int& iTraceID );
 
+  void SetTraceVisibility(const unsigned int& iTraceID, const bool& iVisibility);
+
   /**\todo implement them:*/
   bool DeleteElement(const unsigned int & iId);
   bool DeleteElement(MultiIndexContainerTraceIDIterator iIter);
