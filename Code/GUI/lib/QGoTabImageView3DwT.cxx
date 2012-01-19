@@ -3558,6 +3558,8 @@ ShowTraces(const unsigned int& iTimePoint)
   this->m_MeshContainer->ShowActorsWithGivenTimePoint(iTimePoint);
   // show tracks that intersect current time point
   this->m_TrackContainer->ShowActorsWithGivenTimePoint(iTimePoint);
+  // show lineages that intersect the current time point
+  this->m_LineageContainer->ShowActorsWithGivenTimePoint(iTimePoint);
 }
 //-------------------------------------------------------------------------
 

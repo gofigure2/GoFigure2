@@ -721,6 +721,8 @@ signals:
    */
   void UpdateLineageHighlightingFromTrackRootID(unsigned int);
 
+  void UpdateTWCollectionStatus(std::list<unsigned int>, std::list<unsigned int>);
+
 public slots:
 
   /**
@@ -789,6 +791,9 @@ public slots:
    * param[in] iVisibility true (show) or false (hide)
    */
   void ShowCollection(const unsigned int&, const bool&);
+
+  void ShowCurrentCollection(std::list<unsigned int>, const unsigned int&);
+
   /*
    * \brief Update the collection visibility
    * \param[in] it iterator to go through the lineage
@@ -796,6 +801,9 @@ public slots:
    */
   void UpdateCollectionVisibility(MultiIndexContainerTraceIDIterator& it,
                                   const bool& iVisibility);
+
+  bool UpdateCurrentCollectionVisibility(MultiIndexContainerTraceIDIterator& it,
+                                  const int& iTime);
   /*
    * \brief Delete a collection given the track root ID
    * param[in] iRootTrackID trackID root

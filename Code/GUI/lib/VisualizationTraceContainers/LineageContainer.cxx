@@ -333,3 +333,13 @@ LineageContainer::UpdateElementVisibilityWithGivenTraceIDs(const QStringList & i
     }
 }
 //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+LineageContainer::ShowActorsWithGivenTimePoint(const unsigned int & iT)
+{
+  std::list<unsigned int> trackroots = GetListOfTrackRootIDs();
+  emit ShowCurrentLineage(trackroots, iT);
+}
+
+//-------------------------------------------------------------------------

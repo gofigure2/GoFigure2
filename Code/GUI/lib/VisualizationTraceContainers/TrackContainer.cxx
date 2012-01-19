@@ -1054,6 +1054,87 @@ UpdateCollectionVisibility(MultiIndexContainerTraceIDIterator& it,
     }
 }
 //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+ShowCurrentCollection(std::list<unsigned int> iTrackIDRoot, const unsigned int& iTimePoint)
+{
+  std::list<unsigned int>::iterator rootIt = iTrackIDRoot.begin();
+  std::list<unsigned int> check;
+  std::list<unsigned int> uncheck;
+
+  while(rootIt != iTrackIDRoot.end())
+    {
+
+    MultiIndexContainerTraceIDIterator motherIt
+      = m_Container.get< TraceID >().find(*rootIt);
+
+    if( motherIt != m_Container.get< TraceID >().end() )
+      {
+      // check each division
+      bool visible = UpdateCurrentCollectionVisibility(motherIt, iTimePoint);
+
+      if(visible)
+        {
+        check.push_back(*rootIt);
+        }
+      else
+        {
+        uncheck.push_back(*rootIt);
+        }
+      }
+
+    ++rootIt;
+    }
+
+    UpdateTWCollectionStatus(check, uncheck);
+
+    this->m_ImageView->UpdateRenderWindows();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+bool
+TrackContainer::
+UpdateCurrentCollectionVisibility(MultiIndexContainerTraceIDIterator& it,
+                                  const int& iTime)
+{
+  bool iVisible = false;
+  bool returned = false;
+  if( !it->IsLeaf() )
+    {
+    // check time point
+    std::map< unsigned int, double*>::const_reverse_iterator begin = it->PointsMap.rbegin();
+
+    if(begin->first == iTime)
+      {
+      iVisible = true;
+      }
+    //show/hide
+    ModifyDivisionVisibility(it, iVisible);
+    }
+
+  std::vector<TrackStructure*>::const_iterator itDivision =
+      it->TreeNode.m_Child.begin();
+
+  while(itDivision != it->TreeNode.m_Child.end())
+    {
+    // find the iterator
+    MultiIndexContainerTraceIDIterator childIt
+        = m_Container.get< TraceID >().find((*itDivision)->TraceID);
+
+    if( childIt != m_Container.get< TraceID >().end() )
+      {
+      returned = UpdateCurrentCollectionVisibility(childIt,iTime);
+      }
+    ++itDivision;
+    }
+
+  return (iVisible || returned);
+}
+//-------------------------------------------------------------------------
+
 //-------------------------------------------------------------------------
 void
 TrackContainer::

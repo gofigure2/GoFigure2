@@ -97,6 +97,17 @@ void QGoDBLineageManager::SetLineagesInfoContainersForVisu(
                     SIGNAL( ShowLineage(const unsigned int&, const bool&) ),
                     m_TrackContainerInfoForVisu,
                     SLOT( ShowCollection(const unsigned int&, const bool&) ) );
+
+  QObject::connect( m_LineageContainerInfoForVisu,
+                    SIGNAL( ShowCurrentLineage(std::list<unsigned int>, const unsigned int&) ),
+                    m_TrackContainerInfoForVisu,
+                    SLOT( ShowCurrentCollection(std::list<unsigned int>, const unsigned int&) ) );
+
+  QObject::connect( m_TrackContainerInfoForVisu,
+                    SIGNAL(UpdateTWCollectionStatus(std::list<unsigned int>, std::list<unsigned int>)),
+                    this,
+                    SLOT( UpdateStatus(std::list<unsigned int>, std::list<unsigned int>) ) );
+
   // export lineage
   QObject::connect( m_LineageContainerInfoForVisu,
                     SIGNAL( ExportLineages() ),
@@ -608,3 +619,25 @@ void QGoDBLineageManager::DeleteADivision(
   //delete the division from the database:
   TrackFamily.DeleteFromDB(iDatabaseConnector);
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoDBLineageManager::
+UpdateStatus(std::list<unsigned int> check, std::list<unsigned int> unckeck)
+{
+  // show
+  std::list<unsigned int>::iterator itcheck = check.begin();
+  while(itcheck != check.end())
+    {
+    unsigned int lineageID =
+        this->m_LineageContainerInfoForVisu->GetTraceIDFromTrackRootID(*itcheck);
+    ShowTheTraceInTW(lineageID, Qt::Checked);
+    ++itcheck;
+    }
+
+//update visibility in the container
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------

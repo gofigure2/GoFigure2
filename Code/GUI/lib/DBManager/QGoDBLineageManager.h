@@ -125,6 +125,8 @@ public slots:
    */
   void ExportLineages();
 
+  void UpdateStatus(std::list<unsigned int>, std::list<unsigned int>);
+
 protected:
   GoDBTWContainerForLineage      *m_TWContainer;
   LineageContainer               *m_LineageContainerInfoForVisu;
