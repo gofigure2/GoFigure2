@@ -97,6 +97,17 @@ void QGoDBLineageManager::SetLineagesInfoContainersForVisu(
                     SIGNAL( ShowLineage(const unsigned int&, const bool&) ),
                     m_TrackContainerInfoForVisu,
                     SLOT( ShowCollection(const unsigned int&, const bool&) ) );
+
+  QObject::connect( m_LineageContainerInfoForVisu,
+                    SIGNAL( ShowCurrentLineage(std::list<unsigned int>, const unsigned int&) ),
+                    m_TrackContainerInfoForVisu,
+                    SLOT( ShowCurrentCollection(std::list<unsigned int>, const unsigned int&) ) );
+
+  QObject::connect( m_TrackContainerInfoForVisu,
+                    SIGNAL(UpdateTWCollectionStatus(std::list<unsigned int>, std::list<unsigned int>)),
+                    this,
+                    SLOT( UpdateStatus(std::list<unsigned int>, std::list<unsigned int>) ) );
+
   // export lineage
   QObject::connect( m_LineageContainerInfoForVisu,
                     SIGNAL( ExportLineages() ),
@@ -608,3 +619,39 @@ void QGoDBLineageManager::DeleteADivision(
   //delete the division from the database:
   TrackFamily.DeleteFromDB(iDatabaseConnector);
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+QGoDBLineageManager::
+UpdateStatus(std::list<unsigned int> check, std::list<unsigned int> unckeck)
+{
+  // show
+  std::list<unsigned int>::iterator itcheck = check.begin();
+  while(itcheck != check.end())
+    {
+    unsigned int lineageID =
+        this->m_LineageContainerInfoForVisu->GetTraceIDFromTrackRootID(*itcheck);
+    // check lineage in tw
+    ShowTheTraceInTW(lineageID, Qt::Checked);
+    // update visibility in the container to true
+    this->m_LineageContainerInfoForVisu->SetTraceVisibility(lineageID, true);
+    ++itcheck;
+    }
+
+  // hide
+  std::list<unsigned int>::iterator ituncheck = unckeck.begin();
+  while(ituncheck != unckeck.end())
+    {
+    unsigned int lineageID =
+        this->m_LineageContainerInfoForVisu->GetTraceIDFromTrackRootID(*ituncheck);
+    // uncheck lineage in tw
+    ShowTheTraceInTW(lineageID, Qt::Unchecked);
+    // update visibility in the container to false
+    this->m_LineageContainerInfoForVisu->SetTraceVisibility(lineageID, false);
+    ++ituncheck;
+    }
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------

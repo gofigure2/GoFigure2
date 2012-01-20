@@ -721,6 +721,8 @@ signals:
    */
   void UpdateLineageHighlightingFromTrackRootID(unsigned int);
 
+  void UpdateTWCollectionStatus(std::list<unsigned int>, std::list<unsigned int>);
+
 public slots:
 
   /**
@@ -789,6 +791,7 @@ public slots:
    * param[in] iVisibility true (show) or false (hide)
    */
   void ShowCollection(const unsigned int&, const bool&);
+
   /*
    * \brief Update the collection visibility
    * \param[in] it iterator to go through the lineage
@@ -796,6 +799,20 @@ public slots:
    */
   void UpdateCollectionVisibility(MultiIndexContainerTraceIDIterator& it,
                                   const bool& iVisibility);
+
+  /*
+   * \brief For the given lineages, show the divisions that interect the given time point
+   * \param[in] iTrackIDRoot ids of the root tracks of the lineages
+   * \param[in] iTimePoint show divisions at this time point
+   */
+  void ShowCurrentCollection(std::list<unsigned int>& iTrackIDRoot,
+                             const unsigned int& iTimePoint);
+  /*
+   * \brief Recursive method to update the divisions visibility, based on given time point.
+   * \return bool true if at least a division of the lineage is visible
+   */
+  bool UpdateCurrentCollectionVisibility(MultiIndexContainerTraceIDIterator& it,
+                                  const int& iTime);
   /*
    * \brief Delete a collection given the track root ID
    * param[in] iRootTrackID trackID root

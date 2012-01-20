@@ -125,6 +125,12 @@ public slots:
    */
   void ExportLineages();
 
+  /*
+   * \brief Update the lineage checkbox in TW and visibility in container lineage strucuture
+   * to make sure everything is synchronized
+   */
+  void UpdateStatus(std::list<unsigned int>, std::list<unsigned int>);
+
 protected:
   GoDBTWContainerForLineage      *m_TWContainer;
   LineageContainer               *m_LineageContainerInfoForVisu;
