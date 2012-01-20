@@ -1124,7 +1124,7 @@ void QGoTabImageView3DwT::GetTheRelatedToDBActions()
   QAction *ImportTracksAction = new QAction(tr("Tracks"), this);
   ImportTracksAction->setStatusTip(
     tr("Import the data of the tracks from the text file into the GoFigure database" ) );
-  QAction *ImportVTKMeshAction = new QAction(tr("*.vtk mesh"), this);
+  QAction *ImportVTKMeshAction = new QAction(tr("VTK mesh"), this);
   ImportVTKMeshAction->setStatusTip(
     tr("Import a vtk mesh into gofigure. Format: \"timepoint_trackid.vtk\"" ) );
 
@@ -2915,23 +2915,43 @@ void QGoTabImageView3DwT::ImportVTKMesh()
 
     for( int i = 0; i < p.size(); i++ )
       {
-      // we assume that the names are correct (check to be implemented)
-      QFileInfo pathInfo( p[i] );
-      QString basename = pathInfo.baseName();
-      QStringList basenamelist = basename.split("_");
-      std::string filename = ( p[i] ).toStdString();
-      std::cout << "Reading: " << filename << std::endl;
-      reader->SetFileName(filename.c_str());
-      reader->Update();
+        QFileInfo pathInfo( p[i] );
+        QString basename = pathInfo.baseName();
+        QString suffix = pathInfo.suffix();
+        QStringList basenamelist = basename.split("_");
 
-      polydata->DeepCopy(reader->GetOutput());
+        int suffixCheck = 1;
+        bool timeCheck = false;
+        bool collectionCheck = false;
+        int timePoint = 0;
+        int collection = 0;
 
-      std::cout << "time: " << basenamelist[0].toInt() << std::endl;
-      std::cout << "collection: " << basenamelist[1].toInt() << std::endl;
+        if(basenamelist.size() == 2)
+        {
+        suffixCheck = suffix.compare("vtk");
+        timePoint = basenamelist[0].toInt(&timeCheck);
+        collection = basenamelist[1].toInt(&collectionCheck);
+        }
 
-      SaveAndVisuMesh(polydata.GetPointer(),
-          basenamelist[0].toInt(),  // time point
-          basenamelist[1].toInt()); // collection id
+        // if conversion failed, time and collection were not numbers
+        if( !collectionCheck || !timeCheck || suffixCheck)
+          {
+          QMessageBox msgBox;
+          msgBox.setText("The files you are trying to import has an invalid format\n Requiered: path/timepoint_trackID.vtk (ie: path/0_1.vtk)\n Provided: " + p[i]);
+          msgBox.exec();
+          }
+        else
+          {
+          std::string filename = ( p[i] ).toStdString();
+          reader->SetFileName(filename.c_str());
+          reader->Update();
+
+          polydata->DeepCopy(reader->GetOutput());
+
+          SaveAndVisuMesh(polydata.GetPointer(),
+              timePoint,  // time point
+              collection); // collection id
+           }
       }
     }
 }
