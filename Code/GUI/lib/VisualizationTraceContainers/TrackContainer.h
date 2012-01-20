@@ -792,8 +792,6 @@ public slots:
    */
   void ShowCollection(const unsigned int&, const bool&);
 
-  void ShowCurrentCollection(std::list<unsigned int>, const unsigned int&);
-
   /*
    * \brief Update the collection visibility
    * \param[in] it iterator to go through the lineage
@@ -802,6 +800,17 @@ public slots:
   void UpdateCollectionVisibility(MultiIndexContainerTraceIDIterator& it,
                                   const bool& iVisibility);
 
+  /*
+   * \brief For the given lineages, show the divisions that interect the given time point
+   * \param[in] iTrackIDRoot ids of the root tracks of the lineages
+   * \param[in] iTimePoint show divisions at this time point
+   */
+  void ShowCurrentCollection(std::list<unsigned int>& iTrackIDRoot,
+                             const unsigned int& iTimePoint);
+  /*
+   * \brief Recursive method to update the divisions visibility, based on given time point.
+   * \return bool true if at least a division of the lineage is visible
+   */
   bool UpdateCurrentCollectionVisibility(MultiIndexContainerTraceIDIterator& it,
                                   const int& iTime);
   /*

@@ -163,7 +163,12 @@ public:
    */
   double* GetLineageColor( const unsigned int& iTraceID );
 
-  void SetTraceVisibility(const unsigned int& iTraceID, const bool& iVisibility);
+  /*
+   * \brief Modify visibility in the trace structure
+   * \param[in] iTraceID lineage ID of interest
+   * \param[in] iVisibility visibility of the given trace
+   */
+   void SetTraceVisibility(const unsigned int& iTraceID, const bool& iVisibility);
 
   /**\todo implement them:*/
   bool DeleteElement(const unsigned int & iId);
@@ -178,6 +183,7 @@ signals:
   void TraceVisibilityChanged(unsigned int, Qt::CheckState);
 
   void ShowLineage(const unsigned int&, const bool&);
+
   void ShowCurrentLineage(std::list<unsigned int>, const unsigned int&);
 
   void DeleteLineage(unsigned int);

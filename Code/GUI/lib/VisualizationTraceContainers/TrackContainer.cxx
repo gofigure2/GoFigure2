@@ -1058,7 +1058,7 @@ UpdateCollectionVisibility(MultiIndexContainerTraceIDIterator& it,
 //-------------------------------------------------------------------------
 void
 TrackContainer::
-ShowCurrentCollection(std::list<unsigned int> iTrackIDRoot, const unsigned int& iTimePoint)
+ShowCurrentCollection(std::list<unsigned int>& iTrackIDRoot, const unsigned int& iTimePoint)
 {
   std::list<unsigned int>::iterator rootIt = iTrackIDRoot.begin();
   std::list<unsigned int> check;
