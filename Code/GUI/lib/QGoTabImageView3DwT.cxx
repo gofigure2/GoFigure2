@@ -3383,7 +3383,7 @@ createTransferFunctionEditor(QString iName)
 
   //editor->setParent(m_TransferFunctionDockWidget);
   m_TransferFunctionDockWidget->AddTransferFunction(iName, editor);
-}
+  }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------

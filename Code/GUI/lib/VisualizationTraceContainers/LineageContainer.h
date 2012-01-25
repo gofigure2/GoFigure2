@@ -184,7 +184,7 @@ signals:
 
   void ShowLineage(const unsigned int&, const bool&);
 
-  void ShowCurrentLineage(std::list<unsigned int>, const unsigned int&);
+  void ShowCurrentLineage(std::list<unsigned int>&, const unsigned int&);
 
   void DeleteLineage(unsigned int);
 /** \brief When one track has been picked (highlighted) from the visualization */

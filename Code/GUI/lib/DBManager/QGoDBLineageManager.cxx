@@ -99,9 +99,9 @@ void QGoDBLineageManager::SetLineagesInfoContainersForVisu(
                     SLOT( ShowCollection(const unsigned int&, const bool&) ) );
 
   QObject::connect( m_LineageContainerInfoForVisu,
-                    SIGNAL( ShowCurrentLineage(std::list<unsigned int>, const unsigned int&) ),
+                    SIGNAL( ShowCurrentLineage(std::list<unsigned int>&, const unsigned int&) ),
                     m_TrackContainerInfoForVisu,
-                    SLOT( ShowCurrentCollection(std::list<unsigned int>, const unsigned int&) ) );
+                    SLOT( ShowCurrentCollection(std::list<unsigned int>&, const unsigned int&) ) );
 
   QObject::connect( m_TrackContainerInfoForVisu,
                     SIGNAL(UpdateTWCollectionStatus(std::list<unsigned int>, std::list<unsigned int>)),
