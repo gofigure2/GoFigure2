@@ -131,7 +131,13 @@ QGoImageView3D::QGoImageView3D(QWidget *iParent) :
   this->m_Pool->AddItem(View3);
   View3->Delete();
 
-  vtkRenderWindow *renwin4 = this->QvtkWidget_XYZ->GetRenderWindow();
+  vtkSmartPointer<vtkRenderWindow> renwin4 =
+      vtkSmartPointer<vtkRenderWindow>::New();
+  renwin4->SetAlphaBitPlanes(1);
+  renwin4->SetMultiSamples(0);
+
+  this->QvtkWidget_XYZ->SetRenderWindow(renwin4);
+
   this->m_View3D = vtkViewImage3D::New();
   this->m_View3D->SetRenderWindow(renwin4);
   this->m_View3D->SetupInteractor( this->QvtkWidget_XYZ->GetInteractor() );
