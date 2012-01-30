@@ -52,6 +52,7 @@
 #include "vtkRenderWindow.h"
 #include "vtkTreeLayoutStrategy.h"
 #include "vtkRenderedGraphRepresentation.h";
+#include "vtkOutEdgeIterator.h"
 
 // color coding
 #include "vtkLookupTable.h"
@@ -162,12 +163,19 @@ void QGoLineageViewerWidget::ConfigureGraphView()
   this->m_lut = vtkSmartPointer<vtkLookupTable>::New();
   this->m_lut->SetHueRange(0.667, 0.0);
   this->m_lut->Build();
+  // first node will be transparent
+  this->m_lut->SetTableValue(0, 0, 0, 0);
+  this->m_lut->Build();
 
   // create theme
   vtkSmartPointer<vtkViewTheme> theme =
     vtkSmartPointer<vtkViewTheme>::New();
   theme->SetPointLookupTable(this->m_lut);
   theme->SetCellLookupTable(this->m_lut);
+  // no background gradient (not pretty with transparent root)
+  double color[4] = {0.0, 0.0, 0.0, 0.0};
+  theme->SetBackgroundColor(color);
+  theme->SetBackgroundColor2(color);
 
   this->m_treeGraphView->ApplyViewTheme(theme);
 
@@ -357,6 +365,27 @@ void QGoLineageViewerWidget::UpdateGraph()
   newGraph->GetVertexData()->AddArray(firstTP);
   newGraph->GetVertexData()->AddArray(lastTP);
 
+  //create lut for edges based on number of edges
+  vtkSmartPointer<vtkOutEdgeIterator> itEdge =
+      vtkSmartPointer<vtkOutEdgeIterator>::New();
+  newGraph->GetOutEdges(0, itEdge);
+
+  vtkSmartPointer<vtkDoubleArray> edges =
+      vtkSmartPointer<vtkDoubleArray>::New();
+  edges->SetName("Edges");
+
+
+  for(int k=0; k<newGraph->GetNumberOfEdges(); k++)
+  {
+  edges->InsertValue(k, 1);
+  }
+
+  while(itEdge->HasNext())
+  {
+  vtkOutEdgeType e = itEdge->Next();
+  edges->InsertValue(e.Id, 0);
+  }
+  newGraph->GetEdgeData()->AddArray(edges);
 
   m_Graph->CheckedDeepCopy(newGraph);
   m_Tree->CheckedDeepCopy(newGraph);
@@ -453,6 +482,7 @@ void QGoLineageViewerWidget::slotDeleteLineage()
 void QGoLineageViewerWidget::slotEnableColorCode(int state)
 {
   this->m_treeGraphView->SetColorVertices(state);
+  this->m_treeGraphView->SetColorEdges(state);
 
   //update visu
   this->m_treeGraphView->Render();
@@ -463,7 +493,11 @@ void QGoLineageViewerWidget::slotEnableColorCode(int state)
 void QGoLineageViewerWidget::slotChangeColorCode(QString array)
 {
   this->m_treeGraphView->SetVertexColorArrayName(array.toLocal8Bit().data());
-  this->m_treeGraphView->SetEdgeColorArrayName(array.toLocal8Bit().data());
+  // apply new lut
+  // black/white
+  this->m_treeGraphView->SetEdgeColorArrayName("Edges");
+  // restore old lut
+  // classic
 
   //update visu
    this->m_treeGraphView->Render();
@@ -499,6 +533,7 @@ void QGoLineageViewerWidget::slotEnableLabel(int state)
 {
   //scale
   this->m_treeGraphView->SetVertexLabelVisibility(state);
+  //this->m_treeGraphView->SetEdgeLabelVisibility(state);
 
   //update visu
   this->m_treeGraphView->Render();
@@ -509,6 +544,7 @@ void QGoLineageViewerWidget::slotEnableLabel(int state)
 void QGoLineageViewerWidget::slotChangeLabel(QString array)
 {
   this->m_treeGraphView->SetVertexLabelArrayName(array.toLocal8Bit().data());
+  //this->m_treeGraphView->SetEdgeLabelArrayName("Edges");
 
   //update visu
   this->m_treeGraphView->Render();

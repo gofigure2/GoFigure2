@@ -146,7 +146,7 @@ vtkViewImage::vtkViewImage()
   this->Renderer->AddViewProp (this->ScalarBarActor);
 
   this->Renderer->SetUseDepthPeeling(1);
-  this->Renderer->SetMaximumNumberOfPeels(100);
+  this->Renderer->SetMaximumNumberOfPeels(3);
   this->Renderer->SetOcclusionRatio(0.1);
 
   this->IntersectionLineWidth = 1.;
