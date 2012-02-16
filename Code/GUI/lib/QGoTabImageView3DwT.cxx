@@ -3336,7 +3336,7 @@ createTransferFunctionEditor(QString iName)
       new GoTransferFunctionEditorWidget(iName,
                                          m_ImageProcessor->getColor( channelname ),
                                          lutParameters,
-                                         m_ImageProcessor->getImageBW( channelname )->GetScalarRange()[1],
+                                         m_ImageProcessor->getMaxImage(),
                                          this );
   // connect signals
 
@@ -3670,10 +3670,6 @@ UpdateTFEditor()
 
     // update histogram
     widget->AddHistogram(m_ImageProcessor->getHistogram(name) );
-
-    // update max value
-    widget->SetMaximumValue(
-        m_ImageProcessor->getImageBW(name)->GetScalarRange()[1]);
     }
 
   m_TransferFunctionDockWidget->SetCurrentWidget(currentChannel);
