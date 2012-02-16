@@ -54,7 +54,7 @@
 
 //--------------------------------------------------------------------------
 GoImageProcessor::GoImageProcessor():m_Output(NULL),
-  m_MaxThreshold(0),m_MaxImage(0),
+  m_MaxThreshold(1),m_MaxImage(0),
   m_DopplerMode(false), m_DopplerStep(1), m_DopplerTime( 3, 0 ),
   m_DopplerChannel(0), m_DopplerSize(3)
 {
