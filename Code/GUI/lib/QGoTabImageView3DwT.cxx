@@ -2946,7 +2946,26 @@ void QGoTabImageView3DwT::ImportVTKMesh()
           reader->SetFileName(filename.c_str());
           reader->Update();
 
-          polydata->DeepCopy(reader->GetOutput());
+          // Make sure the polydata is inside the image
+          // if not, we crop it
+          vtkSmartPointer<vtkBox> implicitFunction =
+              vtkSmartPointer<vtkBox>::New();
+          implicitFunction->SetBounds(
+            m_ImageProcessor->getImageBW()->GetBounds()[0] + 1,
+            m_ImageProcessor->getImageBW()->GetBounds()[1] - 1,
+            m_ImageProcessor->getImageBW()->GetBounds()[2] + 1,
+            m_ImageProcessor->getImageBW()->GetBounds()[3] - 1,
+            m_ImageProcessor->getImageBW()->GetBounds()[4] + 1,
+            m_ImageProcessor->getImageBW()->GetBounds()[5] - 1);
+
+          vtkSmartPointer<vtkClipPolyData> cutter =
+              vtkSmartPointer<vtkClipPolyData>::New();
+          cutter->SetInput( reader->GetOutput() );
+          cutter->InsideOutOn();
+          cutter->SetClipFunction(implicitFunction);
+          cutter->Update();
+
+          polydata->DeepCopy(cutter->GetOutput());
 
           SaveAndVisuMesh(polydata.GetPointer(),
               timePoint,  // time point
