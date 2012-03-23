@@ -51,7 +51,7 @@
 #include "vtkGraphLayoutView.h"
 #include "vtkRenderWindow.h"
 #include "vtkTreeLayoutStrategy.h"
-#include "vtkRenderedGraphRepresentation.h";
+#include "vtkRenderedGraphRepresentation.h"
 
 // color coding
 #include "vtkLookupTable.h"
