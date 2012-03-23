@@ -1,34 +1,34 @@
 #----------------------------------------------------------
-FIND_PACKAGE( Qt4 REQUIRED QtCore QtGui )
-  IF( QT4_FOUND )
+find_package( Qt4 REQUIRED QtCore QtGui )
+  if( QT4_FOUND )
 
   #----------------------------------------------------------
   # Check version of QT
-  IF("${QT_VERSION_MAJOR}.${QT_VERSION_MINOR}.${QT_VERSION_PATCH}" VERSION_LESS "${minimum_required_qt_version}")
-    MESSAGE(FATAL_ERROR "error: GoFigure2 requires Qt >= ${minimum_required_qt_version} -- you cannot use Qt ${QT_VERSION_MAJOR}.${QT_VERSION_MINOR}.${QT_VERSION_PATCH}.")
-  ENDIF()
+  if("${QT_VERSION_MAJOR}.${QT_VERSION_MINOR}.${QT_VERSION_PATCH}" VERSION_LESS "${minimum_required_qt_version}")
+    message(FATAL_ERROR "error: GoFigure2 requires Qt >= ${minimum_required_qt_version} -- you cannot use Qt ${QT_VERSION_MAJOR}.${QT_VERSION_MINOR}.${QT_VERSION_PATCH}.")
+  endif()
 
   #----------------------------------------------------------
   # How does QT_USE_FILE work??
-  IF( QT_USE_FILE )
-    SET( QT_USE_QT3SUPPORT FALSE )
-    SET( QT_USE_QTCORE TRUE )
-    SET( QT_USE_QTGUI TRUE )
-    INCLUDE( ${QT_USE_FILE} )
-  ELSE( QT_USE_FILE )
-    SET( QT_LIBRARIES ${QT_QT_LIBRARY} )
-  ENDIF( QT_USE_FILE )
+  if( QT_USE_FILE )
+    set( QT_USE_QT3SUPPORT FALSE )
+    set( QT_USE_QTCORE TRUE )
+    set( QT_USE_QTGUI TRUE )
+    include( ${QT_USE_FILE} )
+  else( QT_USE_FILE )
+    set( QT_LIBRARIES ${QT_QT_LIBRARY} )
+  endif( QT_USE_FILE )
 
-  SET( QT_PLUGIN_LIBS ${QT_LIBRARIES} )
+  set( QT_PLUGIN_LIBS ${QT_LIBRARIES} )
 
-  ADD_DEFINITIONS( ${QT_DEFINITIONS} )
+  add_definitions( ${QT_DEFINITIONS} )
   #
-  # ADD_DEFINITIONS( -DQT_GUI_LIBS )
-  # ADD_DEFINITIONS( -DQT_CORE_LIB )
+  # add_definitions( -DQT_GUI_LIBS )
+  # add_definitions( -DQT_CORE_LIB )
 
   # Try to extract Qt variable from VTK
-  SET( QT_QMAKE_EXECUTABLE ${VTK_QT_QMAKE_EXECUTABLE} CACHE FILEPATH "" )
-  SET( QT_MOC_EXECUTABLE ${VTK_QT_MOC_EXECUTABLE} CACHE FILEPATH "" )
-  SET( QT_UIC_EXECUTABLE ${VTK_QT_UIC_EXECUTABLE} CACHE FILEPATH "" )
+  set( QT_QMAKE_EXECUTABLE ${VTK_QT_QMAKE_EXECUTABLE} CACHE FILEPATH "" )
+  set( QT_MOC_EXECUTABLE ${VTK_QT_MOC_EXECUTABLE} CACHE FILEPATH "" )
+  set( QT_UIC_EXECUTABLE ${VTK_QT_UIC_EXECUTABLE} CACHE FILEPATH "" )
 
-ENDIF( QT4_FOUND )
+endif( QT4_FOUND )

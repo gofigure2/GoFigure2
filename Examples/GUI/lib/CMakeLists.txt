@@ -1,4 +1,4 @@
-SET( QGOGUILIB_EXAMPLE_SRC
+set( QGOGUILIB_EXAMPLE_SRC
   qgoimageview2d
   qgoimageview3d
   QGoImageInfoTest
@@ -35,8 +35,8 @@ SET( QGOGUILIB_EXAMPLE_SRC
 #  QGoMeshEditingWidgetManagerTest
 )
 
-IF( BUILD_COMPARETOOL )
-  SET( QGOGUILIB_EXAMPLE_SRC
+if( BUILD_COMPARETOOL )
+  set( QGOGUILIB_EXAMPLE_SRC
     ${QGOGUILIB_EXAMPLE_SRC}
     qgosynchronizedview2dtest
     qgosynchronizedview3dtest
@@ -44,113 +44,113 @@ IF( BUILD_COMPARETOOL )
     compareexample
     comparepipelineexample
   )
-ENDIF( BUILD_COMPARETOOL )
+endif( BUILD_COMPARETOOL )
 #---------------------------------------------------------------------------
 #---------------------------------------------------------------------------
 
 #ADD QGoVideoRecorderTest if ENABLE_VIDEO_RECORD IS ON
-IF( ENABLE_VIDEO_RECORD_FFMPEG )
-  SET(QGOGUILIB_EXAMPLE_SRC
+if( ENABLE_VIDEO_RECORD_FFMPEG )
+  set(QGOGUILIB_EXAMPLE_SRC
     ${QGOGUILIB_EXAMPLE_SRC}
     QGoVideoRecorderTest
     vtkFFMPEGRenderWindowRecorderTest
     )
-ENDIF( ENABLE_VIDEO_RECORD_FFMPEG )
+endif( ENABLE_VIDEO_RECORD_FFMPEG )
 
 #ADD QGoVideoRecorderTest if ENABLE_VIDEO_RECORD IS ON
-IF( ENABLE_VIDEO_RECORD_AVI )
-  SET(QGOGUILIB_EXAMPLE_SRC
+if( ENABLE_VIDEO_RECORD_AVI )
+  set(QGOGUILIB_EXAMPLE_SRC
     ${QGOGUILIB_EXAMPLE_SRC}
     QGoVideoRecorderTest
     vtkAVIRenderWindowRecorderTest
     )
-ENDIF( ENABLE_VIDEO_RECORD_AVI )
+endif( ENABLE_VIDEO_RECORD_AVI )
 
 #---------------------------------------------------------------------------
 #---------------------------------------------------------------------------
 
-FOREACH( var ${QGOGUILIB_EXAMPLE_SRC} )
+foreach( var ${QGOGUILIB_EXAMPLE_SRC} )
 
-  ADD_EXECUTABLE( ${var} ${var} )
-  TARGET_LINK_LIBRARIES( ${var}
+  add_executable( ${var} ${var} )
+  target_link_libraries( ${var}
     QGoGui
   )
 
-ENDFOREACH( var ${QGOGUILIB_EXAMPLE_SRC} )
+endforeach( var ${QGOGUILIB_EXAMPLE_SRC} )
 
-ADD_TEST( qgoimageview2dTest
+add_test( qgoimageview2dTest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qgoimageview2d
   ${TESTING_DATA_PATH}/Circle.png
   1
 )
 
-ADD_TEST( qgoimageview3dTest
+add_test( qgoimageview3dTest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qgoimageview3d
   ${TESTING_DATA_PATH}/Circle3D.mhd
   1
 )
 
-ADD_TEST( QGoImageInfoTest
+add_test( QGoImageInfoTest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/QGoImageInfoTest
   1
 )
 
-ADD_TEST( qgolutdialogTest
+add_test( qgolutdialogTest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qgolutdialog
   1
 )
 
-ADD_TEST( qgotabelementbaseTest
+add_test( qgotabelementbaseTest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qgotabelementbase
 )
 
-ADD_TEST( qgotabimageviewelementbaseTest
+add_test( qgotabimageviewelementbaseTest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qgotabimageviewelementbase
 )
 
-ADD_TEST( qgotabimageview2dTest
+add_test( qgotabimageview2dTest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qgotabimageview2d
   ${TESTING_DATA_PATH}/Circle.png
   1
 )
 
-ADD_TEST( qgotabimageview3dTest
+add_test( qgotabimageview3dTest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qgotabimageview3d
   ${TESTING_DATA_PATH}/Circle3D.mhd
   1
 )
 
-ADD_TEST( qgotabimageview3dwtTest
+add_test( qgotabimageview3dwtTest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qgotabimageview3dwt
   ${TTestESTING_DATA_PATH}/earpax2isl11.lsm
   1
 )
 
-ADD_TEST( qgomanualsegmentationsettingsdialogTest
+add_test( qgomanualsegmentationsettingsdialogTest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qgomanualsegmentationsettingsdialog
   1
 )
 
-ADD_TEST( qgonavigationdockwidgetTest
+add_test( qgonavigationdockwidgetTest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qgonavigationdockwidget
   1
 )
 
-ADD_TEST( QGoContourManualSegmentationDockWidgetTest
+add_test( QGoContourManualSegmentationDockWidgetTest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/QGoContourManualSegmentationDockWidgetTest
   1
 )
 
-ADD_TEST( ContourMeshContainerTest
+add_test( ContourMeshContainerTest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/ContourMeshContainerTest
 )
 
-ADD_TEST( QGoLsmToMegaExportDialogTest
+add_test( QGoLsmToMegaExportDialogTest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/QGoLsmToMegaExportDialogTest
   1
 )
 
-ADD_TEST( QGoLsmToMegaExportThreadTest
+add_test( QGoLsmToMegaExportThreadTest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/QGoLsmToMegaExportThreadTest
   earpax2isl11.lsm
   ${TESTING_DATA_PATH}/earpax2isl11.lsm
@@ -158,75 +158,75 @@ ADD_TEST( QGoLsmToMegaExportThreadTest
   1
 )
 
-ADD_TEST( QGoWizardDBTest
+add_test( QGoWizardDBTest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/QGoWizardDBTest
   1
 )
 
-ADD_TEST( QGoPrintDatabaseTest
+add_test( QGoPrintDatabaseTest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/QGoPrintDatabaseTest
   1
 )
 
-ADD_TEST( QGoDBCreateBookmarkDialogTest
+add_test( QGoDBCreateBookmarkDialogTest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/QGoDBCreateBookmarkDialogTest
   1
 )
 
-ADD_TEST( qgotabimageview3dwtTest2
+add_test( qgotabimageview3dwtTest2
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qgotabimageview3dwt2
   ${GOFIGURE2_BINARY_DIR}/Testing/earpax2isl11/earpax2isl11.lsm-PL00-CO00-RO00-ZT00-YT00-XT00-TM0000-ch00-zs0000.png
 )
 
-SET_TESTS_PROPERTIES( qgotabimageview3dwtTest2
+set_tests_properties( qgotabimageview3dwtTest2
   PROPERTIES DEPENDS
   lsmtomegacaptureTest
 )
 
-IF( BUILD_COMPARETOOL )
-  ADD_TEST( qgosynchronizedview2dtest
+if( BUILD_COMPARETOOL )
+  add_test( qgosynchronizedview2dtest
     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qgosynchronizedview2dtest
     ${TESTING_DATA_PATH}/Circle.png
     1
   )
 
-  ADD_TEST( qgosynchronizedview3dtest
+  add_test( qgosynchronizedview3dtest
     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qgosynchronizedview3dtest
     ${TESTING_DATA_PATH}/Circle3D.mhd
     1
   )
 
-  ADD_TEST( qgosynchronizedviewmanagertest
+  add_test( qgosynchronizedviewmanagertest
     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/qgosynchronizedviewmanagertest
     ${TESTING_DATA_PATH}/Circle.png
     ${TESTING_DATA_PATH}/Circle3D.mhd
     1
   )
-ENDIF( BUILD_COMPARETOOL )
+endif( BUILD_COMPARETOOL )
 
-ADD_TEST( QGoLevelset2DTest
+add_test( QGoLevelset2DTest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/QGoLevelset2DTest
   ${TESTING_DATA_PATH}/Circle3D.mhd
   1
 )
 
-ADD_TEST( QGoDBInitCreateAuthorPageTest
+add_test( QGoDBInitCreateAuthorPageTest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/QGoDBInitCreateAuthorPageTest
   1
 )
 
-ADD_TEST( QGoDBInitCreateMicroscopePageTest
+add_test( QGoDBInitCreateMicroscopePageTest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/QGoDBInitCreateMicroscopePageTest
   1
 )
 
-ADD_TEST( QGoSegmentationAlgoTest
+add_test( QGoSegmentationAlgoTest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/QGoSegmentationAlgoTest
   ${TESTING_DATA_PATH}/Circle3D.mhd
   1
 )
 
-#ADD_TEST( QGoTrackEditingWidgetTest
+#add_test( QGoTrackEditingWidgetTest
 #  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/QGoTrackEditingWidgetTest
 #  1
 #)
@@ -235,30 +235,30 @@ ADD_TEST( QGoSegmentationAlgoTest
 #---------------------------------------------------------------------------
 
 # ADD THIS TEST IF ENABLE_VIDEO_RECORD_FFMPEG IS ON
-IF( ENABLE_VIDEO_RECORD_FFMPEG )
-  ADD_TEST( QGoVideoRecorderTest
+if( ENABLE_VIDEO_RECORD_FFMPEG )
+  add_test( QGoVideoRecorderTest
     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/QGoVideoRecorderTest
     1
   )
 
-  ADD_TEST( vtkFFMPEGRenderWindowRecorderTest
+  add_test( vtkFFMPEGRenderWindowRecorderTest
     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/vtkFFMPEGRenderWindowRecorderTest
     test.avi
   )
-ENDIF( ENABLE_VIDEO_RECORD_FFMPEG )
+endif( ENABLE_VIDEO_RECORD_FFMPEG )
 
 # ADD THIS TEST IF ENABLE_VIDEO_RECORD_AVI IS ON
-IF( ENABLE_VIDEO_RECORD_AVI )
-  ADD_TEST( QGoVideoRecorderTest
+if( ENABLE_VIDEO_RECORD_AVI )
+  add_test( QGoVideoRecorderTest
     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/QGoVideoRecorderTest
     1
   )
 
-  ADD_TEST( vtkAVIRenderWindowRecorderTest
+  add_test( vtkAVIRenderWindowRecorderTest
     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/vtkAVIRenderWindowRecorderTest
     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/test.avi
   )
-ENDIF( ENABLE_VIDEO_RECORD_AVI )
+endif( ENABLE_VIDEO_RECORD_AVI )
 
 #---------------------------------------------------------------------------
 #---------------------------------------------------------------------------

@@ -1,153 +1,153 @@
-ADD_EXECUTABLE( itkvtkPolyDatatoBinaryMaskImageFilterTest
+add_executable( itkvtkPolyDatatoBinaryMaskImageFilterTest
   itkvtkPolyDatatoBinaryMaskImageFilterTest.cxx )
 
-TARGET_LINK_LIBRARIES( itkvtkPolyDatatoBinaryMaskImageFilterTest
+target_link_libraries( itkvtkPolyDatatoBinaryMaskImageFilterTest
   ${ITK_LIBRARIES}
   vtkGraphics
   vtkHybrid
 )
 
-ADD_TEST( itkvtkPolyDatatoBinaryMaskImageFilterTest
+add_test( itkvtkPolyDatatoBinaryMaskImageFilterTest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/itkvtkPolyDatatoBinaryMaskImageFilterTest
   ${TESTING_DATA_PATH}/Circle3D.mhd
   temp.mhd
 )
 
-ADD_EXECUTABLE( itkBinaryMaskImageToGoFigureMeshAttributesTest
+add_executable( itkBinaryMaskImageToGoFigureMeshAttributesTest
  itkBinaryMaskImageToGoFigureMeshAttributesTest.cxx )
-TARGET_LINK_LIBRARIES( itkBinaryMaskImageToGoFigureMeshAttributesTest
+target_link_libraries( itkBinaryMaskImageToGoFigureMeshAttributesTest
   QGoGui
 )
 
-ADD_TEST( itkBinaryMaskImageToGoFigureMeshAttributesTest
+add_test( itkBinaryMaskImageToGoFigureMeshAttributesTest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/itkBinaryMaskImageToGoFigureMeshAttributesTest
   ${TESTING_DATA_PATH}/Circle3D.mhd
   temp.mhd
 )
 
-ADD_EXECUTABLE( itkvtkPolyDataToGoFigureMeshAttributesTest
+add_executable( itkvtkPolyDataToGoFigureMeshAttributesTest
  itkvtkPolyDataToGoFigureMeshAttributesTest.cxx )
-TARGET_LINK_LIBRARIES( itkvtkPolyDataToGoFigureMeshAttributesTest
+target_link_libraries( itkvtkPolyDataToGoFigureMeshAttributesTest
   QGoGui
   vtkGraphics
   vtkHybrid
 )
 
-ADD_TEST( itkvtkPolyDataToGoFigureMeshAttributesTest
+add_test( itkvtkPolyDataToGoFigureMeshAttributesTest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/itkvtkPolyDataToGoFigureMeshAttributesTest
   ${TESTING_DATA_PATH}/Circle3D.mhd
 )
 
-SET_TESTS_PROPERTIES( itkBinaryMaskImageToGoFigureMeshAttributesTest
+set_tests_properties( itkBinaryMaskImageToGoFigureMeshAttributesTest
   PROPERTIES DEPENDS
   itkvtkPolyDatatoBinaryMaskImageFilterTest
 )
 
-ADD_EXECUTABLE( ContourToMeshFilterTest
+add_executable( ContourToMeshFilterTest
   ContourToMeshFilterTest.cxx
   )
-TARGET_LINK_LIBRARIES( ContourToMeshFilterTest
+target_link_libraries( ContourToMeshFilterTest
   PoissonReconstruction
   vtkHybrid
   vtkRenderingAddOn2
   ${ITK_LIBRARIES}
   )
 
-ADD_TEST( ContourToMeshFilterTest
+add_test( ContourToMeshFilterTest
  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/ContourToMeshFilterTest
  1
  )
 
-ADD_EXECUTABLE( MeshToContourFilterTest
+add_executable( MeshToContourFilterTest
   MeshToContourFilterTest.cxx
   ${GOFIGURE2_SOURCE_DIR}/Code/Filters/Mesh/MeshToContourFilter.cxx
   )
-TARGET_LINK_LIBRARIES( MeshToContourFilterTest
+target_link_libraries( MeshToContourFilterTest
   vtkHybrid
   )
 
-ADD_TEST( MeshToContourFilterTest
+add_test( MeshToContourFilterTest
  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/MeshToContourFilterTest
  1
  )
 
-#ADD_EXECUTABLE( singleCellSplitImageFilter
+#add_executable( singleCellSplitImageFilter
 #  SingleCellSplitImageFilter.cxx
 #  )
-#TARGET_LINK_LIBRARIES(
+#target_link_libraries(
 #  singleCellSplitImageFilter
 #  ITKReview
 #  ITKIO
 #  )
 
-ADD_EXECUTABLE( cellMergeImageFilter
+add_executable( cellMergeImageFilter
   CellMergeImageFilter.cxx
   )
 
-TARGET_LINK_LIBRARIES( cellMergeImageFilter
+target_link_libraries( cellMergeImageFilter
   vtkHybrid
   )
 
-#ADD_TEST( singleCellSplitImageFilterTest
+#add_test( singleCellSplitImageFilterTest
 #  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/singleCellSplitImageFilter
 #  ${TESTING_DATA_PATH}/MultiphaseCells2D.png
 #  split.mhd
 #)
 
 
-ADD_EXECUTABLE( itkvtkMeshSplitterDanielssonImageFilterTest
+add_executable( itkvtkMeshSplitterDanielssonImageFilterTest
   itkvtkMeshSplitterDanielssonImageFilterTest.cxx
 )
-TARGET_LINK_LIBRARIES( itkvtkMeshSplitterDanielssonImageFilterTest
+target_link_libraries( itkvtkMeshSplitterDanielssonImageFilterTest
   QGoGui
 )
 
-ADD_TEST( itkvtkMeshSplitterDanielssonImageFilterTest
+add_test( itkvtkMeshSplitterDanielssonImageFilterTest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/itkvtkMeshSplitterDanielssonImageFilterTest
   ${TESTING_DATA_PATH}/Circle3D.mhd
 )
 
-ADD_EXECUTABLE( ExtractMeshesFromLabelImageFilter
+add_executable( ExtractMeshesFromLabelImageFilter
   ExtractMeshesFromLabelImageFilter.cxx
 )
-TARGET_LINK_LIBRARIES( ExtractMeshesFromLabelImageFilter
+target_link_libraries( ExtractMeshesFromLabelImageFilter
   #ITKCommon
   #ITKIO
   #ITKReview
   ${ITK_LIBRARIES}
 )
 
-ADD_EXECUTABLE(ConvertMeshesToLabelImageFilter ConvertMeshesToLabelImageFilter.cxx )
-TARGET_LINK_LIBRARIES( ConvertMeshesToLabelImageFilter
+add_executable(ConvertMeshesToLabelImageFilter ConvertMeshesToLabelImageFilter.cxx )
+target_link_libraries( ConvertMeshesToLabelImageFilter
   # ITKIO ITKReview
   ${ITK_LIBRARIES}
 )
 
-ADD_EXECUTABLE( itkQuadEdgeMeshTovtkPolyDataTest itkQuadEdgeMeshTovtkPolyDataTest.cxx )
-TARGET_LINK_LIBRARIES( itkQuadEdgeMeshTovtkPolyDataTest
+add_executable( itkQuadEdgeMeshTovtkPolyDataTest itkQuadEdgeMeshTovtkPolyDataTest.cxx )
+target_link_libraries( itkQuadEdgeMeshTovtkPolyDataTest
   #ITKCommon
   ${ITK_LIBRARIES}
   vtkHybrid
 )
 
-ADD_EXECUTABLE( itkvtkPolyDataToitkQuadEdgeMeshTest
+add_executable( itkvtkPolyDataToitkQuadEdgeMeshTest
   itkvtkPolyDataToitkQuadEdgeMeshTest.cxx )
-TARGET_LINK_LIBRARIES( itkvtkPolyDataToitkQuadEdgeMeshTest
+target_link_libraries( itkvtkPolyDataToitkQuadEdgeMeshTest
   #ITKCommon
   ${ITK_LIBRARIES}
   vtkHybrid
 )
 
-ADD_TEST( itkvtkPolyDataToitkQuadEdgeMeshTest
+add_test( itkvtkPolyDataToitkQuadEdgeMeshTest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/itkvtkPolyDataToitkQuadEdgeMeshTest
 )
 
-ADD_EXECUTABLE( itkvtkMeshMergeConvexHullFilterTest
+add_executable( itkvtkMeshMergeConvexHullFilterTest
   itkvtkMeshMergeConvexHullFilterTest.cxx )
-TARGET_LINK_LIBRARIES( itkvtkMeshMergeConvexHullFilterTest
+target_link_libraries( itkvtkMeshMergeConvexHullFilterTest
   QGoGui
 )
-ADD_TEST( itkvtkMeshMergeConvexHullFilterTest
+add_test( itkvtkMeshMergeConvexHullFilterTest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/itkvtkMeshMergeConvexHullFilterTest
   ${TESTING_DATA_PATH}/Circle3D.mhd
 )

@@ -13,27 +13,27 @@ endif()
 # Enable and setup External project global properties
 #---------------------------------------------------------------------------
 
-INCLUDE(ExternalProject)
+include(ExternalProject)
 
 set(ep_base        "${CMAKE_BINARY_DIR}")
 #set(ep_install_dir "${ep_base}/Install")
 
 # should be preset for user or for developer???
-OPTION( SUPER_SHARED_LIBS ON )
+option( SUPER_SHARED_LIBS ON )
 
-IF( SUPER_SHARED_LIBS )
-	ADD_DEFINITIONS( -DGOFIGURE2_BUILD_SHARED_LIBS )
-ELSE( SUPER_SHARED_LIBS )
-	REMOVE_DEFINITIONS( -DGOFIGURE2_BUILD_SHARED_LIBS )
-ENDIF( SUPER_SHARED_LIBS )
+if( SUPER_SHARED_LIBS )
+	add_definitions( -DGOFIGURE2_BUILD_SHARED_LIBS )
+else( SUPER_SHARED_LIBS )
+	remove_definitions( -DGOFIGURE2_BUILD_SHARED_LIBS )
+endif( SUPER_SHARED_LIBS )
 
-SET(ep_install_dir ${CMAKE_INSTALL_PREFIX})
-SET(ep_common_c_flags "${CMAKE_C_FLAGS_INIT} ${ADDITIONAL_C_FLAGS}")
-SET(ep_common_cxx_flags "${CMAKE_CXX_FLAGS_INIT} ${ADDITIONAL_CXX_FLAGS}")
-SET(ep_common_cxx_compiler "${CMAKE_CXX_COMPILER}" )
-SET(ep_common_c_compiler "${CMAKE_C_COMPILER}" )
+set(ep_install_dir ${CMAKE_INSTALL_PREFIX})
+set(ep_common_c_flags "${CMAKE_C_FLAGS_INIT} ${ADDITIONAL_C_FLAGS}")
+set(ep_common_cxx_flags "${CMAKE_CXX_FLAGS_INIT} ${ADDITIONAL_CXX_FLAGS}")
+set(ep_common_cxx_compiler "${CMAKE_CXX_COMPILER}" )
+set(ep_common_c_compiler "${CMAKE_C_COMPILER}" )
 
-SET(ep_common_args
+set(ep_common_args
   -DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}
   -DBUILD_SHARED_LIBS:BOOL=${SUPER_SHARED_LIBS}
   -DBUILD_TESTING:BOOL=OFF
@@ -60,74 +60,74 @@ set(GoFigure2_DEPENDENCIES)
 
 #-------------------------
 
-OPTION( SUPER_BOOST "SuperBuild BOOST" ON )
+option( SUPER_BOOST "SuperBuild BOOST" ON )
 
 set( Boost_SUPPORT )
 
-IF( SUPER_BOOST )
+if( SUPER_BOOST )
   include("${CMAKE_CURRENT_SOURCE_DIR}/CMake/SuperBuild/External-Boost.cmake")
   set( Boost_SUPPORT
     -DBoost_INCLUDE_DIR:PATH=${CMAKE_BINARY_DIR}/Boost
     -DBoost_LIBRARY_DIRS:PATH=${CMAKE_BINARY_DIR}/Boost-build/lib
  )
-  LIST(APPEND GoFigure2_DEPENDENCIES Boost)
-ELSE( SUPER_BOOST )
+  list(APPEND GoFigure2_DEPENDENCIES Boost)
+else( SUPER_BOOST )
   include( "${CMAKE_CURRENT_SOURCE_DIR}/CMake/ConfigBoost.cmake" )
-ENDIF( SUPER_BOOST )
+endif( SUPER_BOOST )
 
 #-------------------------
 
 # REQUIRED MYSQLand QT TO BUILD VTK
-OPTION( SUPER_VTK "SuperBuild VTK" ON )
+option( SUPER_VTK "SuperBuild VTK" ON )
 
-IF( SUPER_VTK )
+if( SUPER_VTK )
   # check if we have MySQL - COMPULSORY
   include("${CMAKE_CURRENT_SOURCE_DIR}/CMake/ConfigMySQL.cmake")
   # check if we have QT - COMPULSORY
   include("${CMAKE_CURRENT_SOURCE_DIR}/CMake/ConfigQT.cmake")
 
-  OPTION( SUPER_VTK_VIDEO "ENABLE THE VIDEO SUPPORT IN SUPERBUILD" OFF )
-  IF( SUPER_VTK_VIDEO )
+  option( SUPER_VTK_VIDEO "ENABLE THE VIDEO SUPPORT IN SUPERBUILD" OFF )
+  if( SUPER_VTK_VIDEO )
     if( NOT WIN32 )
       option( SUPER_FFMPEG "SuperBuild FFMPEG" )
       # check if we have some video support (FFMPEG or AVI) - OPTIONAL
-      IF( SUPER_FFMPEG )
+      if( SUPER_FFMPEG )
         #add dependency to VTK if we have to build FFMPEG
         set(VTK_DEPENDENCIES FFMPEG)
         include( "${CMAKE_CURRENT_SOURCE_DIR}/CMake/SuperBuild/External-FFMPEG.cmake")
-      ELSE( SUPER_FFMPEG )
+      else( SUPER_FFMPEG )
         include("${CMAKE_CURRENT_SOURCE_DIR}/CMake/ConfigVideo.cmake")
-      ENDIF( SUPER_FFMPEG )
-    ELSE( NOT WIN32 )
+      endif( SUPER_FFMPEG )
+    else( NOT WIN32 )
       include("${CMAKE_CURRENT_SOURCE_DIR}/CMake/ConfigVideo.cmake")
-    ENDIF( NOT WIN32 )
-  ENDIF( SUPER_VTK_VIDEO)
+    endif( NOT WIN32 )
+  endif( SUPER_VTK_VIDEO)
 
   # add the vtk external project
   include("${CMAKE_CURRENT_SOURCE_DIR}/CMake/SuperBuild/External-VTK.cmake")
   # add the external projrct "VTK" to the list of dependencies
-  LIST(APPEND GoFigure2_DEPENDENCIES VTK)
-ELSE( SUPER_VTK )
+  list(APPEND GoFigure2_DEPENDENCIES VTK)
+else( SUPER_VTK )
   # check if our vtk is properly configured
   include( "${CMAKE_CURRENT_SOURCE_DIR}/CMake/ConfigVTK.cmake" )
-ENDIF( SUPER_VTK )
+endif( SUPER_VTK )
 
 #-------------------------
 
-OPTION( SUPER_ITK "SuperBuild ITK" ON )
+option( SUPER_ITK "SuperBuild ITK" ON )
 
-IF( SUPER_ITK )
+if( SUPER_ITK )
   include("${CMAKE_CURRENT_SOURCE_DIR}/CMake/SuperBuild/External-ITK.cmake")
-  LIST(APPEND GoFigure2_DEPENDENCIES ITK)
-ELSE( SUPER_ITK )
+  list(APPEND GoFigure2_DEPENDENCIES ITK)
+else( SUPER_ITK )
   include( "${CMAKE_CURRENT_SOURCE_DIR}/CMake/ConfigITK.cmake" )
-ENDIF( SUPER_ITK )
+endif( SUPER_ITK )
 
 #---------------------------------------------------------------------------
 # Set superbuild boolean args
 #
 
-#SET(GoFigure2_cmake_boolean_args
+#set(GoFigure2_cmake_boolean_args
 #  BUILD_DOCUMENTATION
 #  BUILD_TESTING
 #  BUILD_SHARED_LIBS
@@ -135,15 +135,15 @@ ENDIF( SUPER_ITK )
 #  WITH_MEMCHECK
 #  )
 
-#SET(GoFigure2_superbuild_boolean_args)
-#FOREACH(GoFigure2_cmake_arg ${GoFigure2_cmake_boolean_args})
-#  LIST(APPEND GoFigure2_superbuild_boolean_args -D${GoFigure2_cmake_arg}:BOOL=${${GoFigure2_cmake_arg}})
-#ENDFOREACH()
+#set(GoFigure2_superbuild_boolean_args)
+#foreach(GoFigure2_cmake_arg ${GoFigure2_cmake_boolean_args})
+#  list(APPEND GoFigure2_superbuild_boolean_args -D${GoFigure2_cmake_arg}:BOOL=${${GoFigure2_cmake_arg}})
+#endforeach()
 
-# MESSAGE("CMake args:")
-# FOREACH(arg ${GoFigure2_superbuild_boolean_args})
-#   MESSAGE("  ${arg}")
-# ENDFOREACH()
+# message("CMake args:")
+# foreach(arg ${GoFigure2_superbuild_boolean_args})
+#   message("  ${arg}")
+# endforeach()
 
 #---------------------------------------------------------------------------
 # Configure and build GoFigure2
@@ -175,10 +175,10 @@ ExternalProject_Add(${proj}
   INSTALL_COMMAND ""
   )
 
-ADD_CUSTOM_TARGET(superinstall 
+add_custom_target(superinstall 
                   COMMAND ${CMAKE_COMMAND} -E chdir GoFigure2-build/ make install
                   DEPENDS GoFigure2)
 
-ADD_CUSTOM_TARGET(superpackage
+add_custom_target(superpackage
                   COMMAND ${CMAKE_COMMAND} -E chdir GoFigure2-build/ make package
                   DEPENDS GoFigure2)

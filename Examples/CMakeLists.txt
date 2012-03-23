@@ -1,4 +1,4 @@
-ADD_SUBDIRECTORY( ExternalCode )
-ADD_SUBDIRECTORY( Filters )
-ADD_SUBDIRECTORY( IO )
-ADD_SUBDIRECTORY( GUI )
+add_subdirectory( ExternalCode )
+add_subdirectory( Filters )
+add_subdirectory( IO )
+add_subdirectory( GUI )

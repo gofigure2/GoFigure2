@@ -3,23 +3,23 @@ INCLUDE ( CTest )
 
 #----------------------------------------------------------
 # Build name
-SET( BUILDNAME "${BUILDNAME}"
+set( BUILDNAME "${BUILDNAME}"
                CACHE STRING "Name of build on the dashboard"
               )
-MARK_AS_ADVANCED( BUILDNAME )
+mark_as_advanced( BUILDNAME )
 
 #----------------------------------------------------------
 # Sikuli
-OPTION( TESTING_USING_SIKULI "Use Sikuli for testing" OFF )
-MARK_AS_ADVANCED( TESTING_USING_SIKULI )
+option( TESTING_USING_SIKULI "Use Sikuli for testing" OFF )
+mark_as_advanced( TESTING_USING_SIKULI )
 
-IF( TESTING_USING_SIKULI )
-  FIND_PACKAGE( Sikuli )
-  ADD_SUBDIRECTORY( Testing )
-ENDIF( TESTING_USING_SIKULI )
+if( TESTING_USING_SIKULI )
+  find_package( Sikuli )
+  add_subdirectory( Testing )
+endif( TESTING_USING_SIKULI )
 
 #----------------------------------------------------------  
-CONFIGURE_FILE( CMake/CTestCustom.cmake.in
+configure_file( CMake/CTestCustom.cmake.in
   ${CMAKE_CURRENT_BINARY_DIR}/CTestCustom.cmake
   @ONLY
           )

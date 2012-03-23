@@ -2,24 +2,24 @@
 # This CMake code installs the needed support libraries on NON OSX platforms
 # ------------------------------------------------------------------------- 
 
-INCLUDE( InstallRequiredSystemLibraries )
+include( InstallRequiredSystemLibraries )
 
 # ------------------------------------------------------------------------- 
 # Find/Install the needed Qt4 libraries. 
-SET( QTLIBLIST QtCore QtGui QtNetwork )
-IF( NOT Q_WS_MAC )
-  FOREACH( qtlib ${QTLIBLIST} )
-    IF( WIN32 )
-      GET_FILENAME_COMPONENT( QT_DLL_PATH_tmp ${QT_QMAKE_EXECUTABLE} PATH )
-      INSTALL( FILES ${QT_DLL_PATH_tmp}/${qtlib}d4.dll 
+set( QTLIBLIST QtCore QtGui QtNetwork )
+if( NOT Q_WS_MAC )
+  foreach( qtlib ${QTLIBLIST} )
+    if( WIN32 )
+      get_filename_component( QT_DLL_PATH_tmp ${QT_QMAKE_EXECUTABLE} PATH )
+      install( FILES ${QT_DLL_PATH_tmp}/${qtlib}d4.dll 
           DESTINATION bin 
           CONFIGURATIONS Debug 
           COMPONENT Runtime )
-      INSTALL( FILES ${QT_DLL_PATH_tmp}/${qtlib}4.dll 
+      install( FILES ${QT_DLL_PATH_tmp}/${qtlib}4.dll 
           DESTINATION bin 
           CONFIGURATIONS Release 
           COMPONENT Runtime )
-    ENDIF( WIN32 )
-  ENDFOREACH( qtlib )
-ENDIF( NOT Q_WS_MAC )
+    endif( WIN32 )
+  endforeach( qtlib )
+endif( NOT Q_WS_MAC )
 

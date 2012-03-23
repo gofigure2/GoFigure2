@@ -1,5 +1,5 @@
 #----------------------------------------------------------
-ADD_SUBDIRECTORY( Examples )
-ADD_SUBDIRECTORY( KWStyle )
-OPTION( BUILD_TESTING "Test the project" ON )
+add_subdirectory( Examples )
+add_subdirectory( KWStyle )
+option( BUILD_TESTING "Test the project" ON )
 

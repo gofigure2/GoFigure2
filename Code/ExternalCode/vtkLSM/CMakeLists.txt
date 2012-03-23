@@ -1,31 +1,31 @@
-IF( WIN32 )
-  IF( NOT CYGWIN )
-    IF( NOT MINGW )
-      IF( BUILD_SHARED_LIBS )
-        ADD_DEFINITIONS( -DvtkLSM_EXPORT )
-      ENDIF( BUILD_SHARED_LIBS )
-    ENDIF( NOT MINGW )
-  ENDIF( NOT CYGWIN )
-ENDIF( WIN32 )
+if( WIN32 )
+  if( NOT CYGWIN )
+    if( NOT MINGW )
+      if( BUILD_SHARED_LIBS )
+        add_definitions( -DvtkLSM_EXPORT )
+      endif( BUILD_SHARED_LIBS )
+    endif( NOT MINGW )
+  endif( NOT CYGWIN )
+endif( WIN32 )
 
-CONFIGURE_FILE( ${CMAKE_CURRENT_SOURCE_DIR}/vtkLSMConfigure.h.in
+configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/vtkLSMConfigure.h.in
   ${CMAKE_CURRENT_BINARY_DIR}/vtkLSMConfigure.h
   @ONLY IMMEDIATE
 )
 
-ADD_LIBRARY( vtkLSMReader
+add_library( vtkLSMReader
   vtkLSMReader.cxx
 )
 
-TARGET_LINK_LIBRARIES( vtkLSMReader
+target_link_libraries( vtkLSMReader
   vtkIO
   vtkFiltering
 )
 
-SET_TARGET_PROPERTIES( vtkLSMReader PROPERTIES VERSION ${GOFIGURE2_LIB_VERSION} SOVERSION ${GOFIGURE2_LIB_VERSION} )
+set_target_properties( vtkLSMReader PROPERTIES VERSION ${GOFIGURE2_LIB_VERSION} SOVERSION ${GOFIGURE2_LIB_VERSION} )
 
 # Runtime
-INSTALL( TARGETS vtkLSMReader
+install( TARGETS vtkLSMReader
   EXPORT GoFigure2Targets
   RUNTIME DESTINATION ${GOFIGURE2_INSTALL_BIN_DIR} COMPONENT Runtime
   ARCHIVE DESTINATION ${GOFIGURE2_INSTALL_LIB_DIR} COMPONENT Libraries
@@ -33,16 +33,16 @@ INSTALL( TARGETS vtkLSMReader
   )
 
 # Development
-INSTALL( TARGETS vtkLSMReader
+install( TARGETS vtkLSMReader
   EXPORT GoFigure2Targets
   RUNTIME DESTINATION ${GOFIGURE2_INSTALL_BIN_DIR} COMPONENT Runtime
   ARCHIVE DESTINATION ${GOFIGURE2_INSTALL_LIB_DIR} COMPONENT Libraries
   LIBRARY DESTINATION ${GOFIGURE2_INSTALL_LIB_DIR} COMPONENT Libraries NAMELINK_ONLY
   )
 
-FILE( GLOB __source_file_h "${CMAKE_CURRENT_SOURCE_DIR}/*.h" )
+file( GLOB __source_file_h "${CMAKE_CURRENT_SOURCE_DIR}/*.h" )
 
-INSTALL( FILES ${__source_file_h}
+install( FILES ${__source_file_h}
   ${GOFIGURE2_BINARY_DIR}/Code/ExternalCode/vtkLSM/vtkLSMConfigure.h
   DESTINATION ${GOFIGURE2_INSTALL_HEADER_DIR}
   COMPONENT Development

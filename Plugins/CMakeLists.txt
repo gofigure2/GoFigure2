@@ -1,1 +1,1 @@
-ADD_SUBDIRECTORY( ImageMedianPlugin )
+add_subdirectory( ImageMedianPlugin )

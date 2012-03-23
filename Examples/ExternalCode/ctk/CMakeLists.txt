@@ -1,22 +1,22 @@
-SET( CTK_EXAMPLE_SRC
+set( CTK_EXAMPLE_SRC
   ctkDoubleSlider
   ctkCollapsibleGroupBoxTest
 )
 
-FOREACH( var ${CTK_EXAMPLE_SRC} )
+foreach( var ${CTK_EXAMPLE_SRC} )
 
-  ADD_EXECUTABLE( ${var} ${var}.cxx )
-  TARGET_LINK_LIBRARIES( ${var} ctk )
+  add_executable( ${var} ${var}.cxx )
+  target_link_libraries( ${var} ctk )
 
-ENDFOREACH( var ${CTK_EXAMPLE_SRC} )
+endforeach( var ${CTK_EXAMPLE_SRC} )
 
 
-ADD_TEST( ctkDoubleSliderTest1
+add_test( ctkDoubleSliderTest1
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/ctkDoubleSlider
   1
 )
 
-ADD_TEST( ctkCollapsibleGroupBoxTest1
+add_test( ctkCollapsibleGroupBoxTest1
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/ctkCollapsibleGroupBoxTest
   1
 )

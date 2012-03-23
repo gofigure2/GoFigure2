@@ -1,24 +1,24 @@
 #----------------------------------------------------------
 # FIND DOXYGEN
 
-FIND_PACKAGE( Doxygen )
+find_package( Doxygen )
 
-IF( DOXYGEN_FOUND )
-  IF( DOXYGEN_DOT_FOUND )
-    OPTION( LINK_EXTERNAL_DOC
+if( DOXYGEN_FOUND )
+  if( DOXYGEN_DOT_FOUND )
+    option( LINK_EXTERNAL_DOC
       "Should the doc be linked with external sources (VTK, ITK...)?"
       OFF
     )
-    ADD_SUBDIRECTORY( Documentation )
+    add_subdirectory( Documentation )
 
-  ELSE( DOXYGEN_DOT_FOUND )
-    MESSAGE( STATUS
+  else( DOXYGEN_DOT_FOUND )
+    message( STATUS
       "Warning: Dot (from GraphViz) not found - Documentation will not ce generated"
     )
-  ENDIF( DOXYGEN_DOT_FOUND )
+  endif( DOXYGEN_DOT_FOUND )
 
-ELSE( DOXYGEN_FOUND )
-  MESSAGE( STATUS
+else( DOXYGEN_FOUND )
+  message( STATUS
   "Warning: Doxygen not found - Documentation will not be created"
   )
-ENDIF( DOXYGEN_FOUND )
+endif( DOXYGEN_FOUND )

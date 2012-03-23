@@ -1,36 +1,36 @@
-IF( WIN32 )
-  IF( NOT CYGWIN )
-    IF( NOT MINGW )
-      IF( BUILD_SHARED_LIBS )
-        ADD_DEFINITIONS( -DitkQt_EXPORT )
-      ENDIF( BUILD_SHARED_LIBS )
-    ENDIF( NOT MINGW )
-  ENDIF( NOT CYGWIN )
-ENDIF( WIN32 )
+if( WIN32 )
+  if( NOT CYGWIN )
+    if( NOT MINGW )
+      if( BUILD_SHARED_LIBS )
+        add_definitions( -DitkQt_EXPORT )
+      endif( BUILD_SHARED_LIBS )
+    endif( NOT MINGW )
+  endif( NOT CYGWIN )
+endif( WIN32 )
 
 
-CONFIGURE_FILE(
+configure_file(
   ${CMAKE_CURRENT_SOURCE_DIR}/itkQtConfigure.h.in
   ${CMAKE_CURRENT_BINARY_DIR}/itkQtConfigure.h @ONLY IMMEDIATE )
 
 QT4_WRAP_CPP( itkQtAdaptor_MOC itkQtAdaptor.h )
 
-ADD_LIBRARY( itkQt
+add_library( itkQt
   itkQtProgressBar.cxx
   itkQtProgressDialog.cxx
   itkQtAdaptor.h
   ${itkQtAdaptor_MOC}
 )
 
-TARGET_LINK_LIBRARIES( itkQt
+target_link_libraries( itkQt
   ${ITK_LIBRARIES}
   ${QT_LIBRARIES}
   )
 
-SET_TARGET_PROPERTIES( itkQt PROPERTIES VERSION ${GOFIGURE2_LIB_VERSION} SOVERSION ${GOFIGURE2_LIB_VERSION} )
+set_target_properties( itkQt PROPERTIES VERSION ${GOFIGURE2_LIB_VERSION} SOVERSION ${GOFIGURE2_LIB_VERSION} )
 
 # Runtime
-INSTALL( TARGETS itkQt
+install( TARGETS itkQt
   EXPORT GoFigure2Targets
   RUNTIME DESTINATION ${GOFIGURE2_INSTALL_BIN_DIR} COMPONENT Runtime
   LIBRARY DESTINATION ${GOFIGURE2_INSTALL_LIB_DIR} NAMELINK_SKIP COMPONENT Libraries
@@ -38,17 +38,17 @@ INSTALL( TARGETS itkQt
   )
 
 # Development
-INSTALL( TARGETS itkQt
+install( TARGETS itkQt
   EXPORT GoFigure2Targets
   RUNTIME DESTINATION ${GOFIGURE2_INSTALL_BIN_DIR} COMPONENT Runtime
   LIBRARY DESTINATION ${GOFIGURE2_INSTALL_LIB_DIR} NAMELINK_ONLY COMPONENT Libraries
   ARCHIVE DESTINATION ${GOFIGURE2_INSTALL_LIB_DIR} COMPONENT Libraries
   )
 
-FILE( GLOB __source_file_h "${CMAKE_CURRENT_SOURCE_DIR}/*.h" )
-FILE( GLOB __binary_file_h "${CMAKE_CURRENT_BINARY_DIR}/*.h" )
+file( GLOB __source_file_h "${CMAKE_CURRENT_SOURCE_DIR}/*.h" )
+file( GLOB __binary_file_h "${CMAKE_CURRENT_BINARY_DIR}/*.h" )
 
-INSTALL( FILES ${__source_file_h} ${__binary_file_h}
+install( FILES ${__source_file_h} ${__binary_file_h}
   DESTINATION ${GOFIGURE2_INSTALL_HEADER_DIR}
   COMPONENT Development
 )
