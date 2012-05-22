@@ -137,6 +137,14 @@ public:
                                                         ShapeConverterType;
   typedef typename ShapeConverterType::Pointer          ShapeConverterPointer;
 
+  #ifdef ITKv4
+  #else
+  typedef typename ShapeLabelMapType::LabelObjectContainerType
+                                                        LabelObjectContainerType;
+  typedef typename LabelObjectContainerType::const_iterator
+                                                        LabelObjectIterator;
+  #endif
+
   // ---------------------------------------------------------------------------
 
   /** \typedef StatLabelObjectType */

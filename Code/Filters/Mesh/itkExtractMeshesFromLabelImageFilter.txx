@@ -210,6 +210,7 @@ ThreadedExtractMesh( const unsigned int& startLabel,
 
   LabelType label = startLabel;
 
+  std::cout << "Labels" << startLabel << ' ' << endLabel << std::endl;
 
   while( label <= endLabel )
     {
