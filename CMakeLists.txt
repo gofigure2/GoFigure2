@@ -143,10 +143,10 @@ else( SUPERBUILD )
     set( GOFIGURE2_INSTALL_LICENSE_DIR "share/doc/gofigure2/Licenses" )
   endif( NOT GOFIGURE2_INSTALL_LICENSE_DIR )
 
-  if( NOT GOFIGURE2_INSTALL_RESOURCE_DIR )
-    set( GOFIGURE2_INSTALL_RESOURCE_DIR "share/doc/gofigure2/Resources" )
-  endif( NOT GOFIGURE2_INSTALL_RESOURCE_DIR )
-  
+  IF( NOT GOFIGURE2_INSTALL_RESOURCE_DIR )
+    SET( GOFIGURE2_INSTALL_RESOURCE_DIR "share/doc/gofigure2/Resources" )
+  ENDIF( NOT GOFIGURE2_INSTALL_RESOURCE_DIR )
+
   #---------------------------------------------------------------------------
   # Define CMAKE_whatever_OUTPUT_DIRECTORY
   #---------------------------------------------------------------------------

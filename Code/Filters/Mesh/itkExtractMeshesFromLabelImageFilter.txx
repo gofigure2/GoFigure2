@@ -201,30 +201,26 @@ ExtractMeshesFromLabelImageFilter< TImage, TFeatureImage >::
 ThreadedExtractMesh( const unsigned int& startLabel,
                      const unsigned int& endLabel )
 {
-  LabelObjectContainerType container = m_ShapeLabelMap->GetLabelObjectContainer();
-
   SizeType size;
   IndexType index;
   RegionType region;
   SizeType inputSize = m_Input->GetLargestPossibleRegion().GetSize();
 
-  LabelObjectIterator l_it = container.begin();
-
-  for ( unsigned int j = 1; j < startLabel; ++j, ++l_it )
-    {}
-
   MeshPointer mesh, smoothMesh, decimatedMesh;
 
   LabelType label = startLabel;
-  LabelObjectIterator l_end = container.end();
 
-  while( ( label <= endLabel ) && ( l_it != l_end ) )
+
+  while( label <= endLabel )
     {
-    LabelType i = l_it->first;
+    LabelType i = m_ShapeLabelMap->GetLabels()[label-1];
+
     #ifdef ITKv4
-    region = m_ShapeLabelMap->GetLabelObject ( i )->GetBoundingBox();
+        region = m_ShapeLabelMap->GetLabelObject ( i )->GetBoundingBox();
+        std::cout << "In v4" << std::endl;
     #else
-    region = m_ShapeLabelMap->GetLabelObject ( i )->GetRegion();
+        region = m_ShapeLabelMap->GetLabelObject ( i )->GetRegion();
+        std::cout << "In v3" << std::endl;
     #endif
 
     index = region.GetIndex();
@@ -307,7 +303,6 @@ ThreadedExtractMesh( const unsigned int& startLabel,
 
     m_MeshtoLabelIdMap.insert( std::pair< size_t, LabelType >( label - 1, i ) );
 
-    ++l_it;
     ++label;
   }
 }

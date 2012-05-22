@@ -13,8 +13,7 @@ if( ITK_FOUND )
   # can't check version: 4.0.0 is modularized and old style...)
   #----------------------------------------------------------
   if( ITK_VERSION_MAJOR EQUAL "4" )
-
-    add_definitions( -DITKv4 )
+    ADD_DEFINITIONS( -DITKv4 )
 
     if( NOT DEFINED ITK_MODULES_ENABLED )
       message( SEND_ERROR
