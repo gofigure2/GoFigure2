@@ -117,7 +117,6 @@ private:
   vtkSmartPointer<vtkGraphLayoutView>    m_treeGraphView;
   vtkSmartPointer<vtkAnnotationLink>     m_annotationLink;
   vtkSmartPointer<vtkEventQtSlotConnect> m_connect;
-  vtkSmartPointer<vtkLookupTable>        m_lut;
   vtkSmartPointer<vtkTreeLayoutStrategy> m_treeLayoutStrategy;
 
   // Experimental stuff...

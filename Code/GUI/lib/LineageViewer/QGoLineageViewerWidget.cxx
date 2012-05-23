@@ -52,6 +52,7 @@
 #include "vtkRenderWindow.h"
 #include "vtkTreeLayoutStrategy.h"
 #include "vtkRenderedGraphRepresentation.h"
+#include "vtkOutEdgeIterator.h"
 
 // color coding
 #include "vtkLookupTable.h"
@@ -158,16 +159,35 @@ void QGoLineageViewerWidget::ConfigureGraphView()
   this->ui->graphViewWidget->SetRenderWindow(
       this->m_treeGraphView->GetRenderWindow() );
 
-  // create LUT
-  this->m_lut = vtkSmartPointer<vtkLookupTable>::New();
-  this->m_lut->SetHueRange(0.667, 0.0);
-  this->m_lut->Build();
+  // create vertex LUT
+  vtkSmartPointer<vtkLookupTable> m_lut =
+      vtkSmartPointer<vtkLookupTable>::New();
+  m_lut->SetHueRange(0.667, 0.0);
+  m_lut->Build();
+  // first node will be transparent
+  m_lut->SetTableValue(0, 0, 0, 0);
+  m_lut->Build();
+
+
+  // create edge LUT
+  vtkSmartPointer<vtkLookupTable> m_lut1
+      = vtkSmartPointer<vtkLookupTable>::New();
+  m_lut1->SetNumberOfTableValues(2);
+  m_lut1->Build();
+  // first node will be transparent
+  m_lut1->SetTableValue(0.0, 0.0, 0.0, 0.0);
+  m_lut1->SetTableValue(1.0, 1.0, 1.0, 1.0);
+  m_lut1->Build();
 
   // create theme
   vtkSmartPointer<vtkViewTheme> theme =
     vtkSmartPointer<vtkViewTheme>::New();
-  theme->SetPointLookupTable(this->m_lut);
-  theme->SetCellLookupTable(this->m_lut);
+  theme->SetPointLookupTable(m_lut);
+  theme->SetCellLookupTable(m_lut1);
+  // no background gradient (not pretty with transparent root)
+  double color[4] = {0.0, 0.0, 0.0, 0.0};
+  theme->SetBackgroundColor(color);
+  theme->SetBackgroundColor2(color);
 
   this->m_treeGraphView->ApplyViewTheme(theme);
 
@@ -177,6 +197,13 @@ void QGoLineageViewerWidget::ConfigureGraphView()
   this->m_treeLayoutStrategy->SetRadial(false);
   this->m_treeLayoutStrategy->SetLogSpacingValue(1);
   this->m_treeGraphView->SetLayoutStrategy(this->m_treeLayoutStrategy);
+
+
+  //color code vertices to hide root...?
+
+  // color code edges
+  this->m_treeGraphView->SetColorEdges(true);
+  this->m_treeGraphView->SetEdgeColorArrayName("Edges");
 }
 //----------------------------------------------------------------------------
 
@@ -318,22 +345,22 @@ void QGoLineageViewerWidget::UpdateGraph()
   vtkSmartPointer<vtkDoubleArray> id =
       vtkSmartPointer<vtkDoubleArray>::New();
   id->SetName("Track ID");
-  id->InsertValue(rootID, 0);
+  id->InsertValue(rootID, -1);
 
   vtkSmartPointer<vtkDoubleArray> depth =
       vtkSmartPointer<vtkDoubleArray>::New();
   depth->SetName("Lineage Depth");
-  depth->InsertValue(rootID, 0);
+  depth->InsertValue(rootID, -1);
 
     vtkSmartPointer<vtkDoubleArray> firstTP =
       vtkSmartPointer<vtkDoubleArray>::New();
   firstTP->SetName("First Time Point");
-  firstTP->InsertValue(rootID, 0);
+  firstTP->InsertValue(rootID, -1);
 
     vtkSmartPointer<vtkDoubleArray> lastTP =
       vtkSmartPointer<vtkDoubleArray>::New();
   lastTP->SetName("Last Time Point");
-  lastTP->InsertValue(rootID, 0);
+  lastTP->InsertValue(rootID, -1);
 
   // fill the new graph
   std::list<std::pair<QString, vtkSmartPointer<vtkTree> > >::iterator
@@ -357,6 +384,27 @@ void QGoLineageViewerWidget::UpdateGraph()
   newGraph->GetVertexData()->AddArray(firstTP);
   newGraph->GetVertexData()->AddArray(lastTP);
 
+  //create lut for edges based on number of edges
+  vtkSmartPointer<vtkOutEdgeIterator> itEdge =
+      vtkSmartPointer<vtkOutEdgeIterator>::New();
+  newGraph->GetOutEdges(0, itEdge);
+
+  vtkSmartPointer<vtkDoubleArray> edges =
+      vtkSmartPointer<vtkDoubleArray>::New();
+  edges->SetName("Edges");
+
+
+  for(int k=0; k<newGraph->GetNumberOfEdges(); k++)
+  {
+  edges->InsertValue(k, 1);
+  }
+
+  while(itEdge->HasNext())
+  {
+  vtkOutEdgeType e = itEdge->Next();
+  edges->InsertValue(e.Id, -1);
+  }
+  newGraph->GetEdgeData()->AddArray(edges);
 
   m_Graph->CheckedDeepCopy(newGraph);
   m_Tree->CheckedDeepCopy(newGraph);
@@ -463,7 +511,6 @@ void QGoLineageViewerWidget::slotEnableColorCode(int state)
 void QGoLineageViewerWidget::slotChangeColorCode(QString array)
 {
   this->m_treeGraphView->SetVertexColorArrayName(array.toLocal8Bit().data());
-  this->m_treeGraphView->SetEdgeColorArrayName(array.toLocal8Bit().data());
 
   //update visu
    this->m_treeGraphView->Render();
