@@ -87,7 +87,7 @@ GenerateData()
        && ( m_Mesh->GetNumberOfPoints() == 0 ) )
     {
     itkExceptionMacro(
-      "vtkPolyDataToBinaryMaskImageFilter::GenerateData(): m_Mesh has nor cells nor points");
+      "vtkPolyDataToBinaryMaskImageFilter::GenerateData(): m_Mesh has no cells nor points");
     return;
     }
 

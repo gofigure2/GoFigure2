@@ -159,8 +159,8 @@ ThreadedExtractMesh( const unsigned int& startLabel,
 
     for( unsigned int i = 0; i < ImageDimension; ++i )
       {
-      imin[i] = imin[i] - 1;
-      imax[i] = imax[i] + 1;
+      imin[i] = imin[i] - 2;
+      imax[i] = imax[i] + 2;
 
       size[i] = imax[i] - imin[i] + 1;
       }

@@ -79,7 +79,7 @@ SplitBinaryImage()
   DistanceFilterPointer distance_filter = DistanceFilterType::New();
   distance_filter->SetInput( seed_image );
   distance_filter->UseImageSpacingOn();
-  distance_filter->SetInputIsBinary( true );
+  distance_filter->SetInputIsBinary( false );
   distance_filter->SetSquaredDistance( false );
   //distance_filter->UpdateLargestPossibleRegion();
   distance_filter->Update();
