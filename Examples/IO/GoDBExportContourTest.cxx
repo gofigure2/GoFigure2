@@ -41,20 +41,11 @@ int main(int argc, char *argv[])
   (void) argc;
   (void) argv;
   std::string ServerName = "localhost";
-  std::string filename;
+  std::string filename = argv[1];
   std::string Login="gofigure";
   std::string Password="gofigure";
   std::string DBName = "gofiguredatabase";
-  int ImgSessionID;
-
-//  std::cout<<"Enter your mysql user:"<<std::endl;
-//  std::cin >> Login;
-//  std::cout<<"Enter your mysql password:"<<std::endl;
-//  std::cin >> Password;
-  std::cout<<"Enter the path to your file to export to:"<<std::endl;
-  std::cin >> filename;
-  std::cout<<"Enter your imagingsessionID the traces will be exported from:"<<std::endl;
-  std::cin >> ImgSessionID;
+  int ImgSessionID = atoi( argv[2] );
 
   //export from database:
   GoDBExport ExportHelper(ServerName, Login,
