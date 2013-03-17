@@ -31,7 +31,7 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================*/
-#include "GoDBImport.h"
+#include "GoDBExport.h"
 #include <string>
 
 
@@ -42,29 +42,22 @@ int main(int argc, char *argv[])
   (void) argv;
   std::string ServerName = "localhost";
   std::string filename;
-  std::string Login;
-  std::string Password;
+  std::string Login="gofigure";
+  std::string Password="gofigure";
   std::string DBName = "gofiguredatabase";
   int ImgSessionID;
 
-  std::cout<<"Enter your mysql user:"<<std::endl;
-  std::cin >> Login;
-  std::cout<<"Enter your mysql password:"<<std::endl;
-  std::cin >> Password;
-  std::cout<<"Enter the path to your file to import:"<<std::endl;
+//  std::cout<<"Enter your mysql user:"<<std::endl;
+//  std::cin >> Login;
+//  std::cout<<"Enter your mysql password:"<<std::endl;
+//  std::cin >> Password;
+  std::cout<<"Enter the path to your file to export to:"<<std::endl;
   std::cin >> filename;
-  std::cout<<"Enter your imagingsessionID the traces will be imported to:"<<std::endl;
+  std::cout<<"Enter your imagingsessionID the traces will be exported from:"<<std::endl;
   std::cin >> ImgSessionID;
 
-  /*std::string ServerName = "localhost";
-  std::string filename = argv[1];
-  std::string Login = argv[2];
-  std::string Password = argv[3];
-  std::string DBName = "gofiguredatabase";
-  int ImgSessionID = argv[4];*/
-
-  //import into the database:
-  GoDBImport ImportHelper(ServerName, Login,
-                          Password, ImgSessionID, filename, 0);
-  ImportHelper.ImportTracks();
+  //export from database:
+  GoDBExport ExportHelper(ServerName, Login,
+                          Password, ImgSessionID, filename);
+  ExportHelper.ExportContours();
 }
