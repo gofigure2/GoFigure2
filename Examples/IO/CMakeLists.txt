@@ -13,6 +13,7 @@ set( QGOIO_EXAMPLES_SRC
   vtkPolyDataMySQLMeshWriter
   vtkPolyDataMySQLTrack
   GoDBImportTracksTest
+  GoDBExportContourTest
 #  kishmeshtextfilereader
 #  trackTextFilesReader
 )
@@ -74,7 +75,7 @@ add_test( vtkPolyDataMySQLMeshWriterTest
 
 add_test( MegaCaptureHeaderReaderTest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/MegaCaptureHeaderReaderTest
-  ${GOFIGURE2_BINARY_DIR}/Testing/earpax2isl11/earpax2isl11.lsm.meg  
+  ${GOFIGURE2_BINARY_DIR}/Testing/earpax2isl11/earpax2isl11.lsm.meg
 )
 
 add_test( lsmtomegacaptureTest
@@ -83,9 +84,9 @@ add_test( lsmtomegacaptureTest
   ${GOFIGURE2_BINARY_DIR}/Testing/earpax2isl11_lsmtomegacapture/
   png
   )
-  
+
 foreach( var ${GODB_SRC} )
-  add_test( ${var} 
+  add_test( ${var}
     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${var}
   )
 endforeach( var ${GODB_SRC} )
