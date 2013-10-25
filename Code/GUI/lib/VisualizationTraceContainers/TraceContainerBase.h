@@ -207,8 +207,8 @@ public:
     {
     using boost::multi_index::get;
 
-    this->Print(  this->m_Container.get< TIndex >().begin(),
-                  this->m_Container.get< TIndex >().end() );
+    this->Print(  this->m_Container.template get< TIndex >().begin(),
+                  this->m_Container.template get< TIndex >().end() );
     }
 
   /** \brief Print the container content in the application output. */
@@ -245,14 +245,14 @@ public:
     while ( it != iList.end() )
       {
       MultiIndexContainerTraceIDIterator id_it =
-        m_Container.get< TraceID >().find( static_cast< unsigned int >( *it ) );
+        m_Container.template get< TraceID >().find( static_cast< unsigned int >( *it ) );
 
-      if ( id_it != m_Container.get< TraceID >().end() )
+      if ( id_it != m_Container.template get< TraceID >().end() )
         {
         bool test = false;
-        m_Container.get< TraceID >().
+        m_Container.template get< TraceID >().
             modify( id_it , change_visible<MultiIndexContainerElementType>(test) );
-        m_Container.get< TraceID >().
+        m_Container.template get< TraceID >().
             modify( id_it , change_highlighted<MultiIndexContainerElementType>(test) );
 
         vtkProperty *tproperty = vtkProperty::New();
@@ -263,13 +263,13 @@ public:
         if ( id_it->Nodes )
           {
           bool test2 = id_it->Visible;
-          m_Container.get< TraceID >().
+          m_Container.template get< TraceID >().
               modify( id_it , change_visible<MultiIndexContainerElementType>( test2 ) );
 
           std::vector< vtkActor * > actor =
               this->m_ImageView->AddContour( id_it->Nodes, tproperty );
 
-          m_Container.get< TraceID >().
+          m_Container.template get< TraceID >().
               modify( id_it , change_actors<MultiIndexContainerElementType>( actor ) );
 
           typedef void ( QGoImageView3D::*ImageViewMember )(const int &, vtkActor *);
@@ -292,7 +292,7 @@ public:
           }
         else
           {
-          m_Container.get< TraceID >().
+          m_Container.template get< TraceID >().
               modify( id_it , change_visible<MultiIndexContainerElementType>(test) );
           }
         }
@@ -321,14 +321,14 @@ public:
 
     if ( iActors.size() == 4 )
       {
-      m_Container.get< TIndex >().
+      m_Container.template get< TIndex >().
           modify( iIt , change_actors<MultiIndexContainerElementType>(iActors) );
       }
     bool highlighted = iHighlighted;
     bool visible = iVisible;
-    m_Container.get< TIndex >().
+    m_Container.template get< TIndex >().
         modify( iIt , change_visible<MultiIndexContainerElementType>(visible) );
-    m_Container.get< TIndex >().
+    m_Container.template get< TIndex >().
         modify( iIt , change_highlighted<MultiIndexContainerElementType>(highlighted) );
 
     typedef void ( QGoImageView3D::*ImageViewMember )(const int &, vtkActor *);
@@ -407,7 +407,7 @@ public:
 
     // clean the container but don't erase the pointers since we still have the
     // adresses in the m_CurrentElement
-    m_Container.get< TIndex >().erase( iIt );
+    m_Container.template get< TIndex >().erase( iIt );
 
     return true;
     }
@@ -539,9 +539,9 @@ public:
     while( it != iValues.end() )
       {
       MultiIndexContainerTraceIDIterator
-          trace_it = this->m_Container.get<TraceID>().find( it->first );
+          trace_it = this->m_Container.template get<TraceID>().find( it->first );
 
-      if( trace_it != this->m_Container.get<TraceID>().end() )
+      if( trace_it != this->m_Container.template get<TraceID>().end() )
         {
           if (trace_it->Nodes) //make sure the trace has points !!!
           {
@@ -638,7 +638,7 @@ protected:
 
       typedef typename MultiIndexContainerType::template index< TraceID >::type::iterator
       IteratorType;
-      IteratorType it = m_Container.get< TraceID >().find(oTraceId);
+      IteratorType it = m_Container.template get< TraceID >().find(oTraceId);
 
       vtkProperty *temp_property = vtkProperty::New();
 
@@ -673,7 +673,7 @@ protected:
         oState = Qt::Unchecked;
         }
 
-      m_Container.get< TraceID >().
+      m_Container.template get< TraceID >().
           modify( it , change_highlighted<MultiIndexContainerElementType>(checked) );
 
       assert( m_ImageView );
@@ -689,14 +689,14 @@ protected:
 
     typedef typename MultiIndexContainerType::template index< TraceID >::type::iterator
     IteratorType;
-    IteratorType it = m_Container.get< TraceID >().find(oTraceId);
+    IteratorType it = m_Container.template get< TraceID >().find(oTraceId);
 
     assert ( it != m_Container.get< TraceID >().end() );
 
     if ( it->Visible != iState )
       {
       it->SetActorVisibility( iState );
-      m_Container.get< TraceID >().
+      m_Container.template get< TraceID >().
           modify( it , change_visible<MultiIndexContainerElementType>(iState) );
       }
     }
