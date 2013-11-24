@@ -4,19 +4,19 @@ find_package( VTK REQUIRED )
   #----------------------------------------------------------
   include( ${VTK_USE_FILE} )
 
-  # check for QQT insta;;er
+  # check for Qt installer
 
   #----------------------------------------------------------
   # Check the version of VTK
   # GoFigure2 requires vtk >= 5.6
-  if( ( ${VTK_MAJOR_VERSION} LESS 5 ) OR ( ${VTK_MINOR_VERSION} LESS 6 ) )
+  if( ( ${VTK_MAJOR_VERSION} LESS 6 ) OR ( ${VTK_MINOR_VERSION} LESS 0 ) )
     message( SEND_ERROR
-      "GoFigure2 requires VTK 5.6 (your version of VTK is ${VTK_VERSION})" )
-  endif( ( ${VTK_MAJOR_VERSION} LESS 5 ) OR ( ${VTK_MINOR_VERSION} LESS 6 ) )
+      "GoFigure2 requires VTK 6.0 (your version of VTK is ${VTK_VERSION})" )
+  endif( ( ${VTK_MAJOR_VERSION} LESS 6 ) OR ( ${VTK_MINOR_VERSION} LESS 0 ) )
 
   #----------------------------------------------------------
   # Check if version of VTK is > 5.6
-  # Requiered to now if we can use setBitRate() and setBitRateTolerance
+  # Required to now if we can use setBitRate() and setBitRateTolerance
   # in the vtkFFMPEGWriter
   if( ( ${VTK_MAJOR_VERSION} EQUAL 5 ) AND ( ${VTK_MINOR_VERSION} GREATER 6 ))
     add_definitions( -DVTKTRUNK )
