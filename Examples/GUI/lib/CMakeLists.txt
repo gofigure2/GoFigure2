@@ -74,6 +74,7 @@ foreach( var ${QGOGUILIB_EXAMPLE_SRC} )
   add_executable( ${var} ${var} )
   target_link_libraries( ${var}
     QGoGui
+    ${ITK_LIBRARIES}
   )
 
 endforeach( var ${QGOGUILIB_EXAMPLE_SRC} )

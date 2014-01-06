@@ -17,6 +17,7 @@ add_executable( itkBinaryMaskImageToGoFigureMeshAttributesTest
  itkBinaryMaskImageToGoFigureMeshAttributesTest.cxx )
 target_link_libraries( itkBinaryMaskImageToGoFigureMeshAttributesTest
   QGoGui
+  ${ITK_LIBRARIES}
 )
 
 add_test( itkBinaryMaskImageToGoFigureMeshAttributesTest
@@ -31,6 +32,7 @@ target_link_libraries( itkvtkPolyDataToGoFigureMeshAttributesTest
   QGoGui
   vtkGraphics
   vtkHybrid
+  ${ITK_LIBRARIES}
 )
 
 add_test( itkvtkPolyDataToGoFigureMeshAttributesTest
@@ -100,6 +102,7 @@ add_executable( itkvtkMeshSplitterDanielssonImageFilterTest
 )
 target_link_libraries( itkvtkMeshSplitterDanielssonImageFilterTest
   QGoGui
+  ${ITK_LIBRARIES}
 )
 
 add_test( itkvtkMeshSplitterDanielssonImageFilterTest
@@ -146,7 +149,9 @@ add_executable( itkvtkMeshMergeConvexHullFilterTest
   itkvtkMeshMergeConvexHullFilterTest.cxx )
 target_link_libraries( itkvtkMeshMergeConvexHullFilterTest
   QGoGui
+  ${ITK_LIBRARIES}
 )
+
 add_test( itkvtkMeshMergeConvexHullFilterTest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/itkvtkMeshMergeConvexHullFilterTest
   ${TESTING_DATA_PATH}/Circle3D.mhd

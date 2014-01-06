@@ -161,6 +161,7 @@ target_link_libraries( gofigure
   QGoIO
   itkQt
   ${Boost_LIBRARIES}
+  ${ITK_LIBRARIES}
  )
 
 if( BUILD_COMPARETOOL )
