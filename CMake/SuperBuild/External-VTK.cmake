@@ -33,7 +33,6 @@ ExternalProject_Add(${proj}
     ${VIDEO_SUPPORT}
     ${Boost_SUPPORT}
     #${WINDOWS_FLAGS}
-  INSTALL_COMMAND ""
 )
 
-set(VTK_DIR ${CMAKE_BINARY_DIR}/INSTALL/VTK)
+set(VTK_DIR ${CMAKE_BINARY_DIR}/INSTALL/lib/vtk-5.10)

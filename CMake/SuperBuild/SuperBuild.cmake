@@ -75,8 +75,8 @@ set( Boost_SUPPORT )
 if( SUPER_BOOST )
   include("${CMAKE_CURRENT_SOURCE_DIR}/CMake/SuperBuild/External-Boost.cmake")
   set( Boost_SUPPORT
-    -DBoost_INCLUDE_DIR:PATH=${CMAKE_BINARY_DIR}/Boost
-    -DBoost_LIBRARY_DIRS:PATH=${CMAKE_BINARY_DIR}/Boost-build/lib
+    -DBoost_INCLUDE_DIR:PATH=${Boost_INCLUDE_DIR}
+    -DBoost_LIBRARY_DIRS:PATH=${Boost_LIBRARY_DIR}
  )
   list(APPEND GoFigure2_DEPENDENCIES Boost)
 else( SUPER_BOOST )
