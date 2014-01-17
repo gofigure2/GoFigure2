@@ -15,6 +15,14 @@ endif()
 
 include(ExternalProject)
 
+set( Patches_DIR  ${CMAKE_CURRENT_SOURCE_DIR}/CMake/Superbuild/patches )
+
+# Extract number of availables processors if not defined by user
+if(NOT DEFINED NProcessors)
+  include(ProcessorCount)
+  ProcessorCount(NProcessors)
+endif()
+
 set(ep_base        "${CMAKE_BINARY_DIR}")
 #set(ep_install_dir "${ep_base}/Install")
 
