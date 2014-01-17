@@ -22,7 +22,7 @@ if( FFMPEG_GPL )
   message("${msg}")
 endif( FFMPEG_GPL )
 
-set(FFMPEG_INSTALL_DIR  ${CMAKE_BINARY_DIR}/${proj}-install)
+set(FFMPEG_INSTALL_DIR  ${CMAKE_BINARY_DIR}/INSTALL )
 
 ExternalProject_Add(${proj}
   # Set up dirs
@@ -30,7 +30,7 @@ ExternalProject_Add(${proj}
   INSTALL_DIR ${FFMPEG_INSTALL_DIR}
   # get the project
   GIT_REPOSITORY "${git_protocol}://git.videolan.org/ffmpeg.git"
-  GIT_TAG "ffmpeg-0.6.3"
+  GIT_TAG "n1.2.4"
 
   # Build the project
   BUILD_IN_SOURCE 1
@@ -38,6 +38,8 @@ ExternalProject_Add(${proj}
   # Configure step
   # DO STH FOR THE ARCHITECTURE...
   CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix=${FFMPEG_INSTALL_DIR} ${SHARED_FFMPEG} ${FFMPEG_GPL_FLAG} --enable-avfilter --disable-yasm --disable-decoders --disable-zlib --disable-demuxer=matroska
+
+#  BUILD_COMMAND ${CMAKE_MAKE_PROGRAM} -j${NProcessors}
 )
 
 # define the library suffix
