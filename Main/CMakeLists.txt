@@ -39,7 +39,10 @@ include_directories( ${GOFIGURE2_BINARY_DIR}/Main/  )
 
 QT4_WRAP_UI( QGoMainWindow_UI_H ${QGoMainWindow_UI} )
 
-QT4_WRAP_CPP( QGoGUISRC_MOC ${QGoGUISRC_HDRS} )
+QT4_WRAP_CPP( QGoGUISRC_MOC ${QGoGUISRC_HDRS}
+  OPTIONS
+    -DBOOST_TT_HAS_OPERATOR_HPP_INCLUDED -DBOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION # see https://bugreports.qt-project.org/browse/QTBUG-22829
+)
 
 set_source_files_properties(
   ${GOFIGURE_APPLICATION_SOURCE_LIST}

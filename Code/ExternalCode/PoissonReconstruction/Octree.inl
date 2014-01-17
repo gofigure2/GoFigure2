@@ -30,9 +30,13 @@
  OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 =========================================================================*/
+#ifndef __Octree_inl
+#define __Octree_inl
+
 #include <cstdlib>
 #include <cmath>
 #include <algorithm>
+#include "Octree.h"
 
 /////////////
 // OctNode //
@@ -711,12 +715,12 @@ OctNode<NodeData,Real>* OctNode<NodeData,Real>::getNearestLeaf(const Point3D<Rea
 	OctNode<NodeData,Real>* temp;
 	int cIndex;
 	if(!children){return this;}
-	centerAndWidth(center,width);
+    centerAndWidth(center,twidth);
 	temp=this;
 	while(temp->children){
 		cIndex=CornerIndex(center,p);
 		temp=&temp->children[cIndex];
-		width/=2;
+        twidth/=2;
 		if(cIndex&1){center.coords[0]+=twidth/2;}
 		else		{center.coords[0]-=twidth/2;}
 		if(cIndex&2){center.coords[1]+=twidth/2;}
@@ -790,7 +794,7 @@ OctNode<NodeData,Real>& OctNode<NodeData,Real>::operator = (const OctNode<NodeDa
 	if(children){delete[] children;}
 	children=NULL;
 
-	depth=node.depth;
+    d=node.d;
 	for(i=0;i<DIMENSION;i++){this->offset[i] = node.offset[i];}
 	if(node.children){
 		initChildren();
@@ -1341,3 +1345,4 @@ void OctNode<NodeData,Real>::centerIndex(const int& iMaxDepth,int index[DIMENSIO
 	depthAndOffset(td,o);
 	for(int i=0;i<DIMENSION;i++){index[i]=BinaryNode<Real>::CornerIndex(iMaxDepth,td+1,o[i]<<1,1);}
 }
+#endif
