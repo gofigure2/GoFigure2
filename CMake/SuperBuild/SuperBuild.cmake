@@ -68,7 +68,15 @@ set(GoFigure2_DEPENDENCIES)
 
 #-------------------------
 
-option( SUPER_BOOST "SuperBuild BOOST" ON )
+find_package( Boost 1.39 REQUIRED )
+
+if( Boost_FOUND )
+  set( SUPER_BOOST OFF )
+else()
+  set( SUPER_BOOST ON )
+endif()
+
+option( SUPER_BOOST "SuperBuild BOOST" ${SUPER_BOOST} )
 
 set( Boost_SUPPORT )
 
