@@ -15,7 +15,9 @@ ExternalProject_Add(${proj}
   SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj}
   BINARY_DIR ${proj}-build
   GIT_REPOSITORY "${git_protocol}://vtk.org/VTK.git"
-  GIT_TAG "origin/release"
+  GIT_TAG "v5.10.1"
+  UPDATE_COMMAND ""
+  PATCH_COMMAND ""
   CMAKE_GENERATOR ${gen}
   CMAKE_ARGS
     ${ep_common_args}
@@ -33,7 +35,6 @@ ExternalProject_Add(${proj}
     ${VIDEO_SUPPORT}
     ${Boost_SUPPORT}
     #${WINDOWS_FLAGS}
-  INSTALL_COMMAND ""
 )
 
 set(VTK_DIR ${CMAKE_BINARY_DIR}/INSTALL/lib/vtk-5.10)

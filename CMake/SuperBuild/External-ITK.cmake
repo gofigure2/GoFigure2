@@ -24,7 +24,6 @@ ExternalProject_Add(${proj}
      # should change soon
     -DITK_USE_REVIEW:INTERNAL=ON
     -DITK_USE_REVIEW_STATISTICS:INTERNAL=ON
-  INSTALL_COMMAND ""
   DEPENDS
     ${ITK_DEPENDENCIES}
 )
