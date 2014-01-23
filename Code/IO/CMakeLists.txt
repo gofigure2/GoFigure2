@@ -91,7 +91,6 @@ add_dependencies( QGoIO vtkLSMReader )
 
 target_link_libraries( QGoIO
   ${QT_LIBRARIES}
-  QGoIO
   vtkHybrid
   vtkIO
   vtkImaging
