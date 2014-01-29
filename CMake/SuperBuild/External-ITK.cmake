@@ -3,11 +3,13 @@
 
 set(proj ITK)
 
-#if( WIN32 )
+option( BUILD_ITK4 "Use ITKv4 (if not, it will use ITKv3)" ON )
+
+if( ${BUILD_ITK4} )
   set( ITK_TAG "v3.20.1" )
-#else()
-#  set( ITK_TAG "4c21663d41017824a21f25cbacd9c3bdf00c72a0" )
-#endif()
+else()
+  set( ITK_TAG "v4.5.0" )
+endif()
 
 ExternalProject_Add(${proj}
   GIT_REPOSITORY "${git_protocol}://itk.org/ITK.git"
