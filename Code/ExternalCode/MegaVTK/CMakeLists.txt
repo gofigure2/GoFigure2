@@ -1,20 +1,20 @@
-IF( WIN32 )
-  IF( NOT CYGWIN )
-    IF( NOT MINGW )
-      IF( BUILD_SHARED_LIBS )
-        ADD_DEFINITIONS( -DvtkRenderingAddOn2_EXPORTS )
-      ENDIF( BUILD_SHARED_LIBS )
-    ENDIF( NOT MINGW )
-  ENDIF( NOT CYGWIN )
-ENDIF( WIN32 )
+if( WIN32 )
+  if( NOT CYGWIN )
+    if( NOT MINGW )
+      if( BUILD_SHARED_LIBS )
+        add_definitions( -DvtkRenderingAddOn2_EXPORTS )
+      endif( BUILD_SHARED_LIBS )
+    endif( NOT MINGW )
+  endif( NOT CYGWIN )
+endif( WIN32 )
 
-CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/MegaVTK2Configure.h.in
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/MegaVTK2Configure.h.in
                ${CMAKE_CURRENT_BINARY_DIR}/MegaVTK2Configure.h @ONLY IMMEDIATE)
 
-SUBDIRS( vtkRenderingAddOn )
-SUBDIRS( vtkItk )
+subdirs( vtkRenderingAddOn )
+subdirs( vtkItk )
 
-INSTALL(
+install(
   FILES ${CMAKE_CURRENT_BINARY_DIR}/MegaVTK2Configure.h
   DESTINATION ${GOFIGURE2_INSTALL_HEADER_DIR}
   COMPONENT Development

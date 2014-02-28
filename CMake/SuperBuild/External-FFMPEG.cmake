@@ -6,23 +6,23 @@
 set( proj FFMPEG )
 set( SHARED_FFMPEG )
 
-IF( SUPER_SHARED_LIBS )
+if( SUPER_SHARED_LIBS )
   set( SHARED_FFMPEG --enable-shared --disable-static )
-ENDIF( SUPER_SHARED_LIBS )
+endif( SUPER_SHARED_LIBS )
 
-OPTION( FFMPEG_GPL "Use a GPL version of FFMPEG" OFF )
+option( FFMPEG_GPL "Use a GPL version of FFMPEG" OFF )
 
-SET(FFMPEG_GPL_FLAG "")
+set(FFMPEG_GPL_FLAG "")
 
-IF( FFMPEG_GPL )
-  SET(FFMPEG_GPL_FLAG "--enable-gpl")
-  SET(msg "ATTENTION: You have enabled the use of GPL components of FFMPEG.")
-  SET(msg "${msg} By enabling this option, the binary of GoFigure2")
-  SET(msg "${msg} that you are going to build will be covered by a GPL license.")
-  MESSAGE("${msg}")
-ENDIF( FFMPEG_GPL )
+if( FFMPEG_GPL )
+  set(FFMPEG_GPL_FLAG "--enable-gpl")
+  set(msg "ATTENTION: You have enabled the use of GPL components of FFMPEG.")
+  set(msg "${msg} By enabling this option, the binary of GoFigure2")
+  set(msg "${msg} that you are going to build will be covered by a GPL license.")
+  message("${msg}")
+endif( FFMPEG_GPL )
 
-SET(FFMPEG_INSTALL_DIR  ${CMAKE_BINARY_DIR}/${proj}-install)
+set(FFMPEG_INSTALL_DIR  ${CMAKE_BINARY_DIR}/INSTALL )
 
 ExternalProject_Add(${proj}
   # Set up dirs
@@ -30,7 +30,7 @@ ExternalProject_Add(${proj}
   INSTALL_DIR ${FFMPEG_INSTALL_DIR}
   # get the project
   GIT_REPOSITORY "${git_protocol}://git.videolan.org/ffmpeg.git"
-  GIT_TAG "ffmpeg-0.6.3"
+  GIT_TAG "n1.2.4"
 
   # Build the project
   BUILD_IN_SOURCE 1
@@ -38,18 +38,20 @@ ExternalProject_Add(${proj}
   # Configure step
   # DO STH FOR THE ARCHITECTURE...
   CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix=${FFMPEG_INSTALL_DIR} ${SHARED_FFMPEG} ${FFMPEG_GPL_FLAG} --enable-avfilter --disable-yasm --disable-decoders --disable-zlib --disable-demuxer=matroska
+
+#  BUILD_COMMAND ${CMAKE_MAKE_PROGRAM} -j${NProcessors}
 )
 
 # define the library suffix
-IF( SUPER_SHARED_LIBS )
-  IF( APPLE )
-    SET(LIBRARY_SUFFIX .dylib)
-  ELSE( APPLE )
-    SET(LIBRARY_SUFFIX .so)
-  ENDIF( APPLE )
-ELSE( SUPER_SHARED_LIBS )
-  SET(LIBRARY_SUFFIX .a)
-ENDIF( SUPER_SHARED_LIBS )
+if( SUPER_SHARED_LIBS )
+  if( APPLE )
+    set(LIBRARY_SUFFIX .dylib)
+  else( APPLE )
+    set(LIBRARY_SUFFIX .so)
+  endif( APPLE )
+else( SUPER_SHARED_LIBS )
+  set(LIBRARY_SUFFIX .a)
+endif( SUPER_SHARED_LIBS )
 
 # ADD DIRECTORIES FOR DEPENDENCIES IN Main/CMakeLists.txt
 set( FFMPEG_LIBRARY_DIRS ${FFMPEG_INSTALL_DIR}/lib/libavcodec

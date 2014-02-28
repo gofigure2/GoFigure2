@@ -1,53 +1,56 @@
-CONFIGURE_FILE( ${CMAKE_CURRENT_SOURCE_DIR}/gofigure.cxx.in
+configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/gofigure.cxx.in
   ${CMAKE_CURRENT_BINARY_DIR}/gofigure.cxx @ONLY IMMEDIATE
 )
 
-SET( QGoMainWindow_UI
+set( QGoMainWindow_UI
   go.ui
 )
 
-SET( QGoGUISRC_HDRS
+set( QGoGUISRC_HDRS
   QGoTabManager.h
   QGoMainWindow.h
   QGoPluginManager.h
   ${QGoGUIINTERFACES_HDRS}
 )
 
-SET( GOFIGURE_MAIN
+set( GOFIGURE_MAIN
   ${CMAKE_CURRENT_BINARY_DIR}/gofigure.cxx
 )
 
-SET( GOFIGURE_APPLICATION_SOURCE_LIST
+set( GOFIGURE_APPLICATION_SOURCE_LIST
   QGoTabManager.cxx
   QGoMainWindow.cxx
   QGoPluginManager.cxx
   )
 
-IF( BUILD_COMPARETOOL )
-  SET( QGoGUISRC_HDRS
+if( BUILD_COMPARETOOL )
+  set( QGoGUISRC_HDRS
     ${QGoGUISRC_HDRS}
     QGoSynchronizedViewMainWindow.h
   )
 
-  SET( GOFIGURE_APPLICATION_SOURCE_LIST
+  set( GOFIGURE_APPLICATION_SOURCE_LIST
     ${GOFIGURE_APPLICATION_SOURCE_LIST}
     ${QGoSynchronizedViewMainWindow.cxx}
   )
-ENDIF( BUILD_COMPARETOOL )
+endif( BUILD_COMPARETOOL )
 
-INCLUDE_DIRECTORIES( ${GOFIGURE2_BINARY_DIR}/Main/  )
+include_directories( ${GOFIGURE2_BINARY_DIR}/Main/  )
 
 QT4_WRAP_UI( QGoMainWindow_UI_H ${QGoMainWindow_UI} )
 
-QT4_WRAP_CPP( QGoGUISRC_MOC ${QGoGUISRC_HDRS} )
+QT4_WRAP_CPP( QGoGUISRC_MOC ${QGoGUISRC_HDRS}
+  OPTIONS
+    -DBOOST_TT_HAS_OPERATOR_HPP_INCLUDED -DBOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION # see https://bugreports.qt-project.org/browse/QTBUG-22829
+)
 
-SET_SOURCE_FILES_PROPERTIES(
+set_source_files_properties(
   ${GOFIGURE_APPLICATION_SOURCE_LIST}
   PROPERTIES
   OBJECT_DEPENDS "${QGoMainWindow_UI_H}"
   )
 
-SET_SOURCE_FILES_PROPERTIES(
+set_source_files_properties(
   ${QGoGUISRC_MOC}
   PROPERTIES
   OBJECT_DEPENDS "${QGoMainWindow_UI_H}"
@@ -57,17 +60,17 @@ QT4_ADD_RESOURCES( QGoMainWindow_QRC
   ${QGoResourceFile}
   )
 
-SET( QGoGUISRC_SRC
+set( QGoGUISRC_SRC
   ${QGoGUISRC_CXX}
   ${QGoGUISRC_MOC}
 )
 
 set( qt_menu_nib_sources )
 
-IF( APPLE )
+if( APPLE )
 
-  IF( QT_MAC_USE_COCOA )
-    GET_FILENAME_COMPONENT( qt_menu_nib
+  if( QT_MAC_USE_COCOA )
+    get_filename_component( qt_menu_nib
      "@QT_QTGUI_LIBRARY_RELEASE@/Resources/qt_menu.nib"
       REALPATH )
 
@@ -77,76 +80,76 @@ IF( APPLE )
       "${qt_menu_nib}/keyedobjects.nib"
       )
 
-    SET_SOURCE_FILES_PROPERTIES(
+    set_source_files_properties(
       ${qt_menu_nib_sources}
       PROPERTIES
       MACOSX_PACKAGE_LOCATION Resources/qt_menu.nib
       )
-  ENDIF( QT_MAC_USE_COCOA )
+  endif( QT_MAC_USE_COCOA )
 
-  SET( MACOSX_BUNDLE_ICON_FILE
+  set( MACOSX_BUNDLE_ICON_FILE
     ${GOFIGURE2_SOURCE_DIR}/Resources/myapp.icns
     )
 
-  SET_SOURCE_FILES_PROPERTIES(
+  set_source_files_properties(
     ${MACOSX_BUNDLE_ICON_FILE}
     PROPERTIES
     MACOSX_PACKAGE_LOCATION Resources
     )
 
-  SET( GOFIGURE_APPLICATION_SOURCE_LIST
+  set( GOFIGURE_APPLICATION_SOURCE_LIST
     ${GOFIGURE_APPLICATION_SOURCE_LIST}
     ${MACOSX_BUNDLE_ICON_FILE}
     )
 
-  SET( MACOSX_BUNDLE_SHORT_VERSION_STRING
+  set( MACOSX_BUNDLE_SHORT_VERSION_STRING
     ${GOFIGURE2_VERSION}
     )
 
-  SET( MACOSX_BUNDLE_VERSION
+  set( MACOSX_BUNDLE_VERSION
     ${GOFIGURE2_VERSION}
     )
 
-  SET( MACOSX_BUNDLE_LONG_VERSION_STRING
+  set( MACOSX_BUNDLE_LONG_VERSION_STRING
     Version ${GOFIGURE2_VERSION}
     )
 
-  SET( GOFIGURE2_INSTALL_LICENSE_DIR    ${plugin_dest_dir}/Licenses   )
-  SET( GOFIGURE2_INSTALL_RESOURCE_DIR  ${plugin_dest_dir}/Resources  )
+  set( GOFIGURE2_INSTALL_LICENSE_DIR    ${plugin_dest_dir}/Licenses   )
+  set( GOFIGURE2_INSTALL_RESOURCE_DIR  ${plugin_dest_dir}/Resources  )
 
-ENDIF( APPLE )
+endif( APPLE )
 
-IF( WIN32 )
-  IF( MINGW )
-    ADD_CUSTOM_COMMAND( OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/myapp.o
+if( WIN32 )
+  if( MINGW )
+    add_custom_command( OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/myapp.o
       COMMAND windres.exe -I${CMAKE_CURRENT_SOURCE_DIR}
         -i ${GOFIGURE2_SOURCE_DIR}/Resources/myapp.rc
         -o ${CMAKE_CURRENT_BINARY_DIR}/myapp.o
         )
 
-    SET( ${GOFIGURE_APPLICATION_SOURCE_LIST}
+    set( ${GOFIGURE_APPLICATION_SOURCE_LIST}
       ${GOFIGURE_APPLICATION_SOURCE_LIST}
       ${CMAKE_CURRENT_BINARY_DIR}/myapp.o
       )
-  ELSE( MINGW )
-    SET( GOFIGURE_APPLICATION_SOURCE_LIST
+  else( MINGW )
+    set( GOFIGURE_APPLICATION_SOURCE_LIST
       ${GOFIGURE_APPLICATION_SOURCE_LIST}
       ${GOFIGURE2_SOURCE_DIR}/Resources/myapp.rc
       )
-  ENDIF( MINGW )
+  endif( MINGW )
 
   #-------------------------------------------------------------------------
   # This sets the windows build that will need the special winmain@16 call.
   # Qt provides this for us in the qtmain.lib file. Using this cmake code
   # will ensure we have it linked into our build. Not needed on
-  # Unix/OS X/Linux which is why we have the IF(WIN32) conditional.
-  SET( QT_USE_QTMAIN TRUE )
+  # Unix/OS X/Linux which is why we have the if(WIN32) conditional.
+  set( QT_USE_QTMAIN TRUE )
 
-ENDIF( WIN32 )
+endif( WIN32 )
 
 # --------
 # gofigure
-ADD_EXECUTABLE( gofigure
+add_executable( gofigure
   MACOSX_BUNDLE
   ${GOFIGURE_MAIN}
   ${GOFIGURE_APPLICATION_SOURCE_LIST}
@@ -156,17 +159,18 @@ ADD_EXECUTABLE( gofigure
   ${qt_menu_nib_sources}
 )
 
-TARGET_LINK_LIBRARIES( gofigure
+target_link_libraries( gofigure
   QGoGui
   QGoIO
   itkQt
   ${Boost_LIBRARIES}
+  ${ITK_LIBRARIES}
  )
 
-IF( BUILD_COMPARETOOL )
+if( BUILD_COMPARETOOL )
   # comparegui
 
-  ADD_EXECUTABLE( comparegui
+  add_executable( comparegui
     comparegui.cxx
     ${GOFIGURE_APPLICATION_SOURCE_LIST}
     ${QGoGUIINTERFACES_SRC}
@@ -175,46 +179,46 @@ IF( BUILD_COMPARETOOL )
     ${qt_menu_nib_sources}
   )
 
-  TARGET_LINK_LIBRARIES( comparegui
+  target_link_libraries( comparegui
     QGoGui
     QGoIO
     itkQt
   )
-ENDIF( BUILD_COMPARETOOL )
+endif( BUILD_COMPARETOOL )
 
 
 #---------------------------------------------------------------------------
 # Now the installation stuff below
 #---------------------------------------------------------------------------
-SET( plugin_dest_dir ${GOFIGURE2_INSTALL_BIN_DIR} )
-SET( qtconf_dest_dir ${GOFIGURE2_INSTALL_BIN_DIR} )
+set( plugin_dest_dir ${GOFIGURE2_INSTALL_BIN_DIR} )
+set( qtconf_dest_dir ${GOFIGURE2_INSTALL_BIN_DIR} )
 
-IF( APPLE )
-  SET( plugin_dest_dir gofigure.app/Contents/MacOS )
-  SET( qtconf_dest_dir gofigure.app/Contents/Resources )
-  SET( APPS
+if( APPLE )
+  set( plugin_dest_dir gofigure.app/Contents/MacOS )
+  set( qtconf_dest_dir gofigure.app/Contents/Resources )
+  set( APPS
     "\${CMAKE_INSTALL_PREFIX}/gofigure.app" )
 #    "\${CMAKE_INSTALL_PREFIX}/${GOFIGURE2_INSTALL_BUNDLE_DIR}/gofigure.app" )
-ENDIF( APPLE )
+endif( APPLE )
 
-IF( WIN32 )
-  SET( APPS
+if( WIN32 )
+  set( APPS
     "\${CMAKE_INSTALL_PREFIX}/${GOFIGURE2_INSTALL_BIN_DIR}/gofigure.exe" )
-ENDIF(WIN32)
+endif(WIN32)
 
-IF( UNIX AND NOT APPLE )
-  SET( APPS
+if( UNIX AND NOT APPLE )
+  set( APPS
     "\${CMAKE_INSTALL_PREFIX}/${GOFIGURE2_INSTALL_BIN_DIR}/gofigure" )
 
-  IF( NOT DESKTOP_ENTRY )
-    SET( DESKTOP_ENTRY gofigure2.desktop )
-  ENDIF( NOT DESKTOP_ENTRY )
+  if( NOT DESKTOP_ENTRY )
+    set( DESKTOP_ENTRY gofigure2.desktop )
+  endif( NOT DESKTOP_ENTRY )
 
-  CONFIGURE_FILE( ${GOFIGURE2_SOURCE_DIR}/Main/gf2-desktop.sh.in
+  configure_file( ${GOFIGURE2_SOURCE_DIR}/Main/gf2-desktop.sh.in
     ${GOFIGURE2_BINARY_DIR}/Main/gf2-desktop.sh @ONLY IMMEDIATE
   )
 
-  ADD_CUSTOM_COMMAND( OUTPUT ${DESKTOP_ENTRY}
+  add_custom_command( OUTPUT ${DESKTOP_ENTRY}
     COMMAND touch ${DESKTOP_ENTRY}
     COMMAND sh ${GOFIGURE2_BINARY_DIR}/Main/gf2-desktop.sh
       ${CMAKE_INSTALL_PREFIX} >${DESKTOP_ENTRY}
@@ -222,23 +226,23 @@ IF( UNIX AND NOT APPLE )
     COMMENT "Generating desktop entry file"
   )
 
-  ADD_CUSTOM_TARGET( DESKTOP_ENTRY_FILE ALL
+  add_custom_target( DESKTOP_ENTRY_FILE ALL
     DEPENDS ${DESKTOP_ENTRY}
   )
 
-  SET( GOFIGURE2_ICON ${GOFIGURE2_SOURCE_DIR}/Resources/fig/Myapp2.png )
+  set( GOFIGURE2_ICON ${GOFIGURE2_SOURCE_DIR}/Resources/fig/Myapp2.png )
 
-  INSTALL( FILES ${GOFIGURE2_ICON}
+  install( FILES ${GOFIGURE2_ICON}
     DESTINATION share/gofigure2/icons COMPONENT Runtime )
-ENDIF( UNIX AND NOT APPLE )
+endif( UNIX AND NOT APPLE )
 
-# MESSAGE( ${APPS} )
+# message( ${APPS} )
 
 #---------------------------------------------------------------------------
 # Install gofigure, on Apple, the bundle is at the root of the
 # install tree, and on other platforms it'll go into the bin directory.
 
-INSTALL( TARGETS gofigure
+install( TARGETS gofigure
   ARCHIVE DESTINATION ${GOFIGURE2_INSTALL_LIB_DIR} COMPONENT Libraries
   LIBRARY DESTINATION ${GOFIGURE2_INSTALL_LIB_DIR} COMPONENT Libraries
   RUNTIME DESTINATION ${GOFIGURE2_INSTALL_BIN_DIR} COMPONENT Runtime
@@ -247,14 +251,14 @@ INSTALL( TARGETS gofigure
 
 #---------------------------------------------------------------------------
 
-IF( WIN32 OR APPLE )
-  SET( USE_BUNDLE_UTILITIES TRUE )
-ELSE()
-  OPTION( INSTALLED_3RD_PART "Are Qt, VTK, ITK... installed?" TRUE )
-  SET( USE_BUNDLE_UTILITIES FALSE )
-ENDIF()
+if( WIN32 OR APPLE )
+  set( USE_BUNDLE_UTILITIES TRUE )
+else()
+  option( INSTALLED_3RD_PART "Are Qt, VTK, ITK... installed?" TRUE )
+  set( USE_BUNDLE_UTILITIES FALSE )
+endif()
 
-IF( USE_BUNDLE_UTILITIES )
+if( USE_BUNDLE_UTILITIES )
   #---------------------------------------------------------------------------
   # Use BundleUtilities to get all other dependencies for the application to
   # work. It takes a bundle or executable along with possible plugins and
@@ -262,7 +266,7 @@ IF( USE_BUNDLE_UTILITIES )
   # they are copied.
 
   # directories to look for dependencies
-  SET( DIRS
+  set( DIRS
 #    ${QT_LIBRARY_DIR}
 #    ${QT_PLUGINS_DIR}
 #    ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
@@ -280,7 +284,7 @@ IF( USE_BUNDLE_UTILITIES )
   # install(SCRIPT  ...).
   # Note that the image plugins depend on QtSvg and QtXml, and it got those
   # copied over.
-  INSTALL( CODE "
+  install( CODE "
     file( GLOB_RECURSE QTPLUGINS
       \"\${CMAKE_INSTALL_PREFIX}/${plugin_dest_dir}/plugins/*${CMAKE_SHARED_LIBRARY_SUFFIX}\" )
       include( BundleUtilities )
@@ -289,45 +293,45 @@ IF( USE_BUNDLE_UTILITIES )
     COMPONENT Runtime
     )
 
-ENDIF( USE_BUNDLE_UTILITIES )
+endif( USE_BUNDLE_UTILITIES )
 
-IF( APPLE )
+if( APPLE )
   #---------------------------------------------------------------------------
   # install a qt.conf file
   # this inserts some cmake code into the install script to write the file
-  INSTALL( CODE "
+  install( CODE "
     file( WRITE \"\${CMAKE_INSTALL_PREFIX}/${GOFIGURE2_INSTALL_BUNDLE_DIR}/${qtconf_dest_dir}/qt.conf\" \"\")
     " COMPONENT Runtime
     )
-ENDIF( APPLE )
+endif( APPLE )
 
 #-----------------------------------------------------
 # Here Let's take care of License and Resoources files
-FILE( GLOB
+file( GLOB
   GOFIGURE2_LICENSE_FILES
   "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Licenses/*.txt"
   )
 
-FILE( GLOB
+file( GLOB
   GOFIGURE2_RESOURCES_FILE
   "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Resources/*.txt"
   )
   
 # licence files
-INSTALL( FILES ${GOFIGURE2_LICENSE_FILES}
+install( FILES ${GOFIGURE2_LICENSE_FILES}
   DESTINATION ${GOFIGURE2_INSTALL_LICENSE_DIR}
   COMPONENT Runtime
 )
 
 # resources files
-INSTALL( FILES ${GOFIGURE2_RESOURCES_FILE}
+install( FILES ${GOFIGURE2_RESOURCES_FILE}
   DESTINATION ${GOFIGURE2_INSTALL_RESOURCE_DIR}
   COMPONENT Runtime
 )
 
-FILE( GLOB __source_file_h "${CMAKE_CURRENT_SOURCE_DIR}/*.h" )
+file( GLOB __source_file_h "${CMAKE_CURRENT_SOURCE_DIR}/*.h" )
 
-INSTALL( FILES ${__source_file_h} ${QGoMainWindow_UI_H}
+install( FILES ${__source_file_h} ${QGoMainWindow_UI_H}
   DESTINATION ${GOFIGURE2_INSTALL_HEADER_DIR}
   COMPONENT Development
 )

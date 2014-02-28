@@ -12,7 +12,7 @@
 # if needed to FFMPEG_LIBRARIES if ffmpeg ever changes...
 
 # if ffmpeg headers are all in one directory
-FIND_PATH(FFMPEG_INCLUDE_DIR avformat.h
+find_path(FFMPEG_INCLUDE_DIR avformat.h
        PATHS
        $ENV{FFMPEG_DIR}/include
        $ENV{OSGDIR}/include
@@ -31,8 +31,8 @@ FIND_PATH(FFMPEG_INCLUDE_DIR avformat.h
 )
 
 # if ffmpeg headers are seperated to each of libavformat, libavcodec etc..
-IF( NOT FFMPEG_INCLUDE_DIR )
-  FIND_PATH(FFMPEG_INCLUDE_DIR libavformat/avformat.h
+if( NOT FFMPEG_INCLUDE_DIR )
+  find_path(FFMPEG_INCLUDE_DIR libavformat/avformat.h
        PATHS
        $ENV{FFMPEG_DIR}/include
        $ENV{OSGDIR}/include
@@ -50,122 +50,122 @@ IF( NOT FFMPEG_INCLUDE_DIR )
        DOC "Location of FFMPEG Headers"
 )
 
-ENDIF( NOT FFMPEG_INCLUDE_DIR )
+endif( NOT FFMPEG_INCLUDE_DIR )
 
 # we want the -I include line to use the parent directory of ffmpeg as
 # ffmpeg uses relative includes such as <ffmpeg/avformat.h> or <libavcodec/avformat.h>
 get_filename_component(FFMPEG_INCLUDE_DIR ${FFMPEG_INCLUDE_DIR} ABSOLUTE)
 
-FIND_LIBRARY(FFMPEG_avformat_LIBRARY avformat
+find_library(FFMPEG_avformat_LIBRARY avformat
   /usr/local/lib
   /usr/lib
 )
 
-FIND_LIBRARY(FFMPEG_avcodec_LIBRARY avcodec
+find_library(FFMPEG_avcodec_LIBRARY avcodec
   /usr/local/lib
   /usr/lib
 )
 
-FIND_LIBRARY(FFMPEG_avutil_LIBRARY avutil
+find_library(FFMPEG_avutil_LIBRARY avutil
   /usr/local/lib
   /usr/lib
 )
 
-FIND_LIBRARY(FFMPEG_vorbis_LIBRARY vorbis
+find_library(FFMPEG_vorbis_LIBRARY vorbis
   /usr/local/lib
   /usr/lib
 )
 
-FIND_LIBRARY(FFMPEG_dc1394_LIBRARY dc1394_control
+find_library(FFMPEG_dc1394_LIBRARY dc1394_control
   /usr/local/lib
   /usr/lib
 )
 
-FIND_LIBRARY(FFMPEG_vorbisenc_LIBRARY vorbisenc
+find_library(FFMPEG_vorbisenc_LIBRARY vorbisenc
   /usr/local/lib
   /usr/lib
 )
 
-FIND_LIBRARY(FFMPEG_theora_LIBRARY theora
+find_library(FFMPEG_theora_LIBRARY theora
   /usr/local/lib
   /usr/lib
 )
 
-FIND_LIBRARY(FFMPEG_dts_LIBRARY dts
+find_library(FFMPEG_dts_LIBRARY dts
   /usr/local/lib
   /usr/lib
 )
 
-FIND_LIBRARY(FFMPEG_gsm_LIBRARY gsm
+find_library(FFMPEG_gsm_LIBRARY gsm
   /usr/local/lib
   /usr/lib
 )
 
-FIND_LIBRARY(FFMPEG_swscale_LIBRARY swscale
+find_library(FFMPEG_swscale_LIBRARY swscale
   /usr/local/lib
   /usr/lib
 )
 
-FIND_LIBRARY(FFMPEG_z_LIBRARY z
+find_library(FFMPEG_z_LIBRARY z
   /usr/local/lib
   /usr/lib
 )
 
-SET(FFMPEG_LIBRARIES)
-IF(FFMPEG_INCLUDE_DIR)
-  IF(FFMPEG_avformat_LIBRARY)
-    IF(FFMPEG_avcodec_LIBRARY)
-      IF(FFMPEG_avutil_LIBRARY)
-        SET( FFMPEG_FOUND "YES" )
-        SET( FFMPEG_BASIC_LIBRARIES 
+set(FFMPEG_LIBRARIES)
+if(FFMPEG_INCLUDE_DIR)
+  if(FFMPEG_avformat_LIBRARY)
+    if(FFMPEG_avcodec_LIBRARY)
+      if(FFMPEG_avutil_LIBRARY)
+        set( FFMPEG_FOUND "YES" )
+        set( FFMPEG_BASIC_LIBRARIES 
           ${FFMPEG_avcodec_LIBRARY} 
           ${FFMPEG_avformat_LIBRARY}
           ${FFMPEG_avutil_LIBRARY} 
           )
 
         # swscale is always a part of newer ffmpeg distros
-        IF(FFMPEG_swscale_LIBRARY)
-          LIST(APPEND FFMPEG_BASIC_LIBRARIES ${FFMPEG_swscale_LIBRARY})
-        ENDIF(FFMPEG_swscale_LIBRARY)
+        if(FFMPEG_swscale_LIBRARY)
+          list(APPEND FFMPEG_BASIC_LIBRARIES ${FFMPEG_swscale_LIBRARY})
+        endif(FFMPEG_swscale_LIBRARY)
 
-        SET(FFMPEG_LIBRARIES ${FFMPEG_BASIC_LIBRARIES})
+        set(FFMPEG_LIBRARIES ${FFMPEG_BASIC_LIBRARIES})
 
-        IF(FFMPEG_vorbis_LIBRARY)
-          LIST(APPEND FFMPEG_LIBRARIES ${FFMPEG_vorbis_LIBRARY})
-        ENDIF(FFMPEG_vorbis_LIBRARY)
+        if(FFMPEG_vorbis_LIBRARY)
+          list(APPEND FFMPEG_LIBRARIES ${FFMPEG_vorbis_LIBRARY})
+        endif(FFMPEG_vorbis_LIBRARY)
 
-        IF(FFMPEG_dc1394_LIBRARY)
-          LIST(APPEND FFMPEG_LIBRARIES ${FFMPEG_dc1394_LIBRARY})
-        ENDIF(FFMPEG_dc1394_LIBRARY)
+        if(FFMPEG_dc1394_LIBRARY)
+          list(APPEND FFMPEG_LIBRARIES ${FFMPEG_dc1394_LIBRARY})
+        endif(FFMPEG_dc1394_LIBRARY)
 
-        IF(FFMPEG_vorbisenc_LIBRARY)
-          LIST(APPEND FFMPEG_LIBRARIES ${FFMPEG_vorbisenc_LIBRARY})
-        ENDIF(FFMPEG_vorbisenc_LIBRARY)
+        if(FFMPEG_vorbisenc_LIBRARY)
+          list(APPEND FFMPEG_LIBRARIES ${FFMPEG_vorbisenc_LIBRARY})
+        endif(FFMPEG_vorbisenc_LIBRARY)
 
-        IF(FFMPEG_theora_LIBRARY)
-          LIST(APPEND FFMPEG_LIBRARIES ${FFMPEG_theora_LIBRARY})
-        ENDIF(FFMPEG_theora_LIBRARY)
+        if(FFMPEG_theora_LIBRARY)
+          list(APPEND FFMPEG_LIBRARIES ${FFMPEG_theora_LIBRARY})
+        endif(FFMPEG_theora_LIBRARY)
 
-        IF(FFMPEG_dts_LIBRARY)
-          LIST(APPEND FFMPEG_LIBRARIES ${FFMPEG_dts_LIBRARY})
-        ENDIF(FFMPEG_dts_LIBRARY)
+        if(FFMPEG_dts_LIBRARY)
+          list(APPEND FFMPEG_LIBRARIES ${FFMPEG_dts_LIBRARY})
+        endif(FFMPEG_dts_LIBRARY)
 
-        IF(FFMPEG_gsm_LIBRARY)
-          LIST(APPEND FFMPEG_LIBRARIES ${FFMPEG_gsm_LIBRARY})
-        ENDIF(FFMPEG_gsm_LIBRARY)
+        if(FFMPEG_gsm_LIBRARY)
+          list(APPEND FFMPEG_LIBRARIES ${FFMPEG_gsm_LIBRARY})
+        endif(FFMPEG_gsm_LIBRARY)
 
-        IF(FFMPEG_z_LIBRARY)
-          LIST(APPEND FFMPEG_LIBRARIES ${FFMPEG_z_LIBRARY})
-        ENDIF(FFMPEG_z_LIBRARY)
+        if(FFMPEG_z_LIBRARY)
+          list(APPEND FFMPEG_LIBRARIES ${FFMPEG_z_LIBRARY})
+        endif(FFMPEG_z_LIBRARY)
 
-        SET(FFMPEG_LIBRARIES ${FFMPEG_LIBRARIES} CACHE INTERNAL "All presently found FFMPEG libraries.")
+        set(FFMPEG_LIBRARIES ${FFMPEG_LIBRARIES} CACHE INTERNAL "All presently found FFMPEG libraries.")
 
-      ENDIF(FFMPEG_avutil_LIBRARY)
-    ENDIF(FFMPEG_avcodec_LIBRARY)
-  ENDIF(FFMPEG_avformat_LIBRARY)
-ENDIF(FFMPEG_INCLUDE_DIR)
+      endif(FFMPEG_avutil_LIBRARY)
+    endif(FFMPEG_avcodec_LIBRARY)
+  endif(FFMPEG_avformat_LIBRARY)
+endif(FFMPEG_INCLUDE_DIR)
 
-MARK_AS_ADVANCED(
+mark_as_advanced(
   FFMPEG_INCLUDE_DIR
   FFMPEG_avformat_LIBRARY
   FFMPEG_avcodec_LIBRARY

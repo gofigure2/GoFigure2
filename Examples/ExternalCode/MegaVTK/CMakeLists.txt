@@ -1,4 +1,4 @@
-SET( MEGAVTK_EXAMPLE_SRC
+set( MEGAVTK_EXAMPLE_SRC
   imageview2d
   imageview3d
   imageviewcollection
@@ -6,39 +6,39 @@ SET( MEGAVTK_EXAMPLE_SRC
   SeedWidget
 )
 
-FOREACH( var ${MEGAVTK_EXAMPLE_SRC} )
+foreach( var ${MEGAVTK_EXAMPLE_SRC} )
 
-  ADD_EXECUTABLE( ${var} ${var}.cxx )
-  TARGET_LINK_LIBRARIES( ${var} vtkRenderingAddOn2 )
+  add_executable( ${var} ${var}.cxx )
+  target_link_libraries( ${var} vtkRenderingAddOn2 )
 
-ENDFOREACH( var ${MEGAVTK_EXAMPLE_SRC} )
+endforeach( var ${MEGAVTK_EXAMPLE_SRC} )
 
 
-ADD_TEST( imageview2dTest
+add_test( imageview2dTest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/imageview2d
   ${TESTING_DATA_PATH}/Circle.png
   1
 )
 
-ADD_TEST( imageview3dTest
+add_test( imageview3dTest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/imageview3d
   ${TESTING_DATA_PATH}/Circle3D.mhd
   1
 )
 
-ADD_TEST( vtkviewimage3dtest
+add_test( vtkviewimage3dtest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/vtkviewimage3dtest
   ${TESTING_DATA_PATH}/Circle3D.mhd
   1
 )
 
-ADD_TEST( imageviewcollectionTest
+add_test( imageviewcollectionTest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/imageviewcollection
   ${TESTING_DATA_PATH}/Circle3D.mhd
   1
 )
 
-ADD_TEST( SeedWidgetTest
+add_test( SeedWidgetTest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/SeedWidget
   ${TESTING_DATA_PATH}/Circle3D.mhd
   1

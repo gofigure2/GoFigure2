@@ -359,10 +359,16 @@ QGoPrintDatabase::SaveMeshFromVisuInDB(unsigned int iXCoordMin,
         .arg(kickedMeshID);
       emit PrintMessage(MessageToPrint);
       }
+
     std::list<unsigned int> MotherTrackDivisionToUpdate;
-    MessageToPrint = this->m_TracksManager->CheckMeshCanBeAddedToTrack(this->m_DatabaseConnector, TrackID,
-      *this->m_SelectedTimePoint, MotherTrackDivisionToUpdate).c_str();
+    MessageToPrint = this->m_TracksManager->CheckMeshCanBeAddedToTrack(
+      this->m_DatabaseConnector,
+      TrackID,
+      iTCoord,
+      MotherTrackDivisionToUpdate).c_str();
+
     unsigned int NewMeshID;
+
     if (!MessageToPrint.isEmpty() )
       {
       emit PrintMessage(MessageToPrint);

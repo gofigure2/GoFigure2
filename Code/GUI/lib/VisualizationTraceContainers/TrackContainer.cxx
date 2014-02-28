@@ -1054,6 +1054,87 @@ UpdateCollectionVisibility(MultiIndexContainerTraceIDIterator& it,
     }
 }
 //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::
+ShowCurrentCollection(std::list<unsigned int>& iTrackIDRoot, const unsigned int& iTimePoint)
+{
+  std::list<unsigned int>::iterator rootIt = iTrackIDRoot.begin();
+  std::list<unsigned int> check;
+  std::list<unsigned int> uncheck;
+
+  while(rootIt != iTrackIDRoot.end())
+    {
+
+    MultiIndexContainerTraceIDIterator motherIt
+      = m_Container.get< TraceID >().find(*rootIt);
+
+    if( motherIt != m_Container.get< TraceID >().end() )
+      {
+      // check each division
+      bool visible = UpdateCurrentCollectionVisibility(motherIt, iTimePoint);
+
+      if(visible)
+        {
+        check.push_back(*rootIt);
+        }
+      else
+        {
+        uncheck.push_back(*rootIt);
+        }
+      }
+
+    ++rootIt;
+    }
+
+    UpdateTWCollectionStatus(check, uncheck);
+
+    this->m_ImageView->UpdateRenderWindows();
+}
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+bool
+TrackContainer::
+UpdateCurrentCollectionVisibility(MultiIndexContainerTraceIDIterator& it,
+                                  const int& iTime)
+{
+  bool iVisible = false;
+  bool returned = false;
+  if( !it->IsLeaf() )
+    {
+    // check time point
+    std::map< unsigned int, double*>::const_reverse_iterator begin = it->PointsMap.rbegin();
+
+    if(begin->first == iTime)
+      {
+      iVisible = true;
+      }
+    //show/hide
+    ModifyDivisionVisibility(it, iVisible);
+    }
+
+  std::vector<TrackStructure*>::const_iterator itDivision =
+      it->TreeNode.m_Child.begin();
+
+  while(itDivision != it->TreeNode.m_Child.end())
+    {
+    // find the iterator
+    MultiIndexContainerTraceIDIterator childIt
+        = m_Container.get< TraceID >().find((*itDivision)->TraceID);
+
+    if( childIt != m_Container.get< TraceID >().end() )
+      {
+      returned = UpdateCurrentCollectionVisibility(childIt,iTime);
+      }
+    ++itDivision;
+    }
+
+  return (iVisible || returned);
+}
+//-------------------------------------------------------------------------
+
 //-------------------------------------------------------------------------
 void
 TrackContainer::
@@ -1719,23 +1800,36 @@ ExportLineage(const unsigned int& iTrackID)
   vtkDoubleArray* depth = vtkDoubleArray::New();
   depth->SetName("Lineage Depth");
 
-  vtkStringArray* cellType = vtkStringArray::New();
-  depth->SetName("Cell Type");
+  //vtkStringArray* cellType = vtkStringArray::New();
+  //depth->SetName("Cell Type");
+
+  //
+  vtkDoubleArray* firstTP = vtkDoubleArray::New();
+  firstTP->SetName("First Time Point");
+
+  vtkDoubleArray* lastTP = vtkDoubleArray::New();
+  lastTP->SetName("Last Time Point");
+
 
   UpdateLineage(motherIt,
                    graph,
                 pedigree,
                        0,  // mother vtkIDtype
                        0,depth,// depth information
-                       id); // id info
+                       id,
+                       firstTP, lastTP); // id info
 
   graph->GetVertexData()->AddArray(id);
   graph->GetVertexData()->AddArray(depth);
+  graph->GetVertexData()->AddArray(firstTP);
+  graph->GetVertexData()->AddArray(lastTP);
 
   // delete array
   id->Delete();
   depth->Delete();
-  cellType->Delete();
+  //cellType->Delete();
+  firstTP->Delete();
+  lastTP->Delete();
 
   return graph;
 }
@@ -1747,7 +1841,9 @@ TrackContainer::
 UpdateLineage(MultiIndexContainerTraceIDIterator& it,
               vtkMutableDirectedGraph* iGraph, unsigned int iPedrigree,
               vtkIdType mother, unsigned int iDepth,
-              vtkDoubleArray* iDepthArray, vtkDoubleArray* iIDArray)
+              vtkDoubleArray* iDepthArray,
+              vtkDoubleArray* iIDArray,
+              vtkDoubleArray* iFirstTPArray, vtkDoubleArray* iLastTPArray)
 {
   // Update mother ID
   vtkIdType motherPedigree = iPedrigree;
@@ -1756,6 +1852,9 @@ UpdateLineage(MultiIndexContainerTraceIDIterator& it,
   iIDArray->InsertValue(iPedrigree, it->TraceID);
   // add info
   iDepthArray->InsertValue(iPedrigree, iDepth);
+  // add info
+  iFirstTPArray->InsertValue( iPedrigree, it->PointsMap.begin()->first );
+  iLastTPArray->InsertValue( iPedrigree, (--it->PointsMap.end())->first );
 
   if( it->IsLeaf() )
     {
@@ -1773,7 +1872,10 @@ UpdateLineage(MultiIndexContainerTraceIDIterator& it,
     // add edge
     iPedrigree = iGraph->AddChild(motherPedigree);
     //go through tree
-    UpdateLineage(childIt,iGraph, iPedrigree, motherPedigree, iDepth+1, iDepthArray,iIDArray);
+    UpdateLineage(childIt,iGraph, iPedrigree, motherPedigree, iDepth+1,
+        iDepthArray,
+        iIDArray,
+        iFirstTPArray, iLastTPArray);
     ++itDivision;
     }
 }
@@ -2029,4 +2131,35 @@ AddVolume(const unsigned int& iTrackID, const double& iVolume)
     m_Container.get< TraceID >().modify( trace_it , add_volume(iVolume) );
     }
 }
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+TrackContainer::ShowActorsWithGivenTimePoint(const unsigned int & iT)
+{
+
+  // go through all elements
+  MultiIndexContainerType::index< TraceID >::type::iterator
+  trace_it = m_Container.get< TraceID >().begin();
+  while ( trace_it != m_Container.get< TraceID >().end() )
+    {
+    //check size (nb of elemtents) of track
+    if(trace_it->PointsMap.size() > 0)
+      {
+      unsigned int min = ( trace_it->PointsMap.begin() )->first;
+      unsigned int max = ( trace_it->PointsMap.rbegin() )->first;
+
+      if(iT >= min && iT <= max)
+        {
+        ChangeActorsVisibility< TraceID >(trace_it, true);
+        }
+      else
+        {
+        ChangeActorsVisibility< TraceID >(trace_it, false);
+        }
+      }
+    ++trace_it;
+    }
+}
+
 //-------------------------------------------------------------------------

@@ -20,28 +20,28 @@
 #                 compatability.  Use GOFIGURE2_USE_FILE
 #                 instead.
 
-SET(GOFIGURE2_DIR_STRING "directory containing GOFIGURE2Config.cmake.  This is either the root of the build tree, or PREFIX/lib/gofigure2 for an installation.")
+set(GOFIGURE2_DIR_STRING "directory containing GOFIGURE2Config.cmake.  This is either the root of the build tree, or PREFIX/lib/gofigure2 for an installation.")
 
 # Search only if the location is not already known.
-IF(NOT GOFIGURE2_DIR)
+if(NOT GOFIGURE2_DIR)
   # Get the system search path as a list.
-  IF(UNIX)
-    STRING(REGEX MATCHALL "[^:]+" GOFIGURE2_DIR_SEARCH1 "$ENV{PATH}")
-  ELSE(UNIX)
-    STRING(REGEX REPLACE "\\\\" "/" GOFIGURE2_DIR_SEARCH1 "$ENV{PATH}")
-  ENDIF(UNIX)
-  STRING(REGEX REPLACE "/;" ";" GOFIGURE2_DIR_SEARCH2 ${GOFIGURE2_DIR_SEARCH1})
+  if(UNIX)
+    string(REGEX MATCHALL "[^:]+" GOFIGURE2_DIR_SEARCH1 "$ENV{PATH}")
+  else(UNIX)
+    string(REGEX REPLACE "\\\\" "/" GOFIGURE2_DIR_SEARCH1 "$ENV{PATH}")
+  endif(UNIX)
+  string(REGEX REPLACE "/;" ";" GOFIGURE2_DIR_SEARCH2 ${GOFIGURE2_DIR_SEARCH1})
 
   # Construct a set of paths relative to the system search path.
-  SET(GOFIGURE2_DIR_SEARCH "")
-  FOREACH(dir ${GOFIGURE2_DIR_SEARCH2})
-    SET(GOFIGURE2_DIR_SEARCH ${GOFIGURE2_DIR_SEARCH} "${dir}/../lib/gofigure2")
-  ENDFOREACH(dir)
+  set(GOFIGURE2_DIR_SEARCH "")
+  foreach(dir ${GOFIGURE2_DIR_SEARCH2})
+    set(GOFIGURE2_DIR_SEARCH ${GOFIGURE2_DIR_SEARCH} "${dir}/../lib/gofigure2")
+  endforeach(dir)
 
   #
   # Look for an installation or build tree.
   #
-  FIND_PATH(GOFIGURE2_DIR GOFIGURE2Config.cmake
+  find_path(GOFIGURE2_DIR GOFIGURE2Config.cmake
     # Look for an environment variable GOFIGURE2_DIR.
     $ENV{GOFIGURE2_DIR}
 
@@ -68,19 +68,19 @@ IF(NOT GOFIGURE2_DIR)
     # Help the user find it if we cannot.
     DOC "The ${GOFIGURE2_DIR_STRING}"
   )
-ENDIF(NOT GOFIGURE2_DIR)
+endif(NOT GOFIGURE2_DIR)
 
 # If GOFIGURE2 was found, load the configuration file to get the rest of the
 # settings.
-IF(GOFIGURE2_DIR)
-  SET(GOFIGURE2_FOUND TRUE)
-  INCLUDE(${GOFIGURE2_DIR}/GOFIGURE2Config.cmake)
+if(GOFIGURE2_DIR)
+  set(GOFIGURE2_FOUND TRUE)
+  include(${GOFIGURE2_DIR}/GOFIGURE2Config.cmake)
 
   # Set USE_GOFIGURE2_FILE for backward-compatability.
-  SET(USE_GOFIGURE2_FILE ${GOFIGURE2_USE_FILE})
-ELSE(GOFIGURE2_DIR)
-  SET(GOFIGURE2_FOUND FALSE)
-  IF(GOFIGURE2_FIND_REQUIRED)
-    MESSAGE(FATAL_ERROR "Please set GOFIGURE2_DIR to the ${GOFIGURE2_DIR_STRING}")
-  ENDIF(GOFIGURE2_FIND_REQUIRED)
-ENDIF(GOFIGURE2_DIR)
+  set(USE_GOFIGURE2_FILE ${GOFIGURE2_USE_FILE})
+else(GOFIGURE2_DIR)
+  set(GOFIGURE2_FOUND FALSE)
+  if(GOFIGURE2_FIND_REQUIRED)
+    message(FATAL_ERROR "Please set GOFIGURE2_DIR to the ${GOFIGURE2_DIR_STRING}")
+  endif(GOFIGURE2_FIND_REQUIRED)
+endif(GOFIGURE2_DIR)

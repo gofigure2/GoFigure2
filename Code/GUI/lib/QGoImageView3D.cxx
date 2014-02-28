@@ -135,6 +135,7 @@ QGoImageView3D::QGoImageView3D(QWidget *iParent) :
       vtkSmartPointer<vtkRenderWindow>::New();
   renwin4->SetAlphaBitPlanes(1);
   renwin4->SetMultiSamples(0);
+
   this->QvtkWidget_XYZ->SetRenderWindow(renwin4);
 
   this->m_View3D = vtkViewImage3D::New();

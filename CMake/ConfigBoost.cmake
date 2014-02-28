@@ -1,7 +1,7 @@
-FIND_PACKAGE( Boost COMPONENTS program_options REQUIRED )
+find_package( Boost COMPONENTS program_options REQUIRED )
 
-IF( Boost_FOUND )
-  INCLUDE_DIRECTORIES( BEFORE ${Boost_INCLUDE_DIRS} )
-ELSE( Boost_FOUND )
-  MESSAGE( SEND_ERROR "BOOST NOT FOUND, CMAKE WILL STOP NOW")
-ENDIF( Boost_FOUND )
+if( Boost_FOUND )
+  include_directories( BEFORE ${Boost_INCLUDE_DIRS} )
+else( Boost_FOUND )
+  message( SEND_ERROR "BOOST NOT FOUND, CMAKE WILL STOP NOW")
+endif( Boost_FOUND )

@@ -333,3 +333,28 @@ LineageContainer::UpdateElementVisibilityWithGivenTraceIDs(const QStringList & i
     }
 }
 //-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+LineageContainer::ShowActorsWithGivenTimePoint(const unsigned int & iT)
+{
+  std::list<unsigned int> trackroots = GetListOfTrackRootIDs();
+  emit ShowCurrentLineage(trackroots, iT);
+}
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
+void
+LineageContainer::SetTraceVisibility(const unsigned int& iTraceID, const bool& iVisibility)
+{
+  MultiIndexContainerTraceIDIterator it = m_Container.get< TraceID >().find( iTraceID);
+
+  if ( it != m_Container.get< TraceID >().end() )
+    {
+    // modify the structure highlight
+    m_Container.get< TraceID >().
+        modify( it , change_visible<MultiIndexContainerElementType>(iVisibility) );
+    }
+}
+//-------------------------------------------------------------------------

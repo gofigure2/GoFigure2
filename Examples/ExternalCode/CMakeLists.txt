@@ -1,2 +1,2 @@
-ADD_SUBDIRECTORY( MegaVTK )
-ADD_SUBDIRECTORY( ctk )
+add_subdirectory( MegaVTK )
+add_subdirectory( ctk )

@@ -1,23 +1,23 @@
-IF( WIN32 )
-  IF( NOT CYGWIN )
-    IF( NOT MINGW )
-      IF( BUILD_SHARED_LIBS )
-        ADD_DEFINITIONS( -DQGoGUI_EXPORT )
-      ENDIF( BUILD_SHARED_LIBS )
-    ENDIF( NOT MINGW )
-  ENDIF( NOT CYGWIN )
-ENDIF( WIN32 )
+if( WIN32 )
+  if( NOT CYGWIN )
+    if( NOT MINGW )
+      if( BUILD_SHARED_LIBS )
+        add_definitions( -DQGoGUI_EXPORT )
+      endif( BUILD_SHARED_LIBS )
+    endif( NOT MINGW )
+  endif( NOT CYGWIN )
+endif( WIN32 )
 
-CONFIGURE_FILE( ${CMAKE_CURRENT_SOURCE_DIR}/QGoGUILibConfigure.h.in
+configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/QGoGUILibConfigure.h.in
   ${CMAKE_CURRENT_BINARY_DIR}/QGoGUILibConfigure.h @ONLY IMMEDIATE )
 
-CONFIGURE_FILE( ${CMAKE_CURRENT_SOURCE_DIR}/QGoAboutWidget.cxx.in
+configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/QGoAboutWidget.cxx.in
   ${CMAKE_CURRENT_BINARY_DIR}/QGoAboutWidget.cxx @ONLY IMMEDIATE )
 
-CONFIGURE_FILE( ${CMAKE_CURRENT_SOURCE_DIR}/QGoNetworkUtilities.cxx.in
+configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/QGoNetworkUtilities.cxx.in
   ${CMAKE_CURRENT_BINARY_DIR}/QGoNetworkUtilities.cxx @ONLY IMMEDIATE )
 
-SET( QGoGUILIB_SRC
+set( QGoGUILIB_SRC
   QGoImageView.cxx
   QGoImageView2D.cxx
   QGoImageView3D.cxx
@@ -133,7 +133,7 @@ SET( QGoGUILIB_SRC
   ${GOFIGURE2_BINARY_DIR}/Code/GUI/lib/QGoNetworkUtilities.cxx
 )
 
-SET_SOURCE_FILES_PROPERTIES(
+set_source_files_properties(
   QGoTabElementBase.cxx
   QGoTabImageViewNDBase.cxx
   QGoTabImageViewElementBase.cxx
@@ -145,8 +145,8 @@ SET_SOURCE_FILES_PROPERTIES(
   ABSTRACT
   )
 
-IF( BUILD_COMPARETOOL )
-  SET( QGoGUILIB_SRC
+if( BUILD_COMPARETOOL )
+  set( QGoGUILIB_SRC
     ${QGoGUILIB_SRC}
     SynchronizedViews/QGoSynchronizedView.cxx
     SynchronizedViews/QGoSynchronizedView2D.cxx
@@ -155,35 +155,35 @@ IF( BUILD_COMPARETOOL )
     SynchronizedViews/QGoSynchronizedView3DCallbacks.cxx
     SynchronizedViews/QGoSynchronizedViewManager.cxx
   )
-ENDIF( BUILD_COMPARETOOL )
+endif( BUILD_COMPARETOOL )
 
 #---------------------------------------------------------------------------
 #---------------------------------------------------------------------------
 
 #ADD THIS SRCS IF ENABLE_VIDEO_RECORD is ON
-IF( ENABLE_VIDEO_RECORD_FFMPEG )
-  SET(QGoGUILIB_SRC
+if( ENABLE_VIDEO_RECORD_FFMPEG )
+  set(QGoGUILIB_SRC
     ${QGoGUILIB_SRC}
     Video/vtkRenderWindowMovieRecorder.cxx
     Video/vtkFFMPEGRenderWindowRecorder.cxx
     Video/QGoVideoRecorder.cxx
   )
-ENDIF( ENABLE_VIDEO_RECORD_FFMPEG )
+endif( ENABLE_VIDEO_RECORD_FFMPEG )
 
 #ADD THIS SRCS IF ENABLE_VIDEO_RECORD is ON
-IF( ENABLE_VIDEO_RECORD_AVI )
-  SET(QGoGUILIB_SRC
+if( ENABLE_VIDEO_RECORD_AVI )
+  set(QGoGUILIB_SRC
     ${QGoGUILIB_SRC}
     Video/vtkRenderWindowMovieRecorder.cxx
     Video/vtkAVIRenderWindowRecorder.cxx
     Video/QGoVideoRecorder.cxx
   )
-ENDIF( ENABLE_VIDEO_RECORD_AVI )
+endif( ENABLE_VIDEO_RECORD_AVI )
 
 #---------------------------------------------------------------------------
 #---------------------------------------------------------------------------
 
-SET( QGoGUILIB_HDRS
+set( QGoGUILIB_HDRS
   QGoImageView.h
   QGoImageView2D.h
   QGoImageView3D.h
@@ -284,8 +284,8 @@ SET( QGoGUILIB_HDRS
   LineageViewer/QGoLineageViewerWidget.h
 )
 
-IF( BUILD_COMPARETOOL )
-  SET( QGoGUILIB_HDRS
+if( BUILD_COMPARETOOL )
+  set( QGoGUILIB_HDRS
     ${QGoGUILIB_HDRS}
     SynchronizedViews/QGoSynchronizedView.h
     SynchronizedViews/QGoSynchronizedView2D.h
@@ -294,30 +294,30 @@ IF( BUILD_COMPARETOOL )
     SynchronizedViews/QGoSynchronizedView3DCallbacks.h
     SynchronizedViews/QGoSynchronizedViewManager.h
   )
-ENDIF( BUILD_COMPARETOOL )
+endif( BUILD_COMPARETOOL )
 #---------------------------------------------------------------------------
 #---------------------------------------------------------------------------
 
 # ADD THIS HEADERS IF ENABLE_VIDEO_RECORD_FFMPEG IS ON
-IF( ENABLE_VIDEO_RECORD_FFMPEG )
-  SET(QGoGUILIB_HDRS
+if( ENABLE_VIDEO_RECORD_FFMPEG )
+  set(QGoGUILIB_HDRS
     ${QGoGUILIB_HDRS}
     Video/QGoVideoRecorder.h
   )
-ENDIF( ENABLE_VIDEO_RECORD_FFMPEG )
+endif( ENABLE_VIDEO_RECORD_FFMPEG )
 
 # ADD THIS HEADERS IF ENABLE_VIDEO_RECORD_AVI IS ON
-IF( ENABLE_VIDEO_RECORD_AVI )
-  SET(QGoGUILIB_HDRS
+if( ENABLE_VIDEO_RECORD_AVI )
+  set(QGoGUILIB_HDRS
     ${QGoGUILIB_HDRS}
     Video/QGoVideoRecorder.h
   )
-ENDIF( ENABLE_VIDEO_RECORD_AVI )
+endif( ENABLE_VIDEO_RECORD_AVI )
 
 #---------------------------------------------------------------------------
 #---------------------------------------------------------------------------
 
-SET( QGoGUILIB_UI
+set( QGoGUILIB_UI
 
 #base dockwidget
   Resources/SegmentationDockWidgetBase.ui
@@ -342,31 +342,31 @@ SET( QGoGUILIB_UI
   LineageViewer/QGoLineageViewerWidget.ui
 )
 
-IF( BUILD_COMPARETOOL )
-  SET( QGoGUILIB_UI
+if( BUILD_COMPARETOOL )
+  set( QGoGUILIB_UI
     ${QGoGUILIB_UI}
     Resources/QGoSynchronizedView.ui
   )
-ENDIF( BUILD_COMPARETOOL )
+endif( BUILD_COMPARETOOL )
 
 #---------------------------------------------------------------------------
 #---------------------------------------------------------------------------
 
 # ADD THIS UI IF ENABLE_VIDEO_RECORD_FFMPEG IS ON
-IF( ENABLE_VIDEO_RECORD_FFMPEG )
-  SET(QGoGUILIB_UI
+if( ENABLE_VIDEO_RECORD_FFMPEG )
+  set(QGoGUILIB_UI
     ${QGoGUILIB_UI}
     Resources/NewVideoRecorderDockWidget.ui
   )
-ENDIF( ENABLE_VIDEO_RECORD_FFMPEG )
+endif( ENABLE_VIDEO_RECORD_FFMPEG )
 
 # ADD THIS UI IF ENABLE_VIDEO_RECORD_AVI IS ON
-IF( ENABLE_VIDEO_RECORD_AVI )
-  SET(QGoGUILIB_UI
+if( ENABLE_VIDEO_RECORD_AVI )
+  set(QGoGUILIB_UI
     ${QGoGUILIB_UI}
     Resources/NewVideoRecorderDockWidget.ui
   )
-ENDIF( ENABLE_VIDEO_RECORD_AVI )
+endif( ENABLE_VIDEO_RECORD_AVI )
 
 #---------------------------------------------------------------------------
 #---------------------------------------------------------------------------
@@ -375,26 +375,29 @@ QT4_WRAP_UI( QGoGUILIB_UI_H
   ${QGoGUILIB_UI}
 )
 
-QT4_WRAP_CPP( QGoGUILIB_MOC ${QGoGUILIB_HDRS} )
+QT4_WRAP_CPP( QGoGUILIB_MOC ${QGoGUILIB_HDRS}
+  OPTIONS
+    -DBOOST_TT_HAS_OPERATOR_HPP_INCLUDED -DBOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION # see https://bugreports.qt-project.org/browse/QTBUG-22829
+)
 
 QT4_ADD_RESOURCES( QGoGUI_QRC
   ${QGoResourceFile}
 )
-SET_SOURCE_FILES_PROPERTIES( ${QGoGUILIB_SRC} PROPERTIES
+set_source_files_properties( ${QGoGUILIB_SRC} PROPERTIES
   OBJECT_DEPENDS "${QGoGUILIB_UI_H}"
   )
 
-SET_SOURCE_FILES_PROPERTIES( ${QGoGUILIB_MOC} PROPERTIES
+set_source_files_properties( ${QGoGUILIB_MOC} PROPERTIES
   OBJECT_DEPENDS "${QGoGUILIB_UI_H}"
   )
 
-ADD_LIBRARY( QGoGui
+add_library( QGoGui
   ${QGoGUILIB_SRC}
   ${QGoGUILIB_MOC}
   ${QGoGUI_QRC}
 )
 
-SET( QGoGUI_LIBS
+set( QGoGUI_LIBS
   ${ITK_LIBRARIES}
   QVTK
   QGoIO
@@ -404,15 +407,15 @@ SET( QGoGUI_LIBS
   itkQt
   )
 
-TARGET_LINK_LIBRARIES( QGoGui
+target_link_libraries( QGoGui
   ${QGoGUI_LIBS}
   )
 
 
-SET_TARGET_PROPERTIES( QGoGui PROPERTIES VERSION ${GOFIGURE2_LIB_VERSION} SOVERSION ${GOFIGURE2_LIB_VERSION} )
+set_target_properties( QGoGui PROPERTIES VERSION ${GOFIGURE2_LIB_VERSION} SOVERSION ${GOFIGURE2_LIB_VERSION} )
 
 # Runtime
-INSTALL( TARGETS QGoGui
+install( TARGETS QGoGui
   EXPORT GoFigure2Targets
   RUNTIME DESTINATION ${GOFIGURE2_INSTALL_BIN_DIR} COMPONENT Runtime
   ARCHIVE DESTINATION ${GOFIGURE2_INSTALL_LIB_DIR} COMPONENT Libraries
@@ -420,42 +423,42 @@ INSTALL( TARGETS QGoGui
   )
 
 # Development
-INSTALL( TARGETS QGoGui
+install( TARGETS QGoGui
   EXPORT GoFigure2Targets
   RUNTIME DESTINATION ${GOFIGURE2_INSTALL_BIN_DIR} COMPONENT Runtime
   ARCHIVE DESTINATION ${GOFIGURE2_INSTALL_LIB_DIR} COMPONENT Libraries
   LIBRARY DESTINATION ${GOFIGURE2_INSTALL_LIB_DIR} COMPONENT Libraries NAMELINK_ONLY
   )
 
-FILE( GLOB __source_file_h "${CMAKE_CURRENT_SOURCE_DIR}/*.h" )
-FILE( GLOB __source_file_txx "${CMAKE_CURRENT_SOURCE_DIR}/*.txx" )
-FILE( GLOB __binary_file_h "${CMAKE_CURRENT_BINARY_DIR}/*.h" )
-FILE( GLOB __binary_file_txx "${CMAKE_CURRENT_BINARY_DIR}/*.txx" )
+file( GLOB __source_file_h "${CMAKE_CURRENT_SOURCE_DIR}/*.h" )
+file( GLOB __source_file_txx "${CMAKE_CURRENT_SOURCE_DIR}/*.txx" )
+file( GLOB __binary_file_h "${CMAKE_CURRENT_BINARY_DIR}/*.h" )
+file( GLOB __binary_file_txx "${CMAKE_CURRENT_BINARY_DIR}/*.txx" )
 
-FILE( GLOB __source_video_h "${CMAKE_CURRENT_SOURCE_DIR}/Video/*.h" )
-FILE( GLOB __binary_video_h "${CMAKE_CURRENT_BINARY_DIR}/Video/*.h" )
+file( GLOB __source_video_h "${CMAKE_CURRENT_SOURCE_DIR}/Video/*.h" )
+file( GLOB __binary_video_h "${CMAKE_CURRENT_BINARY_DIR}/Video/*.h" )
 
-FILE( GLOB __source_sync_h
+file( GLOB __source_sync_h
   "${CMAKE_CURRENT_SOURCE_DIR}/SynchronizedViews/*.h"
 )
-FILE( GLOB __binary_sync_h
+file( GLOB __binary_sync_h
   "${CMAKE_CURRENT_BINARY_DIR}/SynchronizedViews/*.h"
 )
-FILE( GLOB __source_tracevisu_h
+file( GLOB __source_tracevisu_h
   "${CMAKE_CURRENT_SOURCE_DIR}/VisualizationTraceContainers/*.h" )
-FILE( GLOB __source_trace_visu_txx
+file( GLOB __source_trace_visu_txx
   "${CMAKE_CURRENT_SOURCE_DIR}/VisualizationTraceContainers/*.txx" )
-FILE( GLOB __binary_tracevisu_h
+file( GLOB __binary_tracevisu_h
   "${CMAKE_CURRENT_BINARY_DIR}/VisualizationTraceContainers/*.h" )
-FILE( GLOB __binary_tracevisu_txx
+file( GLOB __binary_tracevisu_txx
   "${CMAKE_CURRENT_BINARY_DIR}/VisualizationTraceContainers/*.txx" )
 
-FILE( GLOB __source_wizard_h
+file( GLOB __source_wizard_h
   "${CMAKE_CURRENT_SOURCE_DIR}/Wizard/*.h" )
-FILE( GLOB __binary_tracevisu_h
+file( GLOB __binary_tracevisu_h
   "${CMAKE_CURRENT_BINARY_DIR}/Wizard/*.h" )
 
-INSTALL( FILES ${__source_file_h} ${__source_file_txx}
+install( FILES ${__source_file_h} ${__source_file_txx}
     ${__binary_file_h} ${__binary_file_txx}
     ${__source_video_h} ${__binary_video_h}
     ${__source_sync_h} ${__binary_sync_h}

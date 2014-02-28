@@ -85,8 +85,7 @@ public:
   typedef typename OutputImageType::PixelType OutputPixelType;
 
   /** Image dimension = 3. */
-  itkStaticConstMacro(ImageDimension, unsigned int,
-                      ::itk::GetImageDimension< InputImageType >::ImageDimension);
+  itkStaticConstMacro(ImageDimension, unsigned int, InputImageType::ImageDimension);
 
   /** Update image buffer that holds the best laplacian response */
   typedef LaplacianRecursiveGaussianImageFilter< InputImageType, OutputImageType >

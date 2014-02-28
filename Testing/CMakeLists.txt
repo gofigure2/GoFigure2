@@ -1,1 +1,1 @@
-ADD_SUBDIRECTORY( Sikuli )
+add_subdirectory( Sikuli )

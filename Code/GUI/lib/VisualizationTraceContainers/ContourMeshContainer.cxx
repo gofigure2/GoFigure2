@@ -130,7 +130,7 @@ ContourMeshContainer::ShowActorsWithGivenTimePoint(const unsigned int & iT)
 {
   if ( iT != m_TCoord )
     {
-    MultiIndexContainerTCoordIterator it, it0, it1;
+    MultiIndexContainerTCoordIterator it0, it1;
 
     boost::tuples::tie(it0, it1) = m_Container.get< TCoord >().equal_range(iT);
 

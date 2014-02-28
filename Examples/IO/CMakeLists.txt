@@ -1,4 +1,4 @@
-SET( QGOIO_EXAMPLES_SRC
+set( QGOIO_EXAMPLES_SRC
   megacaptureimport
   gofigurefileinfomultiindexcontainerhelper
   MegaCaptureHeaderReaderTest
@@ -13,11 +13,12 @@ SET( QGOIO_EXAMPLES_SRC
   vtkPolyDataMySQLMeshWriter
   vtkPolyDataMySQLTrack
   GoDBImportTracksTest
+  GoDBExportContourTest
 #  kishmeshtextfilereader
 #  trackTextFilesReader
 )
 
-SET( GODB_SRC
+set( GODB_SRC
   GoDBTraceRowTest
   GoDBContourRowTest
   GoDBMeshRowTest
@@ -33,60 +34,60 @@ SET( GODB_SRC
   GoDBImgSessionRowTest
 )
 
-SET( QGOIO_EXAMPLES_SRC
+set( QGOIO_EXAMPLES_SRC
   ${QGOIO_EXAMPLES_SRC}
   ${GODB_SRC}
 )
 
-FOREACH( var ${QGOIO_EXAMPLES_SRC} )
-  ADD_EXECUTABLE( ${var} ${var}.cxx )
-  TARGET_LINK_LIBRARIES( ${var}
+foreach( var ${QGOIO_EXAMPLES_SRC} )
+  add_executable( ${var} ${var}.cxx )
+  target_link_libraries( ${var}
     QGoIO
   )
-ENDFOREACH( var ${QGOIO_EXAMPLES_SRC} )
+endforeach( var ${QGOIO_EXAMPLES_SRC} )
 
-ADD_TEST( gofigurefileinfomultiindexcontainerhelperTest
+add_test( gofigurefileinfomultiindexcontainerhelperTest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/gofigurefileinfomultiindexcontainerhelper )
 
-ADD_TEST( vtkPolyDataMySQLContourReaderTest
+add_test( vtkPolyDataMySQLContourReaderTest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/vtkPolyDataMySQLContourReader
   ${TESTING_DATA_PATH}/contour.vtk
 )
 
-ADD_TEST( vtkPolyDataMySQLMeshReaderTest
+add_test( vtkPolyDataMySQLMeshReaderTest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/vtkPolyDataMySQLMeshReader
   ${TESTING_DATA_PATH}/sphere.vtk
 )
 
-ADD_TEST( vtkPolyDataMySQLTrackTest
+add_test( vtkPolyDataMySQLTrackTest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/vtkPolyDataMySQLTrack
 )
 
-ADD_TEST( vtkPolyDataMySQLContourWriterTest
+add_test( vtkPolyDataMySQLContourWriterTest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/vtkPolyDataMySQLContourWriter
   ${TESTING_DATA_PATH}/contour.vtk
 )
 
-ADD_TEST( vtkPolyDataMySQLMeshWriterTest
+add_test( vtkPolyDataMySQLMeshWriterTest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/vtkPolyDataMySQLMeshWriter
   ${TESTING_DATA_PATH}/sphere.vtk
 )
 
-ADD_TEST( MegaCaptureHeaderReaderTest
+add_test( MegaCaptureHeaderReaderTest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/MegaCaptureHeaderReaderTest
-  ${GOFIGURE2_BINARY_DIR}/Testing/earpax2isl11/earpax2isl11.lsm.meg  
+  ${GOFIGURE2_BINARY_DIR}/Testing/earpax2isl11/earpax2isl11.lsm.meg
 )
 
-ADD_TEST( lsmtomegacaptureTest
+add_test( lsmtomegacaptureTest
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/lsmtomegacapture
   ${TESTING_DATA_PATH}/earpax2isl11.lsm
   ${GOFIGURE2_BINARY_DIR}/Testing/earpax2isl11_lsmtomegacapture/
   png
   )
-  
-FOREACH( var ${GODB_SRC} )
-  ADD_TEST( ${var} 
+
+foreach( var ${GODB_SRC} )
+  add_test( ${var}
     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${var}
   )
-ENDFOREACH( var ${GODB_SRC} )
+endforeach( var ${GODB_SRC} )
 

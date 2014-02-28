@@ -163,6 +163,13 @@ public:
    */
   double* GetLineageColor( const unsigned int& iTraceID );
 
+  /*
+   * \brief Modify visibility in the trace structure
+   * \param[in] iTraceID lineage ID of interest
+   * \param[in] iVisibility visibility of the given trace
+   */
+   void SetTraceVisibility(const unsigned int& iTraceID, const bool& iVisibility);
+
   /**\todo implement them:*/
   bool DeleteElement(const unsigned int & iId);
   bool DeleteElement(MultiIndexContainerTraceIDIterator iIter);
@@ -174,8 +181,12 @@ signals:
    \todo Nicolas-Signal there to avoid warning but has to be connected to the box widget
    */
   void TraceVisibilityChanged(unsigned int, Qt::CheckState);
+
   void ShowLineage(const unsigned int&, const bool&);
-  void DeleteLineage(unsigned int);  
+
+  void ShowCurrentLineage(std::list<unsigned int>&, const unsigned int&);
+
+  void DeleteLineage(unsigned int);
 /** \brief When one track has been picked (highlighted) from the visualization */
   void TracePicked(unsigned int, Qt::CheckState);
 
@@ -210,6 +221,8 @@ public slots:
     Superclass::UpdateElementHighlightingWithTraceID( iTraceID, state );
     emit TracePicked(iTraceID, state);
     }
+
+  void ShowActorsWithGivenTimePoint(const unsigned int & iT);
 
 protected:
   std::vector< vtkActor* > AddTrace( vtkPolyData* , vtkProperty* );

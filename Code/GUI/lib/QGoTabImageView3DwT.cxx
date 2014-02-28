@@ -75,7 +75,7 @@
 
 #include "vtkPolyDataMapper.h"
 #include "vtkOutlineFilter.h"
-
+#include "vtkPolyDataReader.h"
 //VTK FILTERS
 #include "vtkImageExport.h"
 
@@ -93,6 +93,7 @@
 #include <QColorDialog>
 #include <QInputDialog>
 #include <QProgressDialog>
+#include <QFileDialog>
 
 #include "vtkBox.h"
 #include "vtkClipPolyData.h"
@@ -1123,10 +1124,14 @@ void QGoTabImageView3DwT::GetTheRelatedToDBActions()
   QAction *ImportTracksAction = new QAction(tr("Tracks"), this);
   ImportTracksAction->setStatusTip(
     tr("Import the data of the tracks from the text file into the GoFigure database" ) );
+  QAction *ImportVTKMeshAction = new QAction(tr("VTK mesh"), this);
+  ImportVTKMeshAction->setStatusTip(
+    tr("Import a vtk mesh into gofigure. Format: \"timepoint_trackid.vtk\"" ) );
 
   ImportMenu->addAction(ImportContoursAction);
   ImportMenu->addAction(ImportMeshesAction);
   ImportMenu->addAction(ImportTracksAction);
+  ImportMenu->addAction(ImportVTKMeshAction);
 
   QMenu *  ExportMenu = new QMenu(tr("Export"), this);
   QAction *ExportContoursAction = new QAction(tr("Contours"), this);
@@ -1158,6 +1163,8 @@ void QGoTabImageView3DwT::GetTheRelatedToDBActions()
                     this, SLOT ( ImportMeshes() ) );
   QObject::connect( ImportTracksAction, SIGNAL ( triggered() ),
                     this, SLOT ( ImportTracks() ) );
+  QObject::connect( ImportVTKMeshAction, SIGNAL ( triggered() ),
+                    this, SLOT ( ImportVTKMesh() ) );
   QObject::connect( ExportLineagesAction, SIGNAL ( triggered() ),
                     m_LineageContainer,
                     SIGNAL( ExportLineages() ) );
@@ -2892,6 +2899,85 @@ void QGoTabImageView3DwT::ImportTracks()
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
+void QGoTabImageView3DwT::ImportVTKMesh()
+{
+  if ( this->m_DataBaseTables->IsDatabaseUsed() )
+    {
+    QStringList p = QFileDialog::getOpenFileNames( this,
+                                              tr("Open vtk Files"), "",
+                                              tr("VTK Files (*.vtk)") );
+
+    vtkSmartPointer<vtkPolyDataReader> reader =
+        vtkSmartPointer<vtkPolyDataReader>::New();
+
+    vtkSmartPointer<vtkPolyData> polydata =
+        vtkSmartPointer<vtkPolyData>::New();
+
+    for( int i = 0; i < p.size(); i++ )
+      {
+        QFileInfo pathInfo( p[i] );
+        QString basename = pathInfo.baseName();
+        QString suffix = pathInfo.suffix();
+        QStringList basenamelist = basename.split("_");
+
+        int suffixCheck = 1;
+        bool timeCheck = false;
+        bool collectionCheck = false;
+        int timePoint = 0;
+        int collection = 0;
+
+        if(basenamelist.size() == 2)
+        {
+        suffixCheck = suffix.compare("vtk");
+        timePoint = basenamelist[0].toInt(&timeCheck);
+        collection = basenamelist[1].toInt(&collectionCheck);
+        }
+
+        // if conversion failed, time and collection were not numbers
+        if( !collectionCheck || !timeCheck || suffixCheck)
+          {
+          QMessageBox msgBox;
+          msgBox.setText("The files you are trying to import has an invalid format\n Requiered: path/timepoint_trackID.vtk (ie: path/0_1.vtk)\n Provided: " + p[i]);
+          msgBox.exec();
+          }
+        else
+          {
+          std::string filename = ( p[i] ).toStdString();
+          reader->SetFileName(filename.c_str());
+          reader->Update();
+
+          // Make sure the polydata is inside the image
+          // if not, we crop it
+          vtkSmartPointer<vtkBox> implicitFunction =
+              vtkSmartPointer<vtkBox>::New();
+          implicitFunction->SetBounds(
+            m_ImageProcessor->getImageBW()->GetBounds()[0] + 1,
+            m_ImageProcessor->getImageBW()->GetBounds()[1] - 1,
+            m_ImageProcessor->getImageBW()->GetBounds()[2] + 1,
+            m_ImageProcessor->getImageBW()->GetBounds()[3] - 1,
+            m_ImageProcessor->getImageBW()->GetBounds()[4] + 1,
+            m_ImageProcessor->getImageBW()->GetBounds()[5] - 1);
+
+          vtkSmartPointer<vtkClipPolyData> cutter =
+              vtkSmartPointer<vtkClipPolyData>::New();
+          cutter->SetInput( reader->GetOutput() );
+          cutter->InsideOutOn();
+          cutter->SetClipFunction(implicitFunction);
+          cutter->Update();
+
+          polydata->DeepCopy(cutter->GetOutput());
+
+          SaveAndVisuMesh(polydata.GetPointer(),
+              timePoint,  // time point
+              collection); // collection id
+           }
+      }
+    }
+}
+
+//-------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------
 void
 QGoTabImageView3DwT::GoToLocation(int iX, int iY, int iZ, int iT)
 {
@@ -3269,7 +3355,7 @@ createTransferFunctionEditor(QString iName)
       new GoTransferFunctionEditorWidget(iName,
                                          m_ImageProcessor->getColor( channelname ),
                                          lutParameters,
-                                         m_ImageProcessor->getImageBW( channelname )->GetScalarRange()[1],
+                                         m_ImageProcessor->getMaxImage(),
                                          this );
   // connect signals
 
@@ -3316,7 +3402,7 @@ createTransferFunctionEditor(QString iName)
 
   //editor->setParent(m_TransferFunctionDockWidget);
   m_TransferFunctionDockWidget->AddTransferFunction(iName, editor);
-}
+  }
 //-------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------
@@ -3556,6 +3642,10 @@ ShowTraces(const unsigned int& iTimePoint)
   // several time points
   this->m_ContourContainer->ShowActorsWithGivenTimePoint(iTimePoint);
   this->m_MeshContainer->ShowActorsWithGivenTimePoint(iTimePoint);
+  // show tracks that intersect current time point
+  this->m_TrackContainer->ShowActorsWithGivenTimePoint(iTimePoint);
+  // show lineages that intersect the current time point
+  this->m_LineageContainer->ShowActorsWithGivenTimePoint(iTimePoint);
 }
 //-------------------------------------------------------------------------
 
@@ -3599,10 +3689,6 @@ UpdateTFEditor()
 
     // update histogram
     widget->AddHistogram(m_ImageProcessor->getHistogram(name) );
-
-    // update max value
-    widget->SetMaximumValue(
-        m_ImageProcessor->getImageBW(name)->GetScalarRange()[1]);
     }
 
   m_TransferFunctionDockWidget->SetCurrentWidget(currentChannel);

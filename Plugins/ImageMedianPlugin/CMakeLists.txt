@@ -1,27 +1,27 @@
-SET( CMAKE_LIBRARY_OUTPUT_DIRECTORY
+set( CMAKE_LIBRARY_OUTPUT_DIRECTORY
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/plugins
 )
 
-ADD_DEFINITIONS( -DQT_PLUGIN )
+add_definitions( -DQT_PLUGIN )
 
-IF( ${CMAKE_BUILD_TYPE} MATCHES "Debug" )
-  ADD_DEFINITIONS( -DQT_DEBUG )
-ELSE( ${CMAKE_BUILD_TYPE} MATCHES "Debug" )
-  ADD_DEFINITIONS( -DQT_NO_DEBUG )
-ENDIF( ${CMAKE_BUILD_TYPE} MATCHES "Debug" )
+if( ${CMAKE_BUILD_TYPE} MATCHES "Debug" )
+  add_definitions( -DQT_DEBUG )
+else( ${CMAKE_BUILD_TYPE} MATCHES "Debug" )
+  add_definitions( -DQT_NO_DEBUG )
+endif( ${CMAKE_BUILD_TYPE} MATCHES "Debug" )
 
-INCLUDE_DIRECTORIES( BEFORE
+include_directories( BEFORE
   ${GOFIGURE2_SOURCE_DIR}/Interfaces
   ${CMAKE_CURRENT_BINARY_DIR}
 )
 
-SET( MEDIANPLUGIN_HDRS
+set( MEDIANPLUGIN_HDRS
   medianplugin.h
   QCellPreprocess.h
   ${QGoGUIINTERFACES_HDRS}
   )
 
-SET( MEDIANPLUGIN_SRC
+set( MEDIANPLUGIN_SRC
   medianplugin.cxx
   QCellPreprocess.cxx
   ${QGoGUIINTERFACES_SRC}
@@ -35,35 +35,35 @@ QT4_WRAP_CPP( MEDIANPLUGIN_MOC
   ${MEDIANPLUGIN_HDRS}
   )
 
-SET_SOURCE_FILES_PROPERTIES( ${MEDIANPLUGIN_SRC} PROPERTIES
+set_source_files_properties( ${MEDIANPLUGIN_SRC} PROPERTIES
   OBJECT_DEPENDS "${MEDIANPLUGIN_UI_HDRS}"
   )
 
-SET_SOURCE_FILES_PROPERTIES( ${MEDIANPLUGIN_MOC} PROPERTIES
+set_source_files_properties( ${MEDIANPLUGIN_MOC} PROPERTIES
   OBJECT_DEPENDS "${MEDIANPLUGIN_UI_HDRS}"
   )
 
-ADD_LIBRARY( ImageMedianPlugin MODULE
+add_library( ImageMedianPlugin MODULE
   ${MEDIANPLUGIN_MOC}
   ${MEDIANPLUGIN_SRC}
 )
 
-ADD_DEPENDENCIES( ImageMedianPlugin QGoGui )
+add_dependencies( ImageMedianPlugin QGoGui )
 
-TARGET_LINK_LIBRARIES( ImageMedianPlugin
+target_link_libraries( ImageMedianPlugin
   QGoGui
   ITKBasicFilters
 )
 
-#ADD_EXECUTABLE( medianpluginExample medianpluginMain.cxx )
-#TARGET_LINK_LIBRARIES( medianpluginExample ${QT_LIBRARIES} )
+#add_executable( medianpluginExample medianpluginMain.cxx )
+#target_link_libraries( medianpluginExample ${QT_LIBRARIES} )
 
-FILE( GLOB __source_file_h "${CMAKE_CURRENT_SOURCE_DIR}/*.h" )
-FILE( GLOB __source_file_txx "${CMAKE_CURRENT_SOURCE_DIR}/*.txx" )
-FILE( GLOB __binary_file_h "${CMAKE_CURRENT_BINARY_DIR}/*.h" )
-FILE( GLOB __binary_file_txx "${CMAKE_CURRENT_BINARY_DIR}/*.txx" )
+file( GLOB __source_file_h "${CMAKE_CURRENT_SOURCE_DIR}/*.h" )
+file( GLOB __source_file_txx "${CMAKE_CURRENT_SOURCE_DIR}/*.txx" )
+file( GLOB __binary_file_h "${CMAKE_CURRENT_BINARY_DIR}/*.h" )
+file( GLOB __binary_file_txx "${CMAKE_CURRENT_BINARY_DIR}/*.txx" )
 
-INSTALL(
+install(
   FILES ${__source_file_h} ${__source_file_txx}
   ${__binary_file_h} ${__binary_file_txx}
   DESTINATION ${GOFIGURE2_INSTALL_HEADER_DIR}

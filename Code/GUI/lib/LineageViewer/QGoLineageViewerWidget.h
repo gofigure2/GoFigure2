@@ -102,7 +102,8 @@ private:
                   vtkSmartPointer<vtkTree> iOldTree,
                   vtkSmartPointer<vtkMutableDirectedGraph> iNewGraph,
                   vtkDoubleArray* iTrackIDArray,
-                  unsigned int iDepth, vtkDoubleArray* iDepthArray);
+                  unsigned int iDepth, vtkDoubleArray* iDepthArray,
+                  vtkDoubleArray* iFirstTP, vtkDoubleArray* iLastTP);
 
   void UpdateGraph();
 
@@ -116,7 +117,6 @@ private:
   vtkSmartPointer<vtkGraphLayoutView>    m_treeGraphView;
   vtkSmartPointer<vtkAnnotationLink>     m_annotationLink;
   vtkSmartPointer<vtkEventQtSlotConnect> m_connect;
-  vtkSmartPointer<vtkLookupTable>        m_lut;
   vtkSmartPointer<vtkTreeLayoutStrategy> m_treeLayoutStrategy;
 
   // Experimental stuff...

@@ -75,7 +75,7 @@ SetHighlightedProperty(vtkProperty *iProperty)
 
   MultiIndexContainerHighlightedIterator it0, it1;
   boost::tuples::tie(it0, it1) =
-    m_Container.get< Highlighted >().equal_range(true);
+    m_Container.template get< Highlighted >().equal_range(true);
 
   while ( it0 != it1 )
     {
@@ -109,11 +109,11 @@ GetActorGivenTraceID(unsigned int iTraceID)
   using boost::multi_index:: get;
 
   MultiIndexContainerTraceIDIterator
-    it = m_Container.get< TraceID >().find(iTraceID);
+    it = m_Container.template get< TraceID >().find(iTraceID);
 
   std::vector< vtkActor * > listActors;
 
-  if ( it != m_Container.get< TraceID >().end() )
+  if ( it != m_Container.template get< TraceID >().end() )
     {
     listActors.push_back( ( *it ).ActorXY );
     listActors.push_back( ( *it ).ActorYZ );
@@ -141,9 +141,9 @@ UpdateCurrentElementFromExistingOne(unsigned int iTraceID, bool iErase)
   using boost::multi_index:: get;
 
   MultiIndexContainerTraceIDIterator
-    it = m_Container.get< TraceID >().find(iTraceID);
+    it = m_Container.template get< TraceID >().find(iTraceID);
 
-  if ( it != m_Container.get< TraceID >().end() )
+  if ( it != m_Container.template get< TraceID >().end() )
     {
     // update current element
     this->m_CurrentElement = *it;
@@ -152,7 +152,7 @@ UpdateCurrentElementFromExistingOne(unsigned int iTraceID, bool iErase)
     // adresses in the m_CurrentElement
     if(iErase)
       {
-      m_Container.get< TraceID >().erase(it);
+      m_Container.template get< TraceID >().erase(it);
       }
 
     return true;
@@ -243,9 +243,9 @@ RemoveElementFromVisualizationWithGivenTraceID(const unsigned int & iId)
   using boost::multi_index:: get;
 
   MultiIndexContainerTraceIDIterator
-    it = m_Container.get< TraceID >().find(iId);
+    it = m_Container.template get< TraceID >().find(iId);
 
-  if ( it != m_Container.get< TraceID >().end() )
+  if ( it != m_Container.template get< TraceID >().end() )
     {
     if ( m_ImageView )
       {
@@ -269,7 +269,7 @@ RemoveElementFromVisualizationWithGivenTraceID(const unsigned int & iId)
 
     this->m_CurrentElement = *it;
 
-    m_Container.get< TraceID >().erase(it);
+    m_Container.template get< TraceID >().erase(it);
 
     if ( m_ImageView )
       {
@@ -292,9 +292,9 @@ UpdateElementHighlightingWithGivenTraceID(const unsigned int & iId)
   using boost::multi_index:: get;
 
   MultiIndexContainerTraceIDIterator
-    it = m_Container.get< TraceID >().find(iId);
+    it = m_Container.template get< TraceID >().find(iId);
 
-  if ( it != m_Container.get< TraceID >().end() )
+  if ( it != m_Container.template get< TraceID >().end() )
     {
     vtkProperty *temp_property = vtkProperty::New();
     if ( it->Highlighted )
@@ -316,7 +316,7 @@ UpdateElementHighlightingWithGivenTraceID(const unsigned int & iId)
 
     bool highlighted = !it->Highlighted;
 
-    m_Container.get< TraceID >().
+    m_Container.template get< TraceID >().
         modify( it , change_highlighted<MultiIndexContainerElementType>(highlighted) );
 
     assert ( m_ImageView );
@@ -348,9 +348,9 @@ UpdateElementHighlightingWithGivenTraceIDsBase(const QStringList & iList,
 
     while ( constIterator != iList.end() )
       {
-      it = m_Container.get< TraceID >().find( ( *constIterator ).toUInt() );
+      it = m_Container.template get< TraceID >().find( ( *constIterator ).toUInt() );
 
-      if ( it != m_Container.get< TraceID >().end() )
+      if ( it != m_Container.template get< TraceID >().end() )
         {
         vtkProperty *temp_property = vtkProperty::New();
 
@@ -372,7 +372,7 @@ UpdateElementHighlightingWithGivenTraceIDsBase(const QStringList & iList,
 
         bool highlight = iCheck;
 
-        m_Container.get< TraceID >().
+        m_Container.template get< TraceID >().
             modify( it , change_highlighted<MultiIndexContainerElementType>(highlight) );
         }
       ++constIterator;
@@ -407,9 +407,9 @@ UpdateElementVisibilityWithGivenTraceIDsBase(const QStringList & iList,
 
     while ( constIterator != iList.end() )
       {
-      it = m_Container.get< TraceID >().find( ( *constIterator ).toUInt() );
+      it = m_Container.template get< TraceID >().find( ( *constIterator ).toUInt() );
 
-      if ( it != m_Container.get< TraceID >().end() )
+      if ( it != m_Container.template get< TraceID >().end() )
         {
         if ( iCheck == Qt::Unchecked )
           {
@@ -444,7 +444,7 @@ UpdateElementVisibilityWithGivenTraceIDsBase(const QStringList & iList,
 
         it->SetActorVisibility(visible);
 
-        m_Container.get< TraceID >().
+        m_Container.template get< TraceID >().
             modify( it , change_visible<MultiIndexContainerElementType>(visible) );
         }
 
@@ -470,12 +470,12 @@ UpdateAllHighlightedElementsWithGivenColor(QColor iColor)
   MultiIndexContainerHighlightedIterator it0, it1;
 
   boost::tuples::tie(it0, it1) =
-    m_Container.get< Highlighted >().equal_range(true);
+    m_Container.template get< Highlighted >().equal_range(true);
 
   std::list< unsigned int > oList;
   while ( it0 != it1 )
     {
-    m_Container.get< Highlighted >().modify(it0,
+    m_Container.template get< Highlighted >().modify(it0,
         change_color<MultiIndexContainerElementType>(iColor));
     oList.push_back(it0->TraceID);
     ++it0;
@@ -496,7 +496,7 @@ TraceContainerBase< TContainer >::GetHighlightedElementsTraceID()
   using boost::multi_index:: get;
 
   boost::tuples::tie(it0, it1) =
-    m_Container.get< Highlighted >().equal_range(true);
+    m_Container.template get< Highlighted >().equal_range(true);
 
   std::list< unsigned int > oList;
   while ( it0 != it1 )
@@ -518,7 +518,7 @@ TraceContainerBase< TContainer >::GetHighlightedElementsCollectionID()
   using boost::multi_index:: get;
 
   boost::tuples::tie(it0, it1) =
-    m_Container.get< Highlighted >().equal_range(true);
+    m_Container.template get< Highlighted >().equal_range(true);
 
   std::list< unsigned int > oList;
   while ( it0 != it1 )
@@ -541,7 +541,7 @@ GetHighlightedElements(){
   using boost::multi_index:: get;
 
   boost::tuples::tie(it0, it1) =
-    m_Container.get< Highlighted >().equal_range(true);
+    m_Container.template get< Highlighted >().equal_range(true);
   while ( it0 != it1)
     {
     oList.push_back(it0->Nodes);
@@ -561,7 +561,7 @@ UpdateElementVisibilityWithGivenTraceID(const unsigned int & iId)
   using boost::multi_index:: get;
 
   MultiIndexContainerTraceIDIterator
-    it = m_Container.get< TraceID >().find(iId);
+    it = m_Container.template get< TraceID >().find(iId);
 
   typedef void ( QGoImageView3D::*ImageViewMember )(const int &, vtkActor *);
   ImageViewMember f;
@@ -569,7 +569,7 @@ UpdateElementVisibilityWithGivenTraceID(const unsigned int & iId)
 /*
 * \todo Nicolas-should be an assert
 */
-  if ( it != m_Container.get< TraceID >().end() )
+  if ( it != m_Container.template get< TraceID >().end() )
     {
     if ( it->Visible )
       {
@@ -604,7 +604,7 @@ UpdateElementVisibilityWithGivenTraceID(const unsigned int & iId)
 
     bool visible = !it->Visible;
 
-    m_Container.get< TraceID >().
+    m_Container.template get< TraceID >().
         modify( it , change_visible<MultiIndexContainerElementType>(visible) );
 
     assert ( m_ImageView );
@@ -674,9 +674,9 @@ TraceContainerBase< TContainer >::SetColorCode(const std::string & iColumnName,
   while ( it != iValues.end() )
     {
     MultiIndexContainerTraceIDIterator
-      trace_it = this->m_Container.get< TraceID >().find(it->first);
+      trace_it = this->m_Container.template get< TraceID >().find(it->first);
 
-    if ( trace_it != this->m_Container.get< TraceID >().end() )
+    if ( trace_it != this->m_Container.template get< TraceID >().end() )
       {
       if ( trace_it->Nodes ) //make sure the trace has points !!!
         {
@@ -753,9 +753,9 @@ TraceContainerBase< TContainer >::SetRandomColor(const std::string & iColumnName
   while ( it != iIds.end() )
     {
     MultiIndexContainerTraceIDIterator
-      trace_it = this->m_Container.get< TraceID >().find(it->first);
+      trace_it = this->m_Container.template get< TraceID >().find(it->first);
 
-    if ( trace_it != this->m_Container.get< TraceID >().end() )
+    if ( trace_it != this->m_Container.template get< TraceID >().end() )
       {
       if ( trace_it->Nodes ) //make sure the trace has points !!!
         {
@@ -909,9 +909,9 @@ TraceContainerBase< TContainer >::SetRandomColor(const std::string & iColumnName
   while ( it != iValues.end() )
     {
     MultiIndexContainerTraceIDIterator
-      trace_it = this->m_Container.get< TraceID >().find(it->first);
+      trace_it = this->m_Container.template get< TraceID >().find(it->first);
 
-    if ( trace_it != this->m_Container.get< TraceID >().end() )
+    if ( trace_it != this->m_Container.template get< TraceID >().end() )
       {
       if ( trace_it->Nodes ) //make sure the trace has points !!!
         {
@@ -1015,9 +1015,9 @@ TraceContainerBase< TContainer >::GetCollectionIDOfGivenTraceID(unsigned int iTr
 {
   using boost::multi_index:: get;
   MultiIndexContainerTraceIDIterator
-    it0 = m_Container.get< TraceID >().find(iTraceID);
+    it0 = m_Container.template get< TraceID >().find(iTraceID);
 
-  if ( it0 != m_Container.get< TraceID >().end() )
+  if ( it0 != m_Container.template get< TraceID >().end() )
     {
     return it0->CollectionID;
     }

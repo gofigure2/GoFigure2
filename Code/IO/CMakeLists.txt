@@ -1,19 +1,19 @@
-IF( WIN32 )
-  IF( NOT CYGWIN )
-    IF( NOT MINGW )
-      IF( BUILD_SHARED_LIBS )
-        ADD_DEFINITIONS( -DQGoIO_EXPORT )
-      ENDIF( BUILD_SHARED_LIBS )
-    ENDIF( NOT MINGW )
-  ENDIF( NOT CYGWIN )
-ENDIF( WIN32 )
+if( WIN32 )
+  if( NOT CYGWIN )
+    if( NOT MINGW )
+      if( BUILD_SHARED_LIBS )
+        add_definitions( -DQGoIO_EXPORT )
+      endif( BUILD_SHARED_LIBS )
+    endif( NOT MINGW )
+  endif( NOT CYGWIN )
+endif( WIN32 )
 
-CONFIGURE_FILE( ${CMAKE_CURRENT_SOURCE_DIR}/QGoIOConfigure.h.in
+configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/QGoIOConfigure.h.in
  ${CMAKE_CURRENT_BINARY_DIR}/QGoIOConfigure.h
  @ONLY IMMEDIATE
 )
 
-SET( QGOIO_SRC
+set( QGOIO_SRC
   TraceStructure.cxx
   ContourMeshStructure.cxx
   TrackStructure.cxx
@@ -75,7 +75,7 @@ SET( QGOIO_SRC
 #  TrackTextFileImport.cxx
 )
 
-SET_SOURCE_FILES_PROPERTIES(
+set_source_files_properties(
   GoDBRow/GoDBRow.cxx
   GoDBRow/GoDBTraceRow.cxx
   GoDBTableWidgetContainer.cxx
@@ -83,15 +83,14 @@ SET_SOURCE_FILES_PROPERTIES(
   ABSTRACT
   )
 
-ADD_LIBRARY( QGoIO
+add_library( QGoIO
   ${QGOIO_SRC}
 )
 
-ADD_DEPENDENCIES( QGoIO vtkLSMReader )
+add_dependencies( QGoIO vtkLSMReader )
 
-TARGET_LINK_LIBRARIES( QGoIO
+target_link_libraries( QGoIO
   ${QT_LIBRARIES}
-  QGoIO
   vtkHybrid
   vtkIO
   vtkImaging
@@ -99,10 +98,10 @@ TARGET_LINK_LIBRARIES( QGoIO
   ${ITK_LIBRARIES}
 )
 
-SET_TARGET_PROPERTIES( QGoIO PROPERTIES VERSION ${GOFIGURE2_LIB_VERSION} SOVERSION ${GOFIGURE2_LIB_VERSION} )
+set_target_properties( QGoIO PROPERTIES VERSION ${GOFIGURE2_LIB_VERSION} SOVERSION ${GOFIGURE2_LIB_VERSION} )
 
 # Runtime
-INSTALL( TARGETS QGoIO
+install( TARGETS QGoIO
   EXPORT GoFigure2Targets
   RUNTIME DESTINATION ${GOFIGURE2_INSTALL_BIN_DIR} COMPONENT Runtime
   ARCHIVE DESTINATION ${GOFIGURE2_INSTALL_LIB_DIR} COMPONENT Libraries
@@ -110,20 +109,20 @@ INSTALL( TARGETS QGoIO
   )
 
 # Development
-INSTALL( TARGETS QGoIO
+install( TARGETS QGoIO
   EXPORT GoFigure2Targets
   RUNTIME DESTINATION ${GOFIGURE2_INSTALL_BIN_DIR} COMPONENT Runtime
   ARCHIVE DESTINATION ${GOFIGURE2_INSTALL_LIB_DIR} COMPONENT Libraries
   LIBRARY DESTINATION ${GOFIGURE2_INSTALL_LIB_DIR} COMPONENT Libraries NAMELINK_ONLY
   )
 
-FILE( GLOB __source_file_h "${CMAKE_CURRENT_SOURCE_DIR}/*.h" )
-FILE( GLOB __source_file_txx "${CMAKE_CURRENT_SOURCE_DIR}/*.txx" )
+file( GLOB __source_file_h "${CMAKE_CURRENT_SOURCE_DIR}/*.h" )
+file( GLOB __source_file_txx "${CMAKE_CURRENT_SOURCE_DIR}/*.txx" )
 
-FILE( GLOB __binary_file_h "${CMAKE_CURRENT_BINARY_DIR}/*.h" )
-FILE( GLOB __binary_file_txx "${CMAKE_CURRENT_BINARY_DIR}/*.txx" )
+file( GLOB __binary_file_h "${CMAKE_CURRENT_BINARY_DIR}/*.h" )
+file( GLOB __binary_file_txx "${CMAKE_CURRENT_BINARY_DIR}/*.txx" )
 
-INSTALL( FILES ${__source_file_h} ${__source_file_txx}
+install( FILES ${__source_file_h} ${__source_file_txx}
     ${__binary_file_h} ${__binary_file_txx}
   DESTINATION ${GOFIGURE2_INSTALL_HEADER_DIR}
   COMPONENT Development

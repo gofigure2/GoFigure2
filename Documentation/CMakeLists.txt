@@ -1,1 +1,1 @@
-ADD_SUBDIRECTORY( Doxygen )
+add_subdirectory( Doxygen )

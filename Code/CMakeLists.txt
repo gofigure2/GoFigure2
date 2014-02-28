@@ -1,14 +1,14 @@
 # add subdirectories
-ADD_SUBDIRECTORY( ExternalCode )
-ADD_SUBDIRECTORY( Database )
-ADD_SUBDIRECTORY( IO )
-ADD_SUBDIRECTORY( Filters )
-ADD_SUBDIRECTORY( GUI )
+add_subdirectory( ExternalCode )
+add_subdirectory( Database )
+add_subdirectory( IO )
+add_subdirectory( Filters )
+add_subdirectory( GUI )
 
 
-FILE( GLOB __source_file_h "${CMAKE_CURRENT_SOURCE_DIR}/*.h" )
+file( GLOB __source_file_h "${CMAKE_CURRENT_SOURCE_DIR}/*.h" )
 
-INSTALL( FILES ${__source_file_h}
+install( FILES ${__source_file_h}
   DESTINATION ${GOFIGURE2_INSTALL_HEADER_DIR}
   COMPONENT Development
 )
