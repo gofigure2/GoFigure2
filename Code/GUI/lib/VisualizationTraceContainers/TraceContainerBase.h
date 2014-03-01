@@ -642,7 +642,7 @@ protected:
 
       vtkProperty *temp_property = vtkProperty::New();
 
-      assert ( it != m_Container.get< TraceID >().end() );
+      assert ( it != m_Container.template get< TraceID >().end() );
 
       if ( it->Highlighted )
         {
