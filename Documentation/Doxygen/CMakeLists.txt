@@ -8,9 +8,13 @@
 
 set( VTK_DOX_TAG )
 set( VTK_URL )
+set( VTK_TAG_STRING )
 
 set( ITK_DOC_TAG )
 set( ITK_URL )
+set( ITK_TAG_STRING )
+
+set( QT_TAG_STRING )
 
 if( LINK_EXTERNAL_DOC )
   option( DOXYGEN_NIGHTLY_LINK
@@ -27,6 +31,7 @@ if( LINK_EXTERNAL_DOC )
       )
 
     set( VTK_URL "http://www.vtk.org/doc/nightly/html" )
+    set( VTK_TAG_STRING "${VTK_DOX_TAG}=${VTK_URL}" )
 
     file( DOWNLOAD
       http://public.kitware.com/pub/itk/NightlyDoxygen/InsightDoxygen.tag
@@ -39,6 +44,7 @@ if( LINK_EXTERNAL_DOC )
       )
 
     set( ITK_URL "http://www.itk.org/Doxygen/html" )
+    set( ITK_TAG_STRING "${ITK_DOX_TAG}=${ITK_URL}" )
 
   else( DOXYGEN_NIGHTLY_LINK )
     find_file( VTK_DOX_TAG
@@ -50,6 +56,8 @@ if( LINK_EXTERNAL_DOC )
     set( VTK_URL
       "http://www.vtk.org/doc/release/${VTK_MAJOR_VERSION}.${VTK_MINOR_VERSION}/html" )
 
+    set( VTK_TAG_STRING "${VTK_DOX_TAG}=${VTK_URL}" )
+
     find_file( ITK_DOX_TAG
       NAMES InsightDoxygen.tag
       HINTS /usr/share
@@ -58,6 +66,8 @@ if( LINK_EXTERNAL_DOC )
 
     set( ITK_URL
       "http://www.itk.org/Doxygen${ITK_VERSION_MAJOR}${ITK_VERSION_MINOR}/html" )
+
+    set( ITK_TAG_STRING "${ITK_DOX_TAG}=${ITK_URL}" )
 
   endif( DOXYGEN_NIGHTLY_LINK )
 
@@ -70,6 +80,8 @@ if( LINK_EXTERNAL_DOC )
   set( QT_URL
       "http://doc.trolltech.com/4.${QT_VERSION_MINOR}.${QT_VERSION_PATCH}"
      )
+  set( QT_TAG_STRING "${QT_DOX_TAG}=${QT_URL}" )
+
 endif( LINK_EXTERNAL_DOC )
 
 CONFIGURE_FILE (
