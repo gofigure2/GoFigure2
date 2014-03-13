@@ -52,14 +52,15 @@ int main(int argc, char **argv)
 
   if ( argc != 3 )
     {
-    std::cout << "Usage : QGoSynchronizedView2DTest(.exe) " << std::endl;
+    std::cout << "Usage : QGoSegmentationAlgoTest(.exe) " << std::endl;
     std::cout << "1-file.mhd" << std::endl;
     std::cout << "2-test (boolean)" << std::endl;
     return EXIT_FAILURE;
     }
 
-  vtkSmartPointer< vtkMetaImageReader > reader =
-      vtkSmartPointer< vtkMetaImageReader >::New();
+  bool test = (atoi(argv[2]) == 1);
+
+  vtkSmartPointer< vtkMetaImageReader > reader = vtkSmartPointer< vtkMetaImageReader >::New();
   reader->SetFileName( argv[1] );
   reader->Update();
 
@@ -95,6 +96,7 @@ int main(int argc, char **argv)
   vtkSmartPointer<vtkImageData> roi3D = vtkSmartPointer<vtkImageData>::New();
   roi3D->ShallowCopy( algo.VTKExtractROI( voi3D, reader->GetOutput() ));
 
+
   assert( roi3D->GetDataDimension() == 3);
 
   // convert vtk to itk
@@ -116,7 +118,18 @@ int main(int argc, char **argv)
   // Reconstruct polydata
   vtkSmartPointer<vtkPolyData> poly3D = vtkSmartPointer<vtkPolyData>::New();
   poly3D->ShallowCopy(algo.ExtractPolyData( vtkImage3D, 100 ));
-  ShowPolyData(poly3D);
+
+  std::cout << "Dimension 3D " << std::endl;
+
+
+  if ( test )
+  {
+    ShowPolyDataInTest(poly3D);
+  }
+  else
+  {
+    ShowPolyData(poly3D);
+  }
 
   //------------------------------------------------------------------
   // 3d - too large ROI
@@ -155,12 +168,27 @@ int main(int argc, char **argv)
   // Reconstruct polydata
   vtkSmartPointer<vtkPolyData> poly3D2Large = vtkSmartPointer<vtkPolyData>::New();
   poly3D2Large->ShallowCopy(algo.ExtractPolyData( vtkImage3D2Large, 100 ));
-  ShowPolyData(poly3D2Large);
+
+  if ( test )
+  {
+    ShowPolyDataInTest(poly3D2Large);
+  }
+  else
+  {
+    ShowPolyData(poly3D2Large);
+  }
 
   // Decimate polydata
   vtkSmartPointer<vtkPolyData> decimate3D = vtkSmartPointer<vtkPolyData>::New();
   decimate3D->ShallowCopy(algo.DecimatePolyData(poly3D2Large, 200));
-  ShowPolyData(decimate3D);
+  if ( test )
+  {
+    ShowPolyDataInTest(decimate3D);
+  }
+  else
+  {
+    ShowPolyData(decimate3D);
+  }
 
   //------------------------------------------------------------------
   // 2d
@@ -199,12 +227,26 @@ int main(int argc, char **argv)
   // Reconstruct polydata
   vtkSmartPointer<vtkPolyData> poly2D = vtkSmartPointer<vtkPolyData>::New();
   poly2D->ShallowCopy(algo.ExtractPolyData( vtkImage2D, 100 ));
-  ShowPolyData(poly2D);
+  if ( test )
+  {
+    ShowPolyDataInTest(poly2D);
+  }
+  else
+  {
+    ShowPolyData(poly2D);
+  }
 
   vtkSmartPointer<vtkPolyData> decimate2D = vtkSmartPointer<vtkPolyData>::New();
   decimate2D->ShallowCopy(algo.DecimatePolyData(poly2D, 10));
 
-  ShowPolyData(decimate2D);
+  if ( test )
+  {
+    ShowPolyDataInTest(decimate2D);
+  }
+  else
+  {
+    ShowPolyData(decimate2D);
+  }
 
   return EXIT_SUCCESS;
 }
