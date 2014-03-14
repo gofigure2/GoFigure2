@@ -73,6 +73,39 @@ void ShowPolyData(vtkPolyData *iPolyData)
   renderWindowInteractor->Start();
 }
 
+void ShowPolyDataInTest(vtkPolyData *iPolyData)
+{
+  vtkSmartPointer< vtkPolyDataMapper > mapper =
+    vtkSmartPointer< vtkPolyDataMapper >::New();
+  mapper->SetInput(iPolyData);
+
+  vtkSmartPointer< vtkActor > actor =
+    vtkSmartPointer< vtkActor >::New();
+  actor->SetMapper(mapper);
+
+  vtkSmartPointer< vtkRenderer > renderer =
+    vtkSmartPointer< vtkRenderer >::New();
+  renderer->AddActor(actor);
+
+  vtkSmartPointer< vtkRenderWindow > renderWindow =
+    vtkSmartPointer< vtkRenderWindow >::New();
+  renderWindow->AddRenderer(renderer);
+
+  vtkSmartPointer< vtkRenderWindowInteractor > renderWindowInteractor =
+    vtkSmartPointer< vtkRenderWindowInteractor >::New();
+  renderWindowInteractor->SetRenderWindow(renderWindow);
+
+  renderWindowInteractor->Initialize();
+  renderWindow->Render();
+  renderWindowInteractor->CreateOneShotTimer(1);
+
+  //renderer->Delete();
+  //renderWindow->Delete();
+  //actor->Delete();
+  //renderWindowInteractor->Delete();
+  //mapper->Delete();
+}
+
 void ShowImage(vtkImageData *iData)
 {
   // Create the rendering window
