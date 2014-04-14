@@ -14,16 +14,22 @@ endif()
 
 set( Boost_Patches_DIR ${Patches_DIR}/boost )
 set( Boost_Patch_Script ${Boost_Patches_DIR}/boost_patch.sh )
-set( Boost_Patch_Command sh ${Boost_Patch_Script} )
 
+set( Boost_Patch_Command )
+if( NOT WIN32 )
+  set( Boost_Patch_Command sh ${Boost_Patch_Script} )
+endif()
+  
 ExternalProject_Add(Boost
   URL "http://sourceforge.net/projects/boost/files/boost/1.54.0/boost_1_54_0.tar.gz"
   URL_MD5 efbfbff5a85a9330951f243d0a46e4b9
   BUILD_IN_SOURCE 1
   UPDATE_COMMAND ""
   PATCH_COMMAND ${Boost_Patch_Command}
-  CONFIGURE_COMMAND ${Boost_Bootstrap_Command} --without-icu --prefix=${CMAKE_BINARY_DIR}/INSTALL
+  CONFIGURE_COMMAND ${Boost_Bootstrap_Command} 
   BUILD_COMMAND ${Boost_b2_Command}
+    --prefix=${CMAKE_BINARY_DIR}/INSTALL
+    # --without-icu 
     --without-python
     --without-mpi
     link=static
