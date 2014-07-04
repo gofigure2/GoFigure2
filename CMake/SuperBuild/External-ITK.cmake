@@ -30,5 +30,11 @@ ExternalProject_Add(${proj}
     ${ITK_DEPENDENCIES}
 )
 
-set(ITK_DIR ${CMAKE_BINARY_DIR}/INSTALL/lib/InsightToolkit )
+set(ITK_DIR)
+
+if( ${BUILD_ITK4} )
+  set( ITK_DIR ${CMAKE_BINARY_DIR}/INSTALL/lib/cmake/ITK-4.5 )
+else()
+  set( ITK_DIR ${CMAKE_BINARY_DIR}/INSTALL/lib/InsightToolkit )
+endif()
 #${CMAKE_BINARY_DIR}/${proj}-build)
