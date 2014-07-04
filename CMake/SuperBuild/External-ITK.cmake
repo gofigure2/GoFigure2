@@ -6,9 +6,9 @@ set(proj ITK)
 option( BUILD_ITK4 "Use ITKv4 (if not, it will use ITKv3)" ON )
 
 if( ${BUILD_ITK4} )
-  set( ITK_TAG "v3.20.1" )
-else()
   set( ITK_TAG "v4.5.0" )
+else()
+  set( ITK_TAG "v3.20.1" )
 endif()
 
 ExternalProject_Add(${proj}
