@@ -31,9 +31,10 @@
  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 =========================================================================*/
 #include <cstdio>
+#include <cstdlib>
 
 template<class Real>
-Real Random(void){return Real(rand())/RAND_MAX;}
+Real Random(void){return Real(std::rand())/RAND_MAX;}
 
 template<class Real>
 Point3D<Real> RandomBallPoint(void){

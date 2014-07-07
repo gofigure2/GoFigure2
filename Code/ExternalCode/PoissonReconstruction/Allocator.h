@@ -34,6 +34,7 @@
 #define ALLOCATOR_INCLUDED
 #include <vector>
 #include <cstdio>
+#include <cstdlib>
 
 class AllocatorState
 {
