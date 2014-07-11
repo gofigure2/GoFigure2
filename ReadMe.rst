@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/gofigure2/GoFigure2.svg?branch=travis)](https://travis-ci.org/gofigure2/GoFigure2)
+
 ===========
  GoFigure2
 ===========
