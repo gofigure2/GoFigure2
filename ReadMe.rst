@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/gofigure2/GoFigure2.svg?branch=release_candidate)](https://travis-ci.org/gofigure2/GoFigure2)
+https://travis-ci.org/gofigure2/GoFigure2.svg?branch=release_candidate
 
 ===========
  GoFigure2
