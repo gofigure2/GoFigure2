@@ -1,4 +1,7 @@
-https://travis-ci.org/gofigure2/GoFigure2.svg?branch=release_candidate
+.. image:: https://travis-ci.org/gofigure2/GoFigure2.svg?branch=release_candidate
+   :target: https://travis-ci.org/gofigure2/GoFigure2
+   :align: right
+   :alt: Travis CI build status
 
 ===========
  GoFigure2
