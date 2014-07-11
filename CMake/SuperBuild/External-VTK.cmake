@@ -5,6 +5,11 @@
 set(proj VTK)
 set(proj_DEPENDENCIES)
 
+set( _vtkOptions )
+if( APPLE )
+  set( _vtkOptions -DVTK_REQUIRED_OBJCXX_FLAGS:STRING="" )
+endif()
+
 if( SUPER_BOOST )
   set( proj_DEPENDENCIES Boost )
 endif( SUPER_BOOST )
@@ -15,7 +20,7 @@ ExternalProject_Add(${proj}
   SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj}
   BINARY_DIR ${proj}-build
   GIT_REPOSITORY "${git_protocol}://vtk.org/VTK.git"
-  GIT_TAG "v5.10.1"
+  GIT_TAG "release-5.10"
   UPDATE_COMMAND ""
   PATCH_COMMAND ""
   CMAKE_GENERATOR ${gen}
@@ -34,6 +39,7 @@ ExternalProject_Add(${proj}
     -DVTK_USE_BOOST:BOOL=ON
     ${VIDEO_SUPPORT}
     ${Boost_SUPPORT}
+    ${_vtkOptions}
     #${WINDOWS_FLAGS}
 )
 
