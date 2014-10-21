@@ -68,7 +68,7 @@ set(GoFigure2_DEPENDENCIES)
 
 #-------------------------
 
-find_package( Boost 1.46 REQUIRED )
+find_package( Boost 1.46 )
 
 if( Boost_FOUND )
   set( SUPER_BOOST OFF )
