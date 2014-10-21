@@ -22,7 +22,7 @@ if( WIN32 )
     #INSTALL_COMMAND ""
   )
 
-  set( Boost_LIBRARY_DIR ${CMAKE_BINARY_DIR}/INSTALL/lib/boost/ )
+  set( Boost_LIBRARY_DIR ${CMAKE_BINARY_DIR}/INSTALL/lib/ )
   set( Boost_INCLUDE_DIR ${CMAKE_BINARY_DIR}/INSTALL/include/ )
 else()
   set( Boost_Bootstrap_Command ./bootstrap.sh )
